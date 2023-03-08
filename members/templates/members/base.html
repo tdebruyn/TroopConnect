@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+    <article>
+        <div class="bg-ls-bleu-clair bg-topping-federation topping-white bg-topping-opacity-10">
+            <div class="container">
+                <div class="row ">
+                    <div class="col-11 offset-md-1 pb-1 mt-1">
+                        <h1 class="mb-4 mt-5">
+                            {% block hat_title %}
+                            {% endblock hat_title %}
+                        </h1>
+                        <div class="pb-5">
+                            <p>
+                                {% block hat_text %}
+                                {% endblock hat_text %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container mb-5">
+            <div class="row mt-5">
+                <div class="col-md-12 topping-federation topping-top topping-right topping-large  mb-5">
+                    <div class="above-topping">
+                        {% block subcontent %}
+                        {% endblock subcontent %}
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-2 mb-5">
+                <div class="col-md-12"></div>
+            </div>
+        </div>
+    </article>
+    <!-- Placeholder for the modal -->
+    <div id="modal" class="modal fade">
+        <div id="dialog" class="modal-dialog" hx-target="this"></div>
+    </div>
+    <!-- Empty toast to show the message -->
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        <div id="toast"
+             class="toast align-items-center text-white bg-success border-0"
+             role="alert"
+             aria-live="assertive"
+             aria-atomic="true">
+            <div class="d-flex">
+                <div id="toast-body" class="toast-body"></div>
+                <button type="button"
+                        class="btn-close btn-close-white me-2 m-auto"
+                        data-bs-dismiss="toast"
+                        aria-label="Close">
+                </button>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

@@ -1,0 +1,15 @@
+{% for child in children %}
+    <tr id="child-{{ child.pk }}" class="child-row">
+        <td>{{ child.first_name }}</td>
+        <td>{{ child.last_name }}</td>
+        <td>{{ child.secret_key }}</td>
+        <td>{{ child.get_status }}</td>
+        <td>
+            <button class="btn btn-primary btn-sm"
+                    hx-get="{% url 'members:edit_child' pk=child.pk %}"
+                    hx-target="#dialog">
+                Modifier
+            </button>
+        </td>
+    </tr>
+{% endfor %}

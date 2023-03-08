@@ -1,0 +1,135 @@
+{% load widget_tweaks %}
+{% with WIDGET_ERROR_CLASS="is-invalid d-block" %}
+    <form hx-post="{{ request.path }}"
+          hx-headers='{"X-CSRFToken":"{{ csrf_token }}"}'
+          class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">Données de l'enfant</h5>
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+        </div>
+        <div class="modal-body form-horizontal">
+            <div class="mb-3 form-group row">
+                <label for="{{ form.first_name.id_for_label }}"
+                       class="col-form-label col-sm-4">{{ form.first_name.label }}</label>
+                <div class="col-sm-8">{% render_field form.first_name class="form-control" %}</div>
+                <div class="invalid-feedback {{ WIDGET_ERROR_CLASS }}">{{ form.first_name.errors|first }}</div>
+            </div>
+            <div class="mb-3 form-group row">
+                <label for="{{ form.last_name.id_for_label }}"
+                       class="col-form-label col-sm-4">
+                    {{ form.last_name.label }}
+                </label >
+                <div class="col-sm-8">{% render_field form.last_name class="form-control" %}</div>
+                <div class="invalid-feedback" {{ WIDGET_ERROR_CLASS }}>{{ form.last_name.errors|first }}
+                </div>
+            </div>
+            <div class="mb-3 form-group row">
+                <label for="{{ form.username.id_for_label }}"
+                       class="col-form-label col-sm-4">Nom d'utilisateur:</label>
+                {% if form.username.value %}
+                    <div class="col-sm-8">
+                        <input type="text"
+                               class="form-control"
+                               name="{{ form.username.name }}"
+                               value="{{ form.username.value }}"
+                               readonly="readonly">
+                    </div>
+                {% else %}
+                    <div class="col-sm-8">{% render_field form.username class="form-control" %}</div>
+                    <div class="invalid-feedback {{ WIDGET_ERROR_CLASS }}">{{ form.username.errors|first }}</div>
+                {% endif %}
+            </div>
+            <div class="mb-3 form-group row">
+                <label for="{{ form.birthday.id_for_label }}"
+                       class="col-form-label col-sm-4">
+                    {{ form.birthday.label }}
+                </label >
+                <div class="col-sm-8">{% render_field form.birthday class="form-control" type="date" %}</div>
+                <div class="invalid-feedback" {{ WIDGET_ERROR_CLASS }}>{{ form.birthday.errors|first }}
+                </div>
+            </div>
+            <div class="mb-3 form-group row">
+                <label for="{{ form.sex.id_for_label }}" class="col-form-label col-sm-4">
+                    {{ form.sex.label }}
+                </label >
+                <div class="col-sm-8">
+                    {% render_field form.sex class="form-select" %}
+                    <div class="invalid-feedback" {{ WIDGET_ERROR_CLASS }}>{{ form.sex.errors|first }}
+                    </div>
+                </div>
+            </div>
+            <div class="mb-3 form-group row">
+                <label for="{{ form.phone.id_for_label }}" class="col-form-label col-sm-4">
+                    {{ form.phone.label }}
+                </label >
+                <div class="col-sm-8">
+                    <div class="input-group">
+                        <span class="input-group-text" id="phone-prefix"><i class="bi-telephone"></i></span>{% render_field form.phone class="form-control" placeholder="Si différent du parent" %}
+                    </div>
+                    <div class="invalid-feedback" {{ WIDGET_ERROR_CLASS }}>{{ form.phone.errors|first }}
+                    </div>
+                </div>
+            </div>
+            <div class="mb-3 form-group row">
+                <label for="{{ form.email.id_for_label }}" class="col-form-label col-sm-4">
+                    {{ form.email.label }}
+                </label >
+                <div class="col-sm-8">
+                    <div class="input-group">
+                        <span class="input-group-text" id="email-prefix"><i class="bi-envelope"></i></span>
+                        {% render_field form.email class='form-control' placeholder="Si différent du parent" %}
+                    </div>
+                    <div class="invalid-feedback" {{ WIDGET_ERROR_CLASS }}>{{ form.email.errors|first }}
+                    </div>
+                </div>
+            </div>
+            <div class="mb-3 form-group row">
+                <label for="{{ form.address.id_for_label }}" class="col-form-label col-sm-4">
+                    {{ form.address.label }}
+                </label >
+                <div class="col-sm-8">
+                    <div class="input-group">
+                        <span class="input-group-text" id="address-prefix"><i class="bi-house"></i></span>
+                        {% render_field form.address class="form-control" placeholder="Si différent du parent" %}
+                    </div>
+                    <div class="invalid-feedback" {{ WIDGET_ERROR_CLASS }}>{{ form.address.errors|first }}
+                    </div>
+                </div>
+            </div>
+            <div class="mb-3 form-group row">
+                <label for="{{ form.note.id_for_label }}" class="col-form-label col-sm-4">
+                    {{ form.note.label }}
+                </label >
+                <div class="col-sm-8">{% render_field form.note class="form-control" %}</div>
+                <div class="invalid-feedback" {{ WIDGET_ERROR_CLASS }}>{{ form.note.errors|first }}
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            {% comment %} {% if child %}
+    <button type="button" class="btn btn-danger" hx-post="{% url 'remove_child' pk=child.pk %}">Retirer</button>
+    <span class="flex-grow-1"></span>
+            {% endif %} {% endcomment %}
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+            <button type="submit" class="btn btn-primary">Enregister</button>
+        </div>
+    </form>
+{% endwith %}
+<script>
+    var firstName = document.getElementById('id_first_name');
+    var lastName = document.getElementById('id_last_name');
+    var userName = document.getElementById('id_user_name');
+
+    function updateUserName() {
+        var firstNameValue = firstName.value;
+        var lastNameValue = lastName.value;
+        var userNameValue = firstNameValue + lastNameValue;
+        userName.value = userNameValue;
+    }
+
+    firstName.addEventListener('input', updateUserName);
+    lastName.addEventListener('input', updateUserName);
+</script>

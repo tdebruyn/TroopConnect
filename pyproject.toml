@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "siteunite"
+version = "0.1.0"
+description = ""
+authors = ["Tom Debruyne <tdebruyn@cisco.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+django = "^4.1.7"
+fontawesomefree = "^6.3.0"
+django-ses = "^3.3.0"
+django-allauth = "^0.52.0"
+django-phonenumber-field = {extras = ["phonenumbers"], version = "^7.0.2"}
+django-widget-tweaks = "^1.4.12"
+django-post-office = "^3.6.3"
+django-filter = "^22.1"
+shortuuid = "^1.0.11"
+
+
+[tool.poetry.group.dev.dependencies]
+django-debug-toolbar = "^3.8.1"
+djlint = "^1.19.15"
+ipython = "^8.11.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,17 @@
+{% extends "members/base.html" %}
+{% load widget_tweaks %}
+{% block subcontent %}
+    <div class="container">
+        <form action="" method="get">
+            {{ filter.form }}
+            <button type="submit" class="btn btn-primary">Filtrer</button>
+        </form>
+        <ul>
+            {% for member in filter.qs %}
+                <li>{{ member.username }}</li>
+            {% empty %}
+                <li>No items found.</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock subcontent %}

@@ -1,0 +1,9 @@
+{% extends "members/base.html" %}
+{% block subcontent %}
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit</button>
+    </form>
+    {{ form.errors }}
+{% endblock subcontent %}

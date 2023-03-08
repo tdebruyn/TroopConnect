@@ -1,0 +1,31 @@
+"""Members URL Configuration
+
+The `urlpatterns` list routes URLs to views. For more information please see:
+    https://docs.djangoproject.com/en/4.1/topics/http/urls/
+Examples:
+Function views
+    1. Add an import:  from my_app import views
+    2. Add a URL to urlpatterns:  path('', views.home, name='home')
+Class-based views
+    1. Add an import:  from other_app.views import Home
+    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
+Including another URLconf
+    1. Import the include() function: from django.urls import include, path
+    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
+"""
+from django.urls import path
+from members import views
+
+app_name = "members"
+
+urlpatterns = [
+    path("login/", views.Login.as_view(), name="login"),
+    path("profile/<str:pk>", views.ProfileView.as_view(), name="profile"),
+    path("addnewchild", views.add_new_child_view, name="add_new_child"),
+    path("addchildkey", views.add_child_key_view, name="add_key_child"),
+    path("children", views.child_list, name="child_list"),
+    path("adminlist", views.AdminListView.as_view(), name="admin_list"),
+    path("child/<str:pk>/edit", views.edit_child, name="edit_child"),
+    # path("addchild", views.AddChildView.as_view(), name="addchild"),
+    # path("profile/", views.ProfileView.as_view(), name="profile"),
+]
