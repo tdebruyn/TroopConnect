@@ -3,6 +3,9 @@ from django.contrib.auth.admin import UserAdmin, GroupAdmin
 from django.contrib.auth.models import Group
 from .models import CustomUser, CustomGroup, SchoolYear
 from .forms import CustomUserChangeForm, AccountCreationForm
+from django.utils.html import format_html
+from django.db.models import F
+from django.db.models.functions import Concat
 
 
 class CustomUserAdmin(UserAdmin):
@@ -53,7 +56,38 @@ class CustomUserAdmin(UserAdmin):
     ordering = ("email",)
 
 
+class CustomGroupAdmin(GroupAdmin):
+    model = CustomGroup
+    list_display = ["colored_name", "parents"]
+    ordering = []
+
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        queryset = queryset.annotate(
+            full_name=Concat(F("parents__parents__name"), F("parents__name"), F("name"))
+        ).order_by("full_name")
+        return queryset
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "parents":
+            queryset = CustomGroup.objects.filter(
+                parents__isnull=True
+            ) | CustomGroup.objects.filter(parents__parents__isnull=True)
+            queryset = queryset.order_by("name")
+            kwargs["queryset"] = queryset
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+    @admin.display()
+    def colored_name(self, obj):
+        if obj.is_base():
+            return format_html(f"<span style='color:darkblue'>{obj.name}</span>")
+        elif obj.parents.is_base():
+            return f"{obj.name} - {obj.year}"
+        else:
+            return format_html(f"<span style='color:lightblue'>{obj.name}</span>")
+
+
 admin.site.unregister(Group)
 admin.site.register(CustomUser, CustomUserAdmin)
-admin.site.register(CustomGroup, GroupAdmin)
+admin.site.register(CustomGroup, CustomGroupAdmin)
 admin.site.register(SchoolYear)

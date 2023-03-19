@@ -20,7 +20,7 @@ shortuuid = "^1.0.11"
 
 [tool.poetry.group.dev.dependencies]
 django-debug-toolbar = "^3.8.1"
-djlint = "^1.19.15"
+djlint = "^1.19.16"
 ipython = "^8.11.0"
 
 [build-system]

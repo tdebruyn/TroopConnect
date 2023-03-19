@@ -74,6 +74,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=150, null=True, blank=True)
     last_name = models.CharField(max_length=150, null=True, blank=True)
     sex = models.CharField(max_length=1, choices=SEX, null=True, blank=True)
+    totem = models.CharField(max_length=60)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=timezone.now)
@@ -129,8 +130,8 @@ class CustomGroup(Group):
     def get_childs(self):
         return CustomGroup.objects.filter(Q(parents=self) | Q(parents__parents=self))
 
-    def has_parents(self, parent):
-        return self.parents == CustomGroup.objects.get(name=parent)
+    # def has_parents(self, parent):
+    #     return self.parents == CustomGroup.objects.get(name=parent)
 
     def is_base(self):
         return self.parents == None
@@ -141,14 +142,6 @@ class CustomGroup(Group):
     class Meta:
         verbose_name = _("group")
         verbose_name_plural = _("groups")
-
-    def __str__(self):
-        if self.year is not None:
-            return _(f"{self.name} {self.year.name}")
-        elif self.is_base():
-            return _(f"Base model {self.name}")
-        else:
-            return _(self.name)
 
 
 class SchoolYear(models.Model):

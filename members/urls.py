@@ -19,7 +19,6 @@ from members import views
 app_name = "members"
 
 urlpatterns = [
-    path("login/", views.Login.as_view(), name="login"),
     path("profile/<str:pk>", views.ProfileView.as_view(), name="profile"),
     path("addnewchild", views.add_new_child_view, name="add_new_child"),
     path("addchildkey", views.add_child_key_view, name="add_key_child"),
