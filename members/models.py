@@ -74,7 +74,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=150, null=True, blank=True)
     last_name = models.CharField(max_length=150, null=True, blank=True)
     sex = models.CharField(max_length=1, choices=SEX, null=True, blank=True)
-    totem = models.CharField(max_length=60)
+    totem = models.CharField(max_length=60, null=True, blank=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=timezone.now)

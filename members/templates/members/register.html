@@ -7,6 +7,7 @@
 {% block hat_text %}
 {% endblock hat_text %}
 {% block subcontent %}
+    <div class="topping-federation topping-top topping-right topping-large d-none d-lg-block"></div>
     <form method="post">
         {% csrf_token %}
         <div class="row">
@@ -70,7 +71,9 @@
                     <th>Prénom</th>
                     <th>Nom</th>
                     <th>Clé secrète</th>
-                    <th>État de l'inscription</th>
+                    <th>
+                        État de l'inscription
+                    </th>
                 </tr>
             </thead>
             <tbody hx-trigger="load, childListChanged from:body"

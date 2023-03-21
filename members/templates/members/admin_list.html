@@ -3,15 +3,76 @@
 {% block subcontent %}
     <div class="container">
         <form action="" method="get">
-            {{ filter.form }}
-            <button type="submit" class="btn btn-primary">Filtrer</button>
+            <div class="container">
+                <div class="row m-2">
+                    <div class="col">
+                        <input class="form-control"
+                               type="text"
+                               placeholder="{{ filter.form.first_name.label }}"
+                               name="{{ filter.form.first_name.name }}"
+                               id="{{ filter.form.first_name.id }}"
+                               value="{{ filter.form.first_name.value }}"/>
+                    </div>
+                    <div class="col">
+                        <input class="form-control"
+                               type="text"
+                               placeholder="{{ filter.form.last_name.label }}"
+                               name="{{ filter.form.last_name.name }}"
+                               id="{{ filter.form.last_name.id }}"
+                               value="{{ filter.form.last_name.value }}"/>
+                    </div>
+                    <div class="col">
+                        <input class="form-control" type="text" />
+                    </div>
+                </div>
+                <div class="row m-2">
+                    <div class="col">
+                        <input class="form-control" type="date" />
+                    </div>
+                    <div class="col">
+                        <input class="form-control" type="date" />
+                    </div>
+                    <div class="col">
+                        <select class="form-select">
+                            <optgroup label="This is a group">
+                                <option value="12" selected>
+                                    This is item 1
+                                </option>
+                                <option value="13">
+                                    This is item 2
+                                </option>
+                                <option value="14">
+                                    This is item 3
+                                </option>
+                            </optgroup>
+                        </select>
+                    </div>
+                </div>
+                <div class="container">
+                    <button type="submit" class="btn btn-primary">Filtrer</button>
+                </div>
+            </div>
         </form>
-        <ul>
-            {% for member in filter.qs %}
-                <li>{{ member.username }}</li>
-            {% empty %}
-                <li>No items found.</li>
-            {% endfor %}
-        </ul>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Prénom</th>
+                    <th scope="col">Nom</th>
+                    <th scope="col">Section</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for member in filter.qs %}
+                    <tr>
+                        <th scope="row">{{ member.first_name }}</th>
+                        <td>{{ member.last_name }}</td>
+                        <td>Otto</td>
+                        <td>@mdo</td>
+                    </tr>
+                {% empty %}
+                    <li>Aucun résultat</li>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 {% endblock subcontent %}
