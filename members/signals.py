@@ -1,24 +1,27 @@
 from django.contrib.auth.models import Group
 from django.db.models.signals import m2m_changed
 from django.dispatch import receiver
-from .models import CustomGroup
+from .models import CustomGroup, SchoolYear
+from django.db.models import Q
 
 
 @receiver(m2m_changed, sender=Group.user_set.through)
 def check_user_group_membership(sender, instance, action, reverse, pk_set, **kwargs):
     if action == "pre_add":
-        # Ensure the user is only added to one group with "status" as parent
-        status_groups = CustomGroup.objects.filter(parents__name="Status")
-        existing_status_groups = status_groups.filter(user=instance)
-        new_status_groups = status_groups.filter(pk__in=pk_set)
+        demande = CustomGroup.objects.get(name="Demandée")
+        archive = CustomGroup.objects.get(name="Archivée")
+        new_group_year = CustomGroup.objects.get(pk__in=pk_set).year
 
-        if (
-            len(existing_status_groups) == 1
-            and len(new_status_groups) == 1
-            and existing_status_groups[0] != new_status_groups[0]
-        ):
-            # Remove the existing group if the user is being added to a new group
-            instance.groups.remove(existing_status_groups[0])
-            print(
-                f"Replacing group {existing_status_groups} with {new_status_groups}, due to sender {sender}, with pk_set {pk_set}"
-            )
+        if CustomGroup.objects.get(pk__in=pk_set) == archive:
+            instance.groups.remove(demande)
+        elif new_group_year is not None:
+            existing_group_year = instance.groups.filter(
+                customgroup__year=new_group_year
+            ).first()
+            instance.groups.remove(existing_group_year)
+            instance.groups.remove(demande)
+            if (
+                CustomGroup.objects.get(pk__in=pk_set).year.name
+                >= SchoolYear.current().name
+            ):
+                instance.groups.remove(archive)

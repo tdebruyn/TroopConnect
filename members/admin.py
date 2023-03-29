@@ -60,6 +60,12 @@ class CustomGroupAdmin(GroupAdmin):
     model = CustomGroup
     list_display = ["colored_name", "parents"]
     ordering = []
+    fieldsets = (
+        (
+            None,
+            {"fields": ("group_name", "year", "parents", "description", "permissions")},
+        ),
+    )
 
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
@@ -75,6 +81,7 @@ class CustomGroupAdmin(GroupAdmin):
             ) | CustomGroup.objects.filter(parents__parents__isnull=True)
             queryset = queryset.order_by("name")
             kwargs["queryset"] = queryset
+            print(queryset)
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     @admin.display()
@@ -82,9 +89,16 @@ class CustomGroupAdmin(GroupAdmin):
         if obj.is_base():
             return format_html(f"<span style='color:darkblue'>{obj.name}</span>")
         elif obj.parents.is_base():
-            return f"{obj.name} - {obj.year}"
+            if obj.year:
+                return f"{obj.name}"
+            else:
+                return obj.name
+
         else:
-            return format_html(f"<span style='color:lightblue'>{obj.name}</span>")
+            if obj.year:
+                return format_html(f"<span style='color:lightblue'>{obj.name}</span>")
+            else:
+                return format_html(f"<span style='color:lightblue'>{obj.name}</span>")
 
 
 admin.site.unregister(Group)

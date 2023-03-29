@@ -29,22 +29,61 @@ class CustomUserChangeForm(UserChangeForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if "groups" in self.fields.keys():
-            self.fields["groups"].queryset = CustomGroup.objects.filter(
-                parents__isnull=False
-            )
+            self.fields["groups"].queryset = CustomGroup.get_all_leaf_nodes()
         for visible in self.visible_fields():
             visible.field.widget.attrs["class"] = "form-control"
+
+
+class AdminUserUpdateForm(UserChangeForm):
+    groups = CustomGroup.get_leaf_nodes("Adulte")
+    group = forms.ModelChoiceField(queryset=CustomGroup.get_leaf_nodes("Adulte"))
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        group = self.cleaned_data["group"]
+        for g in AdultUserChangeForm.groups:
+            user.groups.remove(g)
+        user.groups.add(group)
+        if commit:
+            user.save()
+        return user
+
+    class Meta:
+        model = CustomUser
+        fields = [
+            "email",
+            "first_name",
+            "last_name",
+            "totem",
+            "sex",
+            "birthday",
+            "address",
+            "phone",
+            "group",
+            "photo_consent",
+            "note",
+        ]
+        labels = {
+            # "username": "Nom d'utilisateur",
+            "email": "E-mail",
+            "first_name": "Prénom",
+            "last_name": "Nom",
+            "address": "Adresse",
+            "phone": "Téléphone",
+            "photo_consent": "Photos autorisées",
+            "birthday": "Date de naissance",
+            "sex": "Sexe",
+            "totem": "Totem",
+            "note": "Remarques",
+        }
 
 
 class AdultUserChangeForm(UserChangeForm):
     """
     This form is used to provide details about user"""
 
-    # groups = CustomGroup.objects.filter(Q(base=False) & Q(adult=True)).all()
-    groups = CustomGroup.objects.get(name="Adulte").get_childs()
-    group = forms.ModelChoiceField(
-        queryset=CustomGroup.objects.get(name="Adulte").get_childs()
-    )
+    groups = CustomGroup.get_leaf_nodes("Adulte")
+    group = forms.ModelChoiceField(queryset=CustomGroup.get_leaf_nodes("Adulte"))
 
     def save(self, commit=True):
         user = super().save(commit=False)

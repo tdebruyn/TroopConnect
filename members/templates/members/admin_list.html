@@ -11,7 +11,7 @@
                                placeholder="{{ filter.form.first_name.label }}"
                                name="{{ filter.form.first_name.name }}"
                                id="{{ filter.form.first_name.id }}"
-                               value="{{ filter.form.first_name.value }}"/>
+                               value="{{ filter.form.first_name.value|default_if_none:'' }}"/>
                     </div>
                     <div class="col">
                         <input class="form-control"
@@ -19,37 +19,42 @@
                                placeholder="{{ filter.form.last_name.label }}"
                                name="{{ filter.form.last_name.name }}"
                                id="{{ filter.form.last_name.id }}"
-                               value="{{ filter.form.last_name.value }}"/>
+                               value="{{ filter.form.last_name.value |default_if_none:'' }}"/>
                     </div>
                     <div class="col">
-                        <input class="form-control" type="text" />
+                        <select class="form-select" name="{{ filter.form.quality.name }}">
+                            {% for item in filter.form.quality %}{{ item }}{% endfor %}
+                        </select>
+                    </div>
+                    <div class="col">
+                        <select class="form-select" name="{{ filter.form.section.name }}">
+                            {% for item in filter.form.section %}{{ item }}{% endfor %}
+                        </select>
                     </div>
                 </div>
                 <div class="row m-2">
                     <div class="col">
-                        <input class="form-control" type="date" />
+                        <select class="form-select" name="{{ filter.form.birthday_year.name }}">
+                            {% for item in filter.form.birthday_year %}{{ item }}{% endfor %}
+                        </select>
                     </div>
-                    <div class="col">
-                        <input class="form-control" type="date" />
+                    {% comment %} <div class="input-group col">
+                        <span class="input-group-text">Né après</span>
+                        <input class="form-control" type="date" name="{{ filter.form.birthday_gt.name }}" id="{{ filter.form.birthday_gt.id }}" value="{{ filter.form.birthday_gt.value }}"/>
                     </div>
+                    <div class="input-group col">
+                        <span class="input-group-text">Né avant</span>
+                        <input class="form-control" type="date" name="{{ filter.form.birthday_lt.name }}" id="{{ filter.form.birthday_lt.id }}" value="{{ filter.form.birthday_lt.value }}"/>
+                    </div> {% endcomment %}
                     <div class="col">
-                        <select class="form-select">
-                            <optgroup label="This is a group">
-                                <option value="12" selected>
-                                    This is item 1
-                                </option>
-                                <option value="13">
-                                    This is item 2
-                                </option>
-                                <option value="14">
-                                    This is item 3
-                                </option>
-                            </optgroup>
+                        <select class="form-select" name="{{ filter.form.year.name }}">
+                            {% for item in filter.form.year %}{{ item }}{% endfor %}
                         </select>
                     </div>
                 </div>
                 <div class="container">
                     <button type="submit" class="btn btn-primary">Filtrer</button>
+                    <a class="btn btn-outline-primary" href="{% url 'members:admin_list' %}">Réinitialiser</a>
                 </div>
             </div>
         </form>
@@ -58,6 +63,8 @@
                 <tr>
                     <th scope="col">Prénom</th>
                     <th scope="col">Nom</th>
+                    <th scope="col">Date de naissance</th>
+                    <th scope="col">Sexe</th>
                     <th scope="col">Section</th>
                 </tr>
             </thead>
@@ -66,8 +73,10 @@
                     <tr>
                         <th scope="row">{{ member.first_name }}</th>
                         <td>{{ member.last_name }}</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
+                        <td>{{ member.birthday | default_if_none:'' }}</td>
+                        <td>{{ member.sex | default_if_none:'' }}</td>
+                        <td>{{ member.year_section }}</td>
+                        <td>{{ member.type_adulte }}</td>
                     </tr>
                 {% empty %}
                     <li>Aucun résultat</li>

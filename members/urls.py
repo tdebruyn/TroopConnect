@@ -24,6 +24,7 @@ urlpatterns = [
     path("addchildkey", views.add_child_key_view, name="add_key_child"),
     path("children", views.child_list, name="child_list"),
     path("adminlist", views.AdminListView.as_view(), name="admin_list"),
+    path("adminupdate/<str:pk>", views.AdminUpdateView.as_view(), name="admin_update"),
     path("child/<str:pk>/edit", views.edit_child, name="edit_child"),
     # path("addchild", views.AddChildView.as_view(), name="addchild"),
     # path("profile/", views.ProfileView.as_view(), name="profile"),

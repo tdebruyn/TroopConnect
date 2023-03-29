@@ -43,7 +43,7 @@
                         <div class="alert-danger">{% render_field form.phone.errors class="form-control" placeholder="+32478132456" %}</div>
                         <div class="form-label">Rôle :</div>
                         <div class="form-text">
-                            Si êtes d'accord d'être contacté lorsque de l'aide est recherchée pour certains événements, choisissez "Parent actif"
+                            Si êtes d'accord d'être contacté lorsque de l'aide est recherchée pour certains évènements, choisissez "Parent actif"
                         </div>
                         <div class="input-group">{% render_field form.group class="form-select" id="parent-select" %}</div>
                         <div class="alert-danger">{{ form.group.errors }}</div>
@@ -98,11 +98,12 @@
                 Ajouter un existant enfant avec une clé
             </button>
         </div>
-        <script>
+    </div>
+    <script>
         function showChildAdd() {
           var selectedValue = document.getElementById('parent-select').value;
           var childadd = document.getElementById('child-add');
-          if (selectedValue === '6' || selectedValue === '7') {
+          if (selectedValue === '23' || selectedValue === '7') {
             childadd.classList.remove('d-none');
           } else {
             childadd.classList.add('d-none');
@@ -116,5 +117,5 @@
         document.getElementById('parent-select').addEventListener('change', function() {
           showChildAdd();
         });
-        </script>
-    {% endblock subcontent %}
+    </script>
+{% endblock subcontent %}

@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "members.apps.MembersConfig",
     "homepage.apps.HomepageConfig",
     "fontawesomefree",
+    "simple_history",
     "django.contrib.admin",
     "django_ses",
     "widget_tweaks",
@@ -79,6 +80,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
+    "simple_history.middleware.HistoryRequestMiddleware",
 ]
 
 ROOT_URLCONF = "siteunite.urls"

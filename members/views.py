@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, CreateView, UpdateView, ListView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from .forms import AdultUserChangeForm, ChildForm, ChildFromKey
+from .forms import AdultUserChangeForm, ChildForm, ChildFromKey, AdminUserUpdateForm
 from .models import CustomUser, CustomGroup
 from .filters import UsersFilter
 from django.http import Http404, HttpResponse, HttpResponseBadRequest
@@ -18,6 +18,11 @@ class Login(TemplateView):
 
 
 class AdminListView(UserPassesTestMixin, ListView):
+    """
+    Filter : first_name + totem, last_name, birthday (upper, lower), year selection, parents/members/all
+    List: first_name + totem, last_name, if adult => adult type, section or status
+    """
+
     model = CustomUser
     fields = "__all__"
     template_name = "members/admin_list.html"
@@ -25,8 +30,23 @@ class AdminListView(UserPassesTestMixin, ListView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
+        year = self.request.GET.get("year", None)
         context["filter"] = UsersFilter(self.request.GET, queryset=self.get_queryset())
+        print(context["filter"].qs)
+        for item in context["filter"].qs:
+            item.year_section = item.get_section_year(year)
+            item.type_adulte = item.get_adulte()
         return context
+
+    def test_func(self):
+        return self.request.user.groups.filter(name="InscriptionAdmin").exists()
+
+
+class AdminUpdateView(UserPassesTestMixin, UpdateView):
+    form_class = AdminUserUpdateForm
+    model = CustomUser
+    template_name = "members/admin_update.html"
+    success_url = reverse_lazy("members:admin_list")
 
     def test_func(self):
         return self.request.user.groups.filter(name="InscriptionAdmin").exists()
@@ -56,10 +76,9 @@ class ProfileView(LoginRequiredMixin, UpdateView):
         self.object = self.get_object()
         form_class = self.get_form_class()
         form = form_class(instance=self.object)
-        # Seuls les adultes peuvent créer un compte, pour le moment, les adultes peuvent être parents, parents actifs ou animateurs
+        # Seuls les adultes peuvent créer un compte, les adultes peuvent être parents passif, parents actifs ou animateurs
         form.fields["group"].initial = self.object.groups.filter(
-            Q(customgroup__parents__name="Adulte")
-            | Q(customgroup__parents__parents__name="Adulte")
+            customgroup__parents__parents__name="Adulte"
         ).first()
 
         return self.render_to_response(self.get_context_data(form=form))
@@ -175,7 +194,6 @@ def add_child_key_view(request):
             )
     else:
         form = ChildFromKey()
-    print(form)
     return render(request, "members/child_from_key_form.html", {"form": form})
 
 
