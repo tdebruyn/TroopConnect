@@ -14,7 +14,7 @@
             <div class="mb-3 form-group row">
                 <label for="{{ form.first_name.id_for_label }}"
                        class="col-form-label col-sm-4">{{ form.first_name.label }}</label>
-                <div class="col-sm-8">{% render_field form.first_name class="form-control" %}</div>
+                <div class="col-sm-8">{% render_field form.first_name class="form-control" placeholder="prenom" %}</div>
                 <div class="invalid-feedback {{ WIDGET_ERROR_CLASS }}">{{ form.first_name.errors|first }}</div>
             </div>
             <div class="mb-3 form-group row">
@@ -22,7 +22,7 @@
                        class="col-form-label col-sm-4">
                     {{ form.last_name.label }}
                 </label >
-                <div class="col-sm-8">{% render_field form.last_name class="form-control" %}</div>
+                <div class="col-sm-8">{% render_field form.last_name class="form-control" placeholder="nom" %}</div>
                 <div class="invalid-feedback" {{ WIDGET_ERROR_CLASS }}>{{ form.last_name.errors|first }}
                 </div>
             </div>
@@ -38,7 +38,7 @@
                                readonly="readonly">
                     </div>
                 {% else %}
-                    <div class="col-sm-8">{% render_field form.username class="form-control" %}</div>
+                    <div class="col-sm-8">{% render_field form.username class="form-control" placeholder="prenomnom" %}</div>
                     <div class="invalid-feedback {{ WIDGET_ERROR_CLASS }}">{{ form.username.errors|first }}</div>
                 {% endif %}
             </div>
@@ -118,18 +118,3 @@
         </div>
     </form>
 {% endwith %}
-<script>
-    var firstName = document.getElementById('id_first_name');
-    var lastName = document.getElementById('id_last_name');
-    var userName = document.getElementById('id_user_name');
-
-    function updateUserName() {
-        var firstNameValue = firstName.value;
-        var lastNameValue = lastName.value;
-        var userNameValue = firstNameValue + lastNameValue;
-        userName.value = userNameValue;
-    }
-
-    firstName.addEventListener('input', updateUserName);
-    lastName.addEventListener('input', updateUserName);
-</script>

@@ -19,7 +19,7 @@ class UsersFilter(django_filters.FilterSet):
     )
     QUALITY = (
         (0, "Animé"),
-        (1, "Staff"),
+        (1, "Membre adulte"),
         (2, "Parent"),
         (3, "Demandée"),
         (4, "Archivée"),

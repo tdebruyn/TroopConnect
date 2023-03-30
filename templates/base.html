@@ -71,7 +71,7 @@
                             </li>
                             {% if request.user|has_group:"InscriptionAdmin" %}
                                 <li class="nav-item">
-                                    <a class="nav-link active" href="#">Inscriptions</a>
+                                    <a class="nav-link active" href="{% url 'members:admin_list' %}">Inscriptions</a>
                                 </li>
                             {% endif %}
                             <li class="nav-item">

@@ -1,9 +1,16 @@
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from allauth.account.forms import SignupForm
 from django import forms
-from .models import CustomUser, CustomGroup
+from .models import CustomUser, CustomGroup, SchoolYear
 from django.db.models import Q
 from django.utils.translation import gettext as _
+from django.core.exceptions import ValidationError
+from datetime import datetime
+
+
+class SectionModelChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
+        return obj.group_name
 
 
 class CustomSignupForm(SignupForm):
@@ -35,15 +42,70 @@ class CustomUserChangeForm(UserChangeForm):
 
 
 class AdminUserUpdateForm(UserChangeForm):
-    groups = CustomGroup.get_leaf_nodes("Adulte")
-    group = forms.ModelChoiceField(queryset=CustomGroup.get_leaf_nodes("Adulte"))
+    adult = forms.ModelChoiceField(
+        queryset=CustomGroup.get_leaf_nodes("Adulte"),
+        required=False,
+        label=_("Type d'adulte"),
+    )
+    current_section = SectionModelChoiceField(
+        queryset=CustomGroup.get_leaf_nodes("Section").filter(
+            year=SchoolYear.current()
+        ),
+        required=False,
+        label=_(f"Section {SchoolYear.current().range}"),
+    )
+    next_section = SectionModelChoiceField(
+        queryset=CustomGroup.get_leaf_nodes("Section").filter(
+            year__name=SchoolYear.current().name + 1
+        ),
+        required=False,
+        label=_(
+            f"Section {SchoolYear.objects.get(name=SchoolYear.current().name +1).range}"
+        ),
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["birthday"].widget.format = "%Y-%m-%d"
+
+    def clean(self):
+        cleaned_data = super().clean()
+        adult = cleaned_data["adult"]
+        current_section = cleaned_data["current_section"]
+        next_section = cleaned_data["next_section"]
+        birthday_int = None
+        if cleaned_data["birthday"]:
+            birthday_int = int(cleaned_data["birthday"].strftime("%Y%m%d"))
+        if adult and adult.pk != 8 and (current_section or next_section):
+            raise ValidationError(
+                _(
+                    "Pour assigner une section, laisser le champ Adulte vide (pour un enfant) ou choisir Animateur"
+                )
+            )
+        if (
+            adult
+            and birthday_int
+            and int(datetime.now().date().strftime("%Y%m%d")) - 180000 < birthday_int
+        ):
+            raise ValidationError(
+                _(
+                    'Pour être adulte, il faut avoir plus de 18 ans, retirer la valeur pour "Type d\'adulte"'
+                )
+            )
 
     def save(self, commit=True):
         user = super().save(commit=False)
-        group = self.cleaned_data["group"]
-        for g in AdultUserChangeForm.groups:
+        adult = self.cleaned_data["adult"]
+        for g in CustomGroup.get_leaf_nodes("Adulte"):
             user.groups.remove(g)
-        user.groups.add(group)
+        if adult:
+            user.groups.add(adult)
+        current_section = self.cleaned_data["current_section"]
+        next_section = self.cleaned_data["next_section"]
+        if current_section:
+            user.groups.add(current_section)
+        if next_section:
+            user.groups.add(next_section)
         if commit:
             user.save()
         return user
@@ -52,6 +114,7 @@ class AdminUserUpdateForm(UserChangeForm):
         model = CustomUser
         fields = [
             "email",
+            "username",
             "first_name",
             "last_name",
             "totem",
@@ -59,7 +122,6 @@ class AdminUserUpdateForm(UserChangeForm):
             "birthday",
             "address",
             "phone",
-            "group",
             "photo_consent",
             "note",
         ]
@@ -75,6 +137,8 @@ class AdminUserUpdateForm(UserChangeForm):
             "sex": "Sexe",
             "totem": "Totem",
             "note": "Remarques",
+            "adult": "Type d'adulte",
+            "year": "Année",
         }
 
 
@@ -88,7 +152,7 @@ class AdultUserChangeForm(UserChangeForm):
     def save(self, commit=True):
         user = super().save(commit=False)
         group = self.cleaned_data["group"]
-        for g in AdultUserChangeForm.groups:
+        for g in self.groups:
             user.groups.remove(g)
         user.groups.add(group)
         if commit:

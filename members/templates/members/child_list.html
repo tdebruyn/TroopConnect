@@ -3,7 +3,7 @@
         <td>{{ child.first_name }}</td>
         <td>{{ child.last_name }}</td>
         <td>{{ child.secret_key }}</td>
-        <td>{{ child.get_section.name }} {{ child.get_section.year.name |default_if_none:"" }}</td>
+        <td>{{ child.get_section.name }}</td>
         <td>
             <button class="btn btn-primary btn-sm"
                     hx-get="{% url 'members:edit_child' pk=child.pk %}"

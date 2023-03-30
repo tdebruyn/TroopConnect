@@ -8,6 +8,8 @@ from django.db.models import Q
 @receiver(m2m_changed, sender=Group.user_set.through)
 def check_user_group_membership(sender, instance, action, reverse, pk_set, **kwargs):
     if action == "pre_add":
+        if not pk_set:
+            return
         demande = CustomGroup.objects.get(name="Demandée")
         archive = CustomGroup.objects.get(name="Archivée")
         new_group_year = CustomGroup.objects.get(pk__in=pk_set).year

@@ -14,12 +14,6 @@ from datetime import datetime
 from django.core.exceptions import ValidationError
 from simple_history.models import HistoricalRecords
 
-YEAR_BALADIN = 6
-YEAR_LOUP = 8
-YEAR_SCOUT = 12
-YEAR_PI = 16
-YEAR_STAFF = 18
-
 
 class CustomUserManager(BaseUserManager):
     def create_user(
@@ -87,7 +81,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=timezone.now)
-    parents = models.ManyToManyField("CustomUser", blank=True)
+    parents = models.ManyToManyField("CustomUser", blank=True, related_name="children")
     photo_consent = models.BooleanField(
         default=False, help_text="I give my consent to use my photo"
     )
@@ -114,7 +108,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         The purpose of the groups is defined by the group's parent.  Like, "baladin"'s parent is "section"
 
         This method returns, for this user instance, the group it belongs to, based on the parent group.
-        For example, get_group_from_parent("Status") will return "active" or "inactive"
+        For example, get_group_from_parent("Parents") will return "Parent Actif" or "Parent Passif"
         """
         groups_from_type = CustomGroup.objects.filter(
             Q(parents__name=type) | Q(parents__parents__name=type)
@@ -123,12 +117,12 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
             return groups_from_type
         return None
 
-    def get_adulte(self):
-        adulte = self.get_group_from_type("Adulte")
-        if adulte is None:
+    def get_adult(self):
+        adult = self.get_group_from_type("Adulte")
+        if adult is None:
             return _("Enfant")
         else:
-            return adulte.first()
+            return adult.first()
 
     def get_section(self):
         sections = self.get_group_from_type("Section")
@@ -154,6 +148,22 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
             if section.year and section.year.pk == int(year):
                 return section
         return self.get_section()
+
+    def birthday_to_int(self):
+        if self.birthday:
+            return int(self.birthday.strftime("%Y%m%d"))
+        return None
+
+    def current_date_to_int():
+        today = datetime.now().date()
+        return int(today.strftime("%Y%m%d"))
+
+    def is_adult(self):
+        if self.birthday:
+            birthday_int = self.birthday_to_int()
+            current_date_int = self.current_date_to_int()
+            return (current_date_int - birthday_int) > 180000
+        return True
 
 
 class CustomGroup(Group):
@@ -226,6 +236,7 @@ class SchoolYear(models.Model):
     )
     start_date = models.DateField()
     end_date = models.DateField()
+    range = models.CharField(max_length=12, null=True)
 
     def __str__(self):
         return _(f"{self.name} --> du {self.start_date}, au {self.end_date}")
@@ -237,21 +248,29 @@ class SchoolYear(models.Model):
         ).first()
 
     def birth_year_range():
+        """
+        Generates a dict like this: {2016: {"name": "baladin}, {"color": "ls-baladin"}, 2017...}
+        """
+        ages = Age.objects.all().order_by("start_age")
         current_year = int(SchoolYear.current().name)
         year_range = {}
         year_choice = []
-        for year in range(current_year, current_year - YEAR_BALADIN, -1):
-            year_range[year] = {"name": "pre-bala", "color": "ls-rose"}
-        for year in range(current_year - YEAR_BALADIN, current_year - YEAR_LOUP, -1):
-            year_range[year] = {"name": "baladins", "color": "ls-baladins"}
-        for year in range(current_year - YEAR_LOUP, current_year - YEAR_SCOUT, -1):
-            year_range[year] = {"name": "louveteaux", "color": "ls-louveteaux"}
-        for year in range(current_year - YEAR_SCOUT, current_year - YEAR_PI, -1):
-            year_range[year] = {"name": "eclaireurs", "color": "ls-eclaireurs"}
-        for year in range(current_year - YEAR_PI, current_year - YEAR_STAFF, -1):
-            year_range[year] = {"name": "pionniers", "color": "ls-pionniers"}
-        for year in range(current_year - YEAR_STAFF, current_year - YEAR_STAFF - 6, -1):
-            year_range[year] = {"name": "post-pi", "color": "ls-mondial"}
+        for current_age, next_age in zip(ages, ages[1:]):
+            for year in range(
+                current_year - current_age.start_age,
+                current_year - next_age.start_age,
+                -1,
+            ):
+                year_range[year] = {
+                    "name": current_age.name,
+                    "color": current_age.color,
+                }
         for year in year_range.keys():
             year_choice.append((year, f'{year} - {year_range[year]["name"]}'))
         return year_range, tuple(year_choice)
+
+
+class Age(models.Model):
+    name = models.CharField(max_length=30, null=True, blank=True)
+    start_age = models.PositiveSmallIntegerField()
+    color = models.CharField(max_length=60, null=True, blank=True)

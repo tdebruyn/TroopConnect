@@ -3,7 +3,7 @@ from django.urls import reverse_lazy
 from django.views.generic import TemplateView, CreateView, UpdateView, ListView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .forms import AdultUserChangeForm, ChildForm, ChildFromKey, AdminUserUpdateForm
-from .models import CustomUser, CustomGroup
+from .models import CustomUser, CustomGroup, SchoolYear
 from .filters import UsersFilter
 from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
@@ -32,10 +32,9 @@ class AdminListView(UserPassesTestMixin, ListView):
         context = super().get_context_data(**kwargs)
         year = self.request.GET.get("year", None)
         context["filter"] = UsersFilter(self.request.GET, queryset=self.get_queryset())
-        print(context["filter"].qs)
         for item in context["filter"].qs:
             item.year_section = item.get_section_year(year)
-            item.type_adulte = item.get_adulte()
+            item.adult_type = item.get_adult()
         return context
 
     def test_func(self):
@@ -47,6 +46,31 @@ class AdminUpdateView(UserPassesTestMixin, UpdateView):
     model = CustomUser
     template_name = "members/admin_update.html"
     success_url = reverse_lazy("members:admin_list")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["children"] = self.object.children.all()
+        context["parents"] = self.object.parents.all()
+        return context
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form_class = self.get_form_class()
+        form = form_class(instance=self.object)
+        form.fields["adult"].initial = self.object.groups.filter(
+            customgroup__parents__parents__name="Adulte"
+        ).first()
+        form.fields["current_section"].initial = (
+            self.object.groups.filter(customgroup__parents__parents__name="Section")
+            .filter(customgroup__year=SchoolYear.current())
+            .first()
+        )
+        form.fields["next_section"].initial = (
+            self.object.groups.filter(customgroup__parents__parents__name="Section")
+            .filter(customgroup__year__name=SchoolYear.current().name + 1)
+            .first()
+        )
+        return self.render_to_response(self.get_context_data(form=form))
 
     def test_func(self):
         return self.request.user.groups.filter(name="InscriptionAdmin").exists()
@@ -100,9 +124,13 @@ def add_new_child_view(request):
             ):
                 pass
             child.secret_key = uuid4
+            child.address = request.user.address
+            child.phone = request.user.phone
+            child.photo_consent = request.user.photo_consent
             child.save()
             child.parents.add(request.user)
             child.groups.add(CustomGroup.objects.get(name="Demandée"))
+            child.groups.add(CustomGroup.objects.get(name="Animé"))
 
             # mail.send(
             #     "tomdebruyne@gmail.com",

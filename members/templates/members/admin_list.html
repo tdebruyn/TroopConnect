@@ -38,14 +38,6 @@
                             {% for item in filter.form.birthday_year %}{{ item }}{% endfor %}
                         </select>
                     </div>
-                    {% comment %} <div class="input-group col">
-                        <span class="input-group-text">Né après</span>
-                        <input class="form-control" type="date" name="{{ filter.form.birthday_gt.name }}" id="{{ filter.form.birthday_gt.id }}" value="{{ filter.form.birthday_gt.value }}"/>
-                    </div>
-                    <div class="input-group col">
-                        <span class="input-group-text">Né avant</span>
-                        <input class="form-control" type="date" name="{{ filter.form.birthday_lt.name }}" id="{{ filter.form.birthday_lt.id }}" value="{{ filter.form.birthday_lt.value }}"/>
-                    </div> {% endcomment %}
                     <div class="col">
                         <select class="form-select" name="{{ filter.form.year.name }}">
                             {% for item in filter.form.year %}{{ item }}{% endfor %}
@@ -77,6 +69,10 @@
                         <td>{{ member.sex | default_if_none:'' }}</td>
                         <td>{{ member.year_section }}</td>
                         <td>{{ member.type_adulte }}</td>
+                        <td>
+                            <a class="btn btn-primary btn-sm"
+                               href="{% url 'members:admin_update' pk=member.pk %}">Modifier</a>
+                        </td>
                     </tr>
                 {% empty %}
                     <li>Aucun résultat</li>

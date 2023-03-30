@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin, GroupAdmin
 from django.contrib.auth.models import Group
-from .models import CustomUser, CustomGroup, SchoolYear
+from .models import CustomUser, CustomGroup, SchoolYear, Age
 from .forms import CustomUserChangeForm, AccountCreationForm
 from django.utils.html import format_html
 from django.db.models import F
@@ -81,7 +81,6 @@ class CustomGroupAdmin(GroupAdmin):
             ) | CustomGroup.objects.filter(parents__parents__isnull=True)
             queryset = queryset.order_by("name")
             kwargs["queryset"] = queryset
-            print(queryset)
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     @admin.display()
@@ -105,3 +104,4 @@ admin.site.unregister(Group)
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(CustomGroup, CustomGroupAdmin)
 admin.site.register(SchoolYear)
+admin.site.register(Age)
