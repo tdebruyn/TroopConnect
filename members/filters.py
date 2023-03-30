@@ -40,6 +40,8 @@ class UsersFilter(django_filters.FilterSet):
     birthday_year = django_filters.ChoiceFilter(
         choices=SchoolYear.birth_year_range()[1],
         field_name="birthday",
+        label=_("Année de naissance"),
+        empty_label=_("Année de naissance"),
         lookup_expr="year",
     )
 

@@ -5,7 +5,11 @@
         <td>{{ child.secret_key }}</td>
         <td>{{ child.get_section.name }}</td>
         <td>
-            <button class="btn btn-primary btn-sm"
+            <a class="btn btn-outline-danger btn-sm"
+               href="{% url 'members:edit_child' pk=child.pk %}">Désinscrire</a>
+            <a class="btn btn-outline-warning btn-sm me-1"
+               href="{% url 'members:edit_child' pk=child.pk %}">Détacher</a>
+            <button class="btn btn-primary btn-sm me-1"
                     hx-get="{% url 'members:edit_child' pk=child.pk %}"
                     hx-target="#dialog">
                 Modifier

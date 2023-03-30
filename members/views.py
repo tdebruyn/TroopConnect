@@ -27,6 +27,7 @@ class AdminListView(UserPassesTestMixin, ListView):
     fields = "__all__"
     template_name = "members/admin_list.html"
     context_object_name = "members"
+    paginate_by = 15
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -36,6 +37,10 @@ class AdminListView(UserPassesTestMixin, ListView):
             item.year_section = item.get_section_year(year)
             item.adult_type = item.get_adult()
         return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return UsersFilter(self.request.GET, queryset=queryset).qs
 
     def test_func(self):
         return self.request.user.groups.filter(name="InscriptionAdmin").exists()

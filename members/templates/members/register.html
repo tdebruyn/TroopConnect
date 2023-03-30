@@ -2,7 +2,7 @@
 {% load socialaccount %}
 {% load widget_tweaks %}
 {% block hat_title %}
-    Entrer vos données
+    Votre profil
 {% endblock hat_title %}
 {% block hat_text %}
 {% endblock hat_text %}
@@ -61,9 +61,10 @@
         </div>
     </form>
     <div class="alert-danger">{{ form.errors }}</div>
+    <hr class="hr" \>
     <div id="child-add" class="container d-none">
         <p>
-            Pour associer un enfant <span class="text-ls-bleu-clair">déjà inscrit</span>, demander la "Clé secrète" au parent ayant inscrit l'enfant et cliquer sur <span class="text-ls-vert-base">Ajouter un enfant existant avec une clé</span> pour utiliser cette clé.
+            Pour associer un enfant <span class="text-ls-bleu-clair">déjà inscrit</span>, demander la "Clé secrète" au parent ayant inscrit l'enfant et cliquer sur <span class="text-ls-vert-base">Ajouter un enfant existant avec une clé</span>.
         </p>
         <table class="table">
             <thead>

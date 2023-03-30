@@ -26,13 +26,13 @@
                             {% for item in filter.form.quality %}{{ item }}{% endfor %}
                         </select>
                     </div>
+                </div>
+                <div class="row m-2">
                     <div class="col">
                         <select class="form-select" name="{{ filter.form.section.name }}">
                             {% for item in filter.form.section %}{{ item }}{% endfor %}
                         </select>
                     </div>
-                </div>
-                <div class="row m-2">
                     <div class="col">
                         <select class="form-select" name="{{ filter.form.birthday_year.name }}">
                             {% for item in filter.form.birthday_year %}{{ item }}{% endfor %}
@@ -50,6 +50,7 @@
                 </div>
             </div>
         </form>
+        <hr class="hr" />
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -61,7 +62,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for member in filter.qs %}
+                {% for member in object_list %}
                     <tr>
                         <th scope="row">{{ member.first_name }}</th>
                         <td>{{ member.last_name }}</td>
@@ -79,5 +80,28 @@
                 {% endfor %}
             </tbody>
         </table>
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">précédente</a>
+                </li>
+            {% endif %}
+            <li class="page-item">
+                <span class="page-link current">Page {{ page_obj.number }} sur {{ page_obj.paginator.num_pages }}</span>
+            </li>
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">suivante</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link"
+                       aria-label="Next"
+                       href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                </li>
+            {% endif %}
+        </ul>
     </div>
 {% endblock subcontent %}
