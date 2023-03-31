@@ -1,16 +1,16 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from django.views.generic import TemplateView, CreateView, UpdateView, ListView
+from django.views.generic import TemplateView, UpdateView, ListView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .forms import AdultUserChangeForm, ChildForm, ChildFromKey, AdminUserUpdateForm
-from .models import CustomUser, CustomGroup, SchoolYear
+from .models import CustomUser, CustomGroup, SchoolYear, get_registration_admins
 from .filters import UsersFilter
 from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 import json
 from post_office import mail
-from django.db.models import Q
 from shortuuid import uuid
+from django.utils.translation import gettext as _
 
 
 class Login(TemplateView):
@@ -137,13 +137,16 @@ def add_new_child_view(request):
             child.groups.add(CustomGroup.objects.get(name="Demandée"))
             child.groups.add(CustomGroup.objects.get(name="Animé"))
 
-            # mail.send(
-            #     "tomdebruyne@gmail.com",
-            #     "staffunite@scouts-limal.be",
-            #     subject=f"La demande d'inscription de {child.first_name} est bien arrivée",
-            #     message="Hi there",
-            #     html_message="Hi <strong>there</strong>!",
-            # )
+            mail.send(
+                recipients=get_registration_admins() + [request.user.email],
+                sender="staffunite@scouts-limal.be",
+                template="new_child_registration",
+                context={
+                    "first_name": child.first_name,
+                    "last_name": child.last_name,
+                    "parent": f"{request.user.first_name} {request.user.last_name}",
+                },
+            )
             return HttpResponse(
                 status=204,
                 headers={
@@ -228,6 +231,71 @@ def add_child_key_view(request):
     else:
         form = ChildFromKey()
     return render(request, "members/child_from_key_form.html", {"form": form})
+
+
+def dettach_child(request, pk):
+    """
+    TODO, déplacer le texte vers le template
+    """
+    context = {"allow_dettach": False}
+    child = CustomUser.objects.get(username=pk)
+    context["child"] = child
+    if not child.parents.filter(username=request.user).exists():
+        context["message"] = _(
+            f"{child.first_name} n'est pas attaché à votre utilisateur"
+        )
+    elif child.parents.count() < 2 and not child.is_adult() and not child.email:
+        context["message"] = _(
+            f"""Vous ne pouvez pas détacher {child.first_name}.\n
+            Pour détacher un enfant, celui-ci doit soit être attaché à d'autres parents, soit avoir plus de 18 ans et avoir un email associé à son utilisateur.\n
+                               {child.first_name} a {child.parents.count()} parent(s)\n
+                               {child.first_name} est né le {child.birthday} et son adresse mail est {child.email}"""
+        )
+    else:
+        context["message"] = _(
+            f'Pour confirmer que vous souhaitez détacher {child.first_name} de votre utilisateur, cliquer sur "Détacher".'
+        )
+        context["allow_dettach"] = True
+    return render(
+        request=request, template_name="members/dettach_child.html", context=context
+    )
+
+
+def dettach_confirm(request, pk):
+    child = CustomUser.objects.get(username=pk)
+    if not child.parents.filter(username=request.user).exists():
+        return redirect(reverse_lazy("members:profile", kwargs={"pk": request.user}))
+    else:
+        parent = CustomUser.objects.get(username=request.user)
+        child.parents.remove(parent)
+        return redirect(reverse_lazy("members:profile", kwargs={"pk": request.user}))
+
+
+def deregister_child(request, pk):
+    child = CustomUser.objects.get(username=pk)
+
+    if not child.parents.filter(username=request.user).exists():
+        return redirect(reverse_lazy("members:profile", kwargs={"pk": request.user}))
+
+    context = {"allow_deregister": False}
+    child = CustomUser.objects.get(username=pk)
+    context["child"] = child
+    if child.parents.filter(username=request.user).exists():
+        context["allow_deregister"] = True
+    return render(
+        request=request, template_name="members/deregister_child.html", context=context
+    )
+
+
+def deregister_confirm(request, pk, action):
+    child = CustomUser.objects.get(username=pk)
+    if not child.parents.filter(username=request.user).exists():
+        return redirect(reverse_lazy("members:profile", kwargs={"pk": request.user}))
+    else:
+        deregister = CustomGroup.objects.get(name="Désinscrire")
+        print(action)
+        child.groups.add(deregister)
+        return redirect(reverse_lazy("members:profile", kwargs={"pk": request.user}))
 
 
 # class ProfileView(LoginRequiredMixin, ListView):

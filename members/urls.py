@@ -26,6 +26,16 @@ urlpatterns = [
     path("adminlist", views.AdminListView.as_view(), name="admin_list"),
     path("adminupdate/<str:pk>", views.AdminUpdateView.as_view(), name="admin_update"),
     path("child/<str:pk>/edit", views.edit_child, name="edit_child"),
-    # path("addchild", views.AddChildView.as_view(), name="addchild"),
-    # path("profile/", views.ProfileView.as_view(), name="profile"),
+    path("dettach/<str:pk>", views.dettach_child, name="dettach_child"),
+    path("deregister/<str:pk>", views.deregister_child, name="deregister_child"),
+    path(
+        "deregister_confirm/<str:pk>/<str:action>",
+        views.deregister_confirm,
+        name="deregister_confirm",
+    ),
+    path(
+        "dettach_confirm/<str:pk>",
+        views.dettach_confirm,
+        name="dettach_confirm",
+    ),
 ]

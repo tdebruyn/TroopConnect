@@ -29,7 +29,7 @@
             <div class="mb-3 form-group row">
                 <label for="{{ form.username.id_for_label }}"
                        class="col-form-label col-sm-4">Nom d'utilisateur</label>
-                {% if form.username.value %}
+                {% if form.username.value and not form.username.errors %}
                     <div class="col-sm-8">
                         <input type="text"
                                class="form-control"
@@ -39,8 +39,8 @@
                     </div>
                 {% else %}
                     <div class="col-sm-8">{% render_field form.username class="form-control" placeholder="prenomnom" %}</div>
-                    <div class="invalid-feedback {{ WIDGET_ERROR_CLASS }}">{{ form.username.errors|first }}</div>
                 {% endif %}
+                <div class="invalid-feedback {{ WIDGET_ERROR_CLASS }}">{{ form.username.errors|first }}</div>
             </div>
             <div class="mb-3 form-group row">
                 <label for="{{ form.birthday.id_for_label }}"

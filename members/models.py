@@ -154,7 +154,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
             return int(self.birthday.strftime("%Y%m%d"))
         return None
 
-    def current_date_to_int():
+    def current_date_to_int(self):
         today = datetime.now().date()
         return int(today.strftime("%Y%m%d"))
 
@@ -274,3 +274,9 @@ class Age(models.Model):
     name = models.CharField(max_length=30, null=True, blank=True)
     start_age = models.PositiveSmallIntegerField()
     color = models.CharField(max_length=60, null=True, blank=True)
+
+
+def get_registration_admins():
+    admin_group = CustomGroup.objects.get(name="InscriptionAdmin")
+    admins = CustomUser.objects.filter(groups=admin_group)
+    return [admin.email for admin in admins]
