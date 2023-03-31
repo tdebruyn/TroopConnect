@@ -1,0 +1,19 @@
+{% extends "members/base.html" %}
+{% load account %}
+{% block hat_title %}
+    Confirmer que vous souhaitez détacher {{ child.first_name }}
+{% endblock hat_title %}
+{% block subcontent %}
+    {% if not allow_dettach %}
+        {{ message | linebreaks }}
+        <a class="btn btn-primary" href="{% url 'members:profile' user %}">Retour</a>
+    {% else %}
+        {{ message | linebreaks }}
+        <div class="container">
+            <a class="btn btn-primary me-1"
+               href="{% url 'members:dettach_confirm' child.username %}">Détacher</a>
+            <a class="btn btn-outline-primary"
+               href="{% url 'members:profile' user %}">Annuler</a>
+        </div>
+    {% endif %}
+{% endblock subcontent %}
