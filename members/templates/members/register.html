@@ -41,20 +41,26 @@
                             <span class="input-group-text" id="phone-prefix"><i class="bi-telephone"></i></span>{% render_field form.phone class="form-control" %}
                         </div>
                         <div class="alert-danger">{% render_field form.phone.errors class="form-control" placeholder="+32478132456" %}</div>
-                        <div class="form-label">Rôle :</div>
-                        <div class="form-text">
-                            Si êtes d'accord d'être contacté lorsque de l'aide est recherchée pour certains évènements, choisissez "Parent actif"
+                        {% if form.group %}
+                            <div class="form-label">Rôle :</div>
+                            <div class="form-text">
+                                Si êtes d'accord d'être contacté lorsque de l'aide est recherchée pour certains évènements, choisissez "Parent actif"
+                            </div>
+                            <div class="input-group">{% render_field form.group class="form-select" id="parent-select" %}</div>
+                            <div class="alert-danger">{{ form.group.errors }}</div>
+                            <div class="mb-3 mt-3 form-check form-switch">
+                                {{ form.photo_consent | add_class:"form-check-input" }}
+                                <label for="id_photo_consent">
+                                    (Optionnel) J'accepte que les photos ou vidéos sur lesquelles mon (mes) enfant(s) figure(nt) soient utilisées par Les Scouts ASBL, dont l'unité de Limal fait partie.
+                                </label>
+                            </div>
+                            <div class="alert-danger">{{ form.photo_consent.errors }}</div>
+                        {% endif %}
+                        <div class="mt-3">
+                            <button type="submit" class="btn btn-primary btn-block">Envoyer</button>
+                            <a href="{% url 'account_change_password' %}"
+                               class="btn btn-outline-primary">Changer de mot de passe</a>
                         </div>
-                        <div class="input-group">{% render_field form.group class="form-select" id="parent-select" %}</div>
-                        <div class="alert-danger">{{ form.group.errors }}</div>
-                        <div class="mb-3 mt-3 form-check form-switch">
-                            {{ form.photo_consent | add_class:"form-check-input" }}
-                            <label for="id_photo_consent">
-                                (Optionnel) J'accepte que les photos ou vidéos sur lesquelles mon (mes) enfant(s) figure(nt) soient utilisées par Les Scouts ASBL, dont l'unité de Limal fait partie.
-                            </label>
-                        </div>
-                        <div class="alert-danger">{{ form.photo_consent.errors }}</div>
-                        <button type="submit" class="btn btn-primary btn-block mt-3">Envoyer</button>
                     </div>
                 </fieldset>
             </div>
@@ -65,13 +71,19 @@
     <div id="child-add" class="container d-none">
         <p>
             Pour associer un enfant <span class="text-ls-bleu-clair">déjà inscrit</span>, demander la "Clé secrète" au parent ayant inscrit l'enfant et cliquer sur <span class="text-ls-vert-base">Ajouter un enfant existant avec une clé</span>.
+            <br />
+            Si un des parents ne souhaite plus recevoir les mails concernant un enfant inscrit, il peut le <span class="text-ls-orange">détacher</span> à condition qu'il reste au moins un autre parent.
         </p>
         <table class="table">
             <thead>
                 <tr>
                     <th>Prénom</th>
-                    <th>Nom</th>
-                    <th>Clé secrète</th>
+                    <th>
+                        Nom
+                    </th>
+                    <th>
+                        Clé secrète
+                    </th>
                     <th>
                         État de l'inscription
                     </th>

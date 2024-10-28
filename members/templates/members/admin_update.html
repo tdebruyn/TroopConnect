@@ -73,137 +73,73 @@
                         <div class="alert-danger">{{ form.adult.errors }}</div>
                         <div class="form-label">{{ form.year.label_tag }}</div>
                         <div class="input-group">{% render_field form.year class="form-select" id=form.year.id %}</div>
-                        <div class="alert-danger">
-                            {{ form.year.errors }}
-                        </div>
+                        <div class="alert-danger">{{ form.year.errors }}</div>
                         <div class="mb-3 mt-3 form-check form-switch">
                             {{ form.photo_consent | add_class:"form-check-input" }}
-                            <label for="id_photo_consent">
-                                {{ form.photo_consent.label }}
-                            </label>
+                            <label for="id_photo_consent">{{ form.photo_consent.label }}</label>
                         </div>
-                        <div class="alert-danger">
-                            {{ form.photo_consent.errors }}
-                        </div>
-                        <div class="form-label">
-                            {{ form.totem.label_tag }}
-                        </div>
-                        <div class="input-group">
-                            {{ form.totem| add_class:"form-control" }}
-                        </div>
-                        <div class="alert-danger">
-                            {{ form.totem.errors }}
-                        </div>
-                        <div class="form-label">
-                            {{ form.birthday.label_tag }}
-                        </div>
+                        <div class="alert-danger">{{ form.photo_consent.errors }}</div>
+                        <div class="form-label">{{ form.totem.label_tag }}</div>
+                        <div class="input-group">{{ form.totem| add_class:"form-control" }}</div>
+                        <div class="alert-danger">{{ form.totem.errors }}</div>
+                        <div class="form-label">{{ form.birthday.label_tag }}</div>
                         <input class="form-control"
                                type="date"
                                name="{{ form.birthday.name }}"
                                id="{{ form.birthday.id }}"
-                               value="{{ form.birthday.value|date:'Y-m-d' }}"/>
-                        <div class="alert-danger">
-                            {{ form.birthday.errors }}
-                        </div>
-                        <div class="form-label">
-                            {{ form.secret_key.label_tag }}
-                        </div>
-                        <div class="input-group">
-                            {% render_field form.secret_key class="form-control" %}
-                        </div>
-                        <div class="alert-danger">
-                            {{ form.secret_key.errors }}
-                        </div>
-                        <div class="form-label">
-                            {{ form.sex.label_tag }}
-                        </div>
-                        <div class="select-group">
-                            {% render_field form.sex class="form-control" %}
-                        </div>
-                        <div class="alert-danger">
-                            {{ form.sex.errors }}
-                        </div>
-                        <div class="form-label">
-                            {{ form.note.label_tag }}
-                        </div>
-                        <div class="input-group">
-                            {{ form.note| add_class:"form-control" }}
-                        </div>
-                        <div class="alert-danger">
-                            {{ form.note.errors }}
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-block mt-3">
-                            Envoyer
-                        </button>
+                               value="{{ form.birthday.value|date:'Y-m-d' }}" />
+                        <div class="alert-danger">{{ form.birthday.errors }}</div>
+                        <div class="form-label">{{ form.secret_key.label_tag }}</div>
+                        <div class="input-group">{% render_field form.secret_key class="form-control" %}</div>
+                        <div class="alert-danger">{{ form.secret_key.errors }}</div>
+                        <div class="form-label">{{ form.sex.label_tag }}</div>
+                        <div class="select-group">{% render_field form.sex class="form-control" %}</div>
+                        <div class="alert-danger">{{ form.sex.errors }}</div>
+                        <div class="form-label">{{ form.note.label_tag }}</div>
+                        <div class="input-group">{{ form.note| add_class:"form-control" }}</div>
+                        <div class="alert-danger">{{ form.note.errors }}</div>
+                        <button type="submit" class="btn btn-primary btn-block mt-3">Confirmer</button>
                     </div>
                 </fieldset>
             </div>
         </div>
     </form>
-    <div class="alert-danger">
-        {{ form.errors }}
-    </div>
+    <div class="alert-danger">{{ form.errors }}</div>
     <hr class="hr" />
     <div class="container">
         {% if children %}
-            <p class="h4">
-                Enfants
-            </p>
+            <p class="h4">Enfants</p>
         {% elif parents %}
-            <p class="h4">
-                Parents
-            </p>
+            <p class="h4">Parents</p>
         {% endif %}
         {% if children or parents %}
             <table class="table">
                 <thead>
                     <tr>
-                        <th>
-                            Prénom
-                        </th>
-                        <th>
-                            Nom
-                        </th>
-                        {% if children %}
-                            <th>
-                                Section
-                            </th>
-                        {% endif %}
+                        <th>Prénom</th>
+                        <th>Nom</th>
+                        {% if children %}<th>Section</th>{% endif %}
                     </tr>
                 </thead>
                 <tbody>
                     {% for child in children %}
                         <tr id="child-{{ child.pk }}" class="child-row">
-                            <td>
-                                {{ child.first_name }}
-                            </td>
-                            <td>
-                                {{ child.last_name }}
-                            </td>
-                            <td>
-                                {{ child.get_section.name }}
-                            </td>
+                            <td>{{ child.first_name }}</td>
+                            <td>{{ child.last_name }}</td>
+                            <td>{{ child.get_section.name }}</td>
                             <td>
                                 <a class="btn btn-primary btn-sm"
-                                   href="{% url 'members:admin_update' pk=child.pk %}">
-                                    Modifier
-                                </a>
+                                   href="{% url 'members:admin_update' pk=child.pk %}">Modifier</a>
                             </td>
                         </tr>
                     {% endfor %}
                     {% for parent in parents %}
                         <tr id="parent-{{ parent.pk }}" class="parent-row">
-                            <td>
-                                {{ parent.first_name }}
-                            </td>
-                            <td>
-                                {{ parent.last_name }}
-                            </td>
+                            <td>{{ parent.first_name }}</td>
+                            <td>{{ parent.last_name }}</td>
                             <td>
                                 <a class="btn btn-primary btn-sm"
-                                   href="{% url 'members:admin_update' pk=parent.pk %}">
-                                    Modifier
-                                </a>
+                                   href="{% url 'members:admin_update' pk=parent.pk %}">Modifier</a>
                             </td>
                         </tr>
                     {% endfor %}

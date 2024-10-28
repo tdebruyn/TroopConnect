@@ -2,15 +2,32 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, UpdateView, ListView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from .forms import AdultUserChangeForm, ChildForm, ChildFromKey, AdminUserUpdateForm
-from .models import CustomUser, CustomGroup, SchoolYear, get_registration_admins
-from .filters import UsersFilter
+from django.contrib.sites.models import Site
 from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
+from django.utils.translation import gettext as _
+from django.contrib.auth import get_user_model
+from allauth.account.views import (
+    PasswordResetView,
+    PasswordResetFromKeyView,
+    PasswordResetDoneView,
+)
+
+
+from .forms import (
+    AdultUserChangeForm,
+    ChildForm,
+    ChildChangeForm,
+    ChildFromKey,
+    AdminUserUpdateForm,
+    ChildAccountCreateForm,
+    ChildAccountCreateConfirmForm,
+)
+from .models import CustomUser, CustomGroup, SchoolYear, get_registration_admins
+from .filters import UsersFilter
 import json
 from post_office import mail
 from shortuuid import uuid
-from django.utils.translation import gettext as _
 
 
 class Login(TemplateView):
@@ -105,12 +122,40 @@ class ProfileView(LoginRequiredMixin, UpdateView):
         self.object = self.get_object()
         form_class = self.get_form_class()
         form = form_class(instance=self.object)
-        # Seuls les adultes peuvent créer un compte, les adultes peuvent être parents passif, parents actifs ou animateurs
-        form.fields["group"].initial = self.object.groups.filter(
-            customgroup__parents__parents__name="Adulte"
-        ).first()
+        if not self.object.is_adult():
+            form.fields["group"] = None
+        else:
+            form.fields["group"].initial = self.object.groups.filter(
+                customgroup__parents__parents__name="Adulte"
+            ).first()
 
         return self.render_to_response(self.get_context_data(form=form))
+
+
+class ChildAccountCreate(PasswordResetView):
+    template_name = "members/child_account.html"
+    success_url = reverse_lazy("members:child_account_create_done")
+    form_class = ChildAccountCreateForm
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["child_user"] = self.kwargs.get("pk")  # Pass the "pk" value to the form
+        return kwargs
+
+    def get_email_confirmation_redirect_url(self):
+        return reverse_lazy("members:child_account_create_confirm")
+
+
+class ChildAccountCreateConfirm(PasswordResetFromKeyView):
+    form_class = ChildAccountCreateConfirmForm
+
+    def form_valid(self, form):
+        form.save(self.request)
+        return super().form_valid(form)
+
+
+class ChildAccountCreateDone(PasswordResetDoneView):
+    template_name = "members/child_account_done.html"
 
 
 def add_new_child_view(request):
@@ -138,13 +183,24 @@ def add_new_child_view(request):
             child.groups.add(CustomGroup.objects.get(name="Animé"))
 
             mail.send(
-                recipients=get_registration_admins() + [request.user.email],
+                recipients=request.user.email,
                 sender="staffunite@scouts-limal.be",
-                template="new_child_registration",
+                template="new_child_parent",
                 context={
                     "first_name": child.first_name,
                     "last_name": child.last_name,
                     "parent": f"{request.user.first_name} {request.user.last_name}",
+                },
+            )
+            mail.send(
+                recipients=get_registration_admins(),
+                sender="staffunite@scouts-limal.be",
+                template="new_child_staff",
+                context={
+                    "first_name": child.first_name,
+                    "last_name": child.last_name,
+                    "username": child.username,
+                    "url": f"{Site.objects.get_current()}/users/adminupdate/{child.username}",
                 },
             )
             return HttpResponse(
@@ -183,8 +239,9 @@ def edit_child(request, pk):
     )
 
     if request.method == "POST":
-        form = ChildForm(request.POST, instance=child)
+        form = ChildChangeForm(request.POST, instance=child)
         if form.is_valid():
+            print(form.cleaned_data.items())
             form.save()
             return HttpResponse(
                 status=204,
@@ -198,7 +255,7 @@ def edit_child(request, pk):
                 },
             )
     else:
-        form = ChildForm(instance=child)
+        form = ChildChangeForm(instance=child)
 
     return render(
         request,
@@ -293,9 +350,14 @@ def deregister_confirm(request, pk, action):
         return redirect(reverse_lazy("members:profile", kwargs={"pk": request.user}))
     else:
         deregister = CustomGroup.objects.get(name="Désinscrire")
-        print(action)
         child.groups.add(deregister)
+
         return redirect(reverse_lazy("members:profile", kwargs={"pk": request.user}))
+
+
+def create_year():
+    # SchoolYear.
+    print("I WAS HERE")
 
 
 # class ProfileView(LoginRequiredMixin, ListView):

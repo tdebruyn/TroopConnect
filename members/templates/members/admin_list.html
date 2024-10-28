@@ -69,7 +69,7 @@
                         <td>{{ member.birthday | default_if_none:'' }}</td>
                         <td>{{ member.sex | default_if_none:'' }}</td>
                         <td>{{ member.year_section }}</td>
-                        <td>{{ member.type_adulte }}</td>
+                        <td>{{ member.adult_type }}</td>
                         <td>
                             <a class="btn btn-primary btn-sm"
                                href="{% url 'members:admin_update' pk=member.pk %}">Modifier</a>

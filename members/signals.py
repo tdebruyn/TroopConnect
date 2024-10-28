@@ -20,6 +20,7 @@ def check_user_group_membership(sender, instance, action, reverse, pk_set, **kwa
             existing_group_year = instance.groups.filter(
                 customgroup__year=new_group_year
             ).first()
+            # when adding a group for a year, previous group from same year needs to be removed
             instance.groups.remove(existing_group_year)
             instance.groups.remove(demande)
             if (

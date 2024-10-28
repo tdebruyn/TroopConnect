@@ -9,7 +9,7 @@ import simple_history.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('auth', '0014_delete_historicalgroup'),
+#        ('auth', '0014_delete_historicalgroup'),
         ('members', '0003_historicalcustomuser_historicalcustomgroup'),
     ]
 

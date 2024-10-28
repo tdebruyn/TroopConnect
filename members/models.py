@@ -10,7 +10,7 @@ from django.utils import timezone
 from django.utils.translation import gettext as _
 from phonenumber_field.modelfields import PhoneNumberField
 from django.db.models import Q, Count
-from datetime import datetime
+from datetime import datetime, date
 from django.core.exceptions import ValidationError
 from simple_history.models import HistoricalRecords
 
@@ -229,6 +229,17 @@ class CustomGroup(Group):
         verbose_name_plural = _("groups")
 
 
+class SchoolYearManager(models.Manager):
+    def create_year(self, year):
+        start_date = date(year, 8, 1)
+        end_date = date(year + 1, 7, 31)
+        range_str = f"{year}-{year+1}"
+        school_year = self.create(
+            name=year, start_date=start_date, end_date=end_date, range=range_str
+        )
+        return school_year
+
+
 class SchoolYear(models.Model):
     name = models.IntegerField(
         unique=True,
@@ -237,6 +248,7 @@ class SchoolYear(models.Model):
     start_date = models.DateField()
     end_date = models.DateField()
     range = models.CharField(max_length=12, null=True)
+    objects = SchoolYearManager()
 
     def __str__(self):
         return _(f"{self.name} --> du {self.start_date}, au {self.end_date}")
@@ -268,6 +280,10 @@ class SchoolYear(models.Model):
         for year in year_range.keys():
             year_choice.append((year, f'{year} - {year_range[year]["name"]}'))
         return year_range, tuple(year_choice)
+
+    @classmethod
+    def create(cls, year):
+        year = cls()
 
 
 class Age(models.Model):

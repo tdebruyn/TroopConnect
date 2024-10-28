@@ -38,4 +38,19 @@ urlpatterns = [
         views.dettach_confirm,
         name="dettach_confirm",
     ),
+    path(
+        "childaccountcreate/<str:pk>",
+        views.ChildAccountCreate.as_view(),
+        name="child_account_create",
+    ),
+    path(
+        "childaccountcreateconfirm/<str:uidb36>/<str:key>/",
+        views.ChildAccountCreateConfirm.as_view(),
+        name="child_account_create_confirm",
+    ),
+    path(
+        "childaccountcreatedone",
+        views.ChildAccountCreateDone.as_view(),
+        name="child_account_create_done",
+    ),
 ]

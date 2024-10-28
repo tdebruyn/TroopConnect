@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 {% load static %}
 {% load account %}
 {% load user_extras %}
@@ -8,14 +8,14 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="description"
-              content="Site officiel des scouts de Limal, présentant notre unité et permettant d'inscrire les enfants."/>
+              content="Site officiel des scouts de Limal, présentant notre unité et permettant d'inscrire les enfants." />
         <meta name="keywords"
-              content="scouts limal wavre brabant-wallon wallonie belgique baden-powel"/>
+              content="scouts limal wavre brabant-wallon wallonie belgique baden-powel" />
         <title>Unité des Scouts de Limal, Fédération des Scouts Baden-Powel de Belgique</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
               rel="stylesheet"
               integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
-              crossorigin="anonymous"/>
+              crossorigin="anonymous" />
         <link rel="stylesheet"
               href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
         <link href="{% static 'fontawesomefree/css/fontawesome.css' %}"
@@ -45,7 +45,7 @@
                     <a class="navbar-brand d-flex align-items-center" target="_top"><span style="margin-right: 0px;padding-right: 15px;text-align: right;">
                         <img src="{% static '/images/logos/mini-logo-moutons.png' %}"
                              width="84"
-                             height="93"/>
+                             height="93" />
                     Les scouts de Limal</span></a>
                     <button class="navbar-toggler"
                             data-bs-toggle="collapse"
@@ -119,7 +119,7 @@
                             </div>
                         {% else %}
                             <a class="nav-link" href="{% url 'account_login' %}">Se connecter</a>
-                            <a class="btn btn-info" role="button" href="#">S&#39;inscrire</a>
+                            <a class="btn btn-info" role="button" href="{% url 'account_signup' %}">S&#39;inscrire</a>
                         {% endif %}
                     </div>
                 </div>
@@ -127,6 +127,26 @@
         </header>
         {% block content %}
         {% endblock content %}
+        <!-- Placeholder for the modal -->
+        <div id="modal" class="modal fade">
+            <div id="dialog" class="modal-dialog" hx-target="this"></div>
+        </div>
+        <!-- Empty toast to show the message -->
+        <div class="toast-container position-fixed top-0 end-0 p-3">
+            <div id="toast"
+                 class="toast align-items-center text-white bg-success border-0"
+                 role="alert"
+                 aria-live="assertive"
+                 aria-atomic="true">
+                <div class="d-flex">
+                    <div id="toast-body" class="toast-body"></div>
+                    <button type="button"
+                            class="btn-close btn-close-white me-2 m-auto"
+                            data-bs-dismiss="toast"
+                            aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
                 integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
                 crossorigin="anonymous"></script>
