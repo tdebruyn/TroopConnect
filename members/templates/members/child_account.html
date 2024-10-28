@@ -1,0 +1,23 @@
+{% extends "members/base.html" %}
+{% load account %}
+{% block hat_title %}
+    Créer un compte pour {{ child.first_name }}
+{% endblock hat_title %}
+{% block subcontent %}
+    <p>
+        Créer un compte pour que votre enfant puisse accéder aux informations de sa section et modifier lui-même les détails le concernant.
+        <br />
+        S'il a plus de 18 ans, il pourra aussi détacher son compte de celui de ses parents qui ne recevrons plus les informations le concernant, ni les rappels de cotisations.
+        <br />
+        <br />
+        Un mail sera envoyé à l'adresse de votre enfant avec un lien.  Celui-ci lui permettra de créer un mot de passe et valider son compte.
+    </p>
+    <div class="container">
+        <form action="" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Envoyer</button>
+        </form>
+        {{ form.errors }}
+    </div>
+{% endblock subcontent %}

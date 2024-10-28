@@ -1,0 +1,8 @@
+{% extends "account/email/base_message.txt" %}
+{% load i18n %}
+
+{% block content %}{% autoescape off %}{% blocktrans %}Tu a reçu ce message parce qu'un de tes parents à choisi de te créer un compte sur le site de l'unité.  Pour finaliser l'inscription et choisir un mot de passe, clique sur le lien ci-desous.{% endblocktrans %}
+
+{{ password_reset_url }}{% if username %}
+
+{% blocktrans %}Ton nom d'utilisateur est "{{ username }}".{% endblocktrans %}{% endif %}{% endautoescape %}{% endblock %}
