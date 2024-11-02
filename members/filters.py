@@ -12,6 +12,7 @@ from unidecode import unidecode
 from django.db.models import Q
 
 
+
 class UsersFilter(django_filters.FilterSet):
     CHOICES = (
         ("ascending", "Ascending"),
@@ -35,10 +36,8 @@ class UsersFilter(django_filters.FilterSet):
     last_name = django_filters.CharFilter(
         field_name="last_name", lookup_expr="icontains", label=_("Nom")
     )
-    # birthday_gt = django_filters.DateFilter(field_name="birthday", lookup_expr="gt")
-    # birthday_lt = django_filters.DateFilter(field_name="birthday", lookup_expr="lt")
     birthday_year = django_filters.ChoiceFilter(
-        choices=SchoolYear.birth_year_range()[1],
+        choices=[],  # Initialize with empty choices to avoid immediate evaluation
         field_name="birthday",
         label=_("Année de naissance"),
         empty_label=_("Année de naissance"),
@@ -67,6 +66,12 @@ class UsersFilter(django_filters.FilterSet):
     class Meta:
         model = CustomUser
         fields = ["first_name", "last_name", "groups", "birthday"]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        # Lazy load choices for birthday_year from SchoolYear's birth year range
+        self.filters['birthday_year'].extra['choices'] = SchoolYear.birth_year_range()[1]
 
     def get_quality(self, queryset, field_name, value):
         if value != "5":

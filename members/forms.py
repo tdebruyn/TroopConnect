@@ -58,71 +58,93 @@ class CustomUserChangeForm(UserChangeForm):
             visible.field.widget.attrs["class"] = "form-control"
 
 
+
+
 class AdminUserUpdateForm(UserChangeForm):
     adult = forms.ModelChoiceField(
-        queryset=CustomGroup.get_leaf_nodes("Adulte"),
+        queryset=CustomGroup.objects.none(),
         required=False,
         label=_("Type d'adulte"),
     )
     current_section = SectionModelChoiceField(
-        queryset=CustomGroup.get_leaf_nodes("Section").filter(
-            year=SchoolYear.current()
-        ),
+        queryset=CustomGroup.objects.none(),
         required=False,
-        label=_(f"Section {SchoolYear.current().range}"),
+        label=_("Section"),
     )
     next_section = SectionModelChoiceField(
-        queryset=CustomGroup.get_leaf_nodes("Section").filter(
-            year__name=SchoolYear.current().name + 1
-        ),
+        queryset=CustomGroup.objects.none(),
         required=False,
-        label=_(
-            f"Section {SchoolYear.objects.get(name=SchoolYear.current().name +1).range}"
-        ),
+        label=_("Next Section"),
     )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["birthday"].widget.format = "%Y-%m-%d"
+        
+        # Lazy load querysets to avoid migration issues
+        self.fields['adult'].queryset = CustomGroup.get_leaf_nodes("Adulte")
+        
+        # Get current school year and set current section queryset and label
+        current_year = SchoolYear.current()
+        self.fields['current_section'].queryset = CustomGroup.get_leaf_nodes("Section").filter(year=current_year)
+        self.fields['current_section'].label = _("Section %s" % current_year.range)
+
+        # Set next section queryset and label
+        next_year_name = current_year.name + 1
+        try:
+            next_year = SchoolYear.objects.get(name=next_year_name)
+            self.fields['next_section'].queryset = CustomGroup.get_leaf_nodes("Section").filter(year=next_year)
+            self.fields['next_section'].label = _("Section %s" % next_year.range)
+        except SchoolYear.DoesNotExist:
+            # Handle case where the next school year does not yet exist
+            self.fields['next_section'].queryset = CustomGroup.objects.none()
 
     def clean(self):
         cleaned_data = super().clean()
-        adult = cleaned_data["adult"]
-        current_section = cleaned_data["current_section"]
-        next_section = cleaned_data["next_section"]
-        birthday_int = None
-        if cleaned_data["birthday"]:
-            birthday_int = int(cleaned_data["birthday"].strftime("%Y%m%d"))
+        adult = cleaned_data.get("adult")
+        current_section = cleaned_data.get("current_section")
+        next_section = cleaned_data.get("next_section")
+        birthday = cleaned_data.get("birthday")
+
+        # Convert birthday to integer for age calculation
+        if birthday:
+            birthday_int = int(birthday.strftime("%Y%m%d"))
+        else:
+            birthday_int = None
+
+        # Validation for adult and section assignment
         if adult and adult.pk != 8 and (current_section or next_section):
             raise ValidationError(
-                _(
-                    "Pour assigner une section, laisser le champ Adulte vide (pour un enfant) ou choisir Animateur"
-                )
+                _("To assign a section, leave 'Adult Type' empty for a child or select 'Animateur'.")
             )
-        if (
-            adult
-            and birthday_int
-            and int(datetime.now().date().strftime("%Y%m%d")) - 180000 < birthday_int
-        ):
-            raise ValidationError(
-                _(
-                    'Pour être adulte, il faut avoir plus de 18 ans, retirer la valeur pour "Type d\'adulte"'
+
+        # Age validation for adult
+        if adult and birthday_int:
+            today_int = int(datetime.now().strftime("%Y%m%d"))
+            age = (today_int - birthday_int) // 10000
+            if age < 18:
+                raise ValidationError(
+                    _("To be marked as an adult, the user must be over 18. Remove 'Type d'adulte' if not applicable.")
                 )
-            )
 
     def save(self, commit=True):
         user = super().save(commit=False)
-        adult = self.cleaned_data["adult"]
+        adult = self.cleaned_data.get("adult")
+        
+        # Clear previous adult groups and set new adult group if selected
         for g in CustomGroup.get_leaf_nodes("Adulte"):
             user.groups.remove(g)
         if adult:
             user.groups.add(adult)
-        current_section = self.cleaned_data["current_section"]
-        next_section = self.cleaned_data["next_section"]
+        
+        # Set current and next sections
+        current_section = self.cleaned_data.get("current_section")
+        next_section = self.cleaned_data.get("next_section")
         if current_section:
             user.groups.add(current_section)
         if next_section:
             user.groups.add(next_section)
+        
         if commit:
             user.save()
         return user
@@ -143,7 +165,6 @@ class AdminUserUpdateForm(UserChangeForm):
             "note",
         ]
         labels = {
-            # "username": "Nom d'utilisateur",
             "email": "E-mail",
             "first_name": "Prénom",
             "last_name": "Nom",
@@ -155,23 +176,33 @@ class AdminUserUpdateForm(UserChangeForm):
             "totem": "Totem",
             "note": "Remarques",
             "adult": "Type d'adulte",
-            "year": "Année",
         }
+
 
 
 class AdultUserChangeForm(UserChangeForm):
     """
-    This form is used to provide details about user"""
+    This form is used to provide details about adult users.
+    """
+    
+    group = forms.ModelChoiceField(queryset=CustomGroup.objects.none(), label="Type d'adulte")  # Start with empty queryset
 
-    groups = CustomGroup.get_leaf_nodes("Adulte")
-    group = forms.ModelChoiceField(queryset=CustomGroup.get_leaf_nodes("Adulte"))
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        # Lazy load 'Adulte' groups queryset for the group field and define self.groups
+        self.groups = CustomGroup.get_leaf_nodes("Adulte")
+        self.fields['group'].queryset = self.groups
 
     def save(self, commit=True):
         user = super().save(commit=False)
         group = self.cleaned_data["group"]
+        
+        # Remove all adult groups and add the selected group
         for g in self.groups:
             user.groups.remove(g)
         user.groups.add(group)
+        
         if commit:
             user.save()
         return user
@@ -184,18 +215,20 @@ class AdultUserChangeForm(UserChangeForm):
             "last_name",
             "address",
             "phone",
-            # "group",
             "photo_consent",
         ]
         labels = {
-            # "username": "Nom d'utilisateur",
             "email": "E-mail",
             "first_name": "Prénom",
             "last_name": "Nom",
             "address": "Adresse",
             "phone": "Téléphone",
-            "photo_consent": "J'accepte que les photos ou vidéos sur lesquelles mon (mes) enfant(s) figure(nt) soient utilisées par Les Scouts ASBL, dont l'unité de Limal fait partie",
+            "photo_consent": (
+                "J'accepte que les photos ou vidéos sur lesquelles mon (mes) enfant(s) figure(nt) soient utilisées "
+                "par Les Scouts ASBL, dont l'unité de Limal fait partie"
+            ),
         }
+
 
 
 class ChildForm(UserCreationForm):

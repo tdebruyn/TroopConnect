@@ -28,12 +28,13 @@ class CustomUserManager(BaseUserManager):
         password=None,
     ):
         if not username:
-            raise ValueError("Le nom d'utilisateur est obligatoire")
+            raise ValueError(_("Username is required"))
+        normalized_email = self.normalize_email(email) if email else None
         user = self.model(
             first_name=first_name,
             last_name=last_name,
             username=username,
-            email=self.normalize_email(email),
+            email=normalized_email,
             birthday=birthday,
             is_staff=is_staff,
             is_superuser=is_superuser,
@@ -46,25 +47,25 @@ class CustomUserManager(BaseUserManager):
         return user
 
     def create_superuser(
-        self, username, first_name, last_name, email=None, password=None
+        self, username, first_name, last_name, email=None, birthday=None, password=None
     ):
-        is_staff = True
-        is_superuser = True
+
         return self.create_user(
             username,
             first_name,
             last_name,
-            is_staff,
-            is_superuser,
-            email,
-            password,
+            is_staff=True,
+            is_superuser=True,
+            email=email,
+            birthday=birthday,
+            password=password
         )
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
-    MALE = "m"
-    FEMALE = "f"
-    SEX = [(MALE, "Masculin"), (FEMALE, "Féminin")]
+    class Sex(models.TextChoices):
+        MALE = "m", _("Male")
+        FEMALE = "f", _("Female")
     email = models.EmailField(unique=True, null=True, blank=True)
     username = models.CharField(primary_key=True, max_length=30, unique=True)
     password = models.CharField(max_length=128, null=True, blank=True)
@@ -76,14 +77,14 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     phone = PhoneNumberField(region="BE", null=True, blank=True)
     first_name = models.CharField(max_length=150, null=True, blank=True)
     last_name = models.CharField(max_length=150, null=True, blank=True)
-    sex = models.CharField(max_length=1, choices=SEX, null=True, blank=True)
+    sex = models.CharField(max_length=1, choices=Sex.choices, null=True, blank=True)
     totem = models.CharField(max_length=60, null=True, blank=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=timezone.now)
     parents = models.ManyToManyField("CustomUser", blank=True, related_name="children")
     photo_consent = models.BooleanField(
-        default=False, help_text="I give my consent to use my photo"
+        default=False, help_text=_("I give my consent to use my photo")
     )
     note = models.TextField(max_length=500, null=True, blank=True)
     history = HistoricalRecords(m2m_fields=[PermissionsMixin.groups.field])
@@ -95,7 +96,11 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     class Meta:
         verbose_name = _("user")
         verbose_name_plural = _("users")
-
+    
+    def __str__(self) -> str:
+        """Return the full name of the user."""
+        return f"{self.first_name} {self.last_name}"
+    
     def save(self, *args, **kwargs):
         if not self.password:
             self.set_unusable_password()
@@ -110,12 +115,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         This method returns, for this user instance, the group it belongs to, based on the parent group.
         For example, get_group_from_parent("Parents") will return "Parent Actif" or "Parent Passif"
         """
-        groups_from_type = CustomGroup.objects.filter(
-            Q(parents__name=type) | Q(parents__parents__name=type)
+        groups = CustomGroup.objects.filter(
+            Q(parents__name=type_name) | Q(parents__parents__name=type_name)
         ).filter(id__in=self.groups.all())
-        if groups_from_type.exists():
-            return groups_from_type
-        return None
+        return groups if groups.exists() else None
 
     def get_adult(self):
         adult = self.get_group_from_type("Adulte")
@@ -173,60 +176,61 @@ class CustomGroup(Group):
     )
     description = models.CharField(max_length=200, null=True, blank=True)
     parents = models.ForeignKey(
-        "CustomGroup",
+        "self",
         null=True,
         blank=True,
         related_name="children",
         on_delete=models.CASCADE,
     )
 
-    def get_children(top_name):
-        return CustomGroup.objects.filter(parents__name=top_name)
+    @classmethod
+    def get_children(cls, top_name):
+        """Get all children of a given group."""
+        return cls.objects.filter(parents__name=top_name)
 
-    def get_leaf_nodes(top_name):
-        top = CustomGroup.objects.get(name=top_name)
-        work_qs = top.children.all()
-        result_qs = top.children.all()
-        for item in work_qs:
-            if item.children.exists():
-                result_qs = result_qs | item.children.all()
-                result_qs = result_qs.exclude(pk=item.pk)
-        return result_qs
+    @classmethod
+    def get_leaf_nodes(cls, top_name):
+        """Get all leaf nodes under a top-level group."""
+        try:
+            top = cls.objects.get(name=top_name)
+            leaf_nodes = cls.objects.filter(parents=top).exclude(children__isnull=False)
+            return leaf_nodes
+        except cls.DoesNotExist:
+            return cls.objects.none()
 
-    # def has_parents(self, parent):
-    #     return self.parents == CustomGroup.objects.get(name=parent)
-
-    def get_all_leaf_nodes():
-        return CustomGroup.objects.annotate(child_count=Count("children")).filter(
-            child_count=0
-        )
+    @classmethod
+    def get_all_leaf_nodes(cls):
+        """Get all groups with no children."""
+        return cls.objects.annotate(child_count=Count("children")).filter(child_count=0)
 
     def is_base(self):
-        return self.parents == None
+        """Check if this group has no parents (top-level group)."""
+        return self.parents is None
 
     def is_adult(self):
-        return self.has_parents("Adulte")
+        """Check if this group has 'Adulte' as a top-level parent."""
+        return self.has_top_parent("Adulte")
 
     def has_top_parent(self, top_parent):
+        """Check if this group has the specified group as any ancestor."""
         return CustomGroup.objects.filter(
             Q(parents__name=top_parent) | Q(parents__parents__name=top_parent)
         ).exists()
 
     def save(self, *args, **kwargs):
+        """Auto-set name based on group_name and year, and enforce constraints."""
         if self.group_name and self.year:
             self.name = f"{self.group_name} {self.year.name}"
         elif self.group_name:
             self.name = self.group_name
         else:
-            raise ValidationError("group_name cannot be null")
+            raise ValidationError("group_name cannot be null.")
         super().save(*args, **kwargs)
 
     class Meta:
-        # constraints = [
-        #     models.UniqueConstraint(fields=["name", "year"], name="name_year")
-        # ]
         verbose_name = _("group")
         verbose_name_plural = _("groups")
+
 
 
 class SchoolYearManager(models.Manager):
