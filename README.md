@@ -14,3 +14,16 @@ Starting REDIS
 redis-server /opt/homebrew/etc/redis.conf
 celery -A siteunite worker -l INFO
 celery -A siteunite beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
+
+mail sender:
+https://www.mailersend.com
+
+Nom de domaine:
+tomctl.be
+
+Registrar: regery.com
+Hosting: contabo.com
+
+Terraform
+
+Docker

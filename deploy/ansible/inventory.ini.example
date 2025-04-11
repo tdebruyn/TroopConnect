@@ -1,0 +1,2 @@
+[prod]
+www.yourdomain.com ansible_port=22

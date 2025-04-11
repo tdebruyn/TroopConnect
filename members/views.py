@@ -6,7 +6,7 @@ from django.contrib.sites.models import Site
 from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext as _
-from django.contrib.auth import get_user_model
+# from django.contrib.auth import get_user_model
 from allauth.account.views import (
     PasswordResetView,
     PasswordResetFromKeyView,
@@ -113,9 +113,14 @@ class ProfileView(LoginRequiredMixin, UpdateView):
         return queryset
 
     def get_object(self, queryset=None):
-        obj = super().get_object(queryset)
-        if obj.username != str(self.request.user):
-            raise Http404
+        username = self.kwargs.get("pk")
+        try:
+            obj = CustomUser.objects.get(username=username)
+        except CustomUser.DoesNotExist:
+            raise Http404(_("No user found matching the username."))
+        
+        if obj != self.request.user:
+            raise Http404(_("You do not have permission to view this profile."))
         return obj
 
     def get(self, request, *args, **kwargs):
@@ -241,7 +246,6 @@ def edit_child(request, pk):
     if request.method == "POST":
         form = ChildChangeForm(request.POST, instance=child)
         if form.is_valid():
-            print(form.cleaned_data.items())
             form.save()
             return HttpResponse(
                 status=204,
