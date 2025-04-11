@@ -188,9 +188,7 @@ class AdultUserChangeForm(UserChangeForm):
     group = forms.ModelChoiceField(queryset=CustomGroup.objects.none(), label="Type d'adulte")  # Start with empty queryset
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        
-        # Lazy load 'Adulte' groups queryset for the group field and define self.groups
+        super().__init__(*args, **kwargs)      
         self.groups = CustomGroup.get_leaf_nodes("Adulte")
         self.fields['group'].queryset = self.groups
 
@@ -215,6 +213,7 @@ class AdultUserChangeForm(UserChangeForm):
             "last_name",
             "address",
             "phone",
+            "group",
             "photo_consent",
         ]
         labels = {
