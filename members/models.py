@@ -116,7 +116,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         For example, get_group_from_parent("Parents") will return "Parent Actif" or "Parent Passif"
         """
         groups = CustomGroup.objects.filter(
-            Q(parents__name=type_name) | Q(parents__parents__name=type_name)
+            Q(parents__name=type) | Q(parents__parents__name=type)
         ).filter(id__in=self.groups.all())
         return groups if groups.exists() else None
 
@@ -188,15 +188,40 @@ class CustomGroup(Group):
         """Get all children of a given group."""
         return cls.objects.filter(parents__name=top_name)
 
+
+ 
+        
     @classmethod
     def get_leaf_nodes(cls, top_name):
-        """Get all leaf nodes under a top-level group."""
+        """Get all leaf nodes under a top-level group without a loop."""
         try:
+            # Fetch the top node by name
             top = cls.objects.get(name=top_name)
-            leaf_nodes = cls.objects.filter(parents=top).exclude(children__isnull=False)
+
+            # Find all descendants of the top node
+            descendants = cls.objects.filter(parents__in=top.get_descendants(include_self=True))
+
+            # Filter to keep only leaf nodes (nodes with no children)
+            leaf_nodes = descendants.filter(children__isnull=True)
+
             return leaf_nodes
         except cls.DoesNotExist:
             return cls.objects.none()
+    # @classmethod
+    # def get_leaf_nodes(cls, top_name):
+    #     """Get all leaf nodes under a top-level group."""
+    #     try:
+    #         top = cls.objects.get(name=top_name)
+    #         work_qs = top.children.all()
+    #         result_qs = work_qs  
+    #         for item in work_qs:
+    #             if item.children.exists():  
+    #                 result_qs = result_qs | item.children.all() 
+    #                 result_qs = result_qs.exclude(pk=item.pk)  # Exclude the non-leaf node itself
+            
+    #         return result_qs
+    #     except cls.DoesNotExist:
+    #         return cls.objects.none()
 
     @classmethod
     def get_all_leaf_nodes(cls):
