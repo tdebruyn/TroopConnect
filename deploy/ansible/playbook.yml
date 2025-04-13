@@ -1,27 +1,64 @@
 - name: Deploy app
-  hosts: target_servers
+  hosts: all
   vars_files:
-    - config.yml # non-sensitive
-    - vault.yml # sensitive (vault-encrypted)
+    - config.yml
+    - vault.yml
 
   tasks:
+    - name: Add Docker repository
+      ansible.builtin.command: >
+        dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+      args:
+        creates: /etc/yum.repos.d/docker-ce.repo
+      become: true
+
+    - name: Install git and docker
+      ansible.builtin.package:
+        name:
+          - git
+          - docker-ce
+          - docker-compose-plugin
+        state: present
+      become: true
+    - name: Git pull or clone
+      ansible.builtin.git:
+        repo: "https://github.com/tdebruyn/TroopConnect.git"
+        dest: "/opt/TroopConnect"
+        version: main
+      become: true
+
+    - name: Make sure a service unit is running
+      ansible.builtin.systemd_service:
+        state: started
+        name: docker
+      become: true
+
+    - name: Create .env content from vars
+      set_fact:
+        env_lines: |
+          {% for key, value in vars.items() if key not in ['ansible_facts', 'inventory_hostname', 'group_names', 'groups', 'hostvars', 'play_hosts', 'ansible_playbook_python', 'playbook_dir', 'role_names'] and value is string %}
+          {{ key | upper }}={{ value }}
+          {% endfor %}
+
     - name: Create env file on remote (temporary)
-      copy:
+      ansible.builtin.copy:
         dest: /tmp/myapp.env
-        content: |
-          DB_HOST=localhost
-          DB_USER={{ db_user }}
-          DB_PASSWORD={{ db_password }}
+        content: "{{ env_lines }}"
         mode: "0600"
       no_log: true
 
     - name: Start docker-compose
       community.docker.docker_compose_v2:
-        project_src: /path/to/docker-compose-directory
+        project_src: "/opt/TroopConnect"
+        files:
+          - docker-compose-prod.yml
         env_files:
           - /tmp/myapp.env
+      register: compose_result
+      become: true
 
-    # - name: Remove env file after startup
-    #   file:
-    #     path: /tmp/myapp.env
-    #     state: absent
+    - name: Remove env file after startup
+      ansible.builtin.file:
+        path: /tmp/myapp.env
+        state: absent
+      no_log: true

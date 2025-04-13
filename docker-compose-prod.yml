@@ -1,6 +1,4 @@
-version: "1.0"
-
 services:
   mail-forward:
     image: zixia/simple-mail-forwarder
-    env_file: "ansible"
+    env_file: "/tmp/myapp.env"
