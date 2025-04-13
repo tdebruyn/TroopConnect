@@ -1,0 +1,12 @@
+.venv/
+.vscode/
+.ansible/
+__pycache__/
+*.sqlite3*
+*.lock
+*.pyc
+inventory.ini
+vault.yml
+dump.rdb
+config.yml
+.settings.json
