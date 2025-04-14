@@ -1,7 +1,7 @@
 #SPDX-License-Identifier: MIT-0
 ---
 # tasks file for troopconnect
-- name: permanently enable https service, also enable it immediately if possible
+- name: allow https service in the firewall
   ansible.posix.firewalld:
     service: https
     state: enabled
@@ -9,7 +9,7 @@
     immediate: true
   become: true
 
-- name: permanently enable http service, also enable it immediately if possible
+- name: allow http service in the firewall
   ansible.posix.firewalld:
     service: http
     state: enabled
@@ -17,9 +17,19 @@
     immediate: true
   become: true
 
-- name: Replace the email address in Candyfile
+- name: Replace the email address in Caddyfile
   ansible.builtin.replace:
-    path: caddy/Candyfile
+    path: "{{ remote_dir }}/caddy/Caddyfile"
     regexp: '^\s*email\s+\S+'
     replace: "email {{ letsencrypt_contact_email }}"
+  become: true
+
+- name: Start docker-compose
+  community.docker.docker_compose_v2:
+    project_src: "{{ remote_dir }}"
+    files:
+      - docker-compose-prod.yml
+    env_files:
+      - /tmp/myapp.env
+  register: compose_result
   become: true

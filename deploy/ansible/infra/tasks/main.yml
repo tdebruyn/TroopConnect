@@ -51,7 +51,7 @@
     dest: "{{ remote_dir }}/deploy/ansible/config.yml"
   become: true
 
-- name: permanently enable ssh service, also enable it immediately if possible
+- name: Allow SSH service in the firewall
   ansible.posix.firewalld:
     port: "{{ ssh_port }}/tcp"
     state: enabled

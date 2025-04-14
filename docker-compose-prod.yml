@@ -9,7 +9,7 @@ services:
       - "443:443"
       - "443:443/udp"
     volumes:
-      - $PWD/conf:/etc/caddy
+      - $PWD/caddy:/etc/caddy
       - $PWD/site:/srv
       - caddy_data:/data
       - caddy_config:/config
