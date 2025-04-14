@@ -10,3 +10,4 @@ vault.yml
 dump.rdb
 config.yml
 .settings.json
+Caddyfile

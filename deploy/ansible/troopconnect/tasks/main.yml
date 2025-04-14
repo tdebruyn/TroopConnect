@@ -17,6 +17,12 @@
     immediate: true
   become: true
 
+- name: Copy local caddy/Caddyfile to remote {remote_dir}/deploy/ansible/config.yml
+  ansible.builtin.copy:
+    src: caddy/Caddyfile-default
+    dest: "{{ remote_dir }}/caddy/Caddyfile"
+  become: true
+
 - name: Replace the email address in Caddyfile
   ansible.builtin.replace:
     path: "{{ remote_dir }}/caddy/Caddyfile"
