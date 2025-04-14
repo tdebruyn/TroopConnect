@@ -16,3 +16,10 @@
     permanent: true
     immediate: true
   become: true
+
+- name: Replace the email address in Candyfile
+  ansible.builtin.replace:
+    path: caddy/Candyfile
+    regexp: '^\s*email\s+\S+'
+    replace: "email {{ letsencrypt_contact_email }}"
+  become: true

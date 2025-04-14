@@ -1,0 +1,23 @@
+{
+	email you@yourdomain.com
+}
+
+tomctl.be {
+	encode zstd gzip
+
+	handle_path /static/* {
+		file_server {
+			root "/opt/TroopConnect/static"
+		}
+	}
+
+	handle_path /media/* {
+		file_server {
+			root "/opt/TroopConnect/media"
+		}
+	}
+
+	handle {
+		reverse_proxy localhost:3000
+	}
+}

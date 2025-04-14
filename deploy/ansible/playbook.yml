@@ -26,6 +26,6 @@
       no_log: true
 
   roles:
-    - infra
-    - mailforwarder
-    - troopconnect
+    - { role: infra, tags: ["infra"] }
+    - { role: mailforwarder, tags: ["mailforwarder"] }
+    - { role: troopconnect, tags: ["troopconnect"] }
