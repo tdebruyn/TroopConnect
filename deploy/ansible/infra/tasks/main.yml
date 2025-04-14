@@ -24,10 +24,18 @@
     state: present
   become: true
 
-- name: Make sure a service unit is running
+- name: Enable and start docker
   ansible.builtin.systemd_service:
     state: started
     name: docker
+    enabled: true
+  become: true
+
+- name: Enable and start firewall
+  ansible.builtin.systemd_service:
+    state: started
+    name: firewalld
+    enabled: true
   become: true
 
 - name: Git pull or clone
@@ -43,24 +51,10 @@
     dest: "{{ remote_dir }}/deploy/ansible/config.yml"
   become: true
 
-- name: permanently enable https service, also enable it immediately if possible
-  ansible.posix.firewalld:
-    service: https
-    state: enabled
-    permanent: true
-    immediate: true
-    offline: true
-
-- name: permanently enable http service, also enable it immediately if possible
-  ansible.posix.firewalld:
-    service: http
-    state: enabled
-    permanent: true
-    immediate: true
-
 - name: permanently enable ssh service, also enable it immediately if possible
   ansible.posix.firewalld:
     port: "{{ ssh_port }}/tcp"
     state: enabled
     permanent: true
     immediate: true
+  become: true

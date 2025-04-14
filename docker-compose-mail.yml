@@ -7,5 +7,7 @@ services:
       - /etc/letsencrypt/live/${MAILSERVER}:/etc/postfix/cert
     ports:
       - "25:25"
+      - "587:587"
+
 volumes:
   dkim:
