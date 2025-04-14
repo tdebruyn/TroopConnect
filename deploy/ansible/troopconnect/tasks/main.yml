@@ -31,7 +31,5 @@
       - docker-compose-prod.yml
     env_files:
       - /tmp/myapp.env
-    environment:
-      - BASE_DIR="{{ remote_dir }}"
   register: compose_result
   become: true
