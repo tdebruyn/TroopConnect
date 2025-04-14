@@ -1,2 +1,3 @@
 db_user: db_user
 smf_config: "yourname@yourdomain.com:youremail@yourmailprovider.com"
+mailserver: mail.yourdomain.com
