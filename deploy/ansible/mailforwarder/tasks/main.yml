@@ -1,0 +1,26 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for mailforwarder
+- name: Create mailname file on remote
+  ansible.builtin.copy:
+    dest: /etc/mailname
+    content: "{{ mailserver }}"
+    mode: "0644"
+  become: true
+
+- name: Create certificates for the mail server
+  ansible.builtin.command: >
+    certbot certonly --standalone -d {{ mailserver }} --agree-tos --non-interactive --email {{ letsencrypt_contact_email }}
+  args:
+    creates: /etc/letsencrypt/live/{{ mailserver }}/cert.pem
+  become: true
+
+- name: Start docker-compose
+  community.docker.docker_compose_v2:
+    project_src: "{{ remote_dir }}"
+    files:
+      - docker-compose-mail.yml
+    env_files:
+      - /tmp/myapp.env
+  register: compose_result
+  become: true

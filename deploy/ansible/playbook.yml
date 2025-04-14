@@ -3,45 +3,7 @@
   vars_files:
     - config.yml
     - vault.yml
-
-  tasks:
-    - name: Add Docker repository
-      ansible.builtin.command: >
-        dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-      args:
-        creates: /etc/yum.repos.d/docker-ce.repo
-      become: true
-
-    - name: Install git and docker and prepare for certbot (EPEL)
-      ansible.builtin.package:
-        name:
-          - git
-          - docker-ce
-          - docker-compose-plugin
-          - epel-release
-        state: present
-      become: true
-    - name: Install certbot
-      ansible.builtin.package:
-        name:
-          - certbot
-        state: present
-      become: true
-
-    - name: Git pull or clone
-      ansible.builtin.git:
-        repo: "https://github.com/tdebruyn/TroopConnect.git"
-        dest: "{{ remote_dir }}"
-        version: main
-        force: true
-      become: true
-
-    - name: Make sure a service unit is running
-      ansible.builtin.systemd_service:
-        state: started
-        name: docker
-      become: true
-
+  pre_tasks:
     - name: Create .env content from vars
       set_fact:
         env_lines: |
@@ -56,24 +18,14 @@
         mode: "0600"
       no_log: true
 
-    - name: Copy local deploy/ansible/config.yml to remote {remote_dir}/deploy/ansible/config.yml
-      ansible.builtin.copy:
-        src: config.yml
-        dest: "{{ remote_dir }}/deploy/ansible/config.yml"
-      become: true
-
-    - name: Start docker-compose
-      community.docker.docker_compose_v2:
-        project_src: "{{ remote_dir }}"
-        files:
-          - docker-compose-prod.yml
-        env_files:
-          - /tmp/myapp.env
-      register: compose_result
-      become: true
-
+  post_tasks:
     - name: Remove env file after startup
       ansible.builtin.file:
         path: /tmp/myapp.env
         state: absent
       no_log: true
+
+  roles:
+    - infra
+    - mailforwarder
+    - troopconnect

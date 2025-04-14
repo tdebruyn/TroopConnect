@@ -1,5 +1,5 @@
 1. Get a VPS with Red Hat Enterprise Linux, AlmaLinux or Rocky Linux
-2. Create a A DNS record
+2. Create a A DNS record (with your registrar) and PTR record (with your VPS provider, who can also be your DNS registrar)
 3. Create a user with sudo access
 4. Configure the user for password-less SSH
 5. Download this repo on your local computer

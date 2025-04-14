@@ -1,0 +1,11 @@
+services:
+  mail-forward:
+    image: zixia/simple-mail-forwarder
+    env_file: "/tmp/myapp.env"
+    volumes:
+      - dkim:/var/db/dkim
+      - /etc/letsencrypt/live/${MAILSERVER}:/etc/postfix/cert
+    ports:
+      - "25:25"
+volumes:
+  dkim:
