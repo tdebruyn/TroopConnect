@@ -1,11 +1,11 @@
 services:
   caddy:
+    env_file: "/tmp/myapp.env"
     build:
       context: caddy
       args:
         - LETSCRYPT_CONTACT_EMAIL=${LETSCRYPT_CONTACT_EMAIL}
     restart: always
-    env_file: "/tmp/myapp.env"
     cap_add:
       - NET_ADMIN
     ports:
