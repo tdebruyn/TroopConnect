@@ -7,13 +7,13 @@ ${WEBSERVER} {
 
 	handle_path /static/* {
 		file_server {
-			root "/opt/TroopConnect/static"
+			root "/vol/static"
 		}
 	}
 
 	handle_path /media/* {
 		file_server {
-			root "/opt/TroopConnect/media"
+			root "/vol/media"
 		}
 	}
 
