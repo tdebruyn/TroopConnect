@@ -13,6 +13,7 @@ USER root
 RUN mkdir -p /vol/static && \
     mkdir -p /vol/media && \
     chmod 755 /vol && \
+    apk add --update --no-cache envsubst && \
     chmod +x /run.sh
 
 VOLUME /vol/static
