@@ -1,4 +1,4 @@
-FROM caddy:latest
+FROM caddy:alpine
 LABEL maintainer="tomctl.be"
 
 COPY ./Caddyfile-default.tpl /etc/caddy/Caddyfile-default.tpl
