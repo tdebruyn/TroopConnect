@@ -22,6 +22,6 @@ ${WEBSERVER} {
 	}
 }
 
-test.tomctl.be {
+www.tomctl.be {
     reverse_proxy siteperso:80
 }
