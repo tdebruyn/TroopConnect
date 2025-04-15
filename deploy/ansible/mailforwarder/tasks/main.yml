@@ -33,7 +33,7 @@
 
 - name: Start docker-compose
   community.docker.docker_compose_v2:
-    project_src: "{{ remote_dir }}"
+    project_src: "{{ project_dir }}"
     files:
       - docker-compose-mail.yml
     env_files:

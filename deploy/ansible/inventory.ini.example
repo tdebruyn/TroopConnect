@@ -1,2 +1,5 @@
 [prod]
 www.yourdomain.com ansible_port=22
+
+[prod:vars]
+project_dir = /opt/TroopConnect

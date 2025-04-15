@@ -15,8 +15,8 @@ services:
     volumes:
       - caddy_data:/data
       - caddy_config:/config
-      - "{{ remote_dir }}/static:/vol/static"
-      - "{{ remote_dir }}/media:/vol/media"
+      - "${PROJECT_DIR}/static:/vol/static"
+      - "${PROJECT_DIR}/media:/vol/media"
 
 volumes:
   caddy_data:

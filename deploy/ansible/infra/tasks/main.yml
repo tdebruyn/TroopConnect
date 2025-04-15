@@ -41,15 +41,15 @@
 - name: Git pull or clone
   ansible.builtin.git:
     repo: "https://github.com/tdebruyn/TroopConnect.git"
-    dest: "{{ remote_dir }}"
+    dest: "{{ project_dir }}"
     version: main
     force: yes
   become: true
 
-- name: Copy local deploy/ansible/config.yml to remote {remote_dir}/deploy/ansible/config.yml
+- name: Copy local deploy/ansible/config.yml to remote {project_dir}/deploy/ansible/config.yml
   ansible.builtin.copy:
     src: config.yml
-    dest: "{{ remote_dir }}/deploy/ansible/config.yml"
+    dest: "{{ project_dir }}/deploy/ansible/config.yml"
   become: true
 
 - name: Allow SSH service in the firewall
