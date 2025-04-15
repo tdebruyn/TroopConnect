@@ -24,6 +24,6 @@
       - docker-compose-prod.yml
     env_files:
       - /tmp/myapp.env
-    state: restarted
+    recreate: always
   register: compose_result
   become: true
