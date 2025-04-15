@@ -17,19 +17,6 @@
     immediate: true
   become: true
 
-- name: Copy local caddy/Caddyfile to remote {remote_dir}/deploy/ansible/config.yml
-  ansible.builtin.copy:
-    src: caddy/Caddyfile-default
-    dest: "{{ remote_dir }}/caddy/Caddyfile"
-  become: true
-
-- name: Replace the email address in Caddyfile
-  ansible.builtin.replace:
-    path: "{{ remote_dir }}/caddy/Caddyfile"
-    regexp: '^\s*email\s+\S+'
-    replace: "email {{ letsencrypt_contact_email }}"
-  become: true
-
 - name: Start docker-compose
   community.docker.docker_compose_v2:
     project_src: "{{ remote_dir }}"

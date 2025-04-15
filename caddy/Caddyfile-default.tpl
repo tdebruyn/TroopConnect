@@ -1,8 +1,8 @@
 {
-	email you@yourdomain.com
+	email ${LETSCRYPT_CONTACT_EMAIL}
 }
 
-tomctl.be {
+${WEBSERVER} {
 	encode zstd gzip
 
 	handle_path /static/* {
@@ -18,6 +18,6 @@ tomctl.be {
 	}
 
 	handle {
-		reverse_proxy localhost:3000
+		reverse_proxy http://${APP_HOST}:${APP_PORT};
 	}
 }
