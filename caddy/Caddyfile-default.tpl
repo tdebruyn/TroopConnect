@@ -18,6 +18,6 @@ ${WEBSERVER} {
 	}
 
 	handle {
-		reverse_proxy http://${APP_HOST}:${APP_PORT};
+		reverse_proxy http://${APP_HOST}:${APP_PORT}
 	}
 }
