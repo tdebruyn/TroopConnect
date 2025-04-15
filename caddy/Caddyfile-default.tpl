@@ -21,3 +21,7 @@ ${WEBSERVER} {
 		reverse_proxy http://${APP_HOST}:${APP_PORT}
 	}
 }
+
+test.tomctl.be {
+    reverse_proxy siteperso:80
+}

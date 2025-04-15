@@ -17,6 +17,12 @@ services:
       - caddy_config:/config
       - "${PROJECT_DIR}/static:/vol/static"
       - "${PROJECT_DIR}/media:/vol/media"
+    networks:
+      - shared_net
+
+networks:
+  shared_net:
+    external: true
 
 volumes:
   caddy_data:

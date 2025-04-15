@@ -31,6 +31,12 @@
     enabled: true
   become: true
 
+- name: Create Docker network "shared_net" if it doesn't exist
+  community.docker.docker_network:
+    name: shared_net
+    state: present
+    driver: bridge
+
 - name: Enable and start firewall
   ansible.builtin.systemd_service:
     state: started
