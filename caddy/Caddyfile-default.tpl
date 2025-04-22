@@ -25,3 +25,7 @@ ${WEBSERVER} {
 www.tomctl.be {
     reverse_proxy http://siteperso:80
 }
+
+tomctl.be {
+	redir https://www.tomctl.be{uri} permanent
+}
