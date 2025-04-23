@@ -5,6 +5,12 @@
 ${WEBSERVER} {
 	encode zstd gzip
 
+	log {
+		format console {
+			time_format iso8601
+		}
+	}
+
 	handle_path /static/* {
 		file_server {
 			root "/vol/static"
