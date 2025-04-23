@@ -25,5 +25,6 @@
     env_files:
       - /tmp/myapp.env
     recreate: always
+    build: policy
   register: compose_result
   become: true

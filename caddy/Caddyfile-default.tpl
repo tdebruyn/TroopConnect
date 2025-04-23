@@ -29,6 +29,11 @@ ${WEBSERVER} {
 }
 
 www.tomctl.be {
+	log {
+		format console {
+			time_format iso8601
+		}
+	}
     reverse_proxy http://siteperso:80
 }
 
