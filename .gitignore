@@ -11,3 +11,5 @@ dump.rdb
 config.yml
 .settings.json
 Caddyfile
+__pypackages__
+.python-version
