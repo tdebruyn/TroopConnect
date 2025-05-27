@@ -1,0 +1,11 @@
+{% extends "account/email/base_message.txt" %}
+{% load i18n %}
+
+{% block content %}{% autoescape off %}{% blocktrans %}Vous recevez ce mail parce que vous ou quelqu'un d'autre a demandé un mot de passe pour votre compte utilisateur.
+Cependant, nous n'avons pas de compte avec l'adresse e-mail {{ email }} dans notre base de données.
+
+Ce mail peut être ignoré si vous n'avez pas demandé de réinitialisation de mot de passe.
+
+Si c'était vous, vous pouvez vous inscrire pour un compte en utilisant le lien ci-dessous.{% endblocktrans %}
+
+{{ signup_url }}{% endautoescape %}{% endblock %}

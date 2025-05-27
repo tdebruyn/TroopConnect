@@ -1,0 +1,38 @@
+{% for child in children %}
+   <tr id="child-{{ child.pk }}" class="child-row">
+      <td>{{ child.first_name }}</td>
+      <td>{{ child.last_name }}</td>
+      <td class="text-end">
+         <i class="bi bi-clipboard"
+            style="cursor: pointer"
+            onclick="copyToClipboard()"
+            title="Copy to clipboard"></i>
+      </td>
+      <td>
+         <span id="textToCopy">{{ child.id }}</span>
+      </td>
+      <td>{{ child.get_section.name }}</td>
+      <td>
+         <a class="btn btn-outline-danger btn-sm"
+            href="{% url 'members:deregister_child' pk=child.pk %}">Désinscrire</a>
+         <a class="btn btn-outline-warning btn-sm me-1"
+            href="{% url 'members:dettach_child' pk=child.pk %}">Détacher</a>
+         {% comment %} <a class="btn btn-outline-info btn-sm me-1" href="{% url 'members:child_account_create' pk=child.pk %}">Créer compte</a> {% endcomment %}
+         <button class="btn btn-primary btn-sm me-1"
+                 hx-get="{% url 'members:edit_child' pk=child.pk %}"
+                 hx-target="#dialog">Modifier</button>
+      </td>
+   </tr>
+{% endfor %}
+<script>
+    function copyToClipboard() {
+      const text = document.getElementById("textToCopy").innerText;
+      navigator.clipboard.writeText(text)
+        .then(() => {
+          alert("Clé copiée dans le presse-papier");
+        })
+        .catch(err => {
+          console.error("Failed to copy: ", err);
+        });
+    }
+</script>

@@ -1,0 +1,7 @@
+{% load i18n %}{% autoescape off %}
+Bonjour de la part des {{ site_name }},
+
+{% block content %}{% endblock content %}
+
+{{ email_signature }}
+{% endautoescape %}

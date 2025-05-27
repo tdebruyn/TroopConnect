@@ -1,0 +1,102 @@
+{% load widget_tweaks %}
+{% with WIDGET_ERROR_CLASS="is-invalid d-block" %}
+    <form hx-post="{{ request.path }}"
+          hx-headers='{"X-CSRFToken":"{{ csrf_token }}"}'
+          class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">Données de l'enfant</h5>
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+        </div>
+        <div class="modal-body form-horizontal">
+            <div class="mb-3 form-group row">
+                <label for="{{ form.first_name.id_for_label }}"
+                       class="col-form-label col-sm-4">{{ form.first_name.label }}</label>
+                <div class="col-sm-8">{% render_field form.first_name class="form-control" placeholder="prenom" %}</div>
+                <div class="invalid-feedback {{ WIDGET_ERROR_CLASS }}">{{ form.first_name.errors|first }}</div>
+            </div>
+            <div class="mb-3 form-group row">
+                <label for="{{ form.last_name.id_for_label }}"
+                       class="col-form-label col-sm-4">{{ form.last_name.label }}</label>
+                <div class="col-sm-8">{% render_field form.last_name class="form-control" placeholder="nom" %}</div>
+                <div class="invalid-feedback" {{ WIDGET_ERROR_CLASS }}>{{ form.last_name.errors|first }}
+                </div>
+            </div>
+            <div class="mb-3 form-group row">
+                <label for="{{ form.totem.id_for_label }}" class="col-form-label col-sm-4">
+                    {{ form.totem.label }} <small class="text-muted">(facultatif)</small>
+                </label>
+                <div class="col-sm-8">{% render_field form.totem class="form-control" placeholder="totem" %}</div>
+                <div class="invalid-feedback {{ WIDGET_ERROR_CLASS }}">{{ form.totem.errors|first }}</div>
+            </div>
+            <div class="mb-3 form-group row">
+                <label for="{{ form.birthday.id_for_label }}"
+                       class="col-form-label col-sm-4">{{ form.birthday.label }}</label>
+                <div class="col-sm-8">{% render_field form.birthday class="form-control" %}</div>
+                <div class="invalid-feedback" {{ WIDGET_ERROR_CLASS }}>{{ form.birthday.errors|first }}
+                </div>
+            </div>
+            <div class="mb-3 form-group row">
+                <label for="{{ form.sex.id_for_label }}" class="col-form-label col-sm-4">{{ form.sex.label }}</label>
+                <div class="col-sm-8">
+                    {% render_field form.sex class="form-select" %}
+                    <div class="invalid-feedback" {{ WIDGET_ERROR_CLASS }}>{{ form.sex.errors|first }}
+                    </div>
+                </div>
+            </div>
+            <div class="mb-3 form-group row">
+                <label for="{{ form.phone.id_for_label }}" class="col-form-label col-sm-4">{{ form.phone.label }}</label>
+                <div class="col-sm-8">
+                    <div class="input-group">
+                        <span class="input-group-text" id="phone-prefix"><i class="bi-telephone"></i></span>{% render_field form.phone class="form-control" placeholder="Si différent du parent" %}
+                    </div>
+                    <div class="invalid-feedback" {{ WIDGET_ERROR_CLASS }}>{{ form.phone.errors|first }}
+                    </div>
+                </div>
+            </div>
+            <div class="mb-3 form-group row">
+                <div class="col-sm-10 offset-sm-2">
+                    Le champ ci-dessous ne doit être complété que si vous souhaitez créer un compte pour l'enfant, ce qui est recommandé après 12 ans.
+                    <br />
+                    Il recevra un mail pour choisir un mot de passe.
+                    <br />
+                    Ne mettez pas votre propre adresse.
+                </div>
+            </div>
+            <div class="mb-3 form-group row">
+                <label for="{{ form.email.id_for_label }}" class="col-form-label col-sm-4">{{ form.email.label }}</label>
+                <div class="col-sm-8">
+                    <div class="input-group">
+                        <span class="input-group-text" id="email-prefix"><i class="bi-envelope"></i></span>
+                        {% render_field form.email class='form-control' placeholder="Pour créer un compte" %}
+                    </div>
+                    <div class="invalid-feedback" {{ WIDGET_ERROR_CLASS }}>{{ form.email.errors|first }}
+                    </div>
+                </div>
+            </div>
+            <div class="mb-3 form-group row">
+                <label for="{{ form.address.id_for_label }}" class="col-form-label col-sm-4">{{ form.address.label }}</label>
+                <div class="col-sm-8">
+                    <div class="input-group">
+                        <span class="input-group-text" id="address-prefix"><i class="bi-house"></i></span>
+                        {% render_field form.address class="form-control" placeholder="Si différent du parent" %}
+                    </div>
+                    <div class="invalid-feedback" {{ WIDGET_ERROR_CLASS }}>{{ form.address.errors|first }}
+                    </div>
+                </div>
+            </div>
+            <div class="mb-3 form-group row">
+                <label for="{{ form.note.id_for_label }}" class="col-form-label col-sm-4">{{ form.note.label }}</label>
+                <div class="col-sm-8">{% render_field form.note class="form-control" %}</div>
+                <div class="invalid-feedback" {{ WIDGET_ERROR_CLASS }}>{{ form.note.errors|first }}
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+            <button type="submit" class="btn btn-primary">Enregister</button>
+        </div>
+    </form>
+{% endwith %}

@@ -1,0 +1,6 @@
+{% if form.fields.secondary_role.choices %}
+    <div class="form-group mt-3">
+        <label for="{{ form.secondary_role.id_for_label }}">Secondary Role</label>
+        {{ form.secondary_role }}
+    </div>
+{% endif %}

@@ -1,0 +1,149 @@
+{% extends "members/base.html" %}
+{% load widget_tweaks %}
+{% block subcontent %}
+    <div class="container">
+        <form action="" method="get">
+            <div class="container">
+                <div class="row m-2">
+                    <div class="col">
+                        <input class="form-control"
+                               type="text"
+                               placeholder="{{ filter.form.first_name.label }}"
+                               name="{{ filter.form.first_name.name }}"
+                               id="{{ filter.form.first_name.id }}"
+                               value="{{ filter.form.first_name.value|default_if_none:'' }}" />
+                    </div>
+                    <div class="col">
+                        <input class="form-control"
+                               type="text"
+                               placeholder="{{ filter.form.last_name.label }}"
+                               name="{{ filter.form.last_name.name }}"
+                               id="{{ filter.form.last_name.id }}"
+                               value="{{ filter.form.last_name.value |default_if_none:'' }}" />
+                    </div>
+                    <div class="col">
+                        <select class="form-select" name="{{ filter.form.role.name }}">
+                            {% for item in filter.form.role %}{{ item }}{% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="row m-2">
+                    <div class="col">
+                        <select class="form-select" name="{{ filter.form.birth_year.name }}">
+                            {% for item in filter.form.birth_year %}{{ item }}{% endfor %}
+                        </select>
+                    </div>
+                    <div class="col">
+                        <select class="form-select" name="{{ filter.form.year.name }}">
+                            {% for item in filter.form.year %}{{ item }}{% endfor %}
+                        </select>
+                    </div>
+                    <div class="col">
+                        <select class="form-select" name="{{ filter.form.section.name }}">
+                            {% for item in filter.form.section %}{{ item }}{% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="row m-2">
+                    <div class="container">
+                        <button type="submit" class="btn btn-primary">Filtrer</button>
+                        <a class="btn btn-outline-primary" href="{% url 'members:admin_list' %}">Réinitialiser</a>
+                    </div>
+                </div>
+            </form>
+            <hr class="hr" />
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        {% for field_name, display_name in fields_map %}
+                            <th scope="col">
+                                {% if field_name in sortable_fields %}
+                                    <a href="{% url 'members:admin_list' %}?{% for key, value in request.GET.items %}{% if key != 'sort' and key != 'direction' and key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}sort={{ field_name }}&direction={% if current_sort == field_name and current_direction == 'asc' %}desc{% else %}asc{% endif %}"
+                                       class="text-decoration-none text-dark">
+                                        {{ display_name }}
+                                        {% if current_sort == field_name %}
+                                            {% if current_direction == 'asc' %}
+                                                ▲
+                                            {% else %}
+                                                ▼
+                                            {% endif %}
+                                        {% endif %}
+                                    </a>
+                                {% else %}
+                                    {{ display_name }}
+                                {% endif %}
+                            </th>
+                        {% endfor %}
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for member in object_list %}
+                        <tr>
+                            <td>{{ member.first_name }}</td>
+                            <td>{{ member.last_name }}</td>
+                            <td>{{ member.birthday | default_if_none:'' }}</td>
+                            <td>{{ member.sex | default_if_none:'' }}</td>
+                            <td>{{ member.section_display }}</td>
+                            <td>{{ member.role }}</td>
+                            <td>
+                                <a class="btn btn-primary btn-sm"
+                                   href="{% url 'members:admin_update' pk=member.pk %}">Modifier</a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="7">Aucun résultat</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">précédente</a>
+                    </li>
+                {% endif %}
+                <li class="page-item">
+                    <span class="page-link current">Page {{ page_obj.number }} sur {{ page_obj.paginator.num_pages }}</span>
+                </li>
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">suivante</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link"
+                           aria-label="Next"
+                           href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    {% endblock subcontent %}
+    <script>
+        function sortTable(field) {
+            // Get current URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            // Determine sort direction
+            let direction = 'asc';
+            if (urlParams.get('sort') === field && urlParams.get('direction') === 'asc') {
+                direction = 'desc';
+            }
+            
+            // Set sort parameters
+            urlParams.set('sort', field);
+            urlParams.set('direction', direction);
+            
+            // Remove page parameter to start from first page
+            urlParams.delete('page');
+            
+            // Navigate to new URL
+            window.location.href = `{% url 'members:admin_list' %}?${urlParams.toString()}`;
+            
+            return false;
+        }
+    </script>

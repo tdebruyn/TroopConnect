@@ -1,0 +1,157 @@
+{% extends "members/base.html" %}
+{% load widget_tweaks %}
+{% block hat_title %}
+    {{ form.first_name.value }} {{ form.last_name.value }}
+{% endblock hat_title %}
+{% block hat_text %}
+    {% if parents %}
+        Enfant
+    {% elif children %}
+        Parent
+    {% else %}
+        Membre
+    {% endif %}
+{% endblock hat_text %}
+{% block subcontent %}
+    {% if parents %}
+        <div class="topping-federation topping-top topping-right topping-large d-none d-lg-block"></div>
+    {% elif children %}
+        <div class="topping-baladins topping-top topping-right topping-large d-none d-lg-block"></div>
+    {% else %}
+        <div class="topping-pionniers topping-top topping-right topping-large d-none d-lg-block"></div>
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-6">
+                <fieldset id="scout">
+                    <div class="mb-1">
+                        {% comment %}
+          <div class="form-label">
+            Nom d'utilisateur: {{ form.username.value }}
+          </div>
+          <input type="hidden" name="{{ form.username.name }}" value="{{ form.username.value }}" />
+                        {% endcomment %}
+                        <div class="form-label">{{ form.email.label_tag }}</div>
+                        <div class="input-group">
+                            <span class="input-group-text" id="email-prefix"><i class="bi-envelope"></i></span>
+                            {% render_field form.email class='form-control' %}
+                        </div>
+                        <div class="alert-danger">{{ form.email.errors }}</div>
+                        <div class="form-label">{{ form.first_name.label_tag }}</div>
+                        <div class="input-group">{{ form.first_name| add_class:"form-control" }}</div>
+                        <div class="alert-danger">{{ form.first_name.errors }}</div>
+                        <div class="form-label">{{ form.last_name.label_tag }}</div>
+                        <div class="input-group">{{ form.last_name| add_class:"form-control" }}</div>
+                        <div class="alert-danger">{{ form.last_name.errors }}</div>
+                        <div class="form-label">{{ form.address.label_tag }}</div>
+                        <div class="input-group">
+                            <span class="input-group-text" id="address-prefix"><i class="bi-house"></i></span>
+                            {% render_field form.address class="form-control" %}
+                        </div>
+                        <div class="alert-danger">{{ form.address.errors }}</div>
+                        <div class="form-label">{{ form.phone.label_tag }}</div>
+                        <div class="input-group">
+                            <span class="input-group-text" id="phone-prefix"><i class="bi-telephone"></i></span>{% render_field form.phone class="form-control" %}
+                        </div>
+                        <div class="alert-danger">{% render_field form.phone.errors class="form-control" %}</div>
+                        <div class="form-label">{{ form.primary_role.label_tag }}</div>
+                        <div class="input-group">
+                            {% render_field form.primary_role class="form-select" id=form.primary_role.id value=form.primary_role.initial %}
+                        </div>
+                        <div class="alert-danger">{{ form.primary_role.errors }}</div>
+                        <div class="form-label">{{ form.secondary_roles.label_tag }}</div>
+                        <div class="input-group">{% render_field form.secondary_roles %}</div>
+                        <div class="alert-danger">{{ form.secondary_roles.errors }}</div>
+                        <div class="form-label">{{ form.current_section.label_tag }}</div>
+                        <div class="input-group">
+                            {% render_field form.current_section class="form-select" id=form.current_section.id value=form.current_section.initial %}
+                        </div>
+                        <div class="alert-danger">{{ form.current_section.errors }}</div>
+                        <div class="form-label">{{ form.next_section.label_tag }}</div>
+                        <div class="input-group">
+                            {% render_field form.next_section class="form-select" id=form.next_section.id value=form.next_section.initial %}
+                        </div>
+                        <div class="alert-danger">{{ form.next_section.errors }}</div>
+                        <div class="form-label">{{ form.adult.label_tag }}</div>
+                        <div class="input-group">
+                            {% render_field form.adult class="form-select" id=form.adult.id value=form.adult.initial %}
+                        </div>
+                        <div class="alert-danger">{{ form.adult.errors }}</div>
+                        <div class="form-label">{{ form.year.label_tag }}</div>
+                        <div class="input-group">{% render_field form.year class="form-select" id=form.year.id %}</div>
+                        <div class="alert-danger">{{ form.year.errors }}</div>
+                        <div class="mb-3 mt-3 form-check form-switch">
+                            {{ form.photo_consent | add_class:"form-check-input" }}
+                            <label for="id_photo_consent">{{ form.photo_consent.label }}</label>
+                        </div>
+                        <div class="alert-danger">{{ form.photo_consent.errors }}</div>
+                        <div class="form-label">{{ form.totem.label_tag }}</div>
+                        <div class="input-group">{{ form.totem| add_class:"form-control" }}</div>
+                        <div class="alert-danger">{{ form.totem.errors }}</div>
+                        <div class="form-label">{{ form.birthday.label_tag }}</div>
+                        <input class="form-control"
+                               type="date"
+                               name="{{ form.birthday.name }}"
+                               id="{{ form.birthday.id }}"
+                               value="{{ form.birthday.value|date:'Y-m-d' }}" />
+                        <div class="alert-danger">{{ form.birthday.errors }}</div>
+                        <div class="form-label">{{ form.secret_key.label_tag }}</div>
+                        <div class="input-group">{% render_field form.secret_key class="form-control" %}</div>
+                        <div class="alert-danger">{{ form.secret_key.errors }}</div>
+                        <div class="form-label">{{ form.sex.label_tag }}</div>
+                        <div class="select-group">{% render_field form.sex class="form-control" %}</div>
+                        <div class="alert-danger">{{ form.sex.errors }}</div>
+                        <div class="form-label">{{ form.note.label_tag }}</div>
+                        <div class="input-group">{{ form.note| add_class:"form-control" }}</div>
+                        <div class="alert-danger">{{ form.note.errors }}</div>
+                        <button type="submit" class="btn btn-primary btn-block mt-3">Confirmer</button>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+    </form>
+    <div class="alert-danger">{{ form.errors }}</div>
+    <hr class="hr" />
+    <div class="container">
+        {% if children %}
+            <p class="h4">Enfants</p>
+        {% elif parents %}
+            <p class="h4">Parents</p>
+        {% endif %}
+        {% if children or parents %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Prénom</th>
+                        <th>Nom</th>
+                        {% if children %}<th>Section</th>{% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for child in children %}
+                        <tr id="child-{{ child.pk }}" class="child-row">
+                            <td>{{ child.first_name }}</td>
+                            <td>{{ child.last_name }}</td>
+                            <td>{{ child.get_section.name }}</td>
+                            <td>
+                                <a class="btn btn-primary btn-sm"
+                                   href="{% url 'members:admin_update' pk=child.pk %}">Modifier</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    {% for parent in parents %}
+                        <tr id="parent-{{ parent.pk }}" class="parent-row">
+                            <td>{{ parent.first_name }}</td>
+                            <td>{{ parent.last_name }}</td>
+                            <td>
+                                <a class="btn btn-primary btn-sm"
+                                   href="{% url 'members:admin_update' pk=parent.pk %}">Modifier</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+{% endblock subcontent %}

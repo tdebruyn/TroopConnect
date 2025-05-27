@@ -1,0 +1,10 @@
+{% extends "account/email/base_message.txt" %}
+{% load i18n %}
+
+{% block content %}{% autoescape off %}{% blocktrans %}Vous recevez ce mail parce que vous ou quelqu'un d'autre a tenté de créer un compte avec l'adresse e-mail suivante:
+
+{{ email }}
+
+Cependant, un compte utilisant cette adresse e-mail existe déjà.  En cas où vous avez oublié votre mot de passe, veuillez utiliser la procédure de mot de passe oublié pour récupérer votre compte.
+
+{{ password_reset_url }}{% endblocktrans %}{% endautoescape %}{% endblock %}

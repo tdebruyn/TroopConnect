@@ -15,15 +15,15 @@ services:
     volumes:
       - caddy_data:/data
       - caddy_config:/config
-      - "${PROJECT_DIR}/static:/vol/static"
-      - "${PROJECT_DIR}/media:/vol/media"
+      - "${PROJECT_DIR}/app/static:/vol/static"
+      - "${PROJECT_DIR}/app/media:/vol/media"
     networks:
       - shared_net
     depends_on:
       - troopconnect
 
   postgres:
-    image: postgres:latest
+    image: postgres:alpine
     restart: always
     env_file: "/tmp/myapp.env"
     environment:
@@ -50,8 +50,8 @@ services:
       - DATABASE_URL=postgres://${DB_USER}:${DB_PASSWORD}@postgres:5432/troopconnect
       - CELERY_BROKER_URL=redis://redis:6379/0
     volumes:
-      - "${PROJECT_DIR}/static:/app/static"
-      - "${PROJECT_DIR}/media:/app/media"
+      - "${PROJECT_DIR}/app/static:/app/static"
+      - "${PROJECT_DIR}/app/media:/app/media"
     networks:
       - shared_net
     depends_on:

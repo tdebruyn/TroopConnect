@@ -1,0 +1,144 @@
+{% extends "members/base.html" %}
+{% load socialaccount %}
+{% load widget_tweaks %}
+{% block hat_title %}
+  Votre profil
+{% endblock hat_title %}
+{% block hat_text %}
+{% endblock hat_text %}
+{% block subcontent %}
+  <div class="topping-federation topping-top topping-right topping-large d-none d-lg-block"></div>
+  <form method="post">
+    {% csrf_token %}
+    <div class="row">
+      <div class="col-md-6">
+        <fieldset id="scout">
+          <div class="mb-1">
+            <!-- Primary Role Selection -->
+            <div class="form-label">Type de compte</div>
+            <div class="input-group">
+              {% for radio in form.primary_role %}
+                <div class="form-check">
+                  {{ radio.tag }}
+                  <label class="form-check-label" for="{{ radio.id_for_label }}">{{ radio.choice_label }}</label>
+                </div>
+              {% endfor %}
+            </div>
+            <div id="secondary-role-container" class="d-none">
+              <div class="mb-3 mt-3 form-check form-switch">
+                {{ form.parent_active }}
+                <label class="form-check-label" for="id_parent_active">{{ form.parent_active.label }}</label>
+              </div>
+              <div class="alert-danger">{{ form.parent_active.errors }}</div>
+            </div>
+            <div class="form-label">{{ form.email.label_tag }}</div>
+            <div class="input-group">
+              <span class="input-group-text" id="email-prefix"><i class="bi-envelope"></i></span>
+              {% render_field form.email class='form-control' %}
+            </div>
+            <div class="alert-danger">{{ form.email.errors }}</div>
+            <div class="form-label">{{ form.first_name.label_tag }}</div>
+            <div class="input-group">{{ form.first_name| add_class:"form-control" }}</div>
+            <div class="alert-danger">{{ form.first_name.errors }}</div>
+            <div class="form-label">{{ form.last_name.label_tag }}</div>
+            <div class="input-group">{{ form.last_name| add_class:"form-control" }}</div>
+            <div class="alert-danger">{{ form.last_name.errors }}</div>
+            <div id="totem" class="d-none">
+              <div class="form-label">{{ form.totem.label_tag }}</div>
+              <div class="input-group">{{ form.totem| add_class:"form-control" }}</div>
+              <div class="alert-danger">{{ form.totem.errors }}</div>
+            </div>
+            <div class="form-label">{{ form.address.label_tag }}</div>
+            <div class="input-group">
+              <span class="input-group-text" id="address-prefix"><i class="bi-house"></i></span>
+              {% render_field form.address class="form-control" placeholder="Ex: Rue des Bouchers 1 bte 2, 1300 Limal" %}
+            </div>
+            <div class="alert-danger">{{ form.address.errors }}</div>
+            <div class="form-label">{{ form.phone.label_tag }}</div>
+            <div class="input-group">
+              <span class="input-group-text" id="phone-prefix"><i class="bi-telephone"></i></span>{% render_field form.phone class="form-control" %}
+            </div>
+            <div class="alert-danger">{{ form.phone.errors }}</div>
+            <div class="mb-3 mt-3 form-check form-switch">
+              {{ form.photo_consent | add_class:"form-check-input" }}
+              <label for="id_photo_consent">{{ form.photo_consent.label }}</label>
+            </div>
+            <div class="alert-danger">{{ form.photo_consent.errors }}</div>
+            <div class="mt-3">
+              <button type="submit" class="btn btn-primary btn-block">Enregistrer</button>
+              <a href="{% url 'account_change_password' %}"
+                 class="btn btn-outline-primary">Changer de mot de passe</a>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+    </div>
+  </form>
+  <div class="alert-danger">{{ form.errors }}</div>
+  <hr class="hr" \ />
+  <div id="child-add" class="container d-none">
+    <p>
+      Pour associer un enfant
+      <span class="text-ls-bleu-clair">déjà inscrit</span>, demander la "Clé secrète" au parent ayant inscrit l'enfant et cliquer sur
+      <span class="text-ls-vert-base">Ajouter un enfant existant avec une clé</span>.
+      <br />
+      Si un des parents ne souhaite plus recevoir les mails concernant un enfant inscrit, il peut le <span class="text-ls-orange">détacher</span> à condition qu'il reste au moins un autre parent.
+    </p>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Prénom</th>
+          <th>Nom</th>
+          <th>Copie clé</th>
+          <th>Clé secrète</th>
+          <th>Section</th>
+        </tr>
+      </thead>
+      <tbody hx-trigger="load, childListChanged from:body"
+             hx-get="{% url 'members:child_list' %}"
+             hx-target="this">
+        <tr>
+          <td class="spinner-border" role="status">
+            <span class="visually-hidden">Chargement...</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="container">
+      <button hx-get="{% url 'members:add_new_child' %}"
+              hx-target="#dialog"
+              class="btn btn-primary">Ajouter un nouvel enfant</button>
+      <button hx-get="{% url 'members:add_key_child' %}"
+              hx-target="#dialog"
+              class="btn btn-primary">Ajouter un existant enfant avec une clé</button>
+    </div>
+  </div>
+  <script>
+  function showRoleOptions() {
+    var selectedValue = document.querySelector("input[name=primary_role]:checked").value;
+    var childadd = document.getElementById("child-add");
+    var secondaryRoleContainer = document.getElementById("secondary-role-container");
+    if (selectedValue === "p") {
+      childadd.classList.remove("d-none");
+      secondaryRoleContainer.classList.remove("d-none");
+      totem.classList.add("d-none");
+    } else {
+      childadd.classList.add("d-none");
+      secondaryRoleContainer.classList.add("d-none");
+      totem.classList.remove("d-none");
+    }
+  }
+
+document.addEventListener("DOMContentLoaded", function () {
+  showRoleOptions();
+
+    // Add event listeners to the radio buttons
+    const radioButtons = document.querySelectorAll('input[name="primary_role"]');
+    radioButtons.forEach(radio => {
+      radio.addEventListener('change', function() {
+        showRoleOptions();
+      });
+    });
+  });
+  </script>
+{% endblock subcontent %}

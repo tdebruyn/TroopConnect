@@ -1,8 +1,0 @@
-{% load i18n %}{% autoescape off %}
-Bonjour de la part des Scouts de Limal,
-
-{% block content %}{% endblock content %}
-
-Salutations cordiales,
-Le staff d'unité
-{% endautoescape %}
