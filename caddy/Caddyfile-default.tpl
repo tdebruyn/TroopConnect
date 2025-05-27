@@ -24,7 +24,12 @@ ${WEBSERVER} {
 	}
 
 	handle {
-		reverse_proxy http://${APP_HOST}:${APP_PORT}
+		reverse_proxy troopconnect:9000 {
+			header_up Host {host}
+			header_up X-Real-IP {remote}
+			header_up X-Forwarded-For {remote}
+			header_up X-Forwarded-Proto {scheme}
+		}
 	}
 }
 

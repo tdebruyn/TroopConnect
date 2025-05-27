@@ -44,11 +44,18 @@ services:
   troopconnect:
     build:
       context: .
+      dockerfile: app/Dockerfile.prod
     restart: always
     env_file: "/tmp/myapp.env"
+    command: >
+      sh -c "python manage.py collectstatic --noinput &&
+             python manage.py migrate &&
+             gunicorn troopconnect.wsgi:application --bind 0.0.0.0:9000 --workers 4 --timeout 120"
     environment:
       - DATABASE_URL=postgres://${DB_USER}:${DB_PASSWORD}@postgres:5432/troopconnect
       - CELERY_BROKER_URL=redis://redis:6379/0
+      - DEBUG=False
+      - DJANGO_SETTINGS_MODULE=troopconnect.settings
     volumes:
       - "${PROJECT_DIR}/app/static:/app/static"
       - "${PROJECT_DIR}/app/media:/app/media"
@@ -61,12 +68,15 @@ services:
   celery:
     build:
       context: .
+      dockerfile: app/Dockerfile.prod
     restart: always
     env_file: "/tmp/myapp.env"
     command: celery -A troopconnect worker -l INFO
     environment:
       - DATABASE_URL=postgres://${DB_USER}:${DB_PASSWORD}@postgres:5432/troopconnect
       - CELERY_BROKER_URL=redis://redis:6379/0
+      - DEBUG=False
+      - DJANGO_SETTINGS_MODULE=troopconnect.settings
     networks:
       - shared_net
     depends_on:
@@ -76,12 +86,15 @@ services:
   celery-beat:
     build:
       context: .
+      dockerfile: app/Dockerfile.prod
     restart: always
     env_file: "/tmp/myapp.env"
     command: celery -A troopconnect beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
     environment:
       - DATABASE_URL=postgres://${DB_USER}:${DB_PASSWORD}@postgres:5432/troopconnect
       - CELERY_BROKER_URL=redis://redis:6379/0
+      - DEBUG=False
+      - DJANGO_SETTINGS_MODULE=troopconnect.settings
     networks:
       - shared_net
     depends_on:

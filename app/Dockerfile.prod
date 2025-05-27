@@ -1,0 +1,39 @@
+FROM python:3.13-slim
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+ENV DJANGO_SETTINGS_MODULE=troopconnect.settings
+ENV DEBUG=False
+
+# Set work directory
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies
+COPY app/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir gunicorn
+
+# Copy project
+COPY app/ .
+
+# Create directories for static files and media
+RUN mkdir -p /app/static /app/media
+RUN chmod -R 755 /app/static /app/media
+
+# Run as non-root user
+RUN useradd -m appuser
+RUN chown -R appuser:appuser /app
+USER appuser
+
+# Expose port for Gunicorn
+EXPOSE 9000
+
+# Default command (can be overridden in docker-compose)
+CMD ["gunicorn", "troopconnect.wsgi:application", "--bind", "0.0.0.0:9000", "--workers", "4", "--timeout", "120"]
