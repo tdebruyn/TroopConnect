@@ -15,8 +15,8 @@ services:
     volumes:
       - caddy_data:/data
       - caddy_config:/config
-      - "${PROJECT_DIR}/static:/vol/static"
-      - "${PROJECT_DIR}/media:/vol/media"
+      - static_volume:/vol/static
+      - media_volume:/vol/media
     networks:
       - shared_net
     depends_on:
@@ -47,10 +47,7 @@ services:
       dockerfile: app/Dockerfile.prod
     restart: always
     env_file: "/tmp/myapp.env"
-    command: >
-      sh -c "python manage.py collectstatic --noinput &&
-             python manage.py migrate &&
-             gunicorn troopconnect.wsgi:application --bind 0.0.0.0:9000 --workers 4 --timeout 120"
+    # Remove the command override since we're using the entrypoint script
     environment:
       - DATABASE_URL=postgres://${DB_USER}:${DB_PASSWORD}@postgres:5432/troopconnect
       - CELERY_BROKER_URL=redis://redis:6379/0
@@ -61,8 +58,8 @@ services:
       - POSTGRES_DB=troopconnect
       - POSTGRES_HOST=postgres
     volumes:
-      - "${PROJECT_DIR}/app/static:/app/static"
-      - "${PROJECT_DIR}/app/media:/app/media"
+      - static_volume:/app/staticfiles
+      - media_volume:/app/mediafiles
     networks:
       - shared_net
     depends_on:
@@ -121,3 +118,5 @@ volumes:
   caddy_data:
   caddy_config:
   postgres_data:
+  static_volume:
+  media_volume:

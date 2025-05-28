@@ -11,18 +11,21 @@ ${WEBSERVER} {
 		}
 	}
 
+	# Serve static files directly
 	handle_path /static/* {
-		file_server {
-			root "/vol/static"
-		}
+		uri strip_prefix /static
+		root * /vol/static
+		file_server
 	}
 
+	# Serve media files directly
 	handle_path /media/* {
-		file_server {
-			root "/vol/media"
-		}
+		uri strip_prefix /media
+		root * /vol/media
+		file_server
 	}
 
+	# Forward all other requests to the Django application
 	handle {
 		reverse_proxy troopconnect:9000 {
 			header_up Host {host}

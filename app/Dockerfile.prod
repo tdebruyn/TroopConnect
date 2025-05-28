@@ -23,9 +23,9 @@ RUN pip install --no-cache-dir gunicorn
 # Copy project
 COPY app/ .
 
-# Create directories for static files and media
-RUN mkdir -p /app/static /app/media
-RUN chmod -R 755 /app/static /app/media
+# Create directories for static files and media with proper permissions
+RUN mkdir -p /app/staticfiles /app/mediafiles
+RUN chmod -R 755 /app/staticfiles /app/mediafiles
 
 # Run as non-root user
 RUN useradd -m appuser
@@ -35,5 +35,9 @@ USER appuser
 # Expose port for Gunicorn
 EXPOSE 9000
 
-# Default command (can be overridden in docker-compose)
-CMD ["gunicorn", "troopconnect.wsgi:application", "--bind", "0.0.0.0:9000", "--workers", "4", "--timeout", "120"]
+# Add this near the end of the Dockerfile, before the CMD line
+COPY app/entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
+# Change the CMD to use the entrypoint script
+CMD ["/app/entrypoint.sh"]

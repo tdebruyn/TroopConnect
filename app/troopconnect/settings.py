@@ -157,15 +157,23 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
+MEDIA_URL = "/media/"
+
 if DEBUG:
+    # Development settings
     STATICFILES_DIRS = [
         BASE_DIR / "static",
     ]
+    MEDIA_ROOT = BASE_DIR / "media"
 else:
-    STATIC_ROOT = BASE_DIR.parent / "static"
-    MEDIA_URL = "/media/"
-    MEDIA_ROOT = BASE_DIR.parent / "media"
+    # Production settings - use paths within the container that the app user can write to
+    STATIC_ROOT = (
+        BASE_DIR / "staticfiles"
+    )  # Changed from /static to a directory within the app
+    MEDIA_ROOT = (
+        BASE_DIR / "mediafiles"
+    )  # Changed from /media to a directory within the app
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
