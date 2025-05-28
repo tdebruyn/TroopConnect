@@ -37,7 +37,7 @@ DEBUG = sec("DEBUG")
 if DEBUG:
     ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 else:
-    ALLOWED_HOSTS = ["0.0.0.0"]
+    ALLOWED_HOSTS = ["troop.tomctl.be"]
 
 # Application definition
 
