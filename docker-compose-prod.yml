@@ -56,6 +56,10 @@ services:
       - CELERY_BROKER_URL=redis://redis:6379/0
       - DEBUG=False
       - DJANGO_SETTINGS_MODULE=troopconnect.settings
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_DB=troopconnect
+      - POSTGRES_HOST=postgres
     volumes:
       - "${PROJECT_DIR}/app/static:/app/static"
       - "${PROJECT_DIR}/app/media:/app/media"
@@ -77,6 +81,10 @@ services:
       - CELERY_BROKER_URL=redis://redis:6379/0
       - DEBUG=False
       - DJANGO_SETTINGS_MODULE=troopconnect.settings
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_DB=troopconnect
+      - POSTGRES_HOST=postgres
     networks:
       - shared_net
     depends_on:
@@ -95,6 +103,10 @@ services:
       - CELERY_BROKER_URL=redis://redis:6379/0
       - DEBUG=False
       - DJANGO_SETTINGS_MODULE=troopconnect.settings
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_DB=troopconnect
+      - POSTGRES_HOST=postgres
     networks:
       - shared_net
     depends_on:
