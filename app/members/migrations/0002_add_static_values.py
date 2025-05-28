@@ -113,12 +113,12 @@ def create_school_years(apps, schema_editor):
 def create_new_child_staff_template(apps, schema_editor):
     EmailTemplate = apps.get_model("post_office", "EmailTemplate")
 
-    template_name = "new_child_staff"
+    template_name = "new_child_staff_fr"  # Add '_fr' suffix to indicate French version
 
-    if not EmailTemplate.objects.filter(name=template_name, language="fr").exists():
+    # Filter only by name, since 'language' field doesn't exist
+    if not EmailTemplate.objects.filter(name=template_name).exists():
         EmailTemplate.objects.create(
             name=template_name,
-            language="fr",
             subject="Nouvelle inscription d’un enfant à valider – {{ first_name }} {{ last_name }}",
             content=(
                 "Bonjour,\n\n"
