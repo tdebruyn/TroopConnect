@@ -30,12 +30,14 @@ DEFAULT_FROM_EMAIL = sec("DEFAULT_FROM_EMAIL")
 ALIAS_EMAIL = sec("ALIAS_EMAIL")
 CONTACT_EMAIL = sec("CONTACT_EMAIL")
 EMAIL_HOST_PASSWORD = sec("EMAIL_HOST_PASSWORD")
+DEBUG = sec("DEBUG")
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-ALLOWED_HOSTS = []
-
+# Set allowed hosts based on environment
+if DEBUG:
+    ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+else:
+    ALLOWED_HOSTS = ["0.0.0.0"]
 
 # Application definition
 
@@ -159,6 +161,8 @@ STATIC_URL = "static/"
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
+STATIC_ROOT = BASE_DIR / "static"
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
@@ -172,27 +176,14 @@ AUTH_USER_MODEL = "members.Account"
 
 USE_SES_V2 = True
 EMAIL_BACKEND = "post_office.EmailBackend"
-# POST_OFFICE = {
-#     "BACKENDS": {
-#         "default": "django_ses.SESBackend",
-#     },
-#     "DEFAULT_PRIORITY": "now",
-#     "CELERY_ENABLED": True,
-# }
-
-EMAIL_HOST_USER = "MS_M3qCdl@tomctl.be"
-EMAIL_HOST = "smtp.mailersend.net"
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-
 POST_OFFICE = {
     "BACKENDS": {
-        "default": "django.core.mail.backends.smtp.EmailBackend",
+        "default": "django_ses.SESBackend",
     },
     "DEFAULT_PRIORITY": "now",
     "CELERY_ENABLED": True,
-    "LOG_LEVEL": 2,
 }
+
 
 AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
