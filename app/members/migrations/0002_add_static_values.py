@@ -142,6 +142,7 @@ def create_new_child_staff_template(apps, schema_editor):
 class Migration(migrations.Migration):
     dependencies = [
         ("members", "0001_initial"),
+        ("post_office", "__first__"),
     ]
 
     operations = [

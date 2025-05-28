@@ -23,21 +23,7 @@ RUN pip install --no-cache-dir gunicorn
 # Copy project
 COPY app/ .
 
-# Create directories for static files and media with proper permissions
-# RUN mkdir -p /app/staticfiles /app/mediafiles
-# RUN chmod -R 777 /app/staticfiles /app/mediafiles
-
-# Run as non-root user
-# RUN useradd -m appuser
-# RUN chown -R appuser:appuser /app
-# USER appuser
-
 # Expose port for Gunicorn
 EXPOSE 9000
 
-# Add this near the end of the Dockerfile, before the CMD line
-# COPY app/entrypoint.sh /app/entrypoint.sh
-# RUN chmod +x /app/entrypoint.sh
-
-# Change the CMD to use the entrypoint script
 CMD ["/app/entrypoint.sh"]
