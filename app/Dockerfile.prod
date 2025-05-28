@@ -25,7 +25,7 @@ COPY app/ .
 
 # Create directories for static files and media with proper permissions
 # RUN mkdir -p /app/staticfiles /app/mediafiles
-# RUN chmod -R 755 /app/staticfiles /app/mediafiles
+RUN chmod -R 777 /app/staticfiles /app/mediafiles
 
 # Run as non-root user
 RUN useradd -m appuser
