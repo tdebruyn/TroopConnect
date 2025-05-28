@@ -15,8 +15,8 @@ services:
     volumes:
       - caddy_data:/data
       - caddy_config:/config
-      - "${PROJECT_DIR}/app/static:/vol/static"
-      - "${PROJECT_DIR}/app/media:/vol/media"
+      - "${PROJECT_DIR}/static:/vol/static"
+      - "${PROJECT_DIR}/media:/vol/media"
     networks:
       - shared_net
     depends_on:
