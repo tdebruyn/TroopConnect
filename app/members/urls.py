@@ -20,6 +20,7 @@ from members import views
 app_name = "members"
 
 urlpatterns = [
+    path("onboarding/", views.OnboardingView.as_view(), name="onboarding"),
     path("profile/<uuid:pk>/", views.ProfileView.as_view(), name="profile"),
     path("load-secondary-role/", views.load_secondary_role, name="load_secondary_role"),
     path(
@@ -60,4 +61,5 @@ urlpatterns = [
         views.ChildAccountCreateDone.as_view(),
         name="child_account_create_done",
     ),
+    path("documents/", views.DocumentListView.as_view(), name="documents"),
 ]

@@ -12,11 +12,8 @@ from datetime import datetime
 from allauth.account.forms import ResetPasswordForm, ResetPasswordKeyForm, SignupForm
 from allauth.account.utils import filter_users_by_email
 from allauth.account.views import PasswordResetView, PasswordResetFromKeyView
-from allauth.account.models import EmailConfirmation, EmailConfirmationHMAC
-from allauth.account.utils import (
-    send_email_confirmation,
-    user_pk_to_url_str,
-)
+from allauth.account.models import EmailConfirmation
+from allauth.account.utils import user_pk_to_url_str
 from allauth.utils import build_absolute_uri
 from django.urls import reverse
 import uuid
@@ -234,9 +231,7 @@ class ProfileEditForm(UserChangeForm):
     phone = forms.CharField(required=False, label=_("Téléphone"))
     photo_consent = forms.BooleanField(
         required=False,
-        label=_(
-            "J'accepte que mes photos ou vidéos soient utilisées par Les Scouts ASBL, dont l'unité de Limal fait partie"
-        ),
+        label="",
     )
 
     # Account fields
@@ -265,6 +260,9 @@ class ProfileEditForm(UserChangeForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        from .models import SiteSettings
+        site_settings = SiteSettings.get_settings()
+        self.fields["photo_consent"].label = site_settings.photo_consent_text
         person = self.instance.person
         parent_active_role = Role.objects.get(short="pa")
 
@@ -317,6 +315,37 @@ class ProfileEditForm(UserChangeForm):
             else:
                 person.roles.remove(parent_active_role)
 
+        return account
+
+
+class AnimeProfileForm(forms.ModelForm):
+    """Restricted profile form for Animé (child) users.
+    Only totem, email, and phone are editable. Address is read-only.
+    """
+
+    totem = forms.CharField(max_length=60, required=False, label=_("Totem"))
+    phone = forms.CharField(required=False, label=_("Téléphone"))
+    email = forms.EmailField(label=_("E-mail"))
+
+    class Meta:
+        model = Account
+        fields = ()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["totem"].initial = self.instance.person.totem
+        self.fields["phone"].initial = self.instance.person.phone
+        self.fields["email"].initial = self.instance.email
+
+    def save(self, commit=True):
+        person = self.instance.person
+        person.totem = self.cleaned_data.get("totem")
+        person.phone = self.cleaned_data.get("phone")
+        account = super().save(commit=False)
+        account.email = self.cleaned_data["email"]
+        if commit:
+            account.save()
+            person.save()
         return account
 
 
@@ -412,7 +441,7 @@ class ChildForm(forms.ModelForm):
 
 
 class ChildFromKey(forms.Form):
-    secret_key = forms.CharField(max_length=5, label=_("Clé secrète"))
+    secret_key = forms.CharField(max_length=6, label=_("Clé secrète (6 caractères)"))
 
 
 class ChildAccountCreateForm(ResetPasswordForm):
@@ -469,20 +498,52 @@ class ChildAccountCreateConfirmForm(ResetPasswordKeyForm):
         email_confirmation.sent = timezone.now()
         email_confirmation.save()
 
-        # Generate the email confirmation HMAC
-        email_confirmation_hmac = EmailConfirmationHMAC(email_confirmation)
-
         # Use the default token generator to create a token for the password reset
         temp_key = default_token_generator.make_token(user)
 
         # Send the email confirmation
-        send_email_confirmation(
-            request, email_confirmation, signup=False, custom_key=temp_key
-        )
+        email_address.send_confirmation(request, signup=False)
 
         # Update the user's password reset key with the temporary key
         user_pk = user_pk_to_url_str(user)
         request.session[f"password_reset_key_{user_pk}"] = temp_key
+
+
+class OnboardingForm(forms.Form):
+    first_name = forms.CharField(max_length=150, label=_("Prénom"))
+    last_name = forms.CharField(max_length=150, label=_("Nom"))
+    address = forms.CharField(required=False, label=_("Adresse"))
+    phone = forms.CharField(required=False, label=_("Téléphone"))
+    primary_role = forms.ChoiceField(
+        choices=ROLE_CHOICES,
+        widget=forms.RadioSelect,
+        label=_("Type de compte"),
+        required=True,
+    )
+    photo_consent = forms.BooleanField(
+        required=False,
+        label="",
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        from .models import SiteSettings
+        site_settings = SiteSettings.get_settings()
+        self.fields["photo_consent"].label = site_settings.photo_consent_text
+
+    def save(self, account):
+        person = account.person
+        person.first_name = self.cleaned_data["first_name"]
+        person.last_name = self.cleaned_data["last_name"]
+        person.address = self.cleaned_data.get("address", "")
+        person.phone = self.cleaned_data.get("phone", "")
+        person.photo_consent = self.cleaned_data.get("photo_consent", False)
+        person.primary_role = Role.objects.get(
+            short=self.cleaned_data["primary_role"]
+        )
+        person.status = "a"
+        person.save()
+        return person
 
 
 class AdminAccountChangeForm(UserChangeForm):

@@ -11,7 +11,7 @@
         {{ message | linebreaks }}
         <div class="container">
             <a class="btn btn-primary me-1"
-               href="{% url 'members:dettach_confirm' child.username %}">Détacher</a>
+               href="{% url 'members:dettach_confirm' child.pk %}">Détacher</a>
             <a class="btn btn-outline-primary"
                href="{% url 'members:profile' user %}">Annuler</a>
         </div>

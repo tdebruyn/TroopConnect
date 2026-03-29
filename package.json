@@ -1,0 +1,25 @@
+{
+  "name": "troopconnect",
+  "version": "1.0.0",
+  "description": "TODO",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx playwright test",
+    "test:headed": "npx playwright test --headed"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tdebruyn/TroopConnect.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/tdebruyn/TroopConnect/issues"
+  },
+  "homepage": "https://github.com/tdebruyn/TroopConnect#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.58.2"
+  }
+}

@@ -61,6 +61,11 @@ class Person(models.Model):
         FEMALE = "F", "Fille"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    secret_key = models.CharField(
+        max_length=6,
+        blank=True,
+        help_text=_("Premiers 6 caractères de l'UUID — clé pour lier un parent à un enfant"),
+    )
     first_name = models.CharField(max_length=150)
     last_name = models.CharField(max_length=150)
     birthday = models.DateField(null=True, blank=True)
@@ -86,12 +91,26 @@ class Person(models.Model):
         ],
         default="r",
     )
+    archived_date = models.DateField(
+        null=True,
+        blank=True,
+        help_text=_("Date à laquelle le membre a été archivé"),
+    )
 
     roles = models.ManyToManyField(
         "Role",
         through="PersonRole",
         related_name="people",
         blank=True,
+    )
+
+    next_section = models.ForeignKey(
+        "Section",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="next_persons",
+        help_text=_("Override manuel pour le passage : section assignée l'année suivante"),
     )
 
     parents = models.ManyToManyField(
@@ -105,6 +124,14 @@ class Person(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
+
+    def save(self, *args, **kwargs):
+        if not self.secret_key:
+            super().save(*args, **kwargs)
+            self.secret_key = str(self.id)[:6]
+            Person.objects.filter(pk=self.pk).update(secret_key=self.secret_key)
+        else:
+            super().save(*args, **kwargs)
 
     @property
     def needs_membership(self) -> bool:
@@ -161,7 +188,9 @@ class PersonRole(models.Model):
     date_assigned = models.DateField(default=timezone.now)
 
     class Meta:
-        unique_together = ("person", "role")
+        constraints = [
+            models.UniqueConstraint(fields=["person", "role"], name="uniq_person_role"),
+        ]
 
 
 class ParentChild(models.Model):
@@ -176,7 +205,9 @@ class ParentChild(models.Model):
     primary_contact = models.BooleanField(default=False)
 
     class Meta:
-        unique_together = ("parent", "child")
+        constraints = [
+            models.UniqueConstraint(fields=["parent", "child"], name="uniq_parent_child"),
+        ]
 
 
 class AccountManager(BaseUserManager):
@@ -565,16 +596,22 @@ class Enrollment(models.Model):
     school_year = models.ForeignKey(SchoolYear, on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = ("user", "section", "school_year")
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "section", "school_year"], name="uniq_enrollment"
+            ),
+        ]
 
     def __str__(self):
         return f"{self.user.first_name} - {self.section.name} ({self.school_year.year})"
 
 
 def get_registration_admins():
-    # Get the list of Person who's roles includes "Responsable inscriptions"
+    # Get the list of Person who's roles includes "Responsable inscriptions",
+    # "Animateur responsable" or "Admin"
     # and return a list of their emails address found in the Account corresponding to the Person
-    admins = Person.objects.filter(roles__name="Responsable inscriptions")
+    admin_role_names = ["Responsable inscriptions", "Animateur responsable", "Admin"]
+    admins = Person.objects.filter(roles__name__in=admin_role_names).distinct()
     admins_accounts = Account.objects.filter(person__in=admins)
     return [admin.email for admin in admins_accounts]
 
@@ -583,17 +620,17 @@ class SiteSettings(models.Model):
     """Model to store site-wide settings that can be changed by admins."""
 
     # Site information
-    site_name = models.CharField(max_length=100, default="Scouts de Limal")
+    site_name = models.CharField(max_length=100, default="Scouts")
     site_description = models.TextField(
-        default="Site officiel des scouts de Limal, présentant notre unité et permettant d'inscrire les enfants."
+        default="Site officiel de votre unité scoute, permettant d'inscrire les enfants et de gérer les membres."
     )
     site_keywords = models.CharField(
         max_length=255,
-        default="scouts limal wavre brabant-wallon wallonie belgique baden-powel",
+        default="scouts belgique baden-powel",
     )
 
     # Contact information
-    contact_email = models.EmailField(default="info@scouts-limal.be")
+    contact_email = models.EmailField(default="info@scouts.be")
     contact_phone = models.CharField(max_length=20, blank=True)
     contact_address = models.TextField(blank=True)
 
@@ -612,6 +649,15 @@ class SiteSettings(models.Model):
         default="Les inscriptions sont ouvertes pour l'année scoute."
     )
 
+    # Customizable text
+    photo_consent_text = models.TextField(
+        default="J'accepte que les photos ou vidéos soient utilisées par Les Scouts ASBL, dont mon unité fait partie"
+    )
+    address_placeholder = models.CharField(
+        max_length=200,
+        default="Ex: Rue de l'Église 1, 1000 Bruxelles",
+    )
+
     # Singleton pattern
     class Meta:
         verbose_name = "Site Settings"
@@ -622,3 +668,21 @@ class SiteSettings(models.Model):
         """Get the site settings, creating them if they don't exist."""
         settings, created = cls.objects.get_or_create(pk=1)
         return settings
+
+
+class ImportantDocument(models.Model):
+    """Documents or links accessible to authenticated users."""
+
+    title = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    url = models.URLField(blank=True)
+    file = models.FileField(upload_to="documents/", blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        verbose_name = "Document important"
+        verbose_name_plural = "Documents importants"
+
+    def __str__(self):
+        return self.title

@@ -13,3 +13,6 @@ config.yml
 Caddyfile
 __pypackages__
 .python-version
+node_modules/
+test-results/
+playwright-report/

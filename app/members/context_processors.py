@@ -12,4 +12,16 @@ def contact_info(request):
         "site_keywords": site_settings.site_keywords,
         "registration_open": site_settings.registration_open,
         "registration_message": site_settings.registration_message,
+        "photo_consent_text": site_settings.photo_consent_text,
+        "address_placeholder": site_settings.address_placeholder,
     }
+
+
+def nav_sections(request):
+    """Provide all sections for the navigation dropdown."""
+    from .models import Section
+
+    sections = Section.objects.select_related("branch").order_by(
+        "branch__name", "name"
+    )
+    return {"nav_sections": sections}

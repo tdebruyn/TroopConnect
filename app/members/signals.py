@@ -1,59 +1,35 @@
-# from allauth.account.signals import user_signed_up
-# from django.dispatch import receiver
-# from django.utils.timezone import now
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.contrib.sites.models import Site
+from post_office import mail
 
-# from .models import Account, Person, Role
-
-
-# @receiver(user_signed_up)
-# def create_person_for_new_account(request, user, **kwargs):
-#     """
-#     This signal handler creates a Person instance when a new Account is created via Allauth,
-#     and assigns them the 'Nouveau' role.
-#     """
-
-#     # Create the related Person
-#     person = Person.objects.create(
-#         first_name="",
-#         last_name="",
-#     )
-
-#     # Link the Person to the custom Account
-#     user.person = person
-#     user.save()
-
-#     person.roles.add(Role.objects.get(name="Nouveau"))
+from .models import Person, get_registration_admins
 
 
-# from django.contrib.auth.models import Group
-# from django.db.models.signals import m2m_changed
-# from django.dispatch import receiver
-# # from .models import CustomGroup, SchoolYear
-# from .models import SchoolYear
+@receiver(post_save, sender=Person)
+def notify_admins_on_profile_save(sender, instance, created, **kwargs):
+    """
+    When a Person (adult) is saved, notify registration admins.
+    Children are already handled in add_new_child_view with a dedicated template.
+    """
+    if not created:
+        return
 
-# from django.db.models import Q
+    # Only notify for adults (persons without parents, i.e. not children)
+    if instance.parents.exists():
+        return
 
+    recipients = get_registration_admins()
+    if not recipients:
+        return
 
-# @receiver(m2m_changed, sender=Group.user_set.through)
-# def check_user_group_membership(sender, instance, action, reverse, pk_set, **kwargs):
-#     if action == "pre_add":
-#         if not pk_set:
-#             return
-#         demande = CustomGroup.objects.get(name="Demandée")
-#         archive = CustomGroup.objects.get(name="Archivée")
-#         new_group_year = CustomGroup.objects.get(pk__in=pk_set).year
-
-#         if CustomGroup.objects.get(pk__in=pk_set) == archive:
-#             instance.groups.remove(demande)
-#         elif new_group_year is not None:
-#             existing_group_year = instance.groups.filter(
-#                 customgroup__year=new_group_year
-#             ).first()
-#             # when adding a group for a year, previous group from same year needs to be removed
-#             instance.groups.remove(existing_group_year)
-#             instance.groups.remove(demande)
-#             if (
-#                 CustomGroup.objects.get(pk__in=pk_set).year.name
-#                 >= SchoolYear.current().name
-#             ):
-#                 instance.groups.remove(archive)
+    mail.send(
+        recipients=recipients,
+        sender="MS_M3qCdl@tomctl.be",
+        template="new_child_staff",
+        context={
+            "first_name": instance.first_name,
+            "last_name": instance.last_name,
+            "url": f"{Site.objects.get_current()}/users/adminupdate/{instance.id}",
+        },
+    )

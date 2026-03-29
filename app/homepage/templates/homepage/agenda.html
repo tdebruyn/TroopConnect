@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="container">
+        <header class="masthead mb-4">
+            <div class="card">
+                <h2>Agenda</h2>
+                <p>Calendrier des activités.</p>
+            </div>
+        </header>
+        {% if events %}
+            <div class="list-group">
+                {% for event in events %}
+                    <div class="list-group-item {% if event.css_class %}{{ event.css_class }}{% endif %}">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">{{ event.title }}</h5>
+                            <small>{{ event.date|date:"d/m/Y" }}</small>
+                        </div>
+                        {% if event.description %}
+                            <p class="mb-1">{{ event.description }}</p>
+                        {% endif %}
+                        {% if event.section %}
+                            <small>Section : {{ event.section.name }}</small>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-muted">Aucun événement à venir.</p>
+        {% endif %}
+    </div>
+{% endblock content %}

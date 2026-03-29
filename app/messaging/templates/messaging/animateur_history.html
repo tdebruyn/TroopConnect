@@ -1,0 +1,43 @@
+{% extends "members/base.html" %}
+{% block hat_title %}Historique des envois{% endblock hat_title %}
+{% block hat_text %}Messages envoyés{% endblock hat_text %}
+{% block subcontent %}
+    {% if user_is_animateur %}
+        <a href="{% url 'messaging:compose' %}" class="btn btn-primary mb-3">Message à ma section</a>
+    {% endif %}
+    {% if user_can_send_all %}
+        <a href="{% url 'messaging:compose_all' %}" class="btn btn-primary mb-3">Message à tous les membres</a>
+    {% endif %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Destinataires</th>
+                <th>Objet</th>
+                <th>Envoyés</th>
+                <th>Ignorés</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in messages_data %}
+                <tr>
+                    <td>{{ entry.message.created_at|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        {% if entry.message.section %}
+                            {{ entry.message.section.name }}
+                        {% else %}
+                            Tous les membres
+                        {% endif %}
+                    </td>
+                    <td>{{ entry.message.subject }}</td>
+                    <td>{{ entry.sent }}</td>
+                    <td>{{ entry.total|add:"-" }}{{ entry.sent }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="5">Aucun message envoyé.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock subcontent %}

@@ -1,0 +1,26 @@
+{% extends "members/base.html" %}
+{% block hat_title %}Enregistrer un paiement{% endblock hat_title %}
+{% block hat_text %}Trésorier{% endblock hat_text %}
+{% block subcontent %}
+<div class="row">
+    <div class="col-md-6">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.person_id }}
+            <div class="mb-3">
+                <label for="id_amount" class="form-label">{{ form.amount.label }}</label>
+                {{ form.amount }}
+                {% for error in form.amount.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="mb-3">
+                <label for="id_note" class="form-label">{{ form.note.label }}</label>
+                {{ form.note }}
+            </div>
+            <button type="submit" class="btn btn-primary">Enregistrer</button>
+            <a href="{% url 'finance:billing' %}" class="btn btn-secondary">Annuler</a>
+        </form>
+    </div>
+</div>
+{% endblock subcontent %}

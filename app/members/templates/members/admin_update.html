@@ -4,18 +4,20 @@
     {{ form.first_name.value }} {{ form.last_name.value }}
 {% endblock hat_title %}
 {% block hat_text %}
-    {% if parents %}
-        Enfant
-    {% elif children %}
+    {% if object.primary_role.short == "p" %}
         Parent
+    {% elif object.primary_role.short == "e" %}
+        Enfant
+    {% elif object.primary_role.short == "a" or object.primary_role.short == "ar" %}
+        Animateur
     {% else %}
         Membre
     {% endif %}
 {% endblock hat_text %}
 {% block subcontent %}
-    {% if parents %}
+    {% if object.primary_role.short == "p" %}
         <div class="topping-federation topping-top topping-right topping-large d-none d-lg-block"></div>
-    {% elif children %}
+    {% elif object.primary_role.short == "e" %}
         <div class="topping-baladins topping-top topping-right topping-large d-none d-lg-block"></div>
     {% else %}
         <div class="topping-pionniers topping-top topping-right topping-large d-none d-lg-block"></div>

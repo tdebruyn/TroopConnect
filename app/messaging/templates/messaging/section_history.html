@@ -1,0 +1,29 @@
+{% extends "members/base.html" %}
+{% block hat_title %}Historique des messages{% endblock hat_title %}
+{% block hat_text %}Messages de votre section{% endblock hat_text %}
+{% block subcontent %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Section</th>
+                <th>Objet</th>
+                <th>Expéditeur</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for msg in section_messages %}
+                <tr>
+                    <td>{{ msg.created_at|date:"d/m/Y H:i" }}</td>
+                    <td>{{ msg.section.name }}</td>
+                    <td>{{ msg.subject }}</td>
+                    <td>{{ msg.sender.first_name }} {{ msg.sender.last_name }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="4">Aucun message.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock subcontent %}

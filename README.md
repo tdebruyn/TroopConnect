@@ -27,3 +27,14 @@ Hosting: contabo.com
 Terraform
 
 Docker
+
+## E2E Test Users (local)
+
+The following users are seeded for Playwright end-to-end tests. Password for all: `Test1234!`
+
+| Role | Email |
+|------|-------|
+| Parent | parent1@test.be |
+| Parent | parent2@test.be |
+| Animateur | anim1@test.be |
+| Staff (Admin) | staff1@test.be |

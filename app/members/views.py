@@ -18,13 +18,15 @@ from allauth.account.views import (
 
 from .forms import (
     ProfileEditForm,
+    AnimeProfileForm,
     ChildForm,
     ChildFromKey,
     AdminUserUpdateForm,
     ChildAccountCreateForm,
     ChildAccountCreateConfirmForm,
+    OnboardingForm,
 )
-from .models import Person, SchoolYear, Account, Role, get_registration_admins
+from .models import Person, SchoolYear, Account, Role, get_registration_admins, ImportantDocument
 from .filters import PersonFilter
 import json
 from post_office import mail
@@ -37,6 +39,38 @@ from .constants import (
 
 class Login(TemplateView):
     template_name = "members/login.html"
+
+
+class OnboardingView(LoginRequiredMixin, TemplateView):
+    template_name = "members/onboarding.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        # If profile is already completed, redirect to homepage
+        if (
+            hasattr(request.user, "person")
+            and request.user.person.status == "a"
+        ):
+            return redirect("homepage")
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        person = request.user.person
+        form = OnboardingForm(
+            initial={
+                "first_name": person.first_name,
+                "last_name": person.last_name,
+                "address": person.address,
+                "phone": person.phone,
+            }
+        )
+        return self.render_to_response(self.get_context_data(form=form))
+
+    def post(self, request, *args, **kwargs):
+        form = OnboardingForm(request.POST)
+        if form.is_valid():
+            form.save(request.user)
+            return redirect("homepage")
+        return self.render_to_response(self.get_context_data(form=form))
 
 
 class AdminListView(UserPassesTestMixin, ListView):
@@ -235,6 +269,23 @@ class ProfileView(LoginRequiredMixin, UpdateView):
         form = form_class(instance=self.object)
         return self.render_to_response(self.get_context_data(form=form))
 
+    def get_form_class(self):
+        try:
+            if self.object.person.primary_role.short == "e":
+                return AnimeProfileForm
+        except AttributeError:
+            pass
+        return self.form_class
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form_class = self.get_form_class()
+        form = form_class(request.POST, instance=self.object)
+        if form.is_valid():
+            form.save()
+            return redirect(self.get_success_url())
+        return self.render_to_response(self.get_context_data(form=form))
+
     # def form_valid(self, form):
     #     messages.success(self.request, SUCCESS_MESSAGES["profile_updated"])
     #     return super().form_valid(form)
@@ -366,8 +417,8 @@ def add_child_key_view(request):
     if request.method == "POST":
         form = ChildFromKey(request.POST)
         if form.is_valid():
-            child = Person.objects.get(id=form.cleaned_data["secret_key"])
-            child.parents.add(request.user)
+            child = Person.objects.get(secret_key=form.cleaned_data["secret_key"])
+            child.parents.add(request.user.person)
 
             return HttpResponse(
                 status=204,
@@ -386,22 +437,20 @@ def add_child_key_view(request):
 
 
 def dettach_child(request, pk):
-    """
-    TODO, déplacer le texte vers le template
-    """
     context = {"allow_dettach": False}
-    child = Account.objects.get(username=pk)
+    child = get_object_or_404(Person, id=pk)
+    parent = request.user.person
     context["child"] = child
-    if not child.parents.filter(username=request.user).exists():
+    if not child.parents.filter(id=parent.id).exists():
         context["message"] = _(
             f"{child.first_name} n'est pas attaché à votre utilisateur"
         )
-    elif child.parents.count() < 2 and not child.is_adult() and not child.email:
+    elif child.parents.count() < 2 and not child.is_adult() and not child.has_account:
         context["message"] = _(
             f"""Vous ne pouvez pas détacher {child.first_name}.\n
-            Pour détacher un enfant, celui-ci doit soit être attaché à d'autres parents, soit avoir plus de 18 ans et avoir un email associé à son utilisateur.\n
+            Pour détacher un enfant, celui-ci doit soit être attaché à d'autres parents, soit avoir plus de 18 ans et avoir un compte associé.\n
                                {child.first_name} a {child.parents.count()} parent(s)\n
-                               {child.first_name} est né le {child.birthday} et son adresse mail est {child.email}"""
+                               {child.first_name} est né le {child.birthday} et {'a un compte' if child.has_account else "n'a pas de compte"}."""
         )
     else:
         context["message"] = _(
@@ -420,25 +469,27 @@ def load_secondary_role(request):
 
 
 def dettach_confirm(request, pk):
-    child = Account.objects.get(username=pk)
-    if not child.parents.filter(username=request.user).exists():
-        return redirect(reverse_lazy("members:profile", kwargs={"pk": request.user}))
-    else:
-        parent = Account.objects.get(username=request.user)
-        child.parents.remove(parent)
-        return redirect(reverse_lazy("members:profile", kwargs={"pk": request.user}))
+    child = get_object_or_404(Person, id=pk)
+    parent = request.user.person
+    if not child.parents.filter(id=parent.id).exists():
+        return redirect(reverse_lazy("members:profile", kwargs={"pk": request.user.pk}))
+    # Enforce at least one parent remains after detach
+    if child.parents.count() <= 1:
+        return redirect(reverse_lazy("members:profile", kwargs={"pk": request.user.pk}))
+    child.parents.remove(parent)
+    return redirect(reverse_lazy("members:profile", kwargs={"pk": request.user.pk}))
 
 
 def deregister_child(request, pk):
-    child = Account.objects.get(username=pk)
+    child = get_object_or_404(Person, id=pk)
+    parent = request.user.person
 
-    if not child.parents.filter(username=request.user).exists():
-        return redirect(reverse_lazy("members:profile", kwargs={"pk": request.user}))
+    if not child.parents.filter(id=parent.id).exists():
+        return redirect(reverse_lazy("members:profile", kwargs={"pk": request.user.pk}))
 
     context = {"allow_deregister": False}
-    child = CustomUser.objects.get(username=pk)
     context["child"] = child
-    if child.parents.filter(username=request.user).exists():
+    if child.parents.filter(id=parent.id).exists():
         context["allow_deregister"] = True
     return render(
         request=request, template_name="members/deregister_child.html", context=context
@@ -446,19 +497,16 @@ def deregister_child(request, pk):
 
 
 def deregister_confirm(request, pk, action):
-    child = CustomUser.objects.get(username=pk)
-    if not child.parents.filter(username=request.user).exists():
-        return redirect(reverse_lazy("members:profile", kwargs={"pk": request.user}))
-    else:
-        deregister = CustomGroup.objects.get(name="Désinscrire")
-        child.groups.add(deregister)
-
-        return redirect(reverse_lazy("members:profile", kwargs={"pk": request.user}))
-
-
-def create_year():
-    # SchoolYear.
-    print("I WAS HERE")
+    child = get_object_or_404(Person, id=pk)
+    parent = request.user.person
+    if not child.parents.filter(id=parent.id).exists():
+        return redirect(reverse_lazy("members:profile", kwargs={"pk": request.user.pk}))
+    # Set status to archived
+    from django.utils import timezone
+    child.status = "ar"
+    child.archived_date = timezone.now().date()
+    child.save()
+    return redirect(reverse_lazy("members:profile", kwargs={"pk": request.user.pk}))
 
 
 # class ProfileView(LoginRequiredMixin, ListView):
@@ -479,3 +527,9 @@ def get_secondary_role_label(request):
 
     label = SECONDARY_ROLE_LABEL_TEMPLATE.format(role=role_label)
     return HttpResponse(label)
+
+
+class DocumentListView(LoginRequiredMixin, ListView):
+    model = ImportantDocument
+    template_name = "members/documents.html"
+    context_object_name = "documents"

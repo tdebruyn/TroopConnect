@@ -1,4 +1,4 @@
 {% load i18n %}
 {% autoescape off %}
-{% blocktrans %}Création d'un compte sur le site de l'unité des scouts de Limal{% endblocktrans %}
+{% blocktrans %}Création d'un compte sur le site de votre unité scoute{% endblocktrans %}
 {% endautoescape %}

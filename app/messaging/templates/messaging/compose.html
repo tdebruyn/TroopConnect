@@ -1,0 +1,68 @@
+{% extends "members/base.html" %}
+{% block hat_title %}Envoyer un message{% endblock hat_title %}
+{% block hat_text %}Section {{ section.name }}{% endblock hat_text %}
+{% block subcontent %}
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="{{ form.subject.id_for_label }}" class="form-label">{{ form.subject.label }}</label>
+            {{ form.subject }}
+            {% if form.subject.errors %}
+                <div class="alert-danger">{{ form.subject.errors }}</div>
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            <label for="{{ form.body.id_for_label }}" class="form-label">{{ form.body.label }}</label>
+            {{ form.body }}
+            {% if form.body.errors %}
+                <div class="alert-danger">{{ form.body.errors }}</div>
+            {% endif %}
+        </div>
+        <h4 class="mt-4">Destinataires</h4>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th style="width: 50px;">
+                        <input type="checkbox"
+                               class="form-check-input"
+                               id="select-all"
+                               checked>
+                    </th>
+                    <th>Parent</th>
+                    <th>Enfant(s) dans la section</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in parents_data %}
+                    <tr>
+                        <td>
+                            <input type="checkbox"
+                                   class="form-check-input parent-checkbox"
+                                   name="parent_{{ entry.parent.pk }}"
+                                   checked>
+                        </td>
+                        <td>{{ entry.parent.first_name }} {{ entry.parent.last_name }}</td>
+                        <td>
+                            {% for child in entry.children %}
+                                {{ child.first_name }} {{ child.last_name }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="3">Aucun parent trouvé pour cette section.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="submit" class="btn btn-primary">Envoyer</button>
+        <a href="{% url 'messaging:animateur_history' %}" class="btn btn-secondary">Annuler</a>
+    </form>
+    <script>
+        document.getElementById('select-all').addEventListener('change', function() {
+            document.querySelectorAll('.parent-checkbox').forEach(function(cb) {
+                cb.checked = document.getElementById('select-all').checked;
+            });
+        });
+    </script>
+{% endblock subcontent %}

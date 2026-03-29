@@ -126,16 +126,12 @@ class PersonFilter(django_filters.FilterSet):
 
     def filter_by_role(self, queryset, field_name, value):
         """
-        Filter persons by their assigned roles through the PersonRole model
+        Filter persons by their primary role
         """
         if not value:
             return queryset
 
-        # Get all PersonRole entries for the selected role
-        person_roles = PersonRole.objects.filter(role=value)
-
-        # Filter persons who have this role assigned
-        return queryset.filter(id__in=person_roles.values("person_id")).distinct()
+        return queryset.filter(primary_role=value)
 
     def get_section(self, queryset, field_name, value):
         """

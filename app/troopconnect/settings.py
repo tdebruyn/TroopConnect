@@ -42,6 +42,8 @@ else:
 # Application definition
 
 INSTALLED_APPS = [
+    "finance.apps.FinanceConfig",
+    "messaging.apps.MessagingConfig",
     "members.apps.MembersConfig",
     "homepage.apps.HomepageConfig",
     "fontawesomefree",
@@ -79,6 +81,7 @@ MIDDLEWARE = [
     "debug_toolbar.middleware.DebugToolbarMiddleware",
     "simple_history.middleware.HistoryRequestMiddleware",
     "allauth.account.middleware.AccountMiddleware",
+    "members.middleware.OnboardingMiddleware",
 ]
 
 ROOT_URLCONF = "troopconnect.urls"
@@ -95,6 +98,8 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "members.context_processors.contact_info",
+                "members.context_processors.nav_sections",
+                "messaging.context_processors.is_animateur",
             ],
         },
     },
@@ -209,6 +214,8 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_LOGIN_METHODS = {"email"}
 ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
 SOCIALACCOUNT_LOGIN_ON_GET = True
+SOCIALACCOUNT_AUTO_SIGNUP = True
+SOCIALACCOUNT_ADAPTER = "members.adapters.SocialAccountAdapter"
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 ACCOUNT_FORMS = {"signup": "members.forms.CustomSignupForm"}
@@ -223,7 +230,15 @@ SOCIALACCOUNT_PROVIDERS = {
             "access_type": "online",
         },
         "OAUTH_PKCE_ENABLED": True,
-    }
+    },
+    "facebook": {
+        "APP": {
+            "client_id": sec("FACEBOOK_APP_ID") if "FACEBOOK_APP_ID" in secret_settings else "",
+            "secret": sec("FACEBOOK_SECRET") if "FACEBOOK_SECRET" in secret_settings else "",
+        },
+        "SCOPE": ["email"],
+        "FIELDS": ["email", "name"],
+    },
 }
 
 LOGIN_REDIRECT_URL = "homepage"
@@ -258,6 +273,16 @@ result_backend = "django-db"
 timezone = "Europe/Brussels"
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 CELERY_WORKER_STATE_DB = "/tmp/celery-worker-state.db"
+CELERY_BEAT_SCHEDULE = {
+    "create-year-daily": {
+        "task": "create_year_task",
+        "schedule": crontab(hour=3, minute=0),
+    },
+    "cleanup-old-events-daily": {
+        "task": "cleanup_old_events",
+        "schedule": crontab(hour=4, minute=0),
+    },
+}
 
 
 CACHES = {

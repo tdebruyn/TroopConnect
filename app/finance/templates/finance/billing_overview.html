@@ -1,0 +1,80 @@
+{% extends "members/base.html" %}
+{% block hat_title %}Cotisations{% endblock hat_title %}
+{% block hat_text %}Gestion financière — {{ school_year.range }}{% endblock hat_text %}
+{% block subcontent %}
+<div class="mb-3">
+    <a href="{% url 'finance:record_payment' %}" class="btn btn-primary">Enregistrer un paiement</a>
+    <a href="{% url 'finance:reminders' %}" class="btn btn-warning">Envoyer des rappels</a>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">Configuration</div>
+            <div class="card-body">
+                <table class="table table-sm">
+                    <tr><th>Cotisation pleine</th><td>{{ config.full_fee }}€</td></tr>
+                    <tr><th>Réduction fratrie</th><td>{{ config.sibling_discount }}€</td></tr>
+                    <tr><th>Forfait animateur</th><td>{{ config.animateur_fee }}€</td></tr>
+                    <tr><th>Pénalité de retard</th><td>{{ config.late_penalty_percent }}%</td></tr>
+                    <tr><th>Date limite</th><td>{{ config.late_deadline|default:"—" }}</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h5>Enfants ({{ children_balances|length }})</h5>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Dû</th>
+            <th>Payé</th>
+            <th>Solde</th>
+            <th>Retard</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for b in children_balances %}
+        <tr class="{% if b.is_late %}table-danger{% endif %}">
+            <td>{{ b.person }}</td>
+            <td>{{ b.amount_due }}€</td>
+            <td>{{ b.amount_paid }}€</td>
+            <td>{{ b.balance }}€</td>
+            <td>{% if b.is_late %}<span class="badge bg-danger">Oui</span>{% endif %}</td>
+            <td><a href="{% url 'finance:record_payment' %}?person_id={{ b.person_id }}" class="btn btn-sm btn-success">Payer</a></td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6">Aucun enfant inscrit.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% if animateur_balances %}
+<h5>Animateurs ({{ animateur_balances|length }})</h5>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Dû</th>
+            <th>Payé</th>
+            <th>Solde</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for b in animateur_balances %}
+        <tr>
+            <td>{{ b.person }}</td>
+            <td>{{ b.amount_due }}€</td>
+            <td>{{ b.amount_paid }}€</td>
+            <td>{{ b.balance }}€</td>
+            <td><a href="{% url 'finance:record_payment' %}?person_id={{ b.person_id }}" class="btn btn-sm btn-success">Payer</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+{% endblock subcontent %}

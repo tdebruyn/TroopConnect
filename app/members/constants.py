@@ -35,7 +35,7 @@ FORM_LABELS = {
     "secondary_role_enabled": _("Activer le rôle secondaire"),
     "photo_consent": _(
         "J'accepte que les photos ou vidéos sur lesquelles mon (mes) enfant(s) figure(nt) soient utilisées "
-        "par Les Scouts ASBL, dont l'unité de Limal fait partie"
+        "par Les Scouts ASBL, dont mon unité fait partie"
     ),
 }
 

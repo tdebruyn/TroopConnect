@@ -6,7 +6,7 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Group
 
 # from .models import CustomUser, CustomGroup, SchoolYear, Age
-from .models import Account, SchoolYear, Person, Section, Branch, SiteSettings
+from .models import Account, SchoolYear, Person, Section, Branch, SiteSettings, ImportantDocument
 
 from .forms import AccountChangeForm, AccountCreationForm, AdminAccountChangeForm
 from django.utils.html import format_html
@@ -174,6 +174,10 @@ class SiteSettingsAdmin(admin.ModelAdmin):
             "Registration Settings",
             {"fields": ("registration_open", "registration_message")},
         ),
+        (
+            "Customizable Text",
+            {"fields": ("photo_consent_text", "address_placeholder")},
+        ),
     )
 
     def has_add_permission(self, request):
@@ -183,3 +187,9 @@ class SiteSettingsAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         # Don't allow deleting the site settings
         return False
+
+
+@admin.register(ImportantDocument)
+class ImportantDocumentAdmin(admin.ModelAdmin):
+    list_display = ("title", "url", "file", "created_at")
+    search_fields = ("title",)

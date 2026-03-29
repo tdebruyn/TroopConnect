@@ -17,8 +17,8 @@
     </p>
     <div class="container">
         <a class="btn btn-primary me-1"
-           href="{% url 'members:deregister_confirm' child.username 'this_year' %}">Désinscrire {{ child.first_name }} pour l'année en cours</a>
+           href="{% url 'members:deregister_confirm' child.pk 'this_year' %}">Désinscrire {{ child.first_name }} pour l'année en cours</a>
         <a class="btn btn-primary"
-           href="{% url 'members:deregister_confirm' child.username 'next_year' %}">Désinscrire {{ child.first_name }} pour l'année prochaine</a>
+           href="{% url 'members:deregister_confirm' child.pk 'next_year' %}">Désinscrire {{ child.first_name }} pour l'année prochaine</a>
     </div>
 {% endblock subcontent %}

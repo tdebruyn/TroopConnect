@@ -1,0 +1,41 @@
+{% extends "members/base.html" %}
+{% block hat_title %}Envoyer des rappels{% endblock hat_title %}
+{% block hat_text %}Rappels de cotisation{% endblock hat_text %}
+{% block subcontent %}
+<p>{{ adults|length }} adulte(s) avec un solde impayé.</p>
+
+<div class="row">
+    <div class="col-md-8">
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="id_subject" class="form-label">{{ form.subject.label }}</label>
+                {{ form.subject }}
+            </div>
+            <div class="mb-3">
+                <label for="id_body" class="form-label">{{ form.body.label }}</label>
+                {{ form.body }}
+                <div class="form-text">{{ form.body.help_text }}</div>
+            </div>
+            <button type="submit" class="btn btn-warning">Envoyer les rappels</button>
+            <a href="{% url 'finance:billing' %}" class="btn btn-secondary">Annuler</a>
+        </form>
+    </div>
+</div>
+
+{% if adults %}
+<h5 class="mt-4">Destinataires</h5>
+<table class="table table-sm">
+    <thead><tr><th>Parent</th><th>Enfants</th><th>Solde</th></tr></thead>
+    <tbody>
+        {% for a in adults %}
+        <tr>
+            <td>{{ a.person }}</td>
+            <td>{{ a.children_names }}</td>
+            <td>{{ a.balance }}€</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+{% endblock subcontent %}
