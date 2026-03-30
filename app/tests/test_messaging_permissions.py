@@ -27,7 +27,7 @@ class MessagingPermissionTest(TestCase):
         # Create section
         self.section = Section.objects.create(name="Louveteaux")
 
-        # Animateur (primary role "a") — can send to section, NOT to all
+        # Animateur (primary role "a") — can send to section
         self.anim_person = Person.objects.create(
             first_name="Jean", last_name="Anim",
             primary_role=self.role_animateur, status="a",
@@ -48,7 +48,7 @@ class MessagingPermissionTest(TestCase):
             person=self.staff_person,
         )
 
-        # Plain parent — cannot send to section or all
+        # Plain parent — cannot send messages
         self.parent_person = Person.objects.create(
             first_name="Paul", last_name="Parent",
             primary_role=self.role_parent, status="a",
@@ -64,25 +64,20 @@ class MessagingPermissionTest(TestCase):
             school_year=self.current_year,
         )
 
-    def test_animateur_cannot_access_compose_all(self):
-        self.client.login(email="anim@test.com", password="testpass")
-        response = self.client.get("/messaging/animateurs/compose-all/")
-        self.assertEqual(response.status_code, 404)
-
-    def test_staff_can_access_compose_all(self):
-        self.client.login(email="staff@test.com", password="testpass")
-        response = self.client.get("/messaging/animateurs/compose-all/")
-        self.assertEqual(response.status_code, 200)
-
-    def test_animateur_can_access_section_compose(self):
-        self.client.login(email="anim@test.com", password="testpass")
-        response = self.client.get("/messaging/animateurs/compose/")
-        self.assertEqual(response.status_code, 200)
-
-    def test_parent_cannot_access_section_compose(self):
+    def test_parent_cannot_access_compose(self):
         self.client.login(email="parent@test.com", password="testpass")
         response = self.client.get("/messaging/animateurs/compose/")
         self.assertEqual(response.status_code, 404)
+
+    def test_animateur_can_access_compose(self):
+        self.client.login(email="anim@test.com", password="testpass")
+        response = self.client.get("/messaging/animateurs/compose/")
+        self.assertEqual(response.status_code, 200)
+
+    def test_staff_can_access_compose(self):
+        self.client.login(email="staff@test.com", password="testpass")
+        response = self.client.get("/messaging/animateurs/compose/")
+        self.assertEqual(response.status_code, 200)
 
     def test_animateur_can_view_history(self):
         self.client.login(email="anim@test.com", password="testpass")
@@ -99,23 +94,12 @@ class MessagingPermissionTest(TestCase):
         response = self.client.get("/messaging/animateurs/history/")
         self.assertEqual(response.status_code, 404)
 
-    def test_animateur_history_hides_send_all_button(self):
+    def test_animateur_history_shows_compose_button(self):
         self.client.login(email="anim@test.com", password="testpass")
         response = self.client.get("/messaging/animateurs/history/")
-        self.assertNotContains(response, "Message à tous les membres")
+        self.assertContains(response, "Envoyer un message")
 
-    def test_staff_history_shows_send_all_button(self):
+    def test_staff_history_shows_compose_button(self):
         self.client.login(email="staff@test.com", password="testpass")
         response = self.client.get("/messaging/animateurs/history/")
-        self.assertContains(response, "Message à tous les membres")
-
-    def test_animateur_history_shows_section_compose_button(self):
-        self.client.login(email="anim@test.com", password="testpass")
-        response = self.client.get("/messaging/animateurs/history/")
-        self.assertContains(response, "Message à ma section")
-
-    def test_staff_without_animateur_primary_no_section_compose_button(self):
-        """Staff (primary role parent) should not see 'Message à ma section'."""
-        self.client.login(email="staff@test.com", password="testpass")
-        response = self.client.get("/messaging/animateurs/history/")
-        self.assertNotContains(response, "Message à ma section")
+        self.assertContains(response, "Envoyer un message")

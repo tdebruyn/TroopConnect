@@ -1,0 +1,39 @@
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th style="width: 50px;">
+                <input type="checkbox"
+                       class="form-check-input"
+                       id="select-all"
+                       checked>
+            </th>
+            <th>Nom</th>
+            <th>Info</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for entry in recipients %}
+            <tr>
+                <td>
+                    <input type="checkbox"
+                           class="form-check-input recipient-checkbox"
+                           name="recipient_{{ entry.person.pk }}"
+                           checked>
+                </td>
+                <td>{{ entry.person.first_name }} {{ entry.person.last_name }}</td>
+                <td>{{ entry.detail }}</td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="3">Aucun destinataire trouvé.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<script>
+    document.getElementById('select-all').addEventListener('change', function() {
+        document.querySelectorAll('.recipient-checkbox').forEach(function(cb) {
+            cb.checked = document.getElementById('select-all').checked;
+        });
+    });
+</script>

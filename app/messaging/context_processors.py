@@ -3,8 +3,8 @@ def is_animateur(request):
         try:
             person = request.user.person
             is_anim = person.primary_role.short in ["a", "ar"]
-            # Only staff d'unité (secondary role 'ar' or 'ad') can send to all
-            has_send_all_role = person.roles.filter(short__in=["ar", "ad"]).exists()
+            # Staff or users with secondary role 'ar' or 'ad' can send to all
+            has_send_all_role = request.user.is_staff or person.roles.filter(short__in=["ar", "ad"]).exists()
             is_tresorier = person.roles.filter(short="t").exists()
             return {
                 "user_is_animateur": is_anim,

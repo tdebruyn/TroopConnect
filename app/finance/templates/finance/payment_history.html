@@ -1,0 +1,38 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title">Historique des paiements — {{ person }}</h5>
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        {% if payments %}
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Montant</th>
+                    <th>Note</th>
+                    <th>Enregistré par</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in payments %}
+                <tr>
+                    <td>{{ p.date }}</td>
+                    <td>{{ p.amount }}€</td>
+                    <td>{{ p.note|default:"—" }}</td>
+                    <td>{{ p.recorded_by|default:"—" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="text-muted">Aucun paiement enregistré.</p>
+        {% endif %}
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+    </div>
+</div>

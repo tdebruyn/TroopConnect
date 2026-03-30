@@ -84,7 +84,14 @@
                             <td>{{ member.last_name }}</td>
                             <td>{{ member.birthday | default_if_none:'' }}</td>
                             <td>{{ member.sex | default_if_none:'' }}</td>
-                            <td>{{ member.section_display }}</td>
+                            <td>
+                                {{ member.section_display }}
+                                {% if member.age_mismatch %}
+                                    <i class="bi bi-exclamation-triangle-fill text-warning"
+                                       title="Âge incompatible : {{ member.age_mismatch_detail }}"
+                                       data-bs-toggle="tooltip"></i>
+                                {% endif %}
+                            </td>
                             <td>{{ member.role }}</td>
                             <td>
                                 <a class="btn btn-primary btn-sm"
@@ -146,4 +153,7 @@
             
             return false;
         }
+        document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function(el) {
+            new bootstrap.Tooltip(el);
+        });
     </script>

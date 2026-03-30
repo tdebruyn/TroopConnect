@@ -57,9 +57,9 @@
                                    aria-expanded="false"
                                    data-bs-toggle="dropdown"
                                    href="#">Sections</a>
-                                <div class="dropdown-menu">
+                                <div class="dropdown-menu dropdown-menu-dark">
                                     {% for section in nav_sections %}
-                                        <a class="dropdown-item" href="#">{{ section.name }}</a>
+                                        <a class="dropdown-item" href="{% url 'messaging:section_history' section_id=section.pk %}">{{ section.name }}</a>
                                     {% empty %}
                                         <a class="dropdown-item disabled" href="#">Aucune section</a>
                                     {% endfor %}
@@ -82,7 +82,7 @@
                                             <a class="dropdown-item" href="{% url 'finance:billing' %}">Cotisations</a>
                                         {% endif %}
                                         {% if user_can_send_all %}
-                                            <a class="dropdown-item" href="{% url 'messaging:compose_all' %}">Message à tous les membres</a>
+                                            <a class="dropdown-item" href="{% url 'messaging:compose' %}">Envoyer un message</a>
                                             <a class="dropdown-item" href="{% url 'messaging:animateur_history' %}">Historique des envois</a>
                                         {% endif %}
                                     </div>
@@ -95,10 +95,7 @@
                                        data-bs-toggle="dropdown"
                                        href="#">Outils Animateur</a>
                                     <div class="dropdown-menu dropdown-menu-dark">
-                                        <a class="dropdown-item" href="{% url 'messaging:compose' %}">Message à ma section</a>
-                                        {% if user_can_send_all %}
-                                            <a class="dropdown-item" href="{% url 'messaging:compose_all' %}">Message à tous les membres</a>
-                                        {% endif %}
+                                        <a class="dropdown-item" href="{% url 'messaging:compose' %}">Envoyer un message</a>
                                         <a class="dropdown-item" href="{% url 'messaging:animateur_history' %}">Historique des envois</a>
                                     </div>
                                 </li>
@@ -124,9 +121,6 @@
                                     </li>
                                     <li>
                                         <a class="dropdown-item" href="{% url 'members:documents' %}">Mes documents</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="{% url 'messaging:section_history' %}">Historique des messages</a>
                                     </li>
                                     <li>
                                         <hr class="dropdown-divider">

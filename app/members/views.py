@@ -125,17 +125,29 @@ class AdminListView(UserPassesTestMixin, ListView):
 
         # Create the filter with the current queryset
         context["filter"] = PersonFilter(self.request.GET, queryset=self.get_queryset())
-        context["object_list"] = context["filter"].qs
 
-        # For each person in the filtered queryset, add their section for the selected year
+        # For each person in the (paginated) object_list, add their section for the selected year
         for person in context["object_list"]:
             try:
                 enrollment = person.enrollment_set.filter(
                     school_year=selected_year
-                ).first()
+                ).select_related("section__branch").first()
                 person.section_display = enrollment.section.name if enrollment else "-"
+                # Check age compatibility with section's branch
+                person.age_mismatch = False
+                if enrollment and person.birthday and enrollment.section.branch:
+                    age_at_dec_31 = selected_year.name - person.birthday.year
+                    branch = enrollment.section.branch
+                    if branch.min_age_dec_31 is not None and branch.max_age_dec_31 is not None:
+                        if not (branch.min_age_dec_31 <= age_at_dec_31 <= branch.max_age_dec_31):
+                            person.age_mismatch = True
+                            person.age_mismatch_detail = (
+                                f"{age_at_dec_31} ans — branche {branch.name} : "
+                                f"{branch.min_age_dec_31}-{branch.max_age_dec_31} ans"
+                            )
             except (SchoolYear.DoesNotExist, AttributeError):
                 person.section_display = "-"
+                person.age_mismatch = False
 
             # Get the primary role
             person.role = Role.objects.get(id=person.primary_role_id)

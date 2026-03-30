@@ -1,11 +1,15 @@
-{% extends "members/base.html" %}
-{% block hat_title %}Enregistrer un paiement{% endblock hat_title %}
-{% block hat_text %}Trésorier{% endblock hat_text %}
-{% block subcontent %}
-<div class="row">
-    <div class="col-md-6">
-        <form method="post">
-            {% csrf_token %}
+<div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title">Enregistrer un paiement</h5>
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"></button>
+    </div>
+    <form hx-post="{% url 'finance:record_payment' %}{% if request.GET.person_id %}?person_id={{ request.GET.person_id }}{% endif %}"
+          hx-headers='{"X-CSRFToken":"{{ csrf_token }}"}'
+          hx-target="#dialog">
+        <div class="modal-body">
             {{ form.person_id }}
             <div class="mb-3">
                 <label for="id_amount" class="form-label">{{ form.amount.label }}</label>
@@ -25,9 +29,10 @@
                 <label for="id_note" class="form-label">{{ form.note.label }}</label>
                 {{ form.note }}
             </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
             <button type="submit" class="btn btn-primary">Enregistrer</button>
-            <a href="{% url 'finance:billing' %}" class="btn btn-secondary">Annuler</a>
-        </form>
-    </div>
+        </div>
+    </form>
 </div>
-{% endblock subcontent %}

@@ -2,11 +2,8 @@
 {% block hat_title %}Historique des envois{% endblock hat_title %}
 {% block hat_text %}Messages envoyés{% endblock hat_text %}
 {% block subcontent %}
-    {% if user_is_animateur %}
-        <a href="{% url 'messaging:compose' %}" class="btn btn-primary mb-3">Message à ma section</a>
-    {% endif %}
-    {% if user_can_send_all %}
-        <a href="{% url 'messaging:compose_all' %}" class="btn btn-primary mb-3">Message à tous les membres</a>
+    {% if user_is_animateur or user_can_send_all %}
+        <a href="{% url 'messaging:compose' %}" class="btn btn-primary mb-3">Envoyer un message</a>
     {% endif %}
     <table class="table table-striped">
         <thead>

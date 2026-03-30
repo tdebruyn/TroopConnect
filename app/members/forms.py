@@ -108,7 +108,18 @@ class AdminUserUpdateForm(forms.ModelForm):
 
         # Set initial values for roles if instance exists
         if self.instance and self.instance.pk:
-            self.fields["primary_role"].initial = self.instance.primary_role
+            locked, reason = self.instance.has_role_dependencies()
+            self.role_locked = locked
+            self.lock_reason = reason
+
+            if locked:
+                # Replace the select with a hidden field preserving current value
+                self.fields["primary_role"] = forms.CharField(
+                    widget=forms.HiddenInput,
+                    initial=self.instance.primary_role_id,
+                )
+            else:
+                self.fields["primary_role"].initial = self.instance.primary_role
 
             # Set secondary roles
             secondary_roles = self.instance.roles.filter(is_primary=False)
@@ -280,15 +291,26 @@ class ProfileEditForm(UserChangeForm):
         self.fields["email"].initial = self.instance.email
 
         # Set primary role
+        locked, reason = person.has_role_dependencies()
+        self.role_locked = locked
+        self.lock_reason = reason
 
-        if person.primary_role.short == "p":
-            self.fields["primary_role"].initial = "p"
-            if parent_active_role in person.roles.all():
-                self.fields["parent_active"].initial = True
-        elif person.primary_role.short == "a":
-            self.fields["primary_role"].initial = "a"
-        elif person.primary_role.short == "e":
-            self.fields["primary_role"].initial = "e"
+        if locked:
+            # Replace the radio select with a hidden field preserving current value
+            self.fields["primary_role"] = forms.CharField(
+                widget=forms.HiddenInput,
+                initial=person.primary_role.short,
+            )
+            self.fields["parent_active"].widget = forms.HiddenInput()
+        else:
+            if person.primary_role.short == "p":
+                self.fields["primary_role"].initial = "p"
+                if parent_active_role in person.roles.all():
+                    self.fields["parent_active"].initial = True
+            elif person.primary_role.short == "a":
+                self.fields["primary_role"].initial = "a"
+            elif person.primary_role.short == "e":
+                self.fields["primary_role"].initial = "e"
 
     def save(self, commit=True):
         person = self.instance.person
@@ -386,6 +408,7 @@ class ChildForm(forms.ModelForm):
             if account := Account.objects.filter(person=person).first():
                 self.fields["email"].initial = account.email
         self.fields["birthday"] = forms.DateField(
+            label=self.fields["birthday"].label,
             widget=forms.DateInput(
                 format="%Y-%m-%d", attrs={"type": "date", "class": "form-control"}
             ),

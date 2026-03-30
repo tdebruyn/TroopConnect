@@ -1,12 +1,11 @@
-from django.test import TestCase, RequestFactory
+from django.test import TestCase, Client
 
-from members.models import Branch, Section
-from members.context_processors import nav_sections
+from members.models import Account, Branch, Section, Person, Role, SchoolYear, Enrollment, ParentChild
 from post_office.models import EmailTemplate
 
 
 class NavSectionsContextProcessorTest(TestCase):
-    """Test that nav_sections context processor returns sections."""
+    """Test that nav_sections context processor returns sections per user."""
 
     @classmethod
     def setUpTestData(cls):
@@ -18,33 +17,56 @@ class NavSectionsContextProcessorTest(TestCase):
         )
         cls.section = Section.objects.create(name="Baladins 1", branch=cls.branch)
 
-    def test_returns_sections(self):
-        factory = RequestFactory()
-        request = factory.get("/")
-        context = nav_sections(request)
-        self.assertIn("nav_sections", context)
-        self.assertEqual(list(context["nav_sections"]), [self.section])
+    def setUp(self):
+        self.current_year = SchoolYear.current()
+        self.role_parent = Role.objects.get(short="p")
+        self.role_e = Role.objects.get(short="e")
 
-    def test_empty_sections(self):
-        Section.objects.all().delete()
-        factory = RequestFactory()
-        request = factory.get("/")
-        context = nav_sections(request)
-        self.assertEqual(list(context["nav_sections"]), [])
+    def test_staff_sees_all_sections(self):
+        staff_person = Person.objects.create(
+            first_name="Staff", last_name="User",
+            primary_role=self.role_parent, status="a",
+        )
+        Account.objects.create_user(
+            email="staff_nav@test.com", password="testpass",
+            person=staff_person, is_staff=True,
+        )
 
-    def test_sections_ordered_by_branch_and_name(self):
-        branch2 = Branch.objects.create(
-            name="Baladins", min_age_dec_31=6, max_age_dec_31=8,
+        self.client.login(email="staff_nav@test.com", password="testpass")
+        response = self.client.get("/")
+        nav_sections = response.context["nav_sections"]
+        names = [s.name for s in nav_sections]
+        self.assertIn("Baladins 1", names)
+
+    def test_unauthenticated_sees_no_sections(self):
+        response = self.client.get("/")
+        nav_sections = response.context["nav_sections"]
+        self.assertEqual(list(nav_sections), [])
+
+    def test_parent_sees_children_sections(self):
+        parent_person = Person.objects.create(
+            first_name="Parent", last_name="Test",
+            primary_role=self.role_parent, status="a",
         )
-        # Create a second branch with a different name to test ordering
-        branch3 = Branch.objects.create(
-            name="Loups", min_age_dec_31=9, max_age_dec_31=11,
+        child_person = Person.objects.create(
+            first_name="Child", last_name="Test",
+            primary_role=self.role_e, status="a",
         )
-        s1 = Section.objects.create(name="Loups 1", branch=branch3)
-        factory = RequestFactory()
-        request = factory.get("/")
-        context = nav_sections(request)
-        names = [s.name for s in context["nav_sections"]]
-        # Loups (branch3) comes after Baladins alphabetically
-        self.assertEqual(names[0], "Baladins 1")
-        self.assertEqual(names[-1], "Loups 1")
+        ParentChild.objects.create(parent=parent_person, child=child_person, primary_contact=True)
+
+        if self.current_year:
+            Enrollment.objects.create(
+                user=child_person, section=self.section,
+                school_year=self.current_year,
+            )
+
+        Account.objects.create_user(
+            email="parent_nav@test.com", password="testpass",
+            person=parent_person,
+        )
+
+        self.client.login(email="parent_nav@test.com", password="testpass")
+        response = self.client.get("/")
+        nav_sections = response.context["nav_sections"]
+        names = [s.name for s in nav_sections]
+        self.assertIn("Baladins 1", names)

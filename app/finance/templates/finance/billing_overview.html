@@ -3,7 +3,6 @@
 {% block hat_text %}Gestion financière — {{ school_year.range }}{% endblock hat_text %}
 {% block subcontent %}
 <div class="mb-3">
-    <a href="{% url 'finance:record_payment' %}" class="btn btn-primary">Enregistrer un paiement</a>
     <a href="{% url 'finance:reminders' %}" class="btn btn-warning">Envoyer des rappels</a>
 </div>
 
@@ -44,7 +43,10 @@
             <td>{{ b.amount_paid }}€</td>
             <td>{{ b.balance }}€</td>
             <td>{% if b.is_late %}<span class="badge bg-danger">Oui</span>{% endif %}</td>
-            <td><a href="{% url 'finance:record_payment' %}?person_id={{ b.person_id }}" class="btn btn-sm btn-success">Payer</a></td>
+            <td>
+                <button hx-get="{% url 'finance:record_payment' %}?person_id={{ b.person_id }}" hx-target="#dialog" class="btn btn-sm btn-success">Payer</button>
+                <button hx-get="{% url 'finance:payment_history' person_id=b.person_id %}" hx-target="#dialog" class="btn btn-sm btn-outline-secondary">Historique</button>
+            </td>
         </tr>
         {% empty %}
         <tr><td colspan="6">Aucun enfant inscrit.</td></tr>
@@ -71,7 +73,10 @@
             <td>{{ b.amount_due }}€</td>
             <td>{{ b.amount_paid }}€</td>
             <td>{{ b.balance }}€</td>
-            <td><a href="{% url 'finance:record_payment' %}?person_id={{ b.person_id }}" class="btn btn-sm btn-success">Payer</a></td>
+            <td>
+                <button hx-get="{% url 'finance:record_payment' %}?person_id={{ b.person_id }}" hx-target="#dialog" class="btn btn-sm btn-success">Payer</button>
+                <button hx-get="{% url 'finance:payment_history' person_id=b.person_id %}" hx-target="#dialog" class="btn btn-sm btn-outline-secondary">Historique</button>
+            </td>
         </tr>
         {% endfor %}
     </tbody>

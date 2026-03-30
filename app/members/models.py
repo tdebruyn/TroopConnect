@@ -167,6 +167,20 @@ class Person(models.Model):
 
         return {"name": "En attente"}
 
+    def has_role_dependencies(self):
+        """Check if changing this person's primary role is blocked by existing data.
+
+        Returns (False, "") if no dependencies, or (True, reason) if locked.
+        """
+        current_year = SchoolYear.current()
+        if current_year and self.enrollment_set.filter(
+            school_year=current_year
+        ).exists():
+            return True, "des sections associées"
+        if self.as_parent.exists():
+            return True, "des enfants associés"
+        return False, ""
+
 
 class Role(models.Model):
     short = models.CharField(max_length=2, unique=True)

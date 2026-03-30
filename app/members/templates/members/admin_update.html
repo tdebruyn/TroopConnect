@@ -57,10 +57,18 @@
                             <span class="input-group-text" id="phone-prefix"><i class="bi-telephone"></i></span>{% render_field form.phone class="form-control" %}
                         </div>
                         <div class="alert-danger">{% render_field form.phone.errors class="form-control" %}</div>
-                        <div class="form-label">{{ form.primary_role.label_tag }}</div>
-                        <div class="input-group">
-                            {% render_field form.primary_role class="form-select" id=form.primary_role.id value=form.primary_role.initial %}
-                        </div>
+                        {% if form.role_locked %}
+                            <div class="form-label">Rôle principal</div>
+                            <div class="mb-2">
+                                <span class="badge bg-secondary fs-6">{{ object.primary_role.name }}</span>
+                                <small class="text-muted d-block mt-1">Le type de compte ne peut pas être modifi.  Raison: {{ form.lock_reason }}.</small>
+                            </div>
+                        {% else %}
+                            <div class="form-label">{{ form.primary_role.label_tag }}</div>
+                            <div class="input-group">
+                                {% render_field form.primary_role class="form-select" id=form.primary_role.id value=form.primary_role.initial %}
+                            </div>
+                        {% endif %}
                         <div class="alert-danger">{{ form.primary_role.errors }}</div>
                         <div class="form-label">{{ form.secondary_roles.label_tag }}</div>
                         <div class="input-group">{% render_field form.secondary_roles %}</div>

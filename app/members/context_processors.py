@@ -18,10 +18,39 @@ def contact_info(request):
 
 
 def nav_sections(request):
-    """Provide all sections for the navigation dropdown."""
-    from .models import Section
+    """Provide sections the current user is connected to for the navigation dropdown."""
+    from .models import Section, SchoolYear, Enrollment
 
-    sections = Section.objects.select_related("branch").order_by(
+    if not hasattr(request, "user") or not request.user.is_authenticated:
+        return {"nav_sections": Section.objects.none()}
+
+    if request.user.is_staff:
+        sections = Section.objects.select_related("branch").order_by(
+            "branch__name", "name"
+        )
+        return {"nav_sections": sections}
+
+    if not hasattr(request.user, "person"):
+        return {"nav_sections": Section.objects.none()}
+
+    person = request.user.person
+    current_year = SchoolYear.current()
+    if not current_year:
+        return {"nav_sections": Section.objects.none()}
+
+    # Direct enrollments (animateurs and children)
+    direct_ids = Enrollment.objects.filter(
+        user=person, school_year=current_year
+    ).values_list("section_id", flat=True)
+
+    # Sections where user is a parent of an enrolled child
+    parent_ids = Enrollment.objects.filter(
+        user__as_child__parent=person, school_year=current_year
+    ).values_list("section_id", flat=True)
+
+    all_ids = set(direct_ids) | set(parent_ids)
+
+    sections = Section.objects.filter(pk__in=all_ids).select_related("branch").order_by(
         "branch__name", "name"
     )
     return {"nav_sections": sections}

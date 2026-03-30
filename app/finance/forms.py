@@ -5,10 +5,14 @@ from decimal import Decimal
 class PaymentForm(forms.Form):
     """Form for the Trésorier to record a payment."""
 
-    person_id = forms.IntegerField(widget=forms.HiddenInput())
+    person_id = forms.CharField(widget=forms.HiddenInput())
     amount = forms.DecimalField(
         max_digits=8, decimal_places=2, min_value=Decimal("0.01"),
         label="Montant (€)",
+    )
+    date = forms.DateField(
+        label="Date",
+        widget=forms.DateInput(attrs={"class": "form-control", "type": "date"}, format="%Y-%m-%d"),
     )
     note = forms.CharField(
         max_length=255, required=False,

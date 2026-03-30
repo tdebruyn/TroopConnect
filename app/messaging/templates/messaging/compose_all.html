@@ -2,7 +2,7 @@
 {% block hat_title %}Envoyer un message{% endblock hat_title %}
 {% block hat_text %}Tous les membres{% endblock hat_text %}
 {% block subcontent %}
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="mb-3">
             <label for="{{ form.subject.id_for_label }}" class="form-label">{{ form.subject.label }}</label>
@@ -18,6 +18,22 @@
                 <div class="alert-danger">{{ form.body.errors }}</div>
             {% endif %}
         </div>
+        <div class="mb-3">
+            <label for="id_attachment" class="form-label">Pièce jointe (optionnel)</label>
+            <input type="file" name="attachment" id="id_attachment" class="form-control">
+        </div>
+        {% if important_documents %}
+        <div class="mb-3">
+            <label class="form-label">Documents importants</label>
+            <p class="text-muted small">Cochez un document pour ajouter son lien au message.</p>
+            {% for doc in important_documents %}
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" name="doc_{{ doc.pk }}" id="doc_{{ doc.pk }}">
+                <label class="form-check-label" for="doc_{{ doc.pk }}">{{ doc.title }}</label>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
         <h4 class="mt-4">Destinataires</h4>
         <table class="table table-striped">
             <thead>

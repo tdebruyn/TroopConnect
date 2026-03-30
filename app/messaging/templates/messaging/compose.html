@@ -1,8 +1,8 @@
 {% extends "members/base.html" %}
 {% block hat_title %}Envoyer un message{% endblock hat_title %}
-{% block hat_text %}Section {{ section.name }}{% endblock hat_text %}
+{% block hat_text %}Composer un message{% endblock hat_text %}
 {% block subcontent %}
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="mb-3">
             <label for="{{ form.subject.id_for_label }}" class="form-label">{{ form.subject.label }}</label>
@@ -18,51 +18,76 @@
                 <div class="alert-danger">{{ form.body.errors }}</div>
             {% endif %}
         </div>
+        <div class="mb-3">
+            <label for="{{ form.event_date.id_for_label }}" class="form-label">{{ form.event_date.label }}</label>
+            {{ form.event_date }}
+            <div class="form-text">{{ form.event_date.help_text }}</div>
+            {% if form.event_date.errors %}
+                <div class="alert-danger">{{ form.event_date.errors }}</div>
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            <label for="id_attachment" class="form-label">Pièce jointe (optionnel)</label>
+            <input type="file" name="attachment" id="id_attachment" class="form-control">
+        </div>
+        {% if important_documents %}
+        <div class="mb-3">
+            <label class="form-label">Documents importants</label>
+            <p class="text-muted small">Cochez un document pour ajouter son lien au message.</p>
+            {% for doc in important_documents %}
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" name="doc_{{ doc.pk }}" id="doc_{{ doc.pk }}">
+                <label class="form-check-label" for="doc_{{ doc.pk }}">{{ doc.title }}</label>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
         <h4 class="mt-4">Destinataires</h4>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th style="width: 50px;">
-                        <input type="checkbox"
-                               class="form-check-input"
-                               id="select-all"
-                               checked>
-                    </th>
-                    <th>Parent</th>
-                    <th>Enfant(s) dans la section</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for entry in parents_data %}
-                    <tr>
-                        <td>
-                            <input type="checkbox"
-                                   class="form-check-input parent-checkbox"
-                                   name="parent_{{ entry.parent.pk }}"
-                                   checked>
-                        </td>
-                        <td>{{ entry.parent.first_name }} {{ entry.parent.last_name }}</td>
-                        <td>
-                            {% for child in entry.children %}
-                                {{ child.first_name }} {{ child.last_name }}{% if not forloop.last %}, {% endif %}
-                            {% endfor %}
-                        </td>
-                    </tr>
-                {% empty %}
-                    <tr>
-                        <td colspan="3">Aucun parent trouvé pour cette section.</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <button type="submit" class="btn btn-primary">Envoyer</button>
-        <a href="{% url 'messaging:animateur_history' %}" class="btn btn-secondary">Annuler</a>
+        <div class="row mb-3">
+            <div class="col-md-5">
+                <label for="id_recipient_group" class="form-label">{{ form.recipient_group.label }}</label>
+                {{ form.recipient_group }}
+            </div>
+            <div class="col-md-5" id="section-field" style="display: none;">
+                <label for="id_section" class="form-label">{{ form.section.label }}</label>
+                {{ form.section }}
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="button" class="btn btn-outline-primary w-100" id="btn-load-recipients"
+                        hx-post="{{ request.path }}"
+                        hx-include="closest form"
+                        hx-target="#recipients-list"
+                        hx-swap="innerHTML"
+                        hx-vals='{"hx_load_recipients": "1"}'>
+                    Charger
+                </button>
+            </div>
+        </div>
+
+        <div id="recipients-list">
+            <p class="text-muted">Sélectionnez un groupe et cliquez sur "Charger" pour afficher les destinataires.</p>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3">Envoyer</button>
+        <a href="{% url 'messaging:animateur_history' %}" class="btn btn-secondary mt-3">Annuler</a>
     </form>
     <script>
-        document.getElementById('select-all').addEventListener('change', function() {
-            document.querySelectorAll('.parent-checkbox').forEach(function(cb) {
-                cb.checked = document.getElementById('select-all').checked;
-            });
-        });
+        var groupField = document.getElementById('id_recipient_group');
+        var sectionField = document.getElementById('section-field');
+        var sectionSelect = document.getElementById('id_section');
+
+        function toggleSection() {
+            var val = groupField.value;
+            var sectionGroups = ['section_parents', 'section_animateurs', 'section_animes', 'section_all'];
+            if (sectionGroups.includes(val)) {
+                sectionField.style.display = '';
+            } else {
+                sectionField.style.display = 'none';
+            }
+        }
+
+        groupField.addEventListener('change', toggleSection);
+        toggleSection();
     </script>
 {% endblock subcontent %}

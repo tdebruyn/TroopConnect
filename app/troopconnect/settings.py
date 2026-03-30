@@ -282,6 +282,14 @@ CELERY_BEAT_SCHEDULE = {
         "task": "cleanup_old_events",
         "schedule": crontab(hour=4, minute=0),
     },
+    "cleanup-old-messages-daily": {
+        "task": "cleanup_old_messages",
+        "schedule": crontab(hour=4, minute=30),
+    },
+    "cleanup-orphaned-attachments-daily": {
+        "task": "cleanup_orphaned_attachments",
+        "schedule": crontab(hour=4, minute=45),
+    },
 }
 
 

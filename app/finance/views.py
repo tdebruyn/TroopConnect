@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.contrib import messages
 from django.utils import timezone
 from decimal import Decimal
@@ -17,6 +18,16 @@ def _is_tresorier(user):
     if not hasattr(user, "person"):
         return False
     return user.person.roles.filter(short="t").exists()
+
+
+def _check_access(user):
+    """Return True if user can access finance views."""
+    return _is_tresorier(user) or user.is_staff
+
+
+def _is_htmx(request):
+    """Check if request comes from HTMX."""
+    return request.META.get("HTTP_HX_REQUEST") == "true"
 
 
 @login_required
@@ -54,11 +65,13 @@ def billing_overview(request):
 @login_required
 def record_payment(request):
     """Trésorier records a payment for a person."""
-    if not _is_tresorier(request.user) and not request.user.is_staff:
+    if not _check_access(request.user):
         raise Http404
 
     current_year = SchoolYear.current()
     if not current_year:
+        if _is_htmx(request):
+            return HttpResponse("")
         messages.error(request, "Aucune année scolaire courante définie.")
         return redirect("homepage")
 
@@ -67,6 +80,8 @@ def record_payment(request):
         if form.is_valid():
             person = Person.objects.filter(pk=form.cleaned_data["person_id"]).first()
             if not person:
+                if _is_htmx(request):
+                    return HttpResponse("")
                 messages.error(request, "Personne introuvable.")
                 return redirect("finance:billing")
 
@@ -74,20 +89,50 @@ def record_payment(request):
                 person=person,
                 school_year=current_year,
                 amount=form.cleaned_data["amount"],
+                date=form.cleaned_data["date"],
                 note=form.cleaned_data.get("note", ""),
                 recorded_by=request.user.person,
             )
+            if _is_htmx(request):
+                response = HttpResponse("")
+                response["HX-Redirect"] = reverse("finance:billing")
+                return response
             messages.success(request, f"Paiement de {form.cleaned_data['amount']}€ enregistré pour {person}.")
             return redirect("finance:billing")
     else:
-        # Pre-fill person_id if provided in query string
-        initial = {}
+        initial = {"date": timezone.now().date()}
         person_id = request.GET.get("person_id")
         if person_id:
             initial["person_id"] = person_id
         form = PaymentForm(initial=initial)
 
+    if _is_htmx(request):
+        return render(request, "finance/record_payment_modal.html", {"form": form})
     return render(request, "finance/record_payment.html", {"form": form})
+
+
+@login_required
+def payment_history(request, person_id):
+    """Show payment history for a person in an HTMX modal."""
+    if not _check_access(request.user):
+        raise Http404
+
+    current_year = SchoolYear.current()
+    if not current_year:
+        return HttpResponse("")
+
+    person = Person.objects.filter(pk=person_id).first()
+    if not person:
+        return HttpResponse("")
+
+    payments = Payment.objects.filter(
+        person=person, school_year=current_year
+    ).order_by("-date")
+
+    return render(request, "finance/payment_history.html", {
+        "person": person,
+        "payments": payments,
+    })
 
 
 @login_required
