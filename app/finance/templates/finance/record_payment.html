@@ -1,6 +1,7 @@
 {% extends "members/base.html" %}
-{% block hat_title %}Enregistrer un paiement{% endblock hat_title %}
-{% block hat_text %}Trésorier{% endblock hat_text %}
+{% load i18n %}
+{% block hat_title %}{% trans "Record a payment" %}{% endblock hat_title %}
+{% block hat_text %}{% trans "Treasurer" %}{% endblock hat_text %}
 {% block subcontent %}
 <div class="row">
     <div class="col-md-6">
@@ -25,8 +26,8 @@
                 <label for="id_note" class="form-label">{{ form.note.label }}</label>
                 {{ form.note }}
             </div>
-            <button type="submit" class="btn btn-primary">Enregistrer</button>
-            <a href="{% url 'finance:billing' %}" class="btn btn-secondary">Annuler</a>
+            <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
+            <a href="{% url 'finance:billing' %}" class="btn btn-secondary">{% trans "Cancel" %}</a>
         </form>
     </div>
 </div>

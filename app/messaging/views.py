@@ -4,7 +4,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.utils import timezone
+from django.conf import settings
 from django.contrib import messages
+from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_POST
 
 from post_office import mail
@@ -201,15 +203,15 @@ def _get_doc_url(doc):
 
 
 def _handle_attachment_and_docs(request, msg):
-    """Process file attachment and ImportantDocument checkboxes.
+    """Process file attachments and ImportantDocument checkboxes.
 
     Modifies msg.body in place (appends document links) and saves the model.
-    Returns a list of (filename, file) tuples for email attachment.
+    Returns a dict of {filename: file} for email attachment.
     """
-    # Handle file upload with content-hash dedup
-    uploaded_file = request.FILES.get("attachment")
-    attachment_obj = None
-    if uploaded_file:
+    # Handle file uploads with content-hash dedup (max 10)
+    uploaded_files = request.FILES.getlist("attachments")[:10]
+    email_attachments = {}
+    for uploaded_file in uploaded_files:
         file_content = uploaded_file.read()
         content_hash = hashlib.sha256(file_content).hexdigest()
         uploaded_file.seek(0)
@@ -224,6 +226,7 @@ def _handle_attachment_and_docs(request, msg):
                 content_hash=content_hash,
             )
         msg.attachments.add(attachment_obj)
+        email_attachments[attachment_obj.original_name] = attachment_obj.file
 
     # Handle ImportantDocument checkboxes — append links to body
     selected_docs = []
@@ -236,14 +239,9 @@ def _handle_attachment_and_docs(request, msg):
 
     if selected_docs:
         links = [f"- {doc.title}: {_get_doc_url(doc)}" for doc in selected_docs]
-        msg.body += "\n\nDocuments importants :\n" + "\n".join(links)
+        msg.body += _("\n\nImportant documents:\n") + "\n".join(links)
 
     msg.save()
-
-    # Build email attachments list
-    email_attachments = []
-    if attachment_obj:
-        email_attachments.append((attachment_obj.original_name, attachment_obj.file))
 
     return email_attachments
 
@@ -266,7 +264,7 @@ def compose_message(request):
             user=person, school_year=current_year
         ).first()
         if not enrollment:
-            messages.error(request, "Vous n'êtes inscrit dans aucune section cette année.")
+            messages.error(request, _("You are not enrolled in any section this year."))
             return redirect("homepage")
         animateur_section = enrollment.section
 
@@ -343,18 +341,25 @@ def compose_message(request):
                         message=msg, parent=recipient, sent_at=timezone.now()
                     )
                     if hasattr(recipient, "account"):
-                        mail.send(
-                            recipients=[recipient.account.email],
-                            sender="MS_M3qCdl@tomctl.be",
-                            template="section_message",
-                            context={
-                                "sender_name": str(person),
-                                "section_name": msg_section.name if msg_section else "Tous les membres",
-                                "subject": msg.subject,
-                                "body": msg.body,
-                            },
-                            attachments=email_attachments or None,
-                        )
+                        try:
+                            mail.send(
+                                recipients=[recipient.account.email],
+                                sender=settings.DEFAULT_FROM_EMAIL,
+                                template="section_message",
+                                language=getattr(recipient.account, "preferred_language", None) or settings.LANGUAGE_CODE,
+                                context={
+                                    "sender_name": str(person),
+                                    "section_name": msg_section.name if msg_section else _("All members"),
+                                    "subject": msg.subject,
+                                    "body": msg.body,
+                                },
+                                attachments=email_attachments or None,
+                            )
+                        except Exception:
+                            messages.error(
+                                request,
+                                _("Failed to send to %(email)s.") % {"email": recipient.account.email},
+                            )
                     sent_count += 1
                 else:
                     SectionMessageRecipient.objects.create(
@@ -362,7 +367,8 @@ def compose_message(request):
                     )
 
             messages.success(
-                request, f"Message envoyé à {sent_count} destinataire(s)."
+                request,
+                _("Message sent to %(count)s recipient(s).") % {"count": sent_count},
             )
             return redirect("messaging:animateur_history")
     else:
@@ -409,6 +415,32 @@ def animateur_history(request):
         request,
         "messaging/animateur_history.html",
         {"messages_data": messages_data},
+    )
+
+
+@login_required
+def message_detail(request, message_id):
+    """Show the full detail of a sent message (content, recipients, attachments)."""
+    if not _is_authorized(request.user):
+        raise Http404
+
+    message = get_object_or_404(SectionMessage, pk=message_id)
+
+    # Only the sender (or a staff member) may view a message's details.
+    person = getattr(request.user, "person", None)
+    is_owner = person is not None and message.sender_id == person.pk
+    if not is_owner and not request.user.is_staff:
+        raise Http404
+
+    recipients = (
+        message.recipients.select_related("parent__account")
+        .order_by("parent__last_name", "parent__first_name")
+    )
+
+    return render(
+        request,
+        "messaging/message_detail.html",
+        {"message": message, "recipients": recipients},
     )
 
 

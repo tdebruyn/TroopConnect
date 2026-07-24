@@ -1,3 +1,4 @@
+{% load i18n %}
 {% for child in children %}
    <tr id="child-{{ child.pk }}" class="child-row">
       <td>{{ child.first_name }}</td>
@@ -14,13 +15,13 @@
       <td>{{ child.get_section.name }}</td>
       <td>
          <a class="btn btn-outline-danger btn-sm"
-            href="{% url 'members:deregister_child' pk=child.pk %}">Désinscrire</a>
+            href="{% url 'members:deregister_child' pk=child.pk %}">{% trans "Deregister" %}</a>
          <a class="btn btn-outline-warning btn-sm me-1"
-            href="{% url 'members:dettach_child' pk=child.pk %}">Détacher</a>
+            href="{% url 'members:dettach_child' pk=child.pk %}">{% trans "Detach" %}</a>
          {% comment %} <a class="btn btn-outline-info btn-sm me-1" href="{% url 'members:child_account_create' pk=child.pk %}">Créer compte</a> {% endcomment %}
          <button class="btn btn-primary btn-sm me-1"
                  hx-get="{% url 'members:edit_child' pk=child.pk %}"
-                 hx-target="#dialog">Modifier</button>
+                 hx-target="#dialog">{% trans "Edit" %}</button>
       </td>
    </tr>
 {% endfor %}

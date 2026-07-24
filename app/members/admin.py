@@ -1,4 +1,7 @@
 from django.contrib import admin
+from django.contrib.postgres.fields import ArrayField
+from django.forms import CheckboxSelectMultiple
+from django.utils.translation import gettext_lazy as _
 
 # from django.contrib.auth.admin import UserAdmin, GroupAdmin
 from django.contrib.auth.admin import UserAdmin
@@ -6,12 +9,22 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Group
 
 # from .models import CustomUser, CustomGroup, SchoolYear, Age
-from .models import Account, SchoolYear, Person, Section, Branch, SiteSettings, ImportantDocument
+from .models import (
+    Account,
+    SchoolYear,
+    Person,
+    Section,
+    Branch,
+    SiteSettings,
+    ImportantDocument,
+)
 
 from .forms import AccountChangeForm, AccountCreationForm, AdminAccountChangeForm
 from django.utils.html import format_html
 from django.db.models import F
 from django.db.models.functions import Concat
+
+from modeltranslation.admin import TranslationAdmin
 
 
 class AccountAdmin(UserAdmin):
@@ -32,7 +45,7 @@ class AccountAdmin(UserAdmin):
     fieldsets = (
         (None, {"fields": ("email", "password")}),
         (
-            "Personal Info",
+            _("Personal info"),
             {
                 "fields": (
                     "person_first_name",
@@ -47,7 +60,11 @@ class AccountAdmin(UserAdmin):
             },
         ),
         (
-            "Permissions",
+            _("Preferences"),
+            {"fields": ("preferred_language",)},
+        ),
+        (
+            _("Permissions"),
             {"fields": ("is_staff", "is_active", "groups", "user_permissions")},
         ),
     )
@@ -62,6 +79,7 @@ class AccountAdmin(UserAdmin):
                     "password2",
                     "is_staff",
                     "is_active",
+                    "preferred_language",
                     "person_first_name",
                     "person_last_name",
                     "person_birthday",
@@ -82,7 +100,7 @@ class AccountAdmin(UserAdmin):
     def get_full_name(self, obj):
         return f"{obj.person.first_name} {obj.person.last_name}"
 
-    get_full_name.short_description = "Name"
+    get_full_name.short_description = _("Name")
 
     def save_model(self, request, obj, form, change):
         # Save Person data
@@ -105,77 +123,49 @@ class AccountAdmin(UserAdmin):
         super().save_model(request, obj, form, change)
 
 
-# class CustomGroupAdmin(GroupAdmin):
-#     model = CustomGroup
-#     list_display = ["colored_name", "parents"]
-#     ordering = []
-#     fieldsets = (
-#         (
-#             None,
-#             {"fields": ("group_name", "year", "parents", "description", "permissions")},
-#         ),
-#     )
-
-#     def get_queryset(self, request):
-#         queryset = super().get_queryset(request)
-#         queryset = queryset.annotate(
-#             full_name=Concat(F("parents__parents__name"), F("parents__name"), F("name"))
-#         ).order_by("full_name")
-#         return queryset
-
-#     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-#         if db_field.name == "parents":
-#             queryset = CustomGroup.objects.filter(
-#                 parents__isnull=True
-#             ) | CustomGroup.objects.filter(parents__parents__isnull=True)
-#             queryset = queryset.order_by("name")
-#             kwargs["queryset"] = queryset
-#         return super().formfield_for_foreignkey(db_field, request, **kwargs)
-
-#     @admin.display()
-#     def colored_name(self, obj):
-#         if obj.is_base():
-#             return format_html(f"<span style='color:darkblue'>{obj.name}</span>")
-#         elif obj.parents.is_base():
-#             if obj.year:
-#                 return f"{obj.name}"
-#             else:
-#                 return obj.name
-
-#         else:
-#             if obj.year:
-#                 return format_html(f"<span style='color:lightblue'>{obj.name}</span>")
-#             else:
-#                 return format_html(f"<span style='color:lightblue'>{obj.name}</span>")
-
-
 admin.site.register(Account, AccountAdmin)
 admin.site.register(SchoolYear)
-admin.site.register(Section)
-admin.site.register(Branch)
+
+
+@admin.register(Section)
+class SectionAdmin(TranslationAdmin):
+    list_display = ("name", "branch")
+    search_fields = ("name",)
+
+
+@admin.register(Branch)
+class BranchAdmin(TranslationAdmin):
+    list_display = ("name",)
+    search_fields = ("name",)
 
 
 @admin.register(SiteSettings)
-class SiteSettingsAdmin(admin.ModelAdmin):
-    """Admin interface for site settings."""
+class SiteSettingsAdmin(TranslationAdmin):
+    """Admin interface for site settings (multilingual + language toggle)."""
+
+    # Render the available_languages ArrayField as checkboxes.
+    formfield_overrides = {
+        ArrayField: {"widget": CheckboxSelectMultiple},
+    }
 
     fieldsets = (
+        (_("Languages"), {"fields": ("available_languages",)}),
         (
-            "Site Information",
+            _("Site information"),
             {"fields": ("site_name", "site_description", "site_keywords")},
         ),
         (
-            "Contact Information",
+            _("Contact information"),
             {"fields": ("contact_email", "contact_phone", "contact_address")},
         ),
-        ("Social Media", {"fields": ("facebook_url", "instagram_url")}),
-        ("Email Settings", {"fields": ("email_signature",)}),
+        (_("Social media"), {"fields": ("facebook_url", "instagram_url")}),
+        (_("Email settings"), {"fields": ("email_signature",)}),
         (
-            "Registration Settings",
+            _("Registration settings"),
             {"fields": ("registration_open", "registration_message")},
         ),
         (
-            "Customizable Text",
+            _("Customizable text"),
             {"fields": ("photo_consent_text", "address_placeholder")},
         ),
     )
@@ -190,6 +180,6 @@ class SiteSettingsAdmin(admin.ModelAdmin):
 
 
 @admin.register(ImportantDocument)
-class ImportantDocumentAdmin(admin.ModelAdmin):
+class ImportantDocumentAdmin(TranslationAdmin):
     list_display = ("title", "url", "file", "created_at")
     search_fields = ("title",)

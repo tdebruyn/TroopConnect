@@ -3,7 +3,7 @@ from django import forms
 from .models import Account, Person, SchoolYear, Role, Section, PersonRole, Enrollment
 
 from django.db.models import Q
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.contrib.auth.tokens import default_token_generator
 from django.utils import timezone
@@ -39,7 +39,7 @@ class AccountCreationForm(UserCreationForm):
     class Meta:
         model = Account
         fields = ("email", "password1", "password2")
-        labels = {"email": "E-mail"}
+        labels = {"email": _("Email")}
 
 
 class AccountChangeForm(UserChangeForm):
@@ -56,7 +56,7 @@ class AdminUserUpdateForm(forms.ModelForm):
         required=False,
         label=_("Email"),
         help_text=_(
-            "Si un email est fourni, un compte sera créé. Sinon, le compte existant sera utilisé."
+            "If an email is provided, an account will be created. Otherwise, the existing account will be used."
         ),
     )
 
@@ -64,14 +64,14 @@ class AdminUserUpdateForm(forms.ModelForm):
     primary_role = forms.ModelChoiceField(
         queryset=Role.objects.filter(is_primary=True),
         required=True,
-        label=_("Rôle principal"),
+        label=_("Primary role"),
     )
 
     # Secondary roles (multiple selection)
     secondary_roles = forms.ModelMultipleChoiceField(
         queryset=Role.objects.filter(is_primary=False),
         required=False,
-        label=_("Rôles secondaires"),
+        label=_("Secondary roles"),
         # widget=forms.SelectMultiple(attrs={"class": "form-select", "size": "5"}),
         widget=forms.CheckboxSelectMultiple,
     )
@@ -85,7 +85,7 @@ class AdminUserUpdateForm(forms.ModelForm):
     next_section = SectionModelChoiceField(
         queryset=Section.objects.all(),
         required=False,
-        label=_("Prochaine section"),
+        label=_("Next section"),
     )
 
     def __init__(self, *args, **kwargs):
@@ -102,9 +102,13 @@ class AdminUserUpdateForm(forms.ModelForm):
             self.next_year = None
 
         # Set section labels with year ranges
-        self.fields["current_section"].label = _(f"Section {current_year.range}")
+        self.fields["current_section"].label = _("Section %(range)s") % {
+            "range": current_year.range
+        }
         if self.next_year:
-            self.fields["next_section"].label = _(f"Section {self.next_year.range}")
+            self.fields["next_section"].label = _("Section %(range)s") % {
+                "range": self.next_year.range
+            }
 
         # Set initial values for roles if instance exists
         if self.instance and self.instance.pk:
@@ -140,7 +144,7 @@ class AdminUserUpdateForm(forms.ModelForm):
         ):
             raise ValidationError(
                 _(
-                    "Seuls les rôles 'Animé' et 'Animateur' peuvent être inscrits dans une section."
+                    "Only the 'Participant' and 'Animator' roles can be enrolled in a section."
                 )
             )
 
@@ -222,24 +226,24 @@ class AdminUserUpdateForm(forms.ModelForm):
             "note",
         ]
         labels = {
-            "first_name": "Prénom",
-            "last_name": "Nom",
-            "address": "Adresse",
-            "phone": "Téléphone",
-            "photo_consent": "Photos autorisées",
-            "birthday": "Date de naissance (uniquement pour les animé(e)s)",
-            "sex": "Sexe (uniquement pour les animé(e)s)",
-            "totem": "Totem",
-            "note": "Remarques",
+            "first_name": _("First name"),
+            "last_name": _("Last name"),
+            "address": _("Address"),
+            "phone": _("Phone"),
+            "photo_consent": _("Photos allowed"),
+            "birthday": _("Date of birth (only for participants)"),
+            "sex": _("Sex (only for participants)"),
+            "totem": _("Totem"),
+            "note": _("Notes"),
         }
 
 
 class ProfileEditForm(UserChangeForm):
-    first_name = forms.CharField(max_length=150, label=_("Prénom"))
-    last_name = forms.CharField(max_length=150, label=_("Nom"))
+    first_name = forms.CharField(max_length=150, label=_("First name"))
+    last_name = forms.CharField(max_length=150, label=_("Last name"))
     totem = forms.CharField(max_length=60, required=False, label=_("Totem"))
-    address = forms.CharField(required=False, label=_("Adresse"))
-    phone = forms.CharField(required=False, label=_("Téléphone"))
+    address = forms.CharField(required=False, label=_("Address"))
+    phone = forms.CharField(required=False, label=_("Phone"))
     photo_consent = forms.BooleanField(
         required=False,
         label="",
@@ -251,14 +255,14 @@ class ProfileEditForm(UserChangeForm):
     primary_role = forms.ChoiceField(
         choices=ROLE_CHOICES,
         widget=forms.RadioSelect,
-        label=_("Type de compte"),
+        label=_("Account type"),
         required=True,
         initial="p",
     )
 
     parent_active = forms.BooleanField(
         required=False,
-        label=_("Parent actif, je veux aider l'unité occasionellement"),
+        label=_("Active parent, I want to help the unit occasionally"),
         widget=forms.CheckboxInput(attrs={"class": "form-check-input"}),
     )
 
@@ -346,8 +350,8 @@ class AnimeProfileForm(forms.ModelForm):
     """
 
     totem = forms.CharField(max_length=60, required=False, label=_("Totem"))
-    phone = forms.CharField(required=False, label=_("Téléphone"))
-    email = forms.EmailField(label=_("E-mail"))
+    phone = forms.CharField(required=False, label=_("Phone"))
+    email = forms.EmailField(label=_("Email"))
 
     class Meta:
         model = Account
@@ -375,7 +379,7 @@ class ChildForm(forms.ModelForm):
     email = forms.EmailField(
         required=False,
         label=_("Email"),
-        help_text=_("Si un email est fourni, un compte sera créé pour l'enfant."),
+        help_text=_("If an email is provided, an account will be created for the child."),
     )
 
     class Meta:
@@ -391,14 +395,14 @@ class ChildForm(forms.ModelForm):
             "note",
         ]
         labels = {
-            "sex": "Sexe",
-            "first_name": "Prénom",
-            "last_name": "Nom",
-            "address": "Adresse",
-            "phone": "Téléphone",
-            "note": "Remarques",
-            "birthday": "Date de naissance",
-            "totem": "Totem",
+            "sex": _("Sex"),
+            "first_name": _("First name"),
+            "last_name": _("Last name"),
+            "address": _("Address"),
+            "phone": _("Phone"),
+            "note": _("Notes"),
+            "birthday": _("Date of birth"),
+            "totem": _("Totem"),
         }
 
     def __init__(self, *args, **kwargs):
@@ -432,7 +436,7 @@ class ChildForm(forms.ModelForm):
             )
             if account_with_email:
                 self.add_error(
-                    "email", "Cet email existe déjà pour un autre utilisateur"
+                    "email", _("This email already exists for another user")
                 )
 
         return cleaned_data
@@ -464,7 +468,7 @@ class ChildForm(forms.ModelForm):
 
 
 class ChildFromKey(forms.Form):
-    secret_key = forms.CharField(max_length=6, label=_("Clé secrète (6 caractères)"))
+    secret_key = forms.CharField(max_length=6, label=_("Secret key (6 characters)"))
 
 
 class ChildAccountCreateForm(ResetPasswordForm):
@@ -533,14 +537,14 @@ class ChildAccountCreateConfirmForm(ResetPasswordKeyForm):
 
 
 class OnboardingForm(forms.Form):
-    first_name = forms.CharField(max_length=150, label=_("Prénom"))
-    last_name = forms.CharField(max_length=150, label=_("Nom"))
-    address = forms.CharField(required=False, label=_("Adresse"))
-    phone = forms.CharField(required=False, label=_("Téléphone"))
+    first_name = forms.CharField(max_length=150, label=_("First name"))
+    last_name = forms.CharField(max_length=150, label=_("Last name"))
+    address = forms.CharField(required=False, label=_("Address"))
+    phone = forms.CharField(required=False, label=_("Phone"))
     primary_role = forms.ChoiceField(
         choices=ROLE_CHOICES,
         widget=forms.RadioSelect,
-        label=_("Type de compte"),
+        label=_("Account type"),
         required=True,
     )
     photo_consent = forms.BooleanField(

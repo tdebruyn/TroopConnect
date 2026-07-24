@@ -1,16 +1,15 @@
 {% extends "members/base.html" %}
 {% load socialaccount %}
 {% load widget_tweaks %}
+{% load i18n %}
 {% block hat_title %}
-  Créer votre utilisateur
+  {% trans "Create your account" %}
 {% endblock hat_title %}
 {% block hat_text %}
-  Pour faire une demande d'inscription pour un ou plusieurs
-  enfants dans notre unité, un parent doit commencer par s'inscrire sur notre site
-  en suivant la procédure ci-dessous.  Ensuite, le parent pourra ajouter ses enfants pour faire une demande d'inscription.
+  {% blocktranslate %}To request enrollment for one or more children in our unit, a parent must first register on our site by following the procedure below. Then, the parent can add their children to submit an enrollment request.{% endblocktranslate %}
 {% endblock hat_text %}
 {% block subcontent %}
-  <legend class="fw-bold">Créer votre utilisateur (réservé aux parents et animateurs·trices)</legend>
+  <legend class="fw-bold">{% trans "Create your account (for parents and animators only)" %}</legend>
   <form class="signup"
         id="signup_form"
         method="post"
@@ -41,14 +40,14 @@
             <input type="hidden"
                    name="{{ redirect_field_name }}"
                    value="{{ redirect_field_value }}" />
-            <button type="submit" class="btn btn-primary btn-block mt-3">Envoyer</button>
+            <button type="submit" class="btn btn-primary btn-block mt-3">{% trans "Send" %}</button>
           </div>
         </fieldset>
       </div>
     </div>
   </form>
   <div class="col-md-6 row">
-    <legend class="fw-bold">Ou se connecter avec</legend>
+    <legend class="fw-bold">{% trans "Or log in with" %}</legend>
     <div>
       <a class="btn btn-primary mb-3 container"
          style="background-color: #3b5998"

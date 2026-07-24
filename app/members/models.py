@@ -6,7 +6,8 @@ from django.contrib.auth.models import (
 )
 from django.conf import settings
 from django.utils import timezone
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
+from django.contrib.postgres.fields import ArrayField
 from phonenumber_field.modelfields import PhoneNumberField
 from django.db.models import Q, Count
 from datetime import datetime, date
@@ -51,20 +52,38 @@ def default_role():
     return Role.objects.get(short="n")
 
 
+# Languages available to users on the site. The superadmin chooses which subset
+# is enabled via SiteSettings.available_languages.
+AVAILABLE_LANGUAGE_CHOICES = [
+    ("fr", "Français"),
+    ("nl", "Nederlands"),
+    ("en", "English"),
+]
+
+
+def default_available_languages():
+    """Default available languages: French only (matches the pre-i18n site)."""
+    return ["fr"]
+
+
 class Person(models.Model):
     """
     Represents any person in the system (parents, children, leaders, ...).  Only those who need a login get an Account.
     """
 
     class Sex(models.TextChoices):
-        MALE = "M", "Garçon"
-        FEMALE = "F", "Fille"
+        MALE = "M", _("Boy")
+        FEMALE = "F", _("Girl")
+
+    # Role short code identifying a child (Animé). Children always require a
+    # birthday (passage/promotion relies on it) and a sex (section enrollment).
+    CHILD_ROLE_SHORT = "e"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     secret_key = models.CharField(
         max_length=6,
         blank=True,
-        help_text=_("Premiers 6 caractères de l'UUID — clé pour lier un parent à un enfant"),
+        help_text=_("First 6 characters of the UUID — key to link a parent to a child"),
     )
     first_name = models.CharField(max_length=150)
     last_name = models.CharField(max_length=150)
@@ -94,7 +113,7 @@ class Person(models.Model):
     archived_date = models.DateField(
         null=True,
         blank=True,
-        help_text=_("Date à laquelle le membre a été archivé"),
+        help_text=_("Date on which the member was archived"),
     )
 
     roles = models.ManyToManyField(
@@ -110,7 +129,7 @@ class Person(models.Model):
         null=True,
         blank=True,
         related_name="next_persons",
-        help_text=_("Override manuel pour le passage : section assignée l'année suivante"),
+        help_text=_("Manual override for passage: section assigned the following year"),
     )
 
     parents = models.ManyToManyField(
@@ -132,6 +151,21 @@ class Person(models.Model):
             Person.objects.filter(pk=self.pk).update(secret_key=self.secret_key)
         else:
             super().save(*args, **kwargs)
+
+    def clean(self):
+        super().clean()
+        # Children (Animé) must always have a birthday and a sex: passage/
+        # promotion relies on birthday, and section enrollment relies on sex.
+        # Enforced via full_clean() (forms, admin, and the seed command) —
+        # raw .create()/.save() bypass it, so creation paths must validate.
+        if self.primary_role and self.primary_role.short == self.CHILD_ROLE_SHORT:
+            errors = {}
+            if not self.birthday:
+                errors["birthday"] = _("Date of birth is required for a participant.")
+            if not self.sex:
+                errors["sex"] = _("Sex is required for a participant.")
+            if errors:
+                raise ValidationError(errors)
 
     @property
     def needs_membership(self) -> bool:
@@ -165,7 +199,7 @@ class Person(models.Model):
             if enrollment:
                 return f"{enrollment.section} ({next_year.range})"
 
-        return {"name": "En attente"}
+        return {"name": _("Pending")}
 
     def has_role_dependencies(self):
         """Check if changing this person's primary role is blocked by existing data.
@@ -176,9 +210,9 @@ class Person(models.Model):
         if current_year and self.enrollment_set.filter(
             school_year=current_year
         ).exists():
-            return True, "des sections associées"
+            return True, _("linked sections")
         if self.as_parent.exists():
-            return True, "des enfants associés"
+            return True, _("linked children")
         return False, ""
 
 
@@ -288,6 +322,12 @@ class Account(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=timezone.now)
+    preferred_language = models.CharField(
+        max_length=5,
+        choices=AVAILABLE_LANGUAGE_CHOICES,
+        default="fr",
+        help_text=_("Language used for outgoing emails to this user."),
+    )
 
     objects = AccountManager()
 
@@ -523,7 +563,11 @@ class SchoolYear(models.Model):
     objects = SchoolYearManager()
 
     def __str__(self):
-        return _(f"{self.name} --> du {self.start_date}, au {self.end_date}")
+        return _("%(name)s — from %(start)s to %(end)s") % {
+            "name": self.name,
+            "start": self.start_date,
+            "end": self.end_date,
+        }
 
     def current():
         current_time = datetime.now().date()
@@ -575,19 +619,23 @@ class Branch(models.Model):
         null=True,
         blank=True,
         help_text=_(
-            "Age des membres les plus jeunes de la section au 31 décembre de l'année scolaire"
+            "Age of the youngest members of the section on December 31 of the school year"
         ),
     )
     max_age_dec_31 = models.PositiveSmallIntegerField(
         null=True,
         blank=True,
         help_text=_(
-            "Age des membres les plus âgés de la section au 31 décembre de l'année scolaire"
+            "Age of the oldest members of the section on December 31 of the school year"
         ),
     )
 
     def __str__(self):
-        return f"{self.name} ({self.min_age_dec_31}-{self.max_age_dec_31} ans)"
+        return _("%(name)s (%(min)s-%(max)s years old)") % {
+            "name": self.name,
+            "min": self.min_age_dec_31,
+            "max": self.max_age_dec_31,
+        }
 
 
 class Section(models.Model):
@@ -672,6 +720,26 @@ class SiteSettings(models.Model):
         default="Ex: Rue de l'Église 1, 1000 Bruxelles",
     )
 
+    # Languages enabled on the site. With more than one, a language selector is
+    # shown to users; with exactly one, the site is locked to that language.
+    # Backed by a PostgreSQL ArrayField (the project is Postgres-only).
+    available_languages = ArrayField(
+        base_field=models.CharField(max_length=5, choices=AVAILABLE_LANGUAGE_CHOICES),
+        default=default_available_languages,
+        help_text=_("Languages available to users in the site language selector."),
+    )
+
+    # Automated passage (run_passage task) — idempotency marker
+    last_passage_school_year = models.IntegerField(
+        null=True,
+        blank=True,
+        help_text=_(
+            "Last school year (the « name » field) for which the automatic passage "
+            "was executed. Anti-replay: if Celery was stopped on the passage day, "
+            "the task catches up at the next startup."
+        ),
+    )
+
     # Singleton pattern
     class Meta:
         verbose_name = "Site Settings"
@@ -695,8 +763,8 @@ class ImportantDocument(models.Model):
 
     class Meta:
         ordering = ["-created_at"]
-        verbose_name = "Document important"
-        verbose_name_plural = "Documents importants"
+        verbose_name = _("Important document")
+        verbose_name_plural = _("Important documents")
 
     def __str__(self):
         return self.title

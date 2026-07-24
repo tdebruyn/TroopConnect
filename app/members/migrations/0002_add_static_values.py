@@ -113,28 +113,30 @@ def create_school_years(apps, schema_editor):
 def create_new_child_staff_template(apps, schema_editor):
     EmailTemplate = apps.get_model("post_office", "EmailTemplate")
 
-    template_name = "new_child_staff_fr"  # Add '_fr' suffix to indicate French version
-
-    # Filter only by name, since 'language' field doesn't exist
-    if not EmailTemplate.objects.filter(name=template_name).exists():
+    if not EmailTemplate.objects.filter(name="new_child_staff").exists():
         EmailTemplate.objects.create(
-            name=template_name,
-            subject="Nouvelle inscription d’un enfant à valider – {{ first_name }} {{ last_name }}",
+            name="new_child_staff",
+            subject="Nouvelle inscription à valider – {{ first_name }} {{ last_name }}",
             content=(
                 "Bonjour,\n\n"
-                "Un parent vient d’inscrire un nouvel enfant : {{ first_name }} {{ last_name }}.\n\n"
-                "Merci de valider ou de compléter cette inscription en vous rendant sur le lien suivant :\n"
+                "Une nouvelle inscription vient d'être enregistrée sur le site des "
+                "Scouts de Limal :\n"
+                "{{ first_name }} {{ last_name }}\n\n"
+                "Merci de la valider ou de la compléter en cliquant sur le lien suivant :\n"
                 "{{ url }}\n\n"
                 "Cordialement,\n"
-                "L’équipe d’administration du site Scouts Limal"
+                "L'équipe d'administration du site Scouts de Limal"
             ),
             html_content=(
                 "<p>Bonjour,</p>"
-                "<p>Un parent vient d’inscrire un nouvel enfant : <strong>{{ first_name }} {{ last_name }}</strong>.</p>"
-                "<p>Merci de valider ou de compléter cette inscription en cliquant sur le lien suivant :</p>"
-                '<p><a href="{{ url }}" style="background-color: #4CAF50; color: white; padding: 10px 15px; '
-                'text-decoration: none; border-radius: 5px;">Gérer l’inscription</a></p>'
-                "<p>Cordialement,<br>L’équipe d’administration du site <strong>Scouts Limal</strong></p>"
+                "<p>Une nouvelle inscription vient d'être enregistrée sur le site des "
+                "<strong>Scouts de Limal</strong> :</p>"
+                "<p><strong>{{ first_name }} {{ last_name }}</strong></p>"
+                "<p>Merci de la valider ou de la compléter via le lien suivant :</p>"
+                '<p><a href="{{ url }}" style="background-color: #0d6efd; color: #ffffff; '
+                'padding: 10px 15px; text-decoration: none; border-radius: 5px;">'
+                "Valider l'inscription</a></p>"
+                "<p>Cordialement,<br>L'équipe d'administration du site Scouts de Limal</p>"
             ),
         )
 

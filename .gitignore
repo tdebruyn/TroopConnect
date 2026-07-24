@@ -16,3 +16,6 @@ __pypackages__
 node_modules/
 test-results/
 playwright-report/
+
+# Runtime uploads (user attachments, email attachments)
+app/media/

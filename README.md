@@ -38,3 +38,8 @@ The following users are seeded for Playwright end-to-end tests. Password for all
 | Parent | parent2@test.be |
 | Animateur | anim1@test.be |
 | Staff (Admin) | staff1@test.be |
+| Child (Animé) | child1@test.be |
+| Superadmin | superadmin@test.be |
+
+docker compose -f docker-compose-local.yml exec web uv run /app/manage.py create_test_data
+npx playwright test e2e/child.spec.js e2e/superadmin.spec.js

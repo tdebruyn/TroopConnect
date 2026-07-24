@@ -1,11 +1,11 @@
 {% extends "members/base.html" %}
 {% load widget_tweaks %}
+{% load i18n %}
 {% block hat_title %}
-    Compléter votre inscription
+    {% trans "Complete your registration" %}
 {% endblock hat_title %}
 {% block hat_text %}
-    Vous êtes sur le point de vous connecter avec votre compte {{ provider_name }}.
-    Veuillez compléter le formulaire ci-dessous pour finaliser votre inscription.
+    {% blocktranslate %}You are about to log in with your {{ provider_name }} account. Please complete the form below to finalize your registration.{% endblocktranslate %}
 {% endblock hat_text %}
 {% block subcontent %}
     <form class="signup"
@@ -32,7 +32,7 @@
                                    name="{{ redirect_field_name }}"
                                    value="{{ redirect_field_value }}"/>
                         {% endif %}
-                        <button type="submit" class="btn btn-primary btn-block mt-3">Continuer</button>
+                        <button type="submit" class="btn btn-primary btn-block mt-3">{% trans "Continue" %}</button>
                     </div>
                 </fieldset>
             </div>

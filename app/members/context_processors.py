@@ -1,10 +1,14 @@
 from django.conf import settings
+from django.utils import translation
 from .models import SiteSettings
 
 
 def contact_info(request):
     """Make contact information available to all templates."""
     site_settings = SiteSettings.get_settings()
+    available = getattr(request, "available_languages", None)
+    if available is None:
+        available = list(site_settings.available_languages or [settings.LANGUAGE_CODE])
     return {
         "contact_email": site_settings.contact_email,
         "site_name": site_settings.site_name,
@@ -14,6 +18,10 @@ def contact_info(request):
         "registration_message": site_settings.registration_message,
         "photo_consent_text": site_settings.photo_consent_text,
         "address_placeholder": site_settings.address_placeholder,
+        # Language selector support (set by AvailableLanguagesMiddleware).
+        "available_languages": list(available),
+        "current_language": translation.get_language(),
+        "show_language_selector": len(available) > 1,
     }
 
 

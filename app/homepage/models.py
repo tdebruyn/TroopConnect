@@ -1,19 +1,20 @@
 from django.db import models
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 from datetime import timedelta
 
 
 class Event(models.Model):
-    title = models.CharField(max_length=200, verbose_name="Titre")
-    description = models.TextField(blank=True, verbose_name="Description")
-    date = models.DateField(verbose_name="Date")
+    title = models.CharField(max_length=200, verbose_name=_("Title"))
+    description = models.TextField(blank=True, verbose_name=_("Description"))
+    date = models.DateField(verbose_name=_("Date"))
     section = models.ForeignKey(
         "members.Section",
         on_delete=models.CASCADE,
         related_name="events",
         null=True,
         blank=True,
-        verbose_name="Section",
+        verbose_name=_("Section"),
     )
     created_from_message = models.ForeignKey(
         "messaging.SectionMessage",

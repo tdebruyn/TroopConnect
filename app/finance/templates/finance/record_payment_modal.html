@@ -1,10 +1,11 @@
+{% load i18n %}
 <div class="modal-content">
     <div class="modal-header">
-        <h5 class="modal-title">Enregistrer un paiement</h5>
+        <h5 class="modal-title">{% trans "Record a payment" %}</h5>
         <button type="button"
                 class="btn-close"
                 data-bs-dismiss="modal"
-                aria-label="Close"></button>
+                aria-label="{% trans 'Close' %}"></button>
     </div>
     <form hx-post="{% url 'finance:record_payment' %}{% if request.GET.person_id %}?person_id={{ request.GET.person_id }}{% endif %}"
           hx-headers='{"X-CSRFToken":"{{ csrf_token }}"}'
@@ -31,8 +32,8 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-            <button type="submit" class="btn btn-primary">Enregistrer</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+            <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
         </div>
     </form>
 </div>

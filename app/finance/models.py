@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 from decimal import Decimal
 
 from members.models import Person, SchoolYear, ParentChild, Enrollment
@@ -13,34 +14,34 @@ class CotisationConfig(models.Model):
     )
     full_fee = models.DecimalField(
         max_digits=8, decimal_places=2,
-        help_text="Cotisation pleine (enfant aîné)",
+        help_text=_("Full fee (eldest child)"),
     )
     sibling_discount = models.DecimalField(
         max_digits=8, decimal_places=2,
         default=Decimal("0.00"),
-        help_text="Réduction pour fratrie (montant déduit par frère/sœur supplémentaire)",
+        help_text=_("Sibling discount (amount deducted per additional brother/sister)"),
     )
     animateur_fee = models.DecimalField(
         max_digits=8, decimal_places=2,
         default=Decimal("0.00"),
-        help_text="Cotisation forfaitaire pour animateurs/staff",
+        help_text=_("Flat fee for animators/staff"),
     )
     late_penalty_percent = models.DecimalField(
         max_digits=5, decimal_places=2,
         default=Decimal("0.00"),
-        help_text="Pénalité de retard en pourcentage (ex: 10.00 pour 10%)",
+        help_text=_("Late penalty as a percentage (e.g. 10.00 for 10%)"),
     )
     late_deadline = models.DateField(
         null=True, blank=True,
-        help_text="Date limite avant pénalité de retard",
+        help_text=_("Deadline before the late penalty applies"),
     )
 
     class Meta:
-        verbose_name = "Configuration de cotisation"
-        verbose_name_plural = "Configurations de cotisations"
+        verbose_name = _("Fee configuration")
+        verbose_name_plural = _("Fee configurations")
 
     def __str__(self):
-        return f"Cotisations {self.school_year.range}"
+        return _("Membership fees %(range)s") % {"range": self.school_year.range}
 
     @staticmethod
     def get_for_year(school_year):
@@ -78,8 +79,8 @@ class Payment(models.Model):
     )
 
     class Meta:
-        verbose_name = "Paiement"
-        verbose_name_plural = "Paiements"
+        verbose_name = _("Payment")
+        verbose_name_plural = _("Payments")
         ordering = ["-date"]
 
     def __str__(self):

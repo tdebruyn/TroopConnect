@@ -2,7 +2,7 @@
 {% load static %}
 {% load account %}
 {% load i18n %}
-<html lang="fr">
+<html lang="{{ current_language }}">
     <head>
         <meta charset="UTF-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -48,7 +48,7 @@
                     <button class="navbar-toggler"
                             data-bs-toggle="collapse"
                             data-bs-target="#navcol-1">
-                        <span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span>
+                        <span class="visually-hidden">{% trans "Toggle navigation" %}</span><span class="navbar-toggler-icon"></span>
                     </button>
                     <div id="navcol-1" class="collapse navbar-collapse">
                         <ul class="navbar-nav me-auto">
@@ -56,34 +56,34 @@
                                 <a class="dropdown-toggle nav-link active"
                                    aria-expanded="false"
                                    data-bs-toggle="dropdown"
-                                   href="#">Sections</a>
+                                   href="#">{% trans "Sections" %}</a>
                                 <div class="dropdown-menu dropdown-menu-dark">
                                     {% for section in nav_sections %}
                                         <a class="dropdown-item" href="{% url 'messaging:section_history' section_id=section.pk %}">{{ section.name }}</a>
                                     {% empty %}
-                                        <a class="dropdown-item disabled" href="#">Aucune section</a>
+                                        <a class="dropdown-item disabled" href="#">{% trans "No section" %}</a>
                                     {% endfor %}
                                 </div>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link active" href="{% url 'agenda' %}">Agenda</a>
+                                <a class="nav-link active" href="{% url 'agenda' %}">{% trans "Agenda" %}</a>
                             </li>
                             {% if user.is_staff or user_is_tresorier or user_can_send_all %}
                                 <li class="nav-item dropdown">
                                     <a class="dropdown-toggle nav-link active"
                                        aria-expanded="false"
                                        data-bs-toggle="dropdown"
-                                       href="#">Administration</a>
+                                       href="#">{% trans "Administration" %}</a>
                                     <div class="dropdown-menu dropdown-menu-dark">
                                         {% if user.is_staff %}
-                                            <a class="dropdown-item" href="{% url 'members:admin_list' %}">Gestion des membres</a>
+                                            <a class="dropdown-item" href="{% url 'members:admin_list' %}">{% trans "Member management" %}</a>
                                         {% endif %}
                                         {% if user_is_tresorier %}
-                                            <a class="dropdown-item" href="{% url 'finance:billing' %}">Cotisations</a>
+                                            <a class="dropdown-item" href="{% url 'finance:billing' %}">{% trans "Membership fees" %}</a>
                                         {% endif %}
                                         {% if user_can_send_all %}
-                                            <a class="dropdown-item" href="{% url 'messaging:compose' %}">Envoyer un message</a>
-                                            <a class="dropdown-item" href="{% url 'messaging:animateur_history' %}">Historique des envois</a>
+                                            <a class="dropdown-item" href="{% url 'messaging:compose' %}">{% trans "Send a message" %}</a>
+                                            <a class="dropdown-item" href="{% url 'messaging:animateur_history' %}">{% trans "Message history" %}</a>
                                         {% endif %}
                                     </div>
                                 </li>
@@ -93,17 +93,41 @@
                                     <a class="dropdown-toggle nav-link active"
                                        aria-expanded="false"
                                        data-bs-toggle="dropdown"
-                                       href="#">Outils Animateur</a>
+                                       href="#">{% trans "Animator tools" %}</a>
                                     <div class="dropdown-menu dropdown-menu-dark">
-                                        <a class="dropdown-item" href="{% url 'messaging:compose' %}">Envoyer un message</a>
-                                        <a class="dropdown-item" href="{% url 'messaging:animateur_history' %}">Historique des envois</a>
+                                        <a class="dropdown-item" href="{% url 'messaging:compose' %}">{% trans "Send a message" %}</a>
+                                        <a class="dropdown-item" href="{% url 'messaging:animateur_history' %}">{% trans "Message history" %}</a>
                                     </div>
                                 </li>
                             {% endif %}
                             <li class="nav-item">
-                                <a class="nav-link active" href="{% url 'faq' %}">FAQ</a>
+                                <a class="nav-link active" href="{% url 'faq' %}">{% trans "FAQ" %}</a>
                             </li>
                         </ul>
+                        {% if show_language_selector %}
+                            <form action="{% url 'set_language' %}"
+                                  method="post"
+                                  class="d-inline-block ms-2 align-middle">
+                                {% csrf_token %}
+                                <input name="next" type="hidden" value="{{ request.get_full_path }}" />
+                                {% get_language_info_list for available_languages as langs %}
+                                <label for="language-select" class="visually-hidden">{% trans "Language" %}</label>
+                                <select id="language-select"
+                                        name="language"
+                                        class="form-select form-select-sm"
+                                        onchange="this.form.submit()">
+                                    {% for language in langs %}
+                                        <option value="{{ language.code }}"
+                                                {% if language.code == current_language %}selected{% endif %}>
+                                            {{ language.name_local }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                <noscript>
+                                    <button type="submit" class="btn btn-sm btn-light">{% trans "Change" %}</button>
+                                </noscript>
+                            </form>
+                        {% endif %}
                         {% if user.is_authenticated %}
                             <div class="btn-group">
                                 <a role="button"
@@ -113,14 +137,14 @@
                                         class="btn btn-info dropdown-toggle dropdown-toggle-split"
                                         data-bs-toggle="dropdown"
                                         aria-expanded="false">
-                                    <span class="visually-hidden">Toggle Dropdown</span>
+                                    <span class="visually-hidden">{% trans "Toggle dropdown" %}</span>
                                 </button>
                                 <ul class="dropdown-menu bg-info">
                                     <li>
-                                        <a class="dropdown-item" href="{% url 'members:profile' user.id %}">Mon profil</a>
+                                        <a class="dropdown-item" href="{% url 'members:profile' user.id %}">{% trans "My profile" %}</a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="{% url 'members:documents' %}">Mes documents</a>
+                                        <a class="dropdown-item" href="{% url 'members:documents' %}">{% trans "My documents" %}</a>
                                     </li>
                                     <li>
                                         <hr class="dropdown-divider">
@@ -138,13 +162,13 @@
                                                 <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z">
                                                 </path>
                                             </svg>
-                                        Déconnexion</a>
+                                        {% trans "Log out" %}</a>
                                     </li>
                                 </ul>
                             </div>
                         {% else %}
-                            <a class="nav-link" href="{% url 'account_signup' %}">S&#39;inscrire</a>
-                            <a class="btn btn-info" role="button" href="{% url 'account_login' %}">Se connecter</a>
+                            <a class="nav-link" href="{% url 'account_signup' %}">{% trans "Sign up" %}</a>
+                            <a class="btn btn-info" role="button" href="{% url 'account_login' %}">{% trans "Log in" %}</a>
                         {% endif %}
                     </div>
                 </div>
@@ -152,6 +176,25 @@
         </header>
         {% block content %}
         {% endblock content %}
+        {% if messages %}
+            <div class="toast-container position-fixed top-0 end-0 p-3">
+                {% for message in messages %}
+                    <div class="toast align-items-center border-0{% if message.tags %} text-bg-{{ message.tags }}{% else %} text-bg-secondary{% endif %}"
+                         role="alert"
+                         aria-live="assertive"
+                         aria-atomic="true"
+                         data-bs-autohide="false">
+                        <div class="d-flex">
+                            <div class="toast-body">{{ message }}</div>
+                            <button type="button"
+                                    class="btn-close btn-close-white me-2 m-auto"
+                                    data-bs-dismiss="toast"
+                                    aria-label="{% trans "Close" %}"></button>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
         <!-- Placeholder for the modal -->
         <div id="modal" class="modal fade">
             <div id="dialog" class="modal-dialog" hx-target="this"></div>
@@ -180,5 +223,12 @@
                 crossorigin="anonymous"></script>
         <script src="{% static 'js/dialog.js' %}"></script>
         <script src="{% static 'js/toast.js' %}"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                document.querySelectorAll('.toast-container .toast:not(#toast)').forEach(function(el) {
+                    new bootstrap.Toast(el).show();
+                });
+            });
+        </script>
     </body>
 </html>

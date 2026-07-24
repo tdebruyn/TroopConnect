@@ -1,6 +1,7 @@
+{% load i18n %}
 {% if form.fields.secondary_role.choices %}
     <div class="form-group mt-3">
-        <label for="{{ form.secondary_role.id_for_label }}">Secondary Role</label>
+        <label for="{{ form.secondary_role.id_for_label }}">{% trans "Secondary role" %}</label>
         {{ form.secondary_role }}
     </div>
 {% endif %}

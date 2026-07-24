@@ -1,50 +1,51 @@
 from django import forms
+from django.utils.translation import gettext_lazy as _
 
 from members.models import Section
 
 
 RECIPIENT_GROUP_CHOICES = [
-    ("section_parents", "Parents d'une section"),
-    ("section_animateurs", "Animateurs d'une section"),
-    ("section_animes", "Animés d'une section"),
-    ("section_all", "Tous d'une section (parents, animés et animateurs)"),
-    ("all_animateurs", "Tous les animateurs"),
-    ("animateurs_staff", "Conseil d'unité"),
-    ("staff", "Staff d'unité"),
-    ("active_parents", "Parents actifs"),
-    ("everyone", "Tout le monde"),
+    ("section_parents", _("Parents of a section")),
+    ("section_animateurs", _("Animators of a section")),
+    ("section_animes", _("Participants of a section")),
+    ("section_all", _("Everyone of a section (parents, participants and animators)")),
+    ("all_animateurs", _("All animators")),
+    ("animateurs_staff", _("Unit council")),
+    ("staff", _("Unit staff")),
+    ("active_parents", _("Active parents")),
+    ("everyone", _("Everyone")),
 ]
 
 
 class ComposeMessageForm(forms.Form):
     recipient_group = forms.ChoiceField(
         choices=RECIPIENT_GROUP_CHOICES,
-        label="Destinataires",
+        label=_("Recipients"),
         widget=forms.Select(attrs={"class": "form-select", "id": "id_recipient_group"}),
     )
     section = forms.ModelChoiceField(
         queryset=Section.objects.all(),
         required=False,
-        label="Section",
+        label=_("Section"),
         widget=forms.Select(attrs={"class": "form-select", "id": "id_section"}),
     )
     subject = forms.CharField(
         max_length=200,
-        label="Objet du message",
+        label=_("Message subject"),
         widget=forms.TextInput(attrs={"class": "form-control"}),
     )
     body = forms.CharField(
-        label="Contenu du message",
+        label=_("Message content"),
         widget=forms.Textarea(attrs={"class": "form-control", "rows": 10}),
     )
     attachment = forms.FileField(
         required=False,
-        label="Pièce jointe (optionnel)",
+        label=_("Attachment (optional)"),
         widget=forms.ClearableFileInput(attrs={"class": "form-control"}),
     )
     event_date = forms.DateField(
         required=False,
-        label="Date (agenda)",
+        label=_("Date (agenda)"),
         widget=forms.DateInput(attrs={"type": "date", "class": "form-control"}),
-        help_text="Optionnel. Si renseigné, un événement sera ajouté à l'agenda.",
+        help_text=_("Optional. If provided, an event will be added to the agenda."),
     )

@@ -141,10 +141,15 @@ class AdminListView(UserPassesTestMixin, ListView):
                     if branch.min_age_dec_31 is not None and branch.max_age_dec_31 is not None:
                         if not (branch.min_age_dec_31 <= age_at_dec_31 <= branch.max_age_dec_31):
                             person.age_mismatch = True
-                            person.age_mismatch_detail = (
-                                f"{age_at_dec_31} ans — branche {branch.name} : "
-                                f"{branch.min_age_dec_31}-{branch.max_age_dec_31} ans"
-                            )
+                            person.age_mismatch_detail = _(
+                                "%(age)s years old — branch %(branch)s: "
+                                "%(min)s-%(max)s years old"
+                            ) % {
+                                "age": age_at_dec_31,
+                                "branch": branch.name,
+                                "min": branch.min_age_dec_31,
+                                "max": branch.max_age_dec_31,
+                            }
             except (SchoolYear.DoesNotExist, AttributeError):
                 person.section_display = "-"
                 person.age_mismatch = False
@@ -162,12 +167,12 @@ class AdminListView(UserPassesTestMixin, ListView):
 
         # Define field names and their display names
         context["fields_map"] = [
-            ("first_name", _("Prénom")),
-            ("last_name", _("Nom")),
-            ("birthday", _("Date de naissance")),
-            ("sex", _("Sexe")),
+            ("first_name", _("First name")),
+            ("last_name", _("Last name")),
+            ("birthday", _("Date of birth")),
+            ("sex", _("Sex")),
             ("section", _("Section")),
-            ("primary_role", _("Rôle")),
+            ("primary_role", _("Role")),
         ]
 
         return context
@@ -341,23 +346,24 @@ def add_new_child_view(request):
             child.save()
             child.parents.add(request.user.person)
 
-            # mail.send(
-            #     recipients=request.user.email,
-            #     sender="staffunite@scouts-limal.be",
-            #     template="new_child_parent",
-            #     language="fr",
-            #     context={
-            #         "first_name": child.first_name,
-            #         "last_name": child.last_name,
-            #         "parent": f"{request.user.person.first_name} {request.user.person.last_name}",
-            #     },
-            # )
+            mail.send(
+                recipients=request.user.email,
+                sender=settings.DEFAULT_FROM_EMAIL,
+                template="new_child_parent",
+                language=getattr(request.user, "preferred_language", None) or settings.LANGUAGE_CODE,
+                context={
+                    "first_name": child.first_name,
+                    "last_name": child.last_name,
+                    "parent": f"{request.user.person.first_name} {request.user.person.last_name}",
+                },
+            )
             mail.send(
                 recipients=get_registration_admins(),
                 # sender="tom@tomctl.be",
                 sender="MS_M3qCdl@tomctl.be",
                 template="new_child_staff",
-                # language="fr",
+                # Staff notifications are sent in the site default language.
+                language=settings.LANGUAGE_CODE,
                 context={
                     "first_name": child.first_name,
                     "last_name": child.last_name,
@@ -370,7 +376,8 @@ def add_new_child_view(request):
                     "HX-Trigger": json.dumps(
                         {
                             "childListChanged": None,
-                            "showMessage": f"{child.first_name} {child.last_name} ajouté.",
+                            "showMessage": _("%(first)s %(last)s added.")
+                            % {"first": child.first_name, "last": child.last_name},
                         }
                     )
                 },
@@ -381,7 +388,7 @@ def add_new_child_view(request):
 def child_list(request):
     # "children" is the list of Person which has request.user.person as one of the parent
     if not request.META.get("HTTP_HX_REQUEST") == "true":
-        return HttpResponseBadRequest("Invalid request")
+        return HttpResponseBadRequest(_("Invalid request"))
     return render(
         request,
         "members/child_list.html",
@@ -393,7 +400,7 @@ def child_list(request):
 
 def edit_child(request, pk):
     if not request.META.get("HTTP_HX_REQUEST") == "true":
-        return HttpResponseBadRequest("Invalid request")
+        return HttpResponseBadRequest(_("Invalid request"))
     parent_person_id = Account.objects.get(id=request.user.id).person.id
     child = get_object_or_404(Person, id=pk, parents__id=parent_person_id)
 
@@ -407,7 +414,8 @@ def edit_child(request, pk):
                     "HX-Trigger": json.dumps(
                         {
                             "childListChanged": None,
-                            "showMessage": f"{child.first_name} modifié.",
+                            "showMessage": _("%(first)s modified.")
+                            % {"first": child.first_name},
                         }
                     )
                 },
@@ -438,7 +446,8 @@ def add_child_key_view(request):
                     "HX-Trigger": json.dumps(
                         {
                             "childListChanged": None,
-                            "showMessage": f"{child.first_name} {child.last_name} ajouté.",
+                            "showMessage": _("%(first)s %(last)s added.")
+                            % {"first": child.first_name, "last": child.last_name},
                         }
                     )
                 },
@@ -454,20 +463,26 @@ def dettach_child(request, pk):
     parent = request.user.person
     context["child"] = child
     if not child.parents.filter(id=parent.id).exists():
-        context["message"] = _(
-            f"{child.first_name} n'est pas attaché à votre utilisateur"
-        )
+        context["message"] = _("%(first)s is not attached to your account.") % {
+            "first": child.first_name
+        }
     elif child.parents.count() < 2 and not child.is_adult() and not child.has_account:
         context["message"] = _(
-            f"""Vous ne pouvez pas détacher {child.first_name}.\n
-            Pour détacher un enfant, celui-ci doit soit être attaché à d'autres parents, soit avoir plus de 18 ans et avoir un compte associé.\n
-                               {child.first_name} a {child.parents.count()} parent(s)\n
-                               {child.first_name} est né le {child.birthday} et {'a un compte' if child.has_account else "n'a pas de compte"}."""
-        )
+            "You cannot detach %(first)s.\n"
+            "To detach a child, they must either be attached to other parents, "
+            "or be over 18 years old and have an associated account.\n"
+            "%(first)s has %(count)s parent(s)\n"
+            "%(first)s was born on %(birthday)s and %(has_account)s."
+        ) % {
+            "first": child.first_name,
+            "count": child.parents.count(),
+            "birthday": child.birthday,
+            "has_account": _("has an account") if child.has_account else _("does not have an account"),
+        }
     else:
         context["message"] = _(
-            f'Pour confirmer que vous souhaitez détacher {child.first_name} de votre utilisateur, cliquer sur "Détacher".'
-        )
+            'To confirm that you want to detach %(first)s from your account, click "Detach".'
+        ) % {"first": child.first_name}
         context["allow_dettach"] = True
     return render(
         request=request, template_name="members/dettach_child.html", context=context

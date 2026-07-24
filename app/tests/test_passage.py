@@ -1,10 +1,12 @@
-from datetime import timedelta
+from datetime import date, timedelta
+from unittest import mock
 
 from django.test import TestCase
 from django.utils import timezone
 
 from members.models import (
     Person, Role, SchoolYear, Section, Branch, Enrollment, ParentChild, Account,
+    SiteSettings,
 )
 from members.tasks import run_passage
 from post_office.models import EmailTemplate
@@ -60,6 +62,14 @@ class PassageTestBase(TestCase):
         self.section_old = Section.objects.create(
             name="Pionniers", branch=self.branch_old,
         )
+
+        # Freeze "today" on the passage trigger date (May 1 of the target year)
+        # so run_passage's date gate passes regardless of when the suite runs.
+        self._today_patcher = mock.patch(
+            "members.tasks._today", return_value=date(next_name, 5, 1),
+        )
+        self._today_patcher.start()
+        self.addCleanup(self._today_patcher.stop)
 
 
 class ChildMovesToNextBranchTest(PassageTestBase):
@@ -264,3 +274,89 @@ class NoNextYearTest(TestCase):
         SchoolYear.objects.filter(start_date__gt=current.start_date).delete()
         result = run_passage()
         self.assertIsNone(result)
+
+
+class PassageGuardTest(PassageTestBase):
+    """Date gate + idempotency marker: the daily task must (a) not promote
+    before the trigger date, (b) catch up if the trigger day was missed because
+    Celery was down, and (c) never process the same target year twice."""
+
+    def _make_child(self, next_section=None):
+        child = Person.objects.create(
+            first_name="Test", last_name="Child",
+            primary_role=self.role_anime, status="a",
+            next_section=next_section,
+            birthday=timezone.now().date() - timedelta(days=365 * 8),
+        )
+        Enrollment.objects.create(
+            user=child, section=self.section_young, school_year=self.current_year,
+        )
+        return child
+
+    def test_skips_before_trigger_date(self):
+        """Before May 1 of the target year the date gate skips; nothing happens."""
+        child = self._make_child()
+        with mock.patch(
+            "members.tasks._today",
+            return_value=date(self.next_year.name, 4, 30),
+        ):
+            run_passage()
+
+        self.assertFalse(
+            Enrollment.objects.filter(user=child, school_year=self.next_year).exists()
+        )
+        # Marker must NOT be set, otherwise catch-up would be blocked.
+        self.assertIsNone(SiteSettings.get_settings().last_passage_school_year)
+
+    def test_catchup_after_missed_trigger_day(self):
+        """Celery down on/around May 1: an April tick does nothing, the next
+        start (mid-June) performs the passage."""
+        child = self._make_child()
+
+        with mock.patch(
+            "members.tasks._today",
+            return_value=date(self.next_year.name, 4, 30),
+        ):
+            run_passage()
+        self.assertFalse(
+            Enrollment.objects.filter(user=child, school_year=self.next_year).exists()
+        )
+
+        # Next start after the outage → passage runs and marks the year done.
+        with mock.patch(
+            "members.tasks._today",
+            return_value=date(self.next_year.name, 6, 15),
+        ):
+            run_passage()
+        self.assertTrue(
+            Enrollment.objects.filter(user=child, school_year=self.next_year).exists()
+        )
+        self.assertEqual(
+            SiteSettings.get_settings().last_passage_school_year, self.next_year.name
+        )
+
+    def test_second_run_is_a_noop(self):
+        """Once the marker is set, a later daily tick must not reprocess —
+        notably it must not re-derive sections by age after the manual override
+        has already been applied and cleared."""
+        child = self._make_child(next_section=self.section_mid)
+
+        # First run (setUp patches _today to the trigger date): override applied.
+        run_passage()
+        self.assertEqual(
+            Enrollment.objects.get(user=child, school_year=self.next_year).section,
+            self.section_mid,
+        )
+        child.refresh_from_db()
+        self.assertIsNone(child.next_section)
+
+        # A later tick → marker set → no-op. Enrollment unchanged.
+        with mock.patch(
+            "members.tasks._today",
+            return_value=date(self.next_year.name, 6, 15),
+        ):
+            run_passage()
+        self.assertEqual(
+            Enrollment.objects.get(user=child, school_year=self.next_year).section,
+            self.section_mid,
+        )

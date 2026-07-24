@@ -1,0 +1,1488 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr "Project-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-07-24 08:55+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect <noreply@troop.tomctl.be>\nLanguage-Team: nl <nl@li.org>\nLanguage: nl\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n != 1);\n"
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-24 08:55+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: finance/forms.py:12
+msgid "Amount (€)"
+msgstr "Bedrag (€)"
+
+#: finance/forms.py:15 finance/templates/finance/payment_history.html:15
+#: homepage/models.py:10
+#: messaging/templates/messaging/animateur_history.html:12
+#: messaging/templates/messaging/message_detail.html:9
+#: messaging/templates/messaging/section_history.html:9
+msgid "Date"
+msgstr "Datum"
+
+#: finance/forms.py:20 finance/templates/finance/payment_history.html:17
+msgid "Note"
+msgstr "Opmerking"
+
+#: finance/forms.py:29 messaging/templates/messaging/animateur_history.html:14
+#: messaging/templates/messaging/message_detail.html:24
+#: messaging/templates/messaging/section_history.html:10
+msgid "Subject"
+msgstr "Onderwerp"
+
+#: finance/forms.py:30
+msgid "Membership fee reminder"
+msgstr "Herinnering lidgeld"
+
+#: finance/forms.py:34
+msgid "Message"
+msgstr "Bericht"
+
+#: finance/forms.py:35
+#, python-brace-format
+msgid "Use {prenom} and {solde} as variables."
+msgstr "Gebruik {prenom} en {solde} als variabelen."
+
+#: finance/forms.py:38
+#, python-brace-format
+msgid ""
+"Hello {prenom},\n"
+"\n"
+"Your membership fee balance is {solde}€.\n"
+"Please proceed with the payment.\n"
+"\n"
+"Best regards,\n"
+"The treasurer"
+msgstr "Beste {prenom},\n\nHet openstaande saldo van je lidgeld is {solde}€.\nGelieve de betaling te verrichten.\n\nMet vriendelijke groet,\nDe penningmeester"
+
+#: finance/models.py:17
+msgid "Full fee (eldest child)"
+msgstr "Volledig lidgeld (oudste kind)"
+
+#: finance/models.py:22
+msgid "Sibling discount (amount deducted per additional brother/sister)"
+msgstr "Gezinskorting (bedrag afgetrokken per extra broer/zus)"
+
+#: finance/models.py:27
+msgid "Flat fee for animators/staff"
+msgstr "Forfaitair lidgeld voor animators/staff"
+
+#: finance/models.py:32
+msgid "Late penalty as a percentage (e.g. 10.00 for 10%)"
+msgstr "Boete voor laatte betaling in procent (bv. 10.00 voor 10%)"
+
+#: finance/models.py:36
+msgid "Deadline before the late penalty applies"
+msgstr "Uiterste datum vooraleer de boete wordt toegepast"
+
+#: finance/models.py:40
+msgid "Fee configuration"
+msgstr "Instellingen lidgeld"
+
+#: finance/models.py:41
+msgid "Fee configurations"
+msgstr "Instellingen lidgelden"
+
+#: finance/models.py:44
+#, python-format
+msgid "Membership fees %(range)s"
+msgstr "Lidgelden %(range)s"
+
+#: finance/models.py:82
+msgid "Payment"
+msgstr "Betaling"
+
+#: finance/models.py:83
+msgid "Payments"
+msgstr "Betalingen"
+
+#: finance/templates/finance/billing_overview.html:3 templates/base.html:83
+msgid "Membership fees"
+msgstr "Lidgelden"
+
+#: finance/templates/finance/billing_overview.html:4
+#, python-format
+msgid "Financial management — %(school_year.range)s"
+msgstr "Financieel beheer — %(school_year.range)s"
+
+#: finance/templates/finance/billing_overview.html:7
+#: finance/templates/finance/send_reminders.html:3
+msgid "Send reminders"
+msgstr "Herinneringen versturen"
+
+#: finance/templates/finance/billing_overview.html:13
+msgid "Configuration"
+msgstr "Instellingen"
+
+#: finance/templates/finance/billing_overview.html:16
+msgid "Full fee"
+msgstr "Volledig lidgeld"
+
+#: finance/templates/finance/billing_overview.html:17
+msgid "Sibling discount"
+msgstr "Gezinskorting"
+
+#: finance/templates/finance/billing_overview.html:18
+msgid "Animator flat fee"
+msgstr "Forfaitair lidgeld animator"
+
+#: finance/templates/finance/billing_overview.html:19
+msgid "Late penalty"
+msgstr "Boete laatte betaling"
+
+#: finance/templates/finance/billing_overview.html:20
+msgid "Deadline"
+msgstr "Uiterste datum"
+
+#: finance/templates/finance/billing_overview.html:27
+#, python-format
+msgid "Children (%(children_balances|length)s)"
+msgstr "Kinderen (%(children_balances|length)s)"
+
+#: finance/templates/finance/billing_overview.html:31
+#: finance/templates/finance/billing_overview.html:63 members/admin.py:103
+#: messaging/templates/messaging/_recipient_list.html:11
+#: messaging/templates/messaging/message_detail.html:50
+msgid "Name"
+msgstr "Naam"
+
+#: finance/templates/finance/billing_overview.html:32
+#: finance/templates/finance/billing_overview.html:64
+msgid "Due"
+msgstr "Te betalen"
+
+#: finance/templates/finance/billing_overview.html:33
+#: finance/templates/finance/billing_overview.html:65
+msgid "Paid"
+msgstr "Betaald"
+
+#: finance/templates/finance/billing_overview.html:34
+#: finance/templates/finance/billing_overview.html:66
+#: finance/templates/finance/send_reminders.html:30
+msgid "Balance"
+msgstr "Saldo"
+
+#: finance/templates/finance/billing_overview.html:35
+msgid "Late"
+msgstr "Te laat"
+
+#: finance/templates/finance/billing_overview.html:36
+#: finance/templates/finance/billing_overview.html:67
+msgid "Action"
+msgstr "Actie"
+
+#: finance/templates/finance/billing_overview.html:46
+msgid "Yes"
+msgstr "Ja"
+
+#: finance/templates/finance/billing_overview.html:48
+#: finance/templates/finance/billing_overview.html:78
+msgid "Pay"
+msgstr "Betalen"
+
+#: finance/templates/finance/billing_overview.html:49
+#: finance/templates/finance/billing_overview.html:79
+msgid "History"
+msgstr "Geschiedenis"
+
+#: finance/templates/finance/billing_overview.html:53
+msgid "No child enrolled."
+msgstr "Geen kind ingeschreven."
+
+#: finance/templates/finance/billing_overview.html:59
+#, python-format
+msgid "Animators (%(animateur_balances|length)s)"
+msgstr "Animators (%(animateur_balances|length)s)"
+
+#: finance/templates/finance/payment_history.html:4
+#, python-format
+msgid "Payment history — %(person)s"
+msgstr "Betalingengeschiedenis — %(person)s"
+
+#: finance/templates/finance/payment_history.html:8
+#: finance/templates/finance/payment_history.html:37
+#: finance/templates/finance/record_payment_modal.html:8
+#: members/templates/members/child_form.html:12
+#: members/templates/members/child_from_key_form.html:12
+#: templates/base.html:193
+msgid "Close"
+msgstr "Sluiten"
+
+#: finance/templates/finance/payment_history.html:16
+msgid "Amount"
+msgstr "Bedrag"
+
+#: finance/templates/finance/payment_history.html:18
+msgid "Recorded by"
+msgstr "Geregistreerd door"
+
+#: finance/templates/finance/payment_history.html:33
+msgid "No payment recorded."
+msgstr "Geen betaling geregistreerd."
+
+#: finance/templates/finance/record_payment.html:3
+#: finance/templates/finance/record_payment_modal.html:4
+msgid "Record a payment"
+msgstr "Een betaling registreren"
+
+#: finance/templates/finance/record_payment.html:4
+msgid "Treasurer"
+msgstr "Penningmeester"
+
+#: finance/templates/finance/record_payment.html:29
+#: finance/templates/finance/record_payment_modal.html:36
+#: members/templates/members/child_form.html:100
+#: members/templates/members/child_from_key_form.html:29
+#: members/templates/members/profile.html:98
+msgid "Save"
+msgstr "Opslaan"
+
+#: finance/templates/finance/record_payment.html:30
+#: finance/templates/finance/record_payment_modal.html:35
+#: finance/templates/finance/send_reminders.html:22
+#: members/templates/members/child_form.html:99
+#: members/templates/members/child_from_key_form.html:28
+#: members/templates/members/dettach_child.html:17
+#: messaging/templates/messaging/compose.html:79
+#: messaging/templates/messaging/compose_all.html:77
+msgid "Cancel"
+msgstr "Annuleren"
+
+#: finance/templates/finance/send_reminders.html:4
+msgid "Membership fee reminders"
+msgstr "Herinneringen lidgeld"
+
+#: finance/templates/finance/send_reminders.html:6
+#, python-format
+msgid "%(counter)s adult with an unpaid balance."
+msgid_plural "%(counter)s adults with an unpaid balance."
+msgstr[0] "%(counter)s volwassene met een openstaand saldo."
+msgstr[1] "%(counter)s volwassenen met een openstaand saldo."
+
+#: finance/templates/finance/send_reminders.html:21
+msgid "Send the reminders"
+msgstr "Herinneringen versturen"
+
+#: finance/templates/finance/send_reminders.html:28 messaging/forms.py:23
+#: messaging/templates/messaging/animateur_history.html:13
+#: messaging/templates/messaging/compose.html:52
+#: messaging/templates/messaging/compose_all.html:43
+#: messaging/templates/messaging/message_detail.html:15
+#: messaging/templates/messaging/message_detail.html:46
+msgid "Recipients"
+msgstr "Ontvangers"
+
+#: finance/templates/finance/send_reminders.html:30 members/constants.py:21
+#: members/templates/members/admin_update.html:9
+msgid "Parent"
+msgstr "Ouder"
+
+#: finance/templates/finance/send_reminders.html:30
+#: members/templates/members/admin_update.html:130
+msgid "Children"
+msgstr "Kinderen"
+
+#: finance/views.py:43 finance/views.py:77 finance/views.py:152
+msgid "No current school year defined."
+msgstr "Geen lopend schooljaar gedefinieerd."
+
+#: finance/views.py:87
+msgid "Person not found."
+msgstr "Persoon niet gevonden."
+
+#: finance/views.py:104
+#, python-format
+msgid "Payment of %(amount)s€ recorded for %(person)s."
+msgstr "Betaling van %(amount)s€ geregistreerd voor %(person)s."
+
+#: finance/views.py:176 messaging/views.py:361
+#, python-format
+msgid "Failed to send to %(email)s."
+msgstr "Verzenden naar %(email)s mislukt."
+
+#: finance/views.py:182
+#, python-format
+msgid "Reminders sent to %(count)s adult(s)."
+msgstr "Herinneringen verstuurd naar %(count)s volwassene(n)."
+
+#: homepage/models.py:8
+msgid "Title"
+msgstr "Titel"
+
+#: homepage/models.py:9
+msgid "Description"
+msgstr "Omschrijving"
+
+#: homepage/models.py:17 members/filters.py:56 members/filters.py:57
+#: members/forms.py:83 members/templates/members/admin_update.html:140
+#: members/templates/members/profile.html:123 members/views.py:174
+#: messaging/forms.py:29
+msgid "Section"
+msgstr "Sectie"
+
+#: homepage/templates/homepage/agenda.html:7 templates/base.html:70
+msgid "Agenda"
+msgstr "Agenda"
+
+#: homepage/templates/homepage/agenda.html:8
+msgid "Calendar of activities"
+msgstr "Activiteitenkalender"
+
+#: homepage/templates/homepage/agenda.html:23
+#, python-format
+msgid "Section: %(section_name)s"
+msgstr "Sectie: %(section_name)s"
+
+#: homepage/templates/homepage/agenda.html:29
+msgid "No upcoming event."
+msgstr "Geen aankomend evenement."
+
+#: homepage/templates/homepage/faq.html:7 templates/base.html:105
+msgid "FAQ"
+msgstr "FAQ"
+
+#: homepage/templates/homepage/faq.html:9
+msgid "Frequently asked questions."
+msgstr "Veelgestelde vragen."
+
+#: homepage/templates/homepage/home.html:11
+msgid "Main Description"
+msgstr "Hoofdbeschrijving"
+
+#: homepage/templates/homepage/home.html:13
+msgid ""
+"Roll on the floor purring your whiskers off intrigued by the shower burrow "
+"under covers, and play time, rub face on everything, intently sniff hand, or "
+"pelt around the house and up and down stairs chasing phantoms. Attack feet. "
+"Damn that dog shake treat bag under the bed drink water out of the faucet "
+"for lick butt love to play with owner's hair tie. Swat at dog give attitude."
+msgstr "Voorstellingstekst van de eenheid. Pas deze aan via de instellingen van de website om je eenheid, zijn secties en zijn activiteiten te beschrijven."
+
+#: members/admin.py:48
+msgid "Personal info"
+msgstr "Persoonlijke gegevens"
+
+#: members/admin.py:63
+msgid "Preferences"
+msgstr "Voorkeuren"
+
+#: members/admin.py:67
+msgid "Permissions"
+msgstr "Machtigingen"
+
+#: members/admin.py:152
+msgid "Languages"
+msgstr "Talen"
+
+#: members/admin.py:154
+msgid "Site information"
+msgstr "Websitegegevens"
+
+#: members/admin.py:158
+msgid "Contact information"
+msgstr "Contactgegevens"
+
+#: members/admin.py:161
+msgid "Social media"
+msgstr "Sociale media"
+
+#: members/admin.py:162
+msgid "Email settings"
+msgstr "E-mailinstellingen"
+
+#: members/admin.py:164
+msgid "Registration settings"
+msgstr "Inschrijvingsinstellingen"
+
+#: members/admin.py:168
+msgid "Customizable text"
+msgstr "Aanpasbare tekst"
+
+#: members/constants.py:22 members/templates/members/admin_update.html:13
+msgid "Animator"
+msgstr "Animator"
+
+#: members/constants.py:23
+msgid "Participant"
+msgstr "Deelnemer"
+
+#: members/constants.py:29 members/forms.py:42 members/forms.py:57
+#: members/forms.py:354 members/forms.py:381
+#: messaging/templates/messaging/compose_all.html:54
+#: messaging/templates/messaging/message_detail.html:51
+msgid "Email"
+msgstr "E-mail"
+
+#: members/constants.py:30 members/filters.py:35 members/forms.py:229
+#: members/forms.py:242 members/forms.py:399 members/forms.py:540
+#: members/templates/members/admin_update.html:138
+#: members/templates/members/child_form.html:18
+#: members/templates/members/profile.html:119 members/views.py:170
+msgid "First name"
+msgstr "Voornaam"
+
+#: members/constants.py:31 members/filters.py:38 members/forms.py:230
+#: members/forms.py:243 members/forms.py:400 members/forms.py:541
+#: members/templates/members/admin_update.html:139
+#: members/templates/members/child_form.html:24
+#: members/templates/members/profile.html:120 members/views.py:171
+msgid "Last name"
+msgstr "Achternaam"
+
+#: members/constants.py:32 members/forms.py:231 members/forms.py:245
+#: members/forms.py:401 members/forms.py:542
+#: members/templates/members/profile.html:75
+msgid "Address"
+msgstr "Adres"
+
+#: members/constants.py:33 members/forms.py:232 members/forms.py:246
+#: members/forms.py:353 members/forms.py:402 members/forms.py:543
+msgid "Phone"
+msgstr "Telefoon"
+
+#: members/constants.py:34
+msgid "Adult type"
+msgstr "Type volwassene"
+
+#: members/constants.py:35
+msgid "Enable secondary role"
+msgstr "Tweede rol inschakelen"
+
+#: members/constants.py:37
+msgid ""
+"I agree that photos or videos in which my child(ren) appear may be used by "
+"Les Scouts ASBL, of which my unit is part"
+msgstr "Ik ga ermee akkoord dat foto's of video's waarop mijn kind(eren) staat/staan gebruikt mogen worden door Les Scouts ASBL, waarvan mijn eenheid deel uitmaakt"
+
+#: members/constants.py:44
+msgid "Your profile has been updated successfully."
+msgstr "Je profiel is met succes bijgewerkt."
+
+#: members/constants.py:49
+msgid "No user found matching this ID."
+msgstr "Geen gebruiker gevonden met deze ID."
+
+#: members/constants.py:50
+msgid "You do not have permission to view this profile."
+msgstr "Je hebt geen toestemming om dit profiel te raadplegen."
+
+#: members/constants.py:52
+msgid "AdultUserChangeForm can only be used with existing accounts"
+msgstr "AdultUserChangeForm kan enkel gebruikt worden met bestaande accounts"
+
+#: members/constants.py:54
+msgid "Account instance is missing required Person relationship"
+msgstr "Accountinstantie mist de vereiste Person-relatie"
+
+#: members/filters.py:27
+msgid "Ascending"
+msgstr "Oplopend"
+
+#: members/filters.py:28
+msgid "Descending"
+msgstr "Aflopend"
+
+#: members/filters.py:32
+msgid "Ordering"
+msgstr "Sortering"
+
+#: members/filters.py:42 members/filters.py:43
+msgid "Birth year"
+msgstr "Geboortejaar"
+
+#: members/filters.py:49 members/filters.py:50
+msgid "School year"
+msgstr "Schooljaar"
+
+#: members/filters.py:62 members/views.py:175
+msgid "Role"
+msgstr "Rol"
+
+#: members/filters.py:63
+msgid "All roles"
+msgstr "Alle rollen"
+
+#: members/forms.py:59
+msgid ""
+"If an email is provided, an account will be created. Otherwise, the existing "
+"account will be used."
+msgstr "Als een e-mailadres wordt opgegeven, wordt een account aangemaakt. Anders wordt het bestaande account gebruikt."
+
+#: members/forms.py:67 members/templates/members/admin_update.html:63
+msgid "Primary role"
+msgstr "Hoofdrol"
+
+#: members/forms.py:74
+msgid "Secondary roles"
+msgstr "Tweede rollen"
+
+#: members/forms.py:88
+msgid "Next section"
+msgstr "Volgende sectie"
+
+#: members/forms.py:105 members/forms.py:109
+#, python-format
+msgid "Section %(range)s"
+msgstr "Sectie %(range)s"
+
+#: members/forms.py:147
+msgid ""
+"Only the 'Participant' and 'Animator' roles can be enrolled in a section."
+msgstr "Enkel de rollen 'Deelnemer' en 'Animator' kunnen in een sectie worden ingeschreven."
+
+#: members/forms.py:233
+msgid "Photos allowed"
+msgstr "Foto's toegestaan"
+
+#: members/forms.py:234
+msgid "Date of birth (only for participants)"
+msgstr "Geboortedatum (enkel voor deelnemers)"
+
+#: members/forms.py:235
+msgid "Sex (only for participants)"
+msgstr "Geslacht (enkel voor deelnemers)"
+
+#: members/forms.py:236 members/forms.py:244 members/forms.py:352
+#: members/forms.py:405 members/templates/members/child_form.html:32
+msgid "Totem"
+msgstr "Totem"
+
+#: members/forms.py:237 members/forms.py:403
+msgid "Notes"
+msgstr "Opmerkingen"
+
+#: members/forms.py:258 members/forms.py:547
+#: members/templates/members/onboarding.html:17
+#: members/templates/members/profile.html:21
+#: members/templates/members/profile.html:28
+msgid "Account type"
+msgstr "Accounttype"
+
+#: members/forms.py:265
+msgid "Active parent, I want to help the unit occasionally"
+msgstr "Actieve ouder, ik wil de eenheid af en toe helpen"
+
+#: members/forms.py:382
+msgid "If an email is provided, an account will be created for the child."
+msgstr "Als een e-mailadres wordt opgegeven, wordt er een account aangemaakt voor het kind."
+
+#: members/forms.py:398 members/views.py:173
+msgid "Sex"
+msgstr "Geslacht"
+
+#: members/forms.py:404 members/views.py:172
+msgid "Date of birth"
+msgstr "Geboortedatum"
+
+#: members/forms.py:439
+msgid "This email already exists for another user"
+msgstr "Dit e-mailadres bestaat al voor een andere gebruiker"
+
+#: members/forms.py:471
+msgid "Secret key (6 characters)"
+msgstr "Geheime code (6 tekens)"
+
+#: members/models.py:75
+msgid "Boy"
+msgstr "Jongen"
+
+#: members/models.py:76
+msgid "Girl"
+msgstr "Meisje"
+
+#: members/models.py:86
+msgid "First 6 characters of the UUID — key to link a parent to a child"
+msgstr "Eerste 6 tekens van de UUID — code om een ouder aan een kind te koppelen"
+
+#: members/models.py:116
+msgid "Date on which the member was archived"
+msgstr "Datum waarop het lid werd gearchiveerd"
+
+#: members/models.py:132
+msgid "Manual override for passage: section assigned the following year"
+msgstr "Handmatige overschrijving voor de passage: sectie toegewezen het volgende jaar"
+
+#: members/models.py:164
+msgid "Date of birth is required for a participant."
+msgstr "De geboortedatum is verplicht voor een deelnemer."
+
+#: members/models.py:166
+msgid "Sex is required for a participant."
+msgstr "Het geslacht is verplicht voor een deelnemer."
+
+#: members/models.py:202
+msgid "Pending"
+msgstr "In behandeling"
+
+#: members/models.py:213
+msgid "linked sections"
+msgstr "gekoppelde secties"
+
+#: members/models.py:215
+msgid "linked children"
+msgstr "gekoppelde kinderen"
+
+#: members/models.py:329
+msgid "Language used for outgoing emails to this user."
+msgstr "Taal voor uitgaande e-mails naar deze gebruiker."
+
+#: members/models.py:558
+msgid "Calendar year from the start of the time period"
+msgstr "Burgerjaar vanaf het begin van de periode"
+
+#: members/models.py:566
+#, python-format
+msgid "%(name)s — from %(start)s to %(end)s"
+msgstr "%(name)s — van %(start)s tot %(end)s"
+
+#: members/models.py:622
+msgid ""
+"Age of the youngest members of the section on December 31 of the school year"
+msgstr "Leeftijd van de jongste leden van de sectie op 31 december van het schooljaar"
+
+#: members/models.py:629
+msgid ""
+"Age of the oldest members of the section on December 31 of the school year"
+msgstr "Leeftijd van de oudste leden van de sectie op 31 december van het schooljaar"
+
+#: members/models.py:634
+#, python-format
+msgid "%(name)s (%(min)s-%(max)s years old)"
+msgstr "%(name)s (%(min)s-%(max)s jaar)"
+
+#: members/models.py:729
+msgid "Languages available to users in the site language selector."
+msgstr "Talen die beschikbaar zijn voor gebruikers in de taalkiezer van de website."
+
+#: members/models.py:737
+msgid ""
+"Last school year (the « name » field) for which the automatic passage was "
+"executed. Anti-replay: if Celery was stopped on the passage day, the task "
+"catches up at the next startup."
+msgstr "Laatste schooljaar (het veld « name ») waarvoor de automatische passage werd uitgevoerd. Anti-herhaling: als Celery stopte op de dag van de passage, haalt de taal dit in bij de volgende opstart."
+
+#: members/models.py:766
+msgid "Important document"
+msgstr "Belangrijk document"
+
+#: members/models.py:767 members/templates/members/documents.html:5
+#: messaging/templates/messaging/compose.html:41
+#: messaging/templates/messaging/compose_all.html:33
+msgid "Important documents"
+msgstr "Belangrijke documenten"
+
+#: members/templates/account/email/account_already_exists_message.txt:4
+#, python-format
+msgid ""
+"Vous recevez ce mail parce que vous ou quelqu'un d'autre a tenté de créer un "
+"compte avec l'adresse e-mail suivante:\n"
+"\n"
+"%(email)s\n"
+"\n"
+"Cependant, un compte utilisant cette adresse e-mail existe déjà.  En cas où "
+"vous avez oublié votre mot de passe, veuillez utiliser la procédure de mot "
+"de passe oublié pour récupérer votre compte.\n"
+"\n"
+"%(password_reset_url)s"
+msgstr "Je ontvangt deze e-mail omdat jij of iemand anders hebt geprobeerd een account aan te maken met het volgende e-mailadres:\n\n%(email)s\n\nEr bestaat echter al een account met dit e-mailadres. Als je je wachtwoord bent vergeten, gebruik dan de procedure 'wachtwoord vergeten' om je account te herstellen.\n\n%(password_reset_url)s"
+
+#: members/templates/account/email/account_already_exists_subject.txt:3
+msgid "Compte déjà existant"
+msgstr "Account bestaat al"
+
+#: members/templates/account/email/child_password_reset_key_message.txt:4
+#, python-format
+msgid ""
+"Tu reçois ce message parce qu'un de tes parents à choisi de te créer un "
+"compte sur le site de l'unité.  \n"
+"Pour finaliser l'inscription et choisir un mot de passe, clique sur le lien "
+"ci-dessous.\n"
+"\n"
+"%(password_reset_url)s\n"
+"Cela peut être ignoré si tu n'as pas demandé de réinitialisation de mot de "
+"passe. "
+msgstr "Je ontvangt dit bericht omdat een van je ouders ervoor heeft gekozen een account voor je aan te maken op de website van de eenheid.\nOm je inschrijving af te ronden en een wachtwoord te kiezen, klik op de onderstaande link.\n\n%(password_reset_url)s\nJe kunt dit negeren als je geen wachtwoordreset hebt aangevraagd."
+
+#: members/templates/account/email/child_password_reset_key_subject.txt:3
+#: members/templates/account/email/password_reset_key_subject.txt:3
+#: members/templates/account/email/unknown_account_subject.txt:3
+msgid "Réinitialisation de mot de passe"
+msgstr "Wachtwoord opnieuw instellen"
+
+#: members/templates/account/email/create_child_account_message.txt:4
+msgid ""
+"Tu a reçu ce message parce qu'un de tes parents à choisi de te créer un "
+"compte sur le site de l'unité.  Pour finaliser l'inscription et choisir un "
+"mot de passe, clique sur le lien ci-desous."
+msgstr "Je hebt dit bericht ontvangen omdat een van je ouders ervoor heeft gekozen een account voor je aan te maken op de website van de eenheid. Om je inschrijving af te ronden en een wachtwoord te kiezen, klik op de onderstaande link."
+
+#: members/templates/account/email/create_child_account_message.txt:8
+#, python-format
+msgid "Ton nom d'utilisateur est \"%(username)s\"."
+msgstr "Je gebruikersnaam is \"%(username)s\"."
+
+#: members/templates/account/email/create_child_account_subject.txt:3
+msgid "Création d'un compte sur le site de votre unité scoute"
+msgstr "Een account aanmaken op de website van je scoutseenheid"
+
+#: members/templates/account/email/email_confirmation_subject.txt:3
+msgid "Veuillez confirmer votre adresse e-mail"
+msgstr "Bevestig je e-mailadres"
+
+#: members/templates/account/email/password_reset_key_message.txt:4
+#, python-format
+msgid ""
+"Tu reçois ce message parce qu’un compte a été créé pour toi sur le site de "
+"l’unité, ou qu’une réinitialisation de mot de passe a été demandée.\n"
+"\n"
+"Pour finaliser l’inscription ou choisir un nouveau mot de passe, clique sur "
+"le lien ci-dessous :\n"
+"\n"
+"%(password_reset_url)s\n"
+"\n"
+"Si tu n’es pas à l’origine de cette demande, tu peux simplement ignorer ce "
+"message."
+msgstr "Je ontvangt dit bericht omdat er een account voor je is aangemaakt op de website van de eenheid, of omdat een wachtwoordreset is aangevraagd.\n\nOm je inschrijving af te ronden of een nieuw wachtwoord te kiezen, klik op de onderstaande link:\n\n%(password_reset_url)s\n\nAls jij deze aanvraag niet hebt gedaan, kun je dit bericht gewoon negeren."
+
+#: members/templates/account/email/unknown_account_message.txt:4
+#, python-format
+msgid ""
+"Vous recevez ce mail parce que vous ou quelqu'un d'autre a demandé un mot de "
+"passe pour votre compte utilisateur.\n"
+"Cependant, nous n'avons pas de compte avec l'adresse e-mail %(email)s dans "
+"notre base de données.\n"
+"\n"
+"Ce mail peut être ignoré si vous n'avez pas demandé de réinitialisation de "
+"mot de passe.\n"
+"\n"
+"Si c'était vous, vous pouvez vous inscrire pour un compte en utilisant le "
+"lien ci-dessous."
+msgstr "Je ontvangt deze e-mail omdat jij of iemand anders een wachtwoord heeft aangevraagd voor je gebruikersaccount.\nWij hebben echter geen account met het e-mailadres %(email)s in onze database.\n\nJe kunt deze e-mail negeren als je geen wachtwoordreset hebt aangevraagd.\n\nAls jij het was, kun je je inschrijven voor een account via de onderstaande link."
+
+#: members/templates/account/email_confirm.html:5
+msgid "Confirm email address"
+msgstr "E-mailadres bevestigen"
+
+#: members/templates/account/email_confirm.html:12
+#, python-format
+msgid ""
+"Please confirm that <a href=\"mailto:%(email)s\">%(email_addr)s</a> is the "
+"email address of %(user_display)s."
+msgstr "Bevestig dat <a href=\"mailto:%(email)s\">%(email_addr)s</a> het e-mailadres is van %(user_display)s."
+
+#: members/templates/account/email_confirm.html:17
+#: members/templates/members/admin_update.html:120
+msgid "Confirm"
+msgstr "Bevestigen"
+
+#: members/templates/account/email_confirm.html:23
+#, python-format
+msgid ""
+"This link is no longer valid. Please <a href=\"%(email_url)s\">submit a new "
+"email confirmation request</a>."
+msgstr "Deze link is niet meer geldig. <a href=\"%(email_url)s\">Dien een nieuwe bevestigingsaanvraag in</a>."
+
+#: members/templates/account/login.html:6 templates/base.html:172
+msgid "Log in"
+msgstr "Aanmelden"
+
+#: members/templates/account/login.html:38
+#: members/templates/account/signup.html:43
+#: members/templates/members/child_account.html:20
+#: messaging/templates/messaging/compose.html:78
+#: messaging/templates/messaging/compose_all.html:76
+msgid "Send"
+msgstr "Versturen"
+
+#: members/templates/account/login.html:39
+msgid "Remember me"
+msgstr "Onthoud mij"
+
+#: members/templates/account/login.html:40
+msgid "Forgot password?"
+msgstr "Wachtwoord vergeten?"
+
+#: members/templates/account/login.html:41
+msgid "Incorrect username or password"
+msgstr "Onjuiste gebruikersnaam of wachtwoord"
+
+#: members/templates/account/login.html:49
+#: members/templates/account/signup.html:50
+msgid "Or log in with"
+msgstr "Of meld je aan met"
+
+#: members/templates/account/logout.html:4
+#: members/templates/account/logout.html:7
+#: members/templates/account/logout.html:18
+msgid "Sign Out"
+msgstr "Afmelden"
+
+#: members/templates/account/logout.html:10
+msgid "Are you sure you want to sign out?"
+msgstr "Ben je zeker dat je wilt afmelden?"
+
+#: members/templates/account/password_change.html:5
+#: members/templates/account/password_change.html:8
+#: members/templates/account/password_change.html:24
+#: members/templates/account/password_reset_from_key.html:5
+#: members/templates/account/password_reset_from_key.html:12
+#: members/templates/account/password_reset_from_key_done.html:4
+#: members/templates/account/password_reset_from_key_done.html:7
+msgid "Change Password"
+msgstr "Wachtwoord wijzigen"
+
+#: members/templates/account/password_change.html:25
+msgid "Forgot Password?"
+msgstr "Wachtwoord vergeten?"
+
+#: members/templates/account/password_reset.html:6
+#: members/templates/account/password_reset_done.html:5
+msgid "Password Reset"
+msgstr "Wachtwoord opnieuw instellen"
+
+#: members/templates/account/password_reset.html:13
+msgid ""
+"Forgotten your password? Enter your e-mail address below, and we'll send you "
+"an e-mail allowing you to reset it."
+msgstr "Wachtwoord vergeten? Vul hieronder je e-mailadres in en we sturen je een e-mail om het opnieuw in te stellen."
+
+#: members/templates/account/password_reset.html:25
+msgid "Reset My Password"
+msgstr "Mijn wachtwoord opnieuw instellen"
+
+#: members/templates/account/password_reset.html:28
+msgid "Please contact us if you have any trouble resetting your password."
+msgstr "Neem contact met ons op als je problemen hebt bij het opnieuw instellen van je wachtwoord."
+
+#: members/templates/account/password_reset_done.html:12
+msgid ""
+"We have sent you an email. If you haven't received it, check your spam "
+"folder. Otherwise, contact us if you haven't received it within a few "
+"minutes."
+msgstr "We hebben je een e-mail gestuurd. Heb je deze niet ontvangen, controleer dan je spammap. Neem anders contact met ons op als je hem binnen enkele minuten niet hebt ontvangen."
+
+#: members/templates/account/password_reset_from_key.html:10
+msgid "Bad Token"
+msgstr "Ongeldig token"
+
+#: members/templates/account/password_reset_from_key.html:20
+#, python-format
+msgid ""
+"The password reset link was invalid, possibly because it has already been "
+"used.  Please request a <a href=\"%(passwd_reset_url)s\">new password reset</"
+"a>."
+msgstr "De link voor het opnieuw instellen van het wachtwoord was ongeldig, mogelijk omdat deze al is gebruikt. Vraag een <a href=\"%(passwd_reset_url)s\">nieuwe wachtwoordreset</a> aan."
+
+#: members/templates/account/password_reset_from_key.html:35
+msgid "change password"
+msgstr "wachtwoord wijzigen"
+
+#: members/templates/account/password_reset_from_key_done.html:10
+msgid "Your password is now changed."
+msgstr "Je wachtwoord is gewijzigd."
+
+#: members/templates/account/signup.html:6
+msgid "Create your account"
+msgstr "Maak je account aan"
+
+#: members/templates/account/signup.html:9
+msgid ""
+"To request enrollment for one or more children in our unit, a parent must "
+"first register on our site by following the procedure below. Then, the "
+"parent can add their children to submit an enrollment request."
+msgstr "Om inschrijving aan te vragen voor een of meer kinderen in onze eenheid, moet een ouder zich eerst registreren op onze website via de onderstaande procedure. Daarna kan de ouder zijn/haar kinderen toevoegen om een inschrijvingsaanvraag in te dienen."
+
+#: members/templates/account/signup.html:12
+msgid "Create your account (for parents and animators only)"
+msgstr "Maak je account aan (enkel voor ouders en animators)"
+
+#: members/templates/account/verification_sent.html:5
+msgid "Messages"
+msgstr "Berichten"
+
+#: members/templates/account/verification_sent.html:12
+msgid "Verify your email address"
+msgstr "Verifieer je e-mailadres"
+
+#: members/templates/account/verification_sent.html:16
+#, python-format
+msgid ""
+"A verification email has been sent. Follow the link provided to finalize the "
+"creation of your account. If you can't find the verification email in your "
+"main inbox, check your spam and notifications. Contact us at <span "
+"style=\"white-space: nowrap;\">%(contact_email)s</span> if you don't receive "
+"a verification email in the next few minutes."
+msgstr "Er is een verificatie-e-mail verzonden. Volg de link om de aanmaak van je account af te ronden. Als je de verificatie-e-mail niet in je postvak vindt, controleer dan je spam en meldingen. Neem contact met ons op via <span style=\"white-space: nowrap;\">%(contact_email)s</span> als je binnen enkele minuten geen verificatie-e-mail ontvangt."
+
+#: members/templates/members/admin_list.html:50
+msgid "Filter"
+msgstr "Filteren"
+
+#: members/templates/members/admin_list.html:51
+msgid "Reset"
+msgstr "Resetten"
+
+#: members/templates/members/admin_list.html:78
+msgid "Actions"
+msgstr "Acties"
+
+#: members/templates/members/admin_list.html:92
+#, python-format
+msgid "Incompatible age: %(member.age_mismatch_detail)s"
+msgstr "Incompatibele leeftijd: %(member.age_mismatch_detail)s"
+
+#: members/templates/members/admin_list.html:99
+#: members/templates/members/admin_update.html:151
+#: members/templates/members/admin_update.html:161
+#: members/templates/members/child_list.html:25
+msgid "Edit"
+msgstr "Bewerken"
+
+#: members/templates/members/admin_list.html:104
+msgid "No results"
+msgstr "Geen resultaten"
+
+#: members/templates/members/admin_list.html:115
+msgid "Previous"
+msgstr "Vorige"
+
+#: members/templates/members/admin_list.html:119
+#, python-format
+msgid "Page %(page_obj.number)s of %(page_obj.paginator.num_pages)s"
+msgstr "Pagina %(page_obj.number)s van %(page_obj.paginator.num_pages)s"
+
+#: members/templates/members/admin_list.html:123
+msgid "Next"
+msgstr "Volgende"
+
+#: members/templates/members/admin_update.html:11
+msgid "Child"
+msgstr "Kind"
+
+#: members/templates/members/admin_update.html:15
+#: messaging/templates/messaging/compose_all.html:53
+msgid "Member"
+msgstr "Lid"
+
+#: members/templates/members/admin_update.html:66
+#: members/templates/members/profile.html:24
+#, python-format
+msgid "Account type cannot be changed. Reason: %(form.lock_reason)s."
+msgstr "Het accounttype kan niet worden gewijzigd. Reden: %(form.lock_reason)s."
+
+#: members/templates/members/admin_update.html:132
+msgid "Parents"
+msgstr "Ouders"
+
+#: members/templates/members/child_account.html:5
+#, python-format
+msgid "Create an account for %(child.first_name)s"
+msgstr "Een account aanmaken voor %(child.first_name)s"
+
+#: members/templates/members/child_account.html:9
+msgid ""
+"Create an account so your child can access their section's information and "
+"edit their own details."
+msgstr "Maak een account aan zodat je kind de informatie van zijn sectie kan raadplegen en zijn eigen gegevens kan bewerken."
+
+#: members/templates/members/child_account.html:11
+msgid ""
+"If they are over 18, they will also be able to detach their account from "
+"their parents', who will no longer receive information about them or "
+"membership fee reminders."
+msgstr "Als hij/zij ouder is dan 18, kan hij/zij ook zijn/haar account loskoppelen van dat van de ouders, die dan geen informatie of lidgeldherinneringen meer over hem/haar zullen ontvangen."
+
+#: members/templates/members/child_account.html:14
+msgid ""
+"An email will be sent to your child's address with a link. It will allow "
+"them to create a password and validate their account."
+msgstr "Er wordt een e-mail naar het adres van je kind gestuurd met een link. Hiermee kan het een wachtwoord aanmaken en zijn/haar account valideren."
+
+#: members/templates/members/child_account_done.html:5
+msgid "Email sent"
+msgstr "E-mail verzonden"
+
+#: members/templates/members/child_account_done.html:9
+msgid ""
+"An email with a link has been sent to your child. They must click this link "
+"to finalize the creation of their account and set a password."
+msgstr "Er is een e-mail met een link naar je kind gestuurd. Het moet op deze link klikken om de aanmaak van zijn/haar account af te ronden en een wachtwoord in te stellen."
+
+#: members/templates/members/child_form.html:8
+msgid "Child information"
+msgstr "Gegevens van het kind"
+
+#: members/templates/members/child_form.html:30
+msgid "(optional)"
+msgstr "(optioneel)"
+
+#: members/templates/members/child_form.html:54
+#: members/templates/members/child_form.html:85
+msgid "If different from parent's"
+msgstr "Indien verschillend van de ouder"
+
+#: members/templates/members/child_form.html:62
+msgid ""
+"The field below should only be filled in if you want to create an account "
+"for the child, which is recommended after age 12."
+msgstr "Onderstaand veld hoeft enkel te worden ingevuld als je een account wilt aanmaken voor het kind, wat wordt aangeraden vanaf 12 jaar."
+
+#: members/templates/members/child_form.html:64
+msgid "They will receive an email to choose a password."
+msgstr "Hij/zij ontvangt een e-mail om een wachtwoord te kiezen."
+
+#: members/templates/members/child_form.html:66
+msgid "Do not enter your own address."
+msgstr "Vul niet je eigen adres in."
+
+#: members/templates/members/child_form.html:74
+msgid "To create an account"
+msgstr "Een account aanmaken"
+
+#: members/templates/members/child_from_key_form.html:8
+msgid "Child's secret key"
+msgstr "Geheime code van het kind"
+
+#: members/templates/members/child_list.html:18
+msgid "Deregister"
+msgstr "Uitschrijven"
+
+#: members/templates/members/child_list.html:20
+#: members/templates/members/dettach_child.html:15
+msgid "Detach"
+msgstr "Loskoppelen"
+
+#: members/templates/members/deregister_child.html:5
+#, python-format
+msgid "Confirm that you want to deregister %(child.first_name)s"
+msgstr "Bevestig dat je %(child.first_name)s wilt uitschrijven"
+
+#: members/templates/members/deregister_child.html:11
+msgid ""
+"A deregistration for the following year or for an enrollment in the "
+"'request' state will be processed immediately."
+msgstr "Een uitschrijving voor het volgende jaar of voor een inschrijving in de status 'request' wordt onmiddellijk verwerkt."
+
+#: members/templates/members/deregister_child.html:14
+msgid ""
+"If the deregistration is requested for the current year and the enrollment "
+"is active, it will require manual intervention. Make sure you have followed "
+"the procedure described in the internal regulations."
+msgstr "Als de uitschrijving wordt aangevraagd voor het lopende jaar en de inschrijving actief is, is een handmatige tussenkomst nodig. Zorg ervoor dat je de procedure uit het huishoudelijk reglement hebt gevolgd."
+
+#: members/templates/members/deregister_child.html:17
+msgid "The year starts on August 1st, right after camp."
+msgstr "Het jaar start op 1 augustus, vlak na het kamp."
+
+#: members/templates/members/deregister_child.html:21
+#, python-format
+msgid "Deregister %(child.first_name)s for the current year"
+msgstr "%(child.first_name)s uitschrijven voor het lopende jaar"
+
+#: members/templates/members/deregister_child.html:23
+#, python-format
+msgid "Deregister %(child.first_name)s for next year"
+msgstr "%(child.first_name)s uitschrijven voor het volgende jaar"
+
+#: members/templates/members/dettach_child.html:5
+#, python-format
+msgid "Confirm that you want to detach %(child.first_name)s"
+msgstr "Bevestig dat je %(child.first_name)s wilt loskoppelen"
+
+#: members/templates/members/dettach_child.html:10
+msgid "Back"
+msgstr "Terug"
+
+#: members/templates/members/documents.html:13
+msgid "Link"
+msgstr "Link"
+
+#: members/templates/members/documents.html:14
+msgid "Download"
+msgstr "Downloaden"
+
+#: members/templates/members/documents.html:20
+msgid "No documents available."
+msgstr "Geen documenten beschikbaar."
+
+#: members/templates/members/onboarding.html:5
+msgid "Welcome! Complete your profile"
+msgstr "Welkom! Maak je profiel compleet"
+
+#: members/templates/members/onboarding.html:8
+msgid ""
+"To continue, please complete your profile by filling in the information "
+"below."
+msgstr "Om verder te gaan, maak je profiel compleet door onderstaande gegevens in te vullen."
+
+#: members/templates/members/onboarding.html:51
+#: members/templates/socialaccount/signup.html:35
+msgid "Continue"
+msgstr "Doorgaan"
+
+#: members/templates/members/profile.html:6
+msgid "Your profile"
+msgstr "Je profiel"
+
+#: members/templates/members/profile.html:83
+msgid "The address is managed by the responsible parent."
+msgstr "Het adres wordt beheerd door de verantwoordelijke ouder."
+
+#: members/templates/members/profile.html:100
+msgid "Change password"
+msgstr "Wachtwoord wijzigen"
+
+#: members/templates/members/profile.html:112
+msgid ""
+"To associate an already enrolled <span class=\"text-ls-bleu-clair\">child</"
+"span>, ask the parent who enrolled the child for the \"Secret key\" and "
+"click on <span class=\"text-ls-vert-base\">Add an existing child with a key</"
+"span>."
+msgstr "Om een reeds ingeschreven <span class=\"text-ls-bleu-clair\">kind</span> te koppelen, vraag de \"Geheime code\" aan de ouder die het kind heeft ingeschreven en klik op <span class=\"text-ls-vert-base\">Een bestaand kind toevoegen met een code</span>."
+
+#: members/templates/members/profile.html:114
+msgid ""
+"If a parent no longer wishes to receive emails about an enrolled child, they "
+"can <span class=\"text-ls-orange\">detach</span> them, provided at least one "
+"other parent remains."
+msgstr "Als een ouder geen e-mails meer wil ontvangen over een ingeschreven kind, kan hij/zij het <span class=\"text-ls-orange\">loskoppelen</span>, op voorwaarde dat er minstens één andere ouder overblijft."
+
+#: members/templates/members/profile.html:121
+msgid "Copy key"
+msgstr "Code kopiëren"
+
+#: members/templates/members/profile.html:122
+msgid "Secret key"
+msgstr "Geheime code"
+
+#: members/templates/members/profile.html:131
+msgid "Loading..."
+msgstr "Laden…"
+
+#: members/templates/members/profile.html:139
+msgid "Add a new child"
+msgstr "Een nieuw kind toevoegen"
+
+#: members/templates/members/profile.html:142
+msgid "Add an existing child with a key"
+msgstr "Een bestaand kind toevoegen met een code"
+
+#: members/templates/members/secondary_role.html:4
+msgid "Secondary role"
+msgstr "Tweede rol"
+
+#: members/templates/socialaccount/signup.html:5
+msgid "Complete your registration"
+msgstr "Maak je inschrijving compleet"
+
+#: members/templates/socialaccount/signup.html:8
+#, python-format
+msgid ""
+"You are about to log in with your %(provider_name)s account. Please complete "
+"the form below to finalize your registration."
+msgstr "Je staat op het punt je aan te melden met je %(provider_name)s-account. Vul het onderstaande formulier in om je inschrijving af te ronden."
+
+#: members/views.py:145
+#, python-format
+msgid "%(age)s years old — branch %(branch)s: %(min)s-%(max)s years old"
+msgstr "%(age)s jaar — tak %(branch)s: %(min)s-%(max)s jaar"
+
+#: members/views.py:379 members/views.py:449
+#, python-format
+msgid "%(first)s %(last)s added."
+msgstr "%(first)s %(last)s toegevoegd."
+
+#: members/views.py:391 members/views.py:403
+msgid "Invalid request"
+msgstr "Ongeldig verzoek"
+
+#: members/views.py:417
+#, python-format
+msgid "%(first)s modified."
+msgstr "%(first)s gewijzigd."
+
+#: members/views.py:466
+#, python-format
+msgid "%(first)s is not attached to your account."
+msgstr "%(first)s is niet gekoppeld aan je account."
+
+#: members/views.py:471
+#, python-format
+msgid ""
+"You cannot detach %(first)s.\n"
+"To detach a child, they must either be attached to other parents, or be over "
+"18 years old and have an associated account.\n"
+"%(first)s has %(count)s parent(s)\n"
+"%(first)s was born on %(birthday)s and %(has_account)s."
+msgstr "Je kunt %(first)s niet loskoppelen.\nOm een kind los te koppelen, moet het ofwel aan andere ouders gekoppeld zijn, ofwel ouder zijn dan 18 jaar en een account hebben.\n%(first)s heeft %(count)s ouder(s)\n%(first)s is geboren op %(birthday)s en %(has_account)s."
+
+#: members/views.py:480
+msgid "has an account"
+msgstr "heeft een account"
+
+#: members/views.py:480
+msgid "does not have an account"
+msgstr "heeft geen account"
+
+#: members/views.py:484
+#, python-format
+msgid ""
+"To confirm that you want to detach %(first)s from your account, click "
+"\"Detach\"."
+msgstr "Om te bevestigen dat je %(first)s van je account wilt loskoppelen, klik op \"Loskoppelen\"."
+
+#: messaging/forms.py:8
+msgid "Parents of a section"
+msgstr "Ouders van een sectie"
+
+#: messaging/forms.py:9
+msgid "Animators of a section"
+msgstr "Animators van een sectie"
+
+#: messaging/forms.py:10
+msgid "Participants of a section"
+msgstr "Deelnemers van een sectie"
+
+#: messaging/forms.py:11
+msgid "Everyone of a section (parents, participants and animators)"
+msgstr "Iedereen van een sectie (ouders, deelnemers en animators)"
+
+#: messaging/forms.py:12
+msgid "All animators"
+msgstr "Alle animators"
+
+#: messaging/forms.py:13
+msgid "Unit council"
+msgstr "Eenheidsraad"
+
+#: messaging/forms.py:14
+msgid "Unit staff"
+msgstr "Eenheidsstaff"
+
+#: messaging/forms.py:15
+msgid "Active parents"
+msgstr "Actieve ouders"
+
+#: messaging/forms.py:16
+msgid "Everyone"
+msgstr "Iedereen"
+
+#: messaging/forms.py:34
+msgid "Message subject"
+msgstr "Onderwerp van het bericht"
+
+#: messaging/forms.py:38
+msgid "Message content"
+msgstr "Inhoud van het bericht"
+
+#: messaging/forms.py:43
+msgid "Attachment (optional)"
+msgstr "Bijlage (optioneel)"
+
+#: messaging/forms.py:48
+msgid "Date (agenda)"
+msgstr "Datum (agenda)"
+
+#: messaging/forms.py:50
+msgid "Optional. If provided, an event will be added to the agenda."
+msgstr "Optioneel. Indien opgegeven wordt er een evenement aan de agenda toegevoegd."
+
+#: messaging/models.py:46
+msgid "All users"
+msgstr "Alle gebruikers"
+
+#: messaging/models.py:63
+msgid "sent"
+msgstr "verzonden"
+
+#: messaging/models.py:63
+msgid "ignored"
+msgstr "genegeerd"
+
+#: messaging/templates/messaging/_recipient_list.html:12
+msgid "Info"
+msgstr "Info"
+
+#: messaging/templates/messaging/_recipient_list.html:29
+msgid "No recipient found."
+msgstr "Geen ontvanger gevonden."
+
+#: messaging/templates/messaging/animateur_history.html:3
+#: messaging/templates/messaging/section_history.html:3 templates/base.html:87
+#: templates/base.html:100
+msgid "Message history"
+msgstr "Berichtengeschiedenis"
+
+#: messaging/templates/messaging/animateur_history.html:4
+msgid "Sent messages"
+msgstr "Verzonden berichten"
+
+#: messaging/templates/messaging/animateur_history.html:7
+#: messaging/templates/messaging/compose.html:3
+#: messaging/templates/messaging/compose_all.html:3 templates/base.html:86
+#: templates/base.html:99
+msgid "Send a message"
+msgstr "Een bericht versturen"
+
+#: messaging/templates/messaging/animateur_history.html:15
+msgid "Sent"
+msgstr "Verzonden"
+
+#: messaging/templates/messaging/animateur_history.html:16
+#: messaging/templates/messaging/message_detail.html:64
+msgid "Ignored"
+msgstr "Genegeerd"
+
+#: messaging/templates/messaging/animateur_history.html:27
+#: messaging/templates/messaging/compose_all.html:4
+#: messaging/templates/messaging/message_detail.html:20 messaging/views.py:352
+msgid "All members"
+msgstr "Alle leden"
+
+#: messaging/templates/messaging/animateur_history.html:36
+msgid "No message sent."
+msgstr "Geen bericht verstuurd."
+
+#: messaging/templates/messaging/compose.html:4
+msgid "Compose a message"
+msgstr "Een bericht opstellen"
+
+#: messaging/templates/messaging/compose.html:31
+#: messaging/templates/messaging/compose_all.html:23
+msgid "Attachments (optional, max 10)"
+msgstr "Bijlagen (optioneel, max 10)"
+
+#: messaging/templates/messaging/compose.html:35
+#: messaging/templates/messaging/compose.html:82
+#: messaging/templates/messaging/compose_all.html:27
+#: messaging/templates/messaging/compose_all.html:80
+msgid "Remove"
+msgstr "Verwijderen"
+
+#: messaging/templates/messaging/compose.html:42
+#: messaging/templates/messaging/compose_all.html:34
+msgid "Check a document to add its link to the message."
+msgstr "Vink een document aan om de link ervan aan het bericht toe te voegen."
+
+#: messaging/templates/messaging/compose.html:69
+msgid "Load"
+msgstr "Laden"
+
+#: messaging/templates/messaging/compose.html:75
+msgid "Select a group and click \"Load\" to display recipients."
+msgstr "Selecteer een groep en klik op \"Laden\" om de ontvangers weer te geven."
+
+#: messaging/templates/messaging/compose_all.html:71
+msgid "No member found."
+msgstr "Geen lid gevonden."
+
+#: messaging/templates/messaging/message_detail.html:4
+msgid "Message detail"
+msgstr "Berichtdetail"
+
+#: messaging/templates/messaging/message_detail.html:6
+msgid "Back to history"
+msgstr "Terug naar geschiedenis"
+
+#: messaging/templates/messaging/message_detail.html:12
+#: messaging/templates/messaging/section_history.html:11
+msgid "Sender"
+msgstr "Afzender"
+
+#: messaging/templates/messaging/message_detail.html:28
+msgid "Content"
+msgstr "Inhoud"
+
+#: messaging/templates/messaging/message_detail.html:36
+msgid "Attachments"
+msgstr "Bijlagen"
+
+#: messaging/templates/messaging/message_detail.html:52
+msgid "Status"
+msgstr "Status"
+
+#: messaging/templates/messaging/message_detail.html:62
+#, python-format
+msgid "Sent %(sent_at)s"
+msgstr "Verzonden %(sent_at)s"
+
+#: messaging/templates/messaging/section_history.html:23
+msgid "No message."
+msgstr "Geen bericht."
+
+#: messaging/views.py:242
+msgid ""
+"\n"
+"\n"
+"Important documents:\n"
+msgstr "\n\nBelangrijke documenten:\n"
+
+#: messaging/views.py:267
+msgid "You are not enrolled in any section this year."
+msgstr "Je bent dit jaar in geen enkele sectie ingeschreven."
+
+#: messaging/views.py:371
+#, python-format
+msgid "Message sent to %(count)s recipient(s)."
+msgstr "Bericht verzonden naar %(count)s ontvanger(s)."
+
+#: templates/base.html:52
+msgid "Toggle navigation"
+msgstr "Navigatie in-/uitklappen"
+
+#: templates/base.html:60
+msgid "Sections"
+msgstr "Secties"
+
+#: templates/base.html:65
+msgid "No section"
+msgstr "Geen sectie"
+
+#: templates/base.html:77
+msgid "Administration"
+msgstr "Beheer"
+
+#: templates/base.html:80
+msgid "Member management"
+msgstr "Ledenbeheer"
+
+#: templates/base.html:97
+msgid "Animator tools"
+msgstr "Animator-tools"
+
+#: templates/base.html:115
+msgid "Language"
+msgstr "Taal"
+
+#: templates/base.html:128
+msgid "Change"
+msgstr "Wijzigen"
+
+#: templates/base.html:141
+msgid "Toggle dropdown"
+msgstr "Dropdown in-/uitklappen"
+
+#: templates/base.html:145
+msgid "My profile"
+msgstr "Mijn profiel"
+
+#: templates/base.html:148
+msgid "My documents"
+msgstr "Mijn documenten"
+
+#: templates/base.html:166
+msgid "Log out"
+msgstr "Afmelden"
+
+#: templates/base.html:171
+msgid "Sign up"
+msgstr "Registreren"

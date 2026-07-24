@@ -1,8 +1,9 @@
 {% extends "members/base.html" %}
-{% block hat_title %}Envoyer des rappels{% endblock hat_title %}
-{% block hat_text %}Rappels de cotisation{% endblock hat_text %}
+{% load i18n %}
+{% block hat_title %}{% trans "Send reminders" %}{% endblock hat_title %}
+{% block hat_text %}{% trans "Membership fee reminders" %}{% endblock hat_text %}
 {% block subcontent %}
-<p>{{ adults|length }} adulte(s) avec un solde impayé.</p>
+<p>{% blocktranslate count counter=adults|length %}{{ counter }} adult with an unpaid balance.{% plural %}{{ counter }} adults with an unpaid balance.{% endblocktranslate %}</p>
 
 <div class="row">
     <div class="col-md-8">
@@ -17,16 +18,16 @@
                 {{ form.body }}
                 <div class="form-text">{{ form.body.help_text }}</div>
             </div>
-            <button type="submit" class="btn btn-warning">Envoyer les rappels</button>
-            <a href="{% url 'finance:billing' %}" class="btn btn-secondary">Annuler</a>
+            <button type="submit" class="btn btn-warning">{% trans "Send the reminders" %}</button>
+            <a href="{% url 'finance:billing' %}" class="btn btn-secondary">{% trans "Cancel" %}</a>
         </form>
     </div>
 </div>
 
 {% if adults %}
-<h5 class="mt-4">Destinataires</h5>
+<h5 class="mt-4">{% trans "Recipients" %}</h5>
 <table class="table table-sm">
-    <thead><tr><th>Parent</th><th>Enfants</th><th>Solde</th></tr></thead>
+    <thead><tr><th>{% trans "Parent" %}</th><th>{% trans "Children" %}</th><th>{% trans "Balance" %}</th></tr></thead>
     <tbody>
         {% for a in adults %}
         <tr>

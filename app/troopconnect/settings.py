@@ -22,10 +22,6 @@ def sec(setting, mysettings=secret_settings):
 
 
 SECRET_KEY = sec("SECRET_KEY")
-AWS_ACCESS_KEY_ID = sec("AWS_ACCESS_KEY_ID")
-AWS_SECRET_ACCESS_KEY = sec("AWS_SECRET_ACCESS_KEY")
-AWS_SES_REGION_NAME = sec("AWS_SES_REGION_NAME")
-AWS_SES_REGION_ENDPOINT = sec("AWS_SES_REGION_ENDPOINT")
 DEFAULT_FROM_EMAIL = sec("DEFAULT_FROM_EMAIL")
 ALIAS_EMAIL = sec("ALIAS_EMAIL")
 CONTACT_EMAIL = sec("CONTACT_EMAIL")
@@ -42,6 +38,7 @@ else:
 # Application definition
 
 INSTALLED_APPS = [
+    "modeltranslation",
     "finance.apps.FinanceConfig",
     "messaging.apps.MessagingConfig",
     "members.apps.MembersConfig",
@@ -49,7 +46,6 @@ INSTALLED_APPS = [
     "fontawesomefree",
     "simple_history",
     "django.contrib.admin",
-    "django_ses",
     "widget_tweaks",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -57,6 +53,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.sites",
+    "django.contrib.postgres",
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
@@ -73,6 +70,8 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
+    "members.middleware.AvailableLanguagesMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -148,9 +147,24 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # Internationalization
-# https://docs.djangoproject.com/en/4.1/topics/i18n/
+# https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = "fr-be"
+LANGUAGE_CODE = "fr"
+
+LANGUAGES = [
+    ("fr", "Français"),
+    ("nl", "Nederlands"),
+    ("en", "English"),
+]
+
+# Translation catalogs (fr/nl/en). Generated via `manage.py makemessages`.
+LOCALE_PATHS = [BASE_DIR / "locale"]
+
+# django-modeltranslation — keep in sync with LANGUAGES. Untranslated DB
+# values fall back to French (MODELTRANSLATION_FALLBACK_LANGUAGES).
+MODELTRANSLATION_LANGUAGES = ("fr", "nl", "en")
+MODELTRANSLATION_DEFAULT_LANGUAGE = "fr"
+MODELTRANSLATION_FALLBACK_LANGUAGES = ("fr",)
 
 TIME_ZONE = "Europe/Brussels"
 
@@ -192,11 +206,11 @@ INTERNAL_IPS = [
 
 AUTH_USER_MODEL = "members.Account"
 
-USE_SES_V2 = True
+MAILERSEND_API_KEY = os.environ.get("MAILERSEND_API_KEY", "")
 EMAIL_BACKEND = "post_office.EmailBackend"
 POST_OFFICE = {
     "BACKENDS": {
-        "default": "django_ses.SESBackend",
+        "default": "troopconnect.mailersend_backend.MailerSendBackend",
     },
     "DEFAULT_PRIORITY": "now",
     "CELERY_ENABLED": True,
@@ -274,9 +288,22 @@ timezone = "Europe/Brussels"
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 CELERY_WORKER_STATE_DB = "/tmp/celery-worker-state.db"
 CELERY_BEAT_SCHEDULE = {
+    "send-queued-mail": {
+        "task": "send_queued_mail",
+        "schedule": crontab(minute="*/5"),
+    },
     "create-year-daily": {
         "task": "create_year_task",
         "schedule": crontab(hour=3, minute=0),
+    },
+    "run-passage-daily": {
+        "task": "run_passage",
+        # Daily (not yearly) so that if Celery/beat was down on the intended
+        # trigger day (May 1), the passage runs at the next start instead of
+        # being skipped for a whole year. run_passage self-guards by date +
+        # marker (SiteSettings.last_passage_school_year), so it only actually
+        # promotes children once per target school year.
+        "schedule": crontab(hour=3, minute=30),
     },
     "cleanup-old-events-daily": {
         "task": "cleanup_old_events",

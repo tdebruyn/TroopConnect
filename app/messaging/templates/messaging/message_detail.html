@@ -1,0 +1,71 @@
+{% extends "members/base.html" %}
+{% load i18n %}
+{% block hat_title %}{{ message.subject }}{% endblock hat_title %}
+{% block hat_text %}{% trans "Message detail" %}{% endblock hat_text %}
+{% block subcontent %}
+    <a href="{% url 'messaging:animateur_history' %}" class="btn btn-secondary mb-3">&larr; {% trans "Back to history" %}</a>
+
+    <dl class="row mb-4">
+        <dt class="col-sm-3">{% trans "Date" %}</dt>
+        <dd class="col-sm-9">{{ message.created_at|date:"d/m/Y H:i" }}</dd>
+
+        <dt class="col-sm-3">{% trans "Sender" %}</dt>
+        <dd class="col-sm-9">{{ message.sender.first_name }} {{ message.sender.last_name }}</dd>
+
+        <dt class="col-sm-3">{% trans "Recipients" %}</dt>
+        <dd class="col-sm-9">
+            {% if message.section %}
+                {{ message.section.name }}
+            {% else %}
+                {% trans "All members" %}
+            {% endif %}
+        </dd>
+
+        <dt class="col-sm-3">{% trans "Subject" %}</dt>
+        <dd class="col-sm-9">{{ message.subject }}</dd>
+    </dl>
+
+    <h5>{% trans "Content" %}</h5>
+    <div class="card mb-4">
+        <div class="card-body">
+            <p class="card-text mb-0" style="white-space: pre-wrap;">{{ message.body }}</p>
+        </div>
+    </div>
+
+    {% if message.attachments.all %}
+        <h5>{% trans "Attachments" %}</h5>
+        <ul class="list-group mb-4">
+            {% for attachment in message.attachments.all %}
+                <li class="list-group-item">
+                    <a href="{{ attachment.file.url }}" target="_blank">{{ attachment.original_name }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <h5>{% trans "Recipients" %} ({{ recipients|length }})</h5>
+    <table class="table table-sm table-striped">
+        <thead>
+            <tr>
+                <th>{% trans "Name" %}</th>
+                <th>{% trans "Email" %}</th>
+                <th>{% trans "Status" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in recipients %}
+                <tr>
+                    <td>{{ r.parent.first_name }} {{ r.parent.last_name }}</td>
+                    <td>{{ r.parent.account.email|default:"—" }}</td>
+                    <td>
+                        {% if r.sent_at %}
+                            {% blocktranslate with sent_at=r.sent_at|date:"d/m/Y H:i" %}Sent {{ sent_at }}{% endblocktranslate %}
+                        {% else %}
+                            <span class="badge bg-secondary">{% trans "Ignored" %}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock subcontent %}

@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.sites.models import Site
@@ -15,8 +16,11 @@ def notify_admins_on_profile_save(sender, instance, created, **kwargs):
     if not created:
         return
 
-    # Only notify for adults (persons without parents, i.e. not children)
-    if instance.parents.exists():
+    # Only notify for adults. Children (Animé, primary role 'e') are handled
+    # separately in add_new_child_view, which also links their parents after
+    # save — so we can't rely on parents.exists() here (it is empty at create
+    # time). Skip by primary role instead.
+    if instance.primary_role_id and instance.primary_role.short == "e":
         return
 
     recipients = get_registration_admins()
@@ -27,6 +31,8 @@ def notify_admins_on_profile_save(sender, instance, created, **kwargs):
         recipients=recipients,
         sender="MS_M3qCdl@tomctl.be",
         template="new_child_staff",
+        # Staff notifications are sent in the site default language.
+        language=settings.LANGUAGE_CODE,
         context={
             "first_name": instance.first_name,
             "last_name": instance.last_name,

@@ -1,24 +1,25 @@
 {% extends "members/base.html" %}
 {% load account %}
+{% load i18n %}
 {% block hat_title %}
-    Confirmer que vous souhaitez désinscrire {{ child.first_name }}
+    {% blocktranslate %}Confirm that you want to deregister {{ child.first_name }}{% endblocktranslate %}
 {% endblock hat_title %}
 {% block subcontent %}
     <p>
         <ul>
             <li>
-                Une désinscription pour l'année suivante<sup>1</sup> ou pour une inscription en état de "demande" sera directement prise en compte.
+                {% trans "A deregistration for the following year or for an enrollment in the 'request' state will be processed immediately." %}
             </li>
             <li>
-                Si la désinscription est demandée pour l'année en cours et que l'inscription est active, cela demandera une intervention manuelle, assurez-vous d'avoir suivi la procédure indiquée dans le règlement d'ordre intérieur.
+                {% trans "If the deregistration is requested for the current year and the enrollment is active, it will require manual intervention. Make sure you have followed the procedure described in the internal regulations." %}
             </li>
         </ul>
-        <sup>1</sup> L'année commence le 1er août, juste après le camp.
+        <sup>1</sup> {% trans "The year starts on August 1st, right after camp." %}
     </p>
     <div class="container">
         <a class="btn btn-primary me-1"
-           href="{% url 'members:deregister_confirm' child.pk 'this_year' %}">Désinscrire {{ child.first_name }} pour l'année en cours</a>
+           href="{% url 'members:deregister_confirm' child.pk 'this_year' %}">{% blocktranslate %}Deregister {{ child.first_name }} for the current year{% endblocktranslate %}</a>
         <a class="btn btn-primary"
-           href="{% url 'members:deregister_confirm' child.pk 'next_year' %}">Désinscrire {{ child.first_name }} pour l'année prochaine</a>
+           href="{% url 'members:deregister_confirm' child.pk 'next_year' %}">{% blocktranslate %}Deregister {{ child.first_name }} for next year{% endblocktranslate %}</a>
     </div>
 {% endblock subcontent %}

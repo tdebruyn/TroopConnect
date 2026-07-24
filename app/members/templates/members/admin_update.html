@@ -1,17 +1,18 @@
 {% extends "members/base.html" %}
 {% load widget_tweaks %}
+{% load i18n %}
 {% block hat_title %}
     {{ form.first_name.value }} {{ form.last_name.value }}
 {% endblock hat_title %}
 {% block hat_text %}
     {% if object.primary_role.short == "p" %}
-        Parent
+        {% trans "Parent" %}
     {% elif object.primary_role.short == "e" %}
-        Enfant
+        {% trans "Child" %}
     {% elif object.primary_role.short == "a" or object.primary_role.short == "ar" %}
-        Animateur
+        {% trans "Animator" %}
     {% else %}
-        Membre
+        {% trans "Member" %}
     {% endif %}
 {% endblock hat_text %}
 {% block subcontent %}
@@ -58,10 +59,10 @@
                         </div>
                         <div class="alert-danger">{% render_field form.phone.errors class="form-control" %}</div>
                         {% if form.role_locked %}
-                            <div class="form-label">Rôle principal</div>
+                            <div class="form-label">{% trans "Primary role" %}</div>
                             <div class="mb-2">
                                 <span class="badge bg-secondary fs-6">{{ object.primary_role.name }}</span>
-                                <small class="text-muted d-block mt-1">Le type de compte ne peut pas être modifi.  Raison: {{ form.lock_reason }}.</small>
+                                <small class="text-muted d-block mt-1">{% blocktranslate %}Account type cannot be changed. Reason: {{ form.lock_reason }}.{% endblocktranslate %}</small>
                             </div>
                         {% else %}
                             <div class="form-label">{{ form.primary_role.label_tag }}</div>
@@ -115,7 +116,7 @@
                         <div class="form-label">{{ form.note.label_tag }}</div>
                         <div class="input-group">{{ form.note| add_class:"form-control" }}</div>
                         <div class="alert-danger">{{ form.note.errors }}</div>
-                        <button type="submit" class="btn btn-primary btn-block mt-3">Confirmer</button>
+                        <button type="submit" class="btn btn-primary btn-block mt-3">{% trans "Confirm" %}</button>
                     </div>
                 </fieldset>
             </div>
@@ -125,17 +126,17 @@
     <hr class="hr" />
     <div class="container">
         {% if children %}
-            <p class="h4">Enfants</p>
+            <p class="h4">{% trans "Children" %}</p>
         {% elif parents %}
-            <p class="h4">Parents</p>
+            <p class="h4">{% trans "Parents" %}</p>
         {% endif %}
         {% if children or parents %}
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Prénom</th>
-                        <th>Nom</th>
-                        {% if children %}<th>Section</th>{% endif %}
+                        <th>{% trans "First name" %}</th>
+                        <th>{% trans "Last name" %}</th>
+                        {% if children %}<th>{% trans "Section" %}</th>{% endif %}
                     </tr>
                 </thead>
                 <tbody>
@@ -146,7 +147,7 @@
                             <td>{{ child.get_section.name }}</td>
                             <td>
                                 <a class="btn btn-primary btn-sm"
-                                   href="{% url 'members:admin_update' pk=child.pk %}">Modifier</a>
+                                   href="{% url 'members:admin_update' pk=child.pk %}">{% trans "Edit" %}</a>
                             </td>
                         </tr>
                     {% endfor %}
@@ -156,7 +157,7 @@
                             <td>{{ parent.last_name }}</td>
                             <td>
                                 <a class="btn btn-primary btn-sm"
-                                   href="{% url 'members:admin_update' pk=parent.pk %}">Modifier</a>
+                                   href="{% url 'members:admin_update' pk=parent.pk %}">{% trans "Edit" %}</a>
                             </td>
                         </tr>
                     {% endfor %}

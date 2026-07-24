@@ -1,6 +1,7 @@
 import uuid
 
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 
 class MessageAttachment(models.Model):
@@ -42,7 +43,7 @@ class SectionMessage(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self):
-        section_name = self.section.name if self.section else "Tous les utilisateurs"
+        section_name = self.section.name if self.section else _("All users")
         return f"{self.subject} ({section_name} - {self.created_at:%d/%m/%Y})"
 
 
@@ -59,5 +60,5 @@ class SectionMessageRecipient(models.Model):
         unique_together = [("message", "parent")]
 
     def __str__(self):
-        status = "envoyé" if self.sent_at else "ignoré"
+        status = _("sent") if self.sent_at else _("ignored")
         return f"{self.parent} - {self.message.subject} ({status})"

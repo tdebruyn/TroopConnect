@@ -1,13 +1,14 @@
 {% extends "members/base.html" %}
-{% block hat_title %}Historique des messages{% endblock hat_title %}
+{% load i18n %}
+{% block hat_title %}{% trans "Message history" %}{% endblock hat_title %}
 {% block hat_text %}{{ section.name }}{% endblock hat_text %}
 {% block subcontent %}
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Date</th>
-                <th>Objet</th>
-                <th>Expéditeur</th>
+                <th>{% trans "Date" %}</th>
+                <th>{% trans "Subject" %}</th>
+                <th>{% trans "Sender" %}</th>
             </tr>
         </thead>
         <tbody>
@@ -19,7 +20,7 @@
                 </tr>
             {% empty %}
                 <tr>
-                    <td colspan="3">Aucun message.</td>
+                    <td colspan="3">{% trans "No message." %}</td>
                 </tr>
             {% endfor %}
         </tbody>

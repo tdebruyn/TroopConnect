@@ -1,36 +1,91 @@
 from celery import shared_task
 from celery.utils.log import get_task_logger
-from datetime import datetime
+from datetime import date, datetime
 
 logger = get_task_logger(__name__)
 
 
+# Passage is intended to run on May 1 each year, for the upcoming school year.
+# The task is scheduled DAILY (not once a year): Celery beat's catch-up is
+# unreliable for yearly tasks, and a worker/beat outage on the trigger day
+# would otherwise skip the passage for a full year. Daily scheduling is safe
+# because run_passage self-guards with a date gate + an idempotency marker, so
+# it only actually promotes children once per target school year — and if May 1
+# was missed, it performs the passage at the next Celery start instead.
+PASSAGE_TRIGGER_MONTH = 5
+PASSAGE_TRIGGER_DAY = 1
+
+
+def _today():
+    """Current date, wrapped so tests can patch it deterministically."""
+    return datetime.now().date()
+
+
 @shared_task(name="create_year_task")
 def create_year_task():
+    """Ensure the current school year and the one following it exist.
+
+    A SchoolYear is named by its start calendar year (e.g. name=2026 →
+    "2026-2027", Aug 2026–Jul 2027). The "current" school year is the one whose
+    [start_date, end_date] range contains today; its start year is the calendar
+    year if today is on/after Aug 1, otherwise the previous calendar year.
+
+    Computing it from the date (rather than relying on SchoolYear.current())
+    means we create the current year even when no rows exist yet — and the next
+    year is ``current_start + 1``, NOT ``calendar_year + 1``: from January
+    through July the calendar year is already the next school year's start
+    year, so using the raw calendar year is off by one (it created "2027-2028"
+    on 2026-07-23 instead of "2026-2027").
+    """
     from .models import SchoolYear
 
-    current_year = datetime.now().year
-    # Check if the next school year exists; if not, create it
-    if not SchoolYear.objects.filter(name=current_year + 1).exists():
-        SchoolYear.objects.create_year(current_year + 1)
-        logger.info(f"Created school year {current_year + 1}")
+    today = _today()
+    # School year containing today (Aug 1 → Jul 31).
+    current_start = today.year if today >= date(today.year, 8, 1) else today.year - 1
+
+    # Ensure the current school year exists.
+    if not SchoolYear.objects.filter(name=current_start).exists():
+        SchoolYear.objects.create_year(current_start)
+        logger.info(f"Created current school year {current_start}")
     else:
-        logger.info(f"School year {current_year + 1} already exists")
+        logger.info(f"Current school year {current_start} already exists")
+
+    # Ensure the next school year exists too.
+    next_start_year = current_start + 1
+    if not SchoolYear.objects.filter(name=next_start_year).exists():
+        SchoolYear.objects.create_year(next_start_year)
+        logger.info(f"Created school year {next_start_year}")
+    else:
+        logger.info(f"School year {next_start_year} already exists")
 
 
 @shared_task(name="run_passage")
 def run_passage():
     """
-    Automated Passage task — runs on May 1st.
+    Automated Passage task — promotes active Animé (children) into their next
+    section/branch for the upcoming school year.
 
-    For each active Animé (child) member:
-    1. If Person.next_section is set, use that override.
-    2. Otherwise, calculate based on age on Dec 31 of the next school year:
-       - If child exceeds current Branch max_age, move to next Branch
-         (ordered by min_age_dec_31). If multiple sections in that branch,
-         assign to the alphabetically first section.
-    3. If child exceeds the oldest Branch, change role to Animateur and
-       remove ParentChild links (remove from household billing).
+    Scheduled DAILY (not once a year). Celery beat's catch-up is unreliable for
+    yearly tasks, and a worker outage on the trigger day would otherwise skip
+    the passage for a whole year, so this task runs every day and decides
+    itself whether work is due via two guards:
+
+      1. Date gate — only act on/after May 1 of the target school year's start
+         calendar year, so the daily run doesn't promote children the moment
+         the next SchoolYear is created.
+      2. Marker gate — SiteSettings.last_passage_school_year records the target
+         year already processed; once set the task is a no-op. This is what
+         guarantees "run at next start if the trigger day was missed": when
+         Celery comes back, the daily tick sees the marker unset for the
+         current target year and performs the passage exactly once.
+
+    Promotion logic per active child:
+      - If Person.next_section is set, use that override (then clear it).
+      - Otherwise compute the age on Dec 31 of the next school year:
+        * exceeding the current Branch max age → next Branch (ordered by
+          min_age_dec_31); with several sections, the alphabetically first.
+        * exceeding the oldest Branch → switch role to Animateur and remove
+          ParentChild links (out of household billing).
     """
     from .models import (
         Branch,
@@ -40,15 +95,36 @@ def run_passage():
         Role,
         SchoolYear,
         Section,
+        SiteSettings,
     )
 
-    next_year = SchoolYear.next_school_year()
-    if not next_year:
+    target_year = SchoolYear.next_school_year()
+    if not target_year:
         logger.error("No next school year found. Create it first.")
         return
 
-    # Dec 31 of the next school year
-    dec_31 = datetime(next_year.name + 1, 12, 31).date()
+    # --- Guard 1: date gate ------------------------------------------------
+    # Only run on/after May 1 of the target year's start calendar year.
+    today = _today()
+    trigger = date(target_year.name, PASSAGE_TRIGGER_MONTH, PASSAGE_TRIGGER_DAY)
+    if today < trigger:
+        logger.info(
+            f"Passage not due yet (today {today} < {trigger} for "
+            f"school year {target_year.name}); skipping"
+        )
+        return
+
+    # --- Guard 2: marker gate (idempotency / catch-up) ---------------------
+    site_settings = SiteSettings.get_settings()
+    if site_settings.last_passage_school_year == target_year.name:
+        logger.info(
+            f"Passage already applied for school year {target_year.name}; skipping"
+        )
+        return
+
+    # Dec 31 of the next school year (starts Aug `name`, ends Jul `name + 1`)
+    dec_31 = date(target_year.name + 1, 12, 31)
+    current_year = SchoolYear.current()
 
     role_anime = Role.objects.get(short="e")
     role_animateur = Role.objects.get(short="a")
@@ -62,8 +138,6 @@ def run_passage():
         logger.warning("No branches defined. Passage skipped.")
         return
 
-    oldest_branch = branches[-1]
-
     promoted = 0
     aged_out = 0
 
@@ -74,11 +148,11 @@ def run_passage():
 
         age_on_dec_31 = (dec_31 - child.birthday).days // 365
 
-        # Check for manual override
+        # Manual override
         if child.next_section:
             Enrollment.objects.update_or_create(
                 user=child,
-                school_year=next_year,
+                school_year=target_year,
                 defaults={"section": child.next_section},
             )
             child.next_section = None
@@ -86,10 +160,9 @@ def run_passage():
             promoted += 1
             continue
 
-        # Find current enrollment
         current_enrollment = Enrollment.objects.filter(
             user=child,
-            school_year=SchoolYear.current(),
+            school_year=current_year,
         ).select_related("section__branch").first()
 
         if not current_enrollment:
@@ -98,17 +171,19 @@ def run_passage():
 
         current_branch = current_enrollment.section.branch
 
-        # Check if child still fits in current branch
-        if current_branch.max_age_dec_31 is not None and age_on_dec_31 <= current_branch.max_age_dec_31:
-            # Stay in same section
+        # Child still fits in current branch → stay in the same section
+        if (
+            current_branch.max_age_dec_31 is not None
+            and age_on_dec_31 <= current_branch.max_age_dec_31
+        ):
             Enrollment.objects.update_or_create(
                 user=child,
-                school_year=next_year,
+                school_year=target_year,
                 defaults={"section": current_enrollment.section},
             )
             continue
 
-        # Find next branch by age
+        # Find the branch matching the child's age
         target_branch = None
         for branch in branches:
             if branch.min_age_dec_31 is not None and branch.max_age_dec_31 is not None:
@@ -125,7 +200,7 @@ def run_passage():
             logger.info(f"{child} aged out → Animateur")
             continue
 
-        # Assign alphabetically first section in target branch
+        # Assign the alphabetically first section in the target branch
         target_section = Section.objects.filter(branch=target_branch).order_by("name").first()
         if not target_section:
             logger.warning(f"No section found for branch {target_branch}")
@@ -133,11 +208,15 @@ def run_passage():
 
         Enrollment.objects.update_or_create(
             user=child,
-            school_year=next_year,
+            school_year=target_year,
             defaults={"section": target_section},
         )
         promoted += 1
         logger.info(f"{child} → {target_section}")
+
+    # --- Record the marker so passage runs at most once per target year ----
+    site_settings.last_passage_school_year = target_year.name
+    site_settings.save(update_fields=["last_passage_school_year"])
 
     logger.info(f"Passage complete: {promoted} promoted, {aged_out} aged out")
     return {"promoted": promoted, "aged_out": aged_out}
@@ -181,11 +260,15 @@ def notify_upcoming_deletion():
             continue
 
         from post_office import mail
+        from django.conf import settings
+        from .models import Account
 
         for email in recipients:
+            acct = Account.objects.filter(email=email).first()
             mail.send(
                 recipients=[email],
                 template="archive_deletion_warning",
+                language=(acct.preferred_language if acct else None) or settings.LANGUAGE_CODE,
                 context={
                     "person_name": str(person),
                     "deletion_date": (person.archived_date + timedelta(days=5 * 365)).isoformat(),

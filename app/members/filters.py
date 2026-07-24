@@ -16,7 +16,7 @@ from django_filters import (
     NumberFilter,
     ModelChoiceFilter,
 )
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from unidecode import unidecode
 from django.db.models import Q
 from datetime import datetime
@@ -24,30 +24,30 @@ from datetime import datetime
 
 class PersonFilter(django_filters.FilterSet):
     CHOICES = (
-        ("ascending", "Ascending"),
-        ("descending", "Descending"),
+        ("ascending", _("Ascending")),
+        ("descending", _("Descending")),
     )
 
     ordering = django_filters.ChoiceFilter(
-        label="Ordering", choices=CHOICES, method="filter_by_order"
+        label=_("Ordering"), choices=CHOICES, method="filter_by_order"
     )
     first_name = django_filters.CharFilter(
-        field_name="first_name", lookup_expr="icontains", label=_("Prénom")
+        field_name="first_name", lookup_expr="icontains", label=_("First name")
     )
     last_name = django_filters.CharFilter(
-        field_name="last_name", lookup_expr="icontains", label=_("Nom")
+        field_name="last_name", lookup_expr="icontains", label=_("Last name")
     )
     birth_year = django_filters.ChoiceFilter(
         choices=[],  # Will be populated in __init__
-        label=_("Année de naissance"),
-        empty_label=_("Année de naissance"),
+        label=_("Birth year"),
+        empty_label=_("Birth year"),
         method="filter_by_birth_year",
     )
 
     year = django_filters.ModelChoiceFilter(
         queryset=SchoolYear.objects.order_by("name").all(),
-        label=_("Année scolaire"),
-        empty_label=_("Année scolaire"),
+        label=_("School year"),
+        empty_label=_("School year"),
         method="filter_by_year",
         initial=SchoolYear.current,
     )
@@ -59,8 +59,8 @@ class PersonFilter(django_filters.FilterSet):
     )
     role = django_filters.ModelChoiceFilter(
         queryset=Role.objects.all().order_by("name").filter(is_primary=True),
-        label=_("Rôle"),
-        empty_label=_("Tous les rôles"),
+        label=_("Role"),
+        empty_label=_("All roles"),
         method="filter_by_role",
     )
 

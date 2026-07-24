@@ -1,8 +1,9 @@
 {% extends "members/base.html" %}
 {% load socialaccount %}
 {% load widget_tweaks %}
+{% load i18n %}
 {% block hat_title %}
-  Votre profil
+  {% trans "Your profile" %}
 {% endblock hat_title %}
 {% block hat_text %}
 {% endblock hat_text %}
@@ -17,13 +18,14 @@
             {% if form.fields.primary_role %}
               <!-- Primary Role Selection -->
               {% if form.role_locked %}
-                <div class="form-label">Type de compte</div>
+                <div class="form-label">{% trans "Account type" %}</div>
                 <div class="mb-2">
                   <span class="badge bg-secondary fs-6">{{ user.person.primary_role.name }}</span>
-                  <small class="text-muted d-block mt-1">Le type de compte ne peut pas être modifié.  Raison: {{ form.lock_reason }}.</small>
+                  <small class="text-muted d-block mt-1">{% blocktranslate %}Account type cannot be changed. Reason: {{ form.lock_reason }}.{% endblocktranslate %}</small>
                 </div>
+                {{ form.primary_role }}
               {% else %}
-                <div class="form-label">Type de compte</div>
+                <div class="form-label">{% trans "Account type" %}</div>
                 <div class="input-group">
                   {% for radio in form.primary_role %}
                     <div class="form-check">
@@ -70,7 +72,7 @@
               </div>
               <div class="alert-danger">{{ form.address.errors }}</div>
             {% else %}
-              <div class="form-label">Adresse</div>
+              <div class="form-label">{% trans "Address" %}</div>
               <div class="input-group">
                 <span class="input-group-text"><i class="bi-house"></i></span>
                 <input type="text"
@@ -78,7 +80,7 @@
                        value="{{ user.person.address|default:'' }}"
                        disabled>
               </div>
-              <small class="text-muted">L'adresse est gérée par le parent responsable.</small>
+              <small class="text-muted">{% trans "The address is managed by the responsible parent." %}</small>
             {% endif %}
             <div class="form-label">{{ form.phone.label_tag }}</div>
             <div class="input-group">
@@ -93,9 +95,9 @@
               <div class="alert-danger">{{ form.photo_consent.errors }}</div>
             {% endif %}
             <div class="mt-3">
-              <button type="submit" class="btn btn-primary btn-block">Enregistrer</button>
+              <button type="submit" class="btn btn-primary btn-block">{% trans "Save" %}</button>
               <a href="{% url 'account_change_password' %}"
-                 class="btn btn-outline-primary">Changer de mot de passe</a>
+                 class="btn btn-outline-primary">{% trans "Change password" %}</a>
             </div>
           </div>
         </fieldset>
@@ -107,20 +109,18 @@
     <hr class="hr" \ />
     <div id="child-add" class="container d-none">
       <p>
-        Pour associer un enfant
-        <span class="text-ls-bleu-clair">déjà inscrit</span>, demander la "Clé secrète" au parent ayant inscrit l'enfant et cliquer sur
-        <span class="text-ls-vert-base">Ajouter un enfant existant avec une clé</span>.
+        {% blocktranslate %}To associate an already enrolled <span class="text-ls-bleu-clair">child</span>, ask the parent who enrolled the child for the "Secret key" and click on <span class="text-ls-vert-base">Add an existing child with a key</span>.{% endblocktranslate %}
         <br />
-        Si un des parents ne souhaite plus recevoir les mails concernant un enfant inscrit, il peut le <span class="text-ls-orange">détacher</span> à condition qu'il reste au moins un autre parent.
+        {% blocktranslate %}If a parent no longer wishes to receive emails about an enrolled child, they can <span class="text-ls-orange">detach</span> them, provided at least one other parent remains.{% endblocktranslate %}
       </p>
       <table class="table">
         <thead>
           <tr>
-            <th>Prénom</th>
-            <th>Nom</th>
-            <th>Copie clé</th>
-            <th>Clé secrète</th>
-            <th>Section</th>
+            <th>{% trans "First name" %}</th>
+            <th>{% trans "Last name" %}</th>
+            <th>{% trans "Copy key" %}</th>
+            <th>{% trans "Secret key" %}</th>
+            <th>{% trans "Section" %}</th>
           </tr>
         </thead>
         <tbody hx-trigger="load, childListChanged from:body"
@@ -128,7 +128,7 @@
                hx-target="this">
           <tr>
             <td class="spinner-border" role="status">
-              <span class="visually-hidden">Chargement...</span>
+              <span class="visually-hidden">{% trans "Loading..." %}</span>
             </td>
           </tr>
         </tbody>
@@ -136,10 +136,10 @@
       <div class="container">
         <button hx-get="{% url 'members:add_new_child' %}"
                 hx-target="#dialog"
-                class="btn btn-primary">Ajouter un nouvel enfant</button>
+                class="btn btn-primary">{% trans "Add a new child" %}</button>
         <button hx-get="{% url 'members:add_key_child' %}"
                 hx-target="#dialog"
-                class="btn btn-primary">Ajouter un existant enfant avec une clé</button>
+                class="btn btn-primary">{% trans "Add an existing child with a key" %}</button>
       </div>
     </div>
   {% endif %}

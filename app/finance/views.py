@@ -2,8 +2,10 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpResponse
+from django.conf import settings
 from django.contrib import messages
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 from decimal import Decimal
 
 from post_office import mail
@@ -38,7 +40,7 @@ def billing_overview(request):
 
     current_year = SchoolYear.current()
     if not current_year:
-        messages.error(request, "Aucune année scolaire courante définie.")
+        messages.error(request, _("No current school year defined."))
         return redirect("homepage")
 
     config = CotisationConfig.get_for_year(current_year)
@@ -72,7 +74,7 @@ def record_payment(request):
     if not current_year:
         if _is_htmx(request):
             return HttpResponse("")
-        messages.error(request, "Aucune année scolaire courante définie.")
+        messages.error(request, _("No current school year defined."))
         return redirect("homepage")
 
     if request.method == "POST":
@@ -82,7 +84,7 @@ def record_payment(request):
             if not person:
                 if _is_htmx(request):
                     return HttpResponse("")
-                messages.error(request, "Personne introuvable.")
+                messages.error(request, _("Person not found."))
                 return redirect("finance:billing")
 
             Payment.objects.create(
@@ -97,7 +99,11 @@ def record_payment(request):
                 response = HttpResponse("")
                 response["HX-Redirect"] = reverse("finance:billing")
                 return response
-            messages.success(request, f"Paiement de {form.cleaned_data['amount']}€ enregistré pour {person}.")
+            messages.success(
+                request,
+                _("Payment of %(amount)s€ recorded for %(person)s.")
+                % {"amount": form.cleaned_data["amount"], "person": person},
+            )
             return redirect("finance:billing")
     else:
         initial = {"date": timezone.now().date()}
@@ -143,7 +149,7 @@ def send_reminders(request):
 
     current_year = SchoolYear.current()
     if not current_year:
-        messages.error(request, "Aucune année scolaire courante définie.")
+        messages.error(request, _("No current school year defined."))
         return redirect("homepage")
 
     adults = get_adults_with_balance(current_year)
@@ -157,15 +163,24 @@ def send_reminders(request):
                 body = body.replace("{prenom}", adult["person"].first_name)
                 body = body.replace("{solde}", str(adult["balance"]))
 
-                mail.send(
-                    recipients=[adult["email"]],
-                    sender="MS_M3qCdl@tomctl.be",
-                    subject=form.cleaned_data["subject"],
-                    message=body,
-                )
+                try:
+                    mail.send(
+                        recipients=[adult["email"]],
+                        sender=settings.DEFAULT_FROM_EMAIL,
+                        subject=form.cleaned_data["subject"],
+                        message=body,
+                    )
+                except Exception:
+                    messages.error(
+                        request,
+                        _("Failed to send to %(email)s.") % {"email": adult["email"]},
+                    )
                 sent_count += 1
 
-            messages.success(request, f"Rappels envoyés à {sent_count} adulte(s).")
+            messages.success(
+                request,
+                _("Reminders sent to %(count)s adult(s).") % {"count": sent_count},
+            )
             return redirect("finance:billing")
     else:
         form = ReminderForm()

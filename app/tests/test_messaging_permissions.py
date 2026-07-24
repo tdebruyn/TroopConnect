@@ -1,19 +1,9 @@
 from django.test import TestCase, Client
 
 from members.models import Account, Person, Role, SchoolYear, Section, Enrollment
-from post_office.models import EmailTemplate
 
 
 class MessagingPermissionTest(TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        # Create the email template the signal needs
-        EmailTemplate.objects.create(
-            name="new_child_staff",
-            subject="New profile",
-            content="Test",
-        )
-
     def setUp(self):
         self.client = Client()
         self.current_year = SchoolYear.current()
@@ -66,40 +56,40 @@ class MessagingPermissionTest(TestCase):
 
     def test_parent_cannot_access_compose(self):
         self.client.login(email="parent@test.com", password="testpass")
-        response = self.client.get("/messaging/animateurs/compose/")
+        response = self.client.get("/messaging/compose/")
         self.assertEqual(response.status_code, 404)
 
     def test_animateur_can_access_compose(self):
         self.client.login(email="anim@test.com", password="testpass")
-        response = self.client.get("/messaging/animateurs/compose/")
+        response = self.client.get("/messaging/compose/")
         self.assertEqual(response.status_code, 200)
 
     def test_staff_can_access_compose(self):
         self.client.login(email="staff@test.com", password="testpass")
-        response = self.client.get("/messaging/animateurs/compose/")
+        response = self.client.get("/messaging/compose/")
         self.assertEqual(response.status_code, 200)
 
     def test_animateur_can_view_history(self):
         self.client.login(email="anim@test.com", password="testpass")
-        response = self.client.get("/messaging/animateurs/history/")
+        response = self.client.get("/messaging/history/")
         self.assertEqual(response.status_code, 200)
 
     def test_staff_can_view_history(self):
         self.client.login(email="staff@test.com", password="testpass")
-        response = self.client.get("/messaging/animateurs/history/")
+        response = self.client.get("/messaging/history/")
         self.assertEqual(response.status_code, 200)
 
     def test_parent_cannot_view_history(self):
         self.client.login(email="parent@test.com", password="testpass")
-        response = self.client.get("/messaging/animateurs/history/")
+        response = self.client.get("/messaging/history/")
         self.assertEqual(response.status_code, 404)
 
     def test_animateur_history_shows_compose_button(self):
         self.client.login(email="anim@test.com", password="testpass")
-        response = self.client.get("/messaging/animateurs/history/")
+        response = self.client.get("/messaging/history/")
         self.assertContains(response, "Envoyer un message")
 
     def test_staff_history_shows_compose_button(self):
         self.client.login(email="staff@test.com", password="testpass")
-        response = self.client.get("/messaging/animateurs/history/")
+        response = self.client.get("/messaging/history/")
         self.assertContains(response, "Envoyer un message")

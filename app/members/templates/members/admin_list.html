@@ -1,5 +1,6 @@
 {% extends "members/base.html" %}
 {% load widget_tweaks %}
+{% load i18n %}
 {% block subcontent %}
     <div class="container">
         <form action="" method="get">
@@ -46,8 +47,8 @@
                 </div>
                 <div class="row m-2">
                     <div class="container">
-                        <button type="submit" class="btn btn-primary">Filtrer</button>
-                        <a class="btn btn-outline-primary" href="{% url 'members:admin_list' %}">Réinitialiser</a>
+                        <button type="submit" class="btn btn-primary">{% trans "Filter" %}</button>
+                        <a class="btn btn-outline-primary" href="{% url 'members:admin_list' %}">{% trans "Reset" %}</a>
                     </div>
                 </div>
             </form>
@@ -74,7 +75,7 @@
                                 {% endif %}
                             </th>
                         {% endfor %}
-                        <th scope="col">Actions</th>
+                        <th scope="col">{% trans "Actions" %}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -88,19 +89,19 @@
                                 {{ member.section_display }}
                                 {% if member.age_mismatch %}
                                     <i class="bi bi-exclamation-triangle-fill text-warning"
-                                       title="Âge incompatible : {{ member.age_mismatch_detail }}"
+                                       title="{% blocktranslate %}Incompatible age: {{ member.age_mismatch_detail }}{% endblocktranslate %}"
                                        data-bs-toggle="tooltip"></i>
                                 {% endif %}
                             </td>
                             <td>{{ member.role }}</td>
                             <td>
                                 <a class="btn btn-primary btn-sm"
-                                   href="{% url 'members:admin_update' pk=member.pk %}">Modifier</a>
+                                   href="{% url 'members:admin_update' pk=member.pk %}">{% trans "Edit" %}</a>
                             </td>
                         </tr>
                     {% empty %}
                         <tr>
-                            <td colspan="7">Aucun résultat</td>
+                            <td colspan="7">{% trans "No results" %}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -111,15 +112,15 @@
                         <a class="page-link" href="?page=1" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
                     </li>
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">précédente</a>
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">{% trans "Previous" %}</a>
                     </li>
                 {% endif %}
                 <li class="page-item">
-                    <span class="page-link current">Page {{ page_obj.number }} sur {{ page_obj.paginator.num_pages }}</span>
+                    <span class="page-link current">{% blocktranslate %}Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}{% endblocktranslate %}</span>
                 </li>
                 {% if page_obj.has_next %}
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">suivante</a>
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">{% trans "Next" %}</a>
                     </li>
                     <li class="page-item">
                         <a class="page-link"

@@ -18,30 +18,30 @@ from django.utils.translation import gettext_lazy as _
 
 # Role choices for forms
 ROLE_CHOICES = [
-    ("p", "Parent"),
-    ("a", "Animateur"),
-    ("e", "Animé"),
+    ("p", _("Parent")),
+    ("a", _("Animator")),
+    ("e", _("Participant")),
 ]
 
 
 # Form labels
 FORM_LABELS = {
-    "email": _("E-mail"),
-    "first_name": _("Prénom"),
-    "last_name": _("Nom"),
-    "address": _("Adresse"),
-    "phone": _("Téléphone"),
-    "primary_role": _("Type d'adulte"),
-    "secondary_role_enabled": _("Activer le rôle secondaire"),
+    "email": _("Email"),
+    "first_name": _("First name"),
+    "last_name": _("Last name"),
+    "address": _("Address"),
+    "phone": _("Phone"),
+    "primary_role": _("Adult type"),
+    "secondary_role_enabled": _("Enable secondary role"),
     "photo_consent": _(
-        "J'accepte que les photos ou vidéos sur lesquelles mon (mes) enfant(s) figure(nt) soient utilisées "
-        "par Les Scouts ASBL, dont mon unité fait partie"
+        "I agree that photos or videos in which my child(ren) appear may be used "
+        "by Les Scouts ASBL, of which my unit is part"
     ),
 }
 
 # Messages
 SUCCESS_MESSAGES = {
-    "profile_updated": _("Votre profil a été mis à jour avec succès."),
+    "profile_updated": _("Your profile has been updated successfully."),
 }
 
 # Error messages

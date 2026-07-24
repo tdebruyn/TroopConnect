@@ -1,8 +1,9 @@
 {% extends "members/base.html" %}
 {% load socialaccount %}
 {% load widget_tweaks %}
+{% load i18n %}
 {% block hat_title %}
-    Connectez-vous
+    {% trans "Log in" %}
 {% endblock hat_title %}
 {% block hat_text %}
 {% endblock hat_text %}
@@ -33,10 +34,10 @@
                                    name="{{ redirect_field_name }}"
                                    value="{{ redirect_field_value }}"/>
                         {% endif %}
-                        <button type="submit" class="btn btn-primary btn-block mt-3 container">Envoyer</button>
-                        Se rappeler de moi: {{ form.remember }}
-                        <a class="mt-3 container" href="{% url 'account_reset_password' %}">Mot de passe oublié?</a>
-                        {% if form.errors %}<p class="alert-danger">Nom d'utilisateur ou mot de passe incorrect</p>{% endif %}
+                        <button type="submit" class="btn btn-primary btn-block mt-3 container">{% trans "Send" %}</button>
+                        {% trans "Remember me" %}: {{ form.remember }}
+                        <a class="mt-3 container" href="{% url 'account_reset_password' %}">{% trans "Forgot password?" %}</a>
+                        {% if form.errors %}<p class="alert-danger">{% trans "Incorrect username or password" %}</p>{% endif %}
                     </div>
                 </fieldset>
             </div>
@@ -44,7 +45,7 @@
     </form>
     <div class="col-md-6 row">
         <legend class="fw-bold">
-            Ou se connecter avec
+            {% trans "Or log in with" %}
         </legend>
         <div>
             <a class="btn btn-primary mb-3 container"

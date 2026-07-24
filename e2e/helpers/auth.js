@@ -5,6 +5,8 @@ const USERS = {
   parent2: { email: 'parent2@test.be', password: TEST_PASSWORD },
   animateur: { email: 'anim1@test.be', password: TEST_PASSWORD },
   staff: { email: 'staff1@test.be', password: TEST_PASSWORD },
+  child: { email: 'child1@test.be', password: TEST_PASSWORD },
+  superadmin: { email: 'superadmin@test.be', password: TEST_PASSWORD },
 };
 
 async function login(page, userKey) {

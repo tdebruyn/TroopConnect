@@ -1,5 +1,7 @@
+from django.conf import settings
 from django.shortcuts import redirect
 from django.urls import reverse
+from django.utils import translation
 
 
 class OnboardingMiddleware:
@@ -52,3 +54,58 @@ class OnboardingMiddleware:
                     return redirect("members:onboarding")
 
         return self.get_response(request)
+
+
+class AvailableLanguagesMiddleware:
+    """Restrict the active language to those enabled by the superadmin.
+
+    Placed immediately after ``django.middleware.locale.LocaleMiddleware``. If
+    the language it resolved is not in ``SiteSettings.available_languages``,
+    fall back to the first enabled language (the site default). With exactly one
+    enabled language the site is locked to it and the navbar selector is hidden.
+    """
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        available = self._available_languages()
+        request.available_languages = available
+
+        active = translation.get_language()
+        clamped = False
+        if active not in available:
+            active = available[0]
+            translation.activate(active)
+            request.LANGUAGE_CODE = active
+            clamped = True
+
+        response = self.get_response(request)
+
+        # Persist a clamped language so a now-disabled language stored in the
+        # session/cookie doesn't keep retriggering the clamp on every request.
+        # LocaleMiddleware.process_response (which runs after this) also sets
+        # this cookie on 200 responses via the updated request.LANGUAGE_CODE.
+        if clamped:
+            response.set_cookie(
+                settings.LANGUAGE_COOKIE_NAME,
+                active,
+                max_age=settings.LANGUAGE_COOKIE_AGE,
+                path=settings.LANGUAGE_COOKIE_PATH,
+                domain=settings.LANGUAGE_COOKIE_DOMAIN,
+                secure=settings.LANGUAGE_COOKIE_SECURE,
+                httponly=settings.LANGUAGE_COOKIE_HTTPONLY,
+                samesite=settings.LANGUAGE_COOKIE_SAMESITE,
+            )
+        return response
+
+    @staticmethod
+    def _available_languages():
+        # Local import to avoid a circular import at module load time
+        # (models imports nothing from middleware, but keep it lazy).
+        from .models import SiteSettings
+
+        available = list(SiteSettings.get_settings().available_languages or [])
+        if not available:
+            available = [settings.LANGUAGE_CODE]
+        return available

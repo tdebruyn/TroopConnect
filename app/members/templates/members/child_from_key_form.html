@@ -1,14 +1,15 @@
+{% load i18n %}
 {% load widget_tweaks %}
 {% with WIDGET_ERROR_CLASS="is-invalid d-block" %}
     <form hx-post="{{ request.path }}"
           hx-headers='{"X-CSRFToken":"{{ csrf_token }}"}'
           class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title">Clé secrète de l'enfant</h5>
+            <h5 class="modal-title">{% trans "Child's secret key" %}</h5>
             <button type="button"
                     class="btn-close"
                     data-bs-dismiss="modal"
-                    aria-label="Close"></button>
+                    aria-label="{% trans 'Close' %}"></button>
         </div>
         <div class="modal-body form-horizontal">
             <div class="mb-3 form-group row">
@@ -23,8 +24,8 @@
     <button type="button" class="btn btn-danger" hx-post="{% url 'remove_child' pk=child.pk %}">Retirer</button>
     <span class="flex-grow-1"></span>
             {% endif %} {% endcomment %}
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-            <button type="submit" class="btn btn-primary">Enregister</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+            <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
         </div>
     </form>
 {% endwith %}

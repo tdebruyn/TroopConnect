@@ -1,38 +1,39 @@
 {% extends "members/base.html" %}
-{% block hat_title %}Cotisations{% endblock hat_title %}
-{% block hat_text %}Gestion financière — {{ school_year.range }}{% endblock hat_text %}
+{% load i18n %}
+{% block hat_title %}{% trans "Membership fees" %}{% endblock hat_title %}
+{% block hat_text %}{% blocktranslate %}Financial management — {{ school_year.range }}{% endblocktranslate %}{% endblock hat_text %}
 {% block subcontent %}
 <div class="mb-3">
-    <a href="{% url 'finance:reminders' %}" class="btn btn-warning">Envoyer des rappels</a>
+    <a href="{% url 'finance:reminders' %}" class="btn btn-warning">{% trans "Send reminders" %}</a>
 </div>
 
 <div class="row mb-4">
     <div class="col-md-6">
         <div class="card">
-            <div class="card-header">Configuration</div>
+            <div class="card-header">{% trans "Configuration" %}</div>
             <div class="card-body">
                 <table class="table table-sm">
-                    <tr><th>Cotisation pleine</th><td>{{ config.full_fee }}€</td></tr>
-                    <tr><th>Réduction fratrie</th><td>{{ config.sibling_discount }}€</td></tr>
-                    <tr><th>Forfait animateur</th><td>{{ config.animateur_fee }}€</td></tr>
-                    <tr><th>Pénalité de retard</th><td>{{ config.late_penalty_percent }}%</td></tr>
-                    <tr><th>Date limite</th><td>{{ config.late_deadline|default:"—" }}</td></tr>
+                    <tr><th>{% trans "Full fee" %}</th><td>{{ config.full_fee }}€</td></tr>
+                    <tr><th>{% trans "Sibling discount" %}</th><td>{{ config.sibling_discount }}€</td></tr>
+                    <tr><th>{% trans "Animator flat fee" %}</th><td>{{ config.animateur_fee }}€</td></tr>
+                    <tr><th>{% trans "Late penalty" %}</th><td>{{ config.late_penalty_percent }}%</td></tr>
+                    <tr><th>{% trans "Deadline" %}</th><td>{{ config.late_deadline|default:"—" }}</td></tr>
                 </table>
             </div>
         </div>
     </div>
 </div>
 
-<h5>Enfants ({{ children_balances|length }})</h5>
+<h5>{% blocktranslate %}Children ({{ children_balances|length }}){% endblocktranslate %}</h5>
 <table class="table table-striped">
     <thead>
         <tr>
-            <th>Nom</th>
-            <th>Dû</th>
-            <th>Payé</th>
-            <th>Solde</th>
-            <th>Retard</th>
-            <th>Action</th>
+            <th>{% trans "Name" %}</th>
+            <th>{% trans "Due" %}</th>
+            <th>{% trans "Paid" %}</th>
+            <th>{% trans "Balance" %}</th>
+            <th>{% trans "Late" %}</th>
+            <th>{% trans "Action" %}</th>
         </tr>
     </thead>
     <tbody>
@@ -42,28 +43,28 @@
             <td>{{ b.amount_due }}€</td>
             <td>{{ b.amount_paid }}€</td>
             <td>{{ b.balance }}€</td>
-            <td>{% if b.is_late %}<span class="badge bg-danger">Oui</span>{% endif %}</td>
+            <td>{% if b.is_late %}<span class="badge bg-danger">{% trans "Yes" %}</span>{% endif %}</td>
             <td>
-                <button hx-get="{% url 'finance:record_payment' %}?person_id={{ b.person_id }}" hx-target="#dialog" class="btn btn-sm btn-success">Payer</button>
-                <button hx-get="{% url 'finance:payment_history' person_id=b.person_id %}" hx-target="#dialog" class="btn btn-sm btn-outline-secondary">Historique</button>
+                <button hx-get="{% url 'finance:record_payment' %}?person_id={{ b.person_id }}" hx-target="#dialog" class="btn btn-sm btn-success">{% trans "Pay" %}</button>
+                <button hx-get="{% url 'finance:payment_history' person_id=b.person_id %}" hx-target="#dialog" class="btn btn-sm btn-outline-secondary">{% trans "History" %}</button>
             </td>
         </tr>
         {% empty %}
-        <tr><td colspan="6">Aucun enfant inscrit.</td></tr>
+        <tr><td colspan="6">{% trans "No child enrolled." %}</td></tr>
         {% endfor %}
     </tbody>
 </table>
 
 {% if animateur_balances %}
-<h5>Animateurs ({{ animateur_balances|length }})</h5>
+<h5>{% blocktranslate %}Animators ({{ animateur_balances|length }}){% endblocktranslate %}</h5>
 <table class="table table-striped">
     <thead>
         <tr>
-            <th>Nom</th>
-            <th>Dû</th>
-            <th>Payé</th>
-            <th>Solde</th>
-            <th>Action</th>
+            <th>{% trans "Name" %}</th>
+            <th>{% trans "Due" %}</th>
+            <th>{% trans "Paid" %}</th>
+            <th>{% trans "Balance" %}</th>
+            <th>{% trans "Action" %}</th>
         </tr>
     </thead>
     <tbody>
@@ -74,8 +75,8 @@
             <td>{{ b.amount_paid }}€</td>
             <td>{{ b.balance }}€</td>
             <td>
-                <button hx-get="{% url 'finance:record_payment' %}?person_id={{ b.person_id }}" hx-target="#dialog" class="btn btn-sm btn-success">Payer</button>
-                <button hx-get="{% url 'finance:payment_history' person_id=b.person_id %}" hx-target="#dialog" class="btn btn-sm btn-outline-secondary">Historique</button>
+                <button hx-get="{% url 'finance:record_payment' %}?person_id={{ b.person_id }}" hx-target="#dialog" class="btn btn-sm btn-success">{% trans "Pay" %}</button>
+                <button hx-get="{% url 'finance:payment_history' person_id=b.person_id %}" hx-target="#dialog" class="btn btn-sm btn-outline-secondary">{% trans "History" %}</button>
             </td>
         </tr>
         {% endfor %}
