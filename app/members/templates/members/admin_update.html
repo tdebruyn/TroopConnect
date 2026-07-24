@@ -62,7 +62,7 @@
                             <div class="form-label">{% trans "Primary role" %}</div>
                             <div class="mb-2">
                                 <span class="badge bg-secondary fs-6">{{ object.primary_role.name }}</span>
-                                <small class="text-muted d-block mt-1">{% blocktranslate %}Account type cannot be changed. Reason: {{ form.lock_reason }}.{% endblocktranslate %}</small>
+                                <small class="text-muted d-block mt-1">{% blocktranslate with reason=form.lock_reason %}Account type cannot be changed. Reason: {{ reason }}.{% endblocktranslate %}</small>
                             </div>
                         {% else %}
                             <div class="form-label">{{ form.primary_role.label_tag }}</div>

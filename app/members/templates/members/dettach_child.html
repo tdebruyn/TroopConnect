@@ -2,7 +2,7 @@
 {% load account %}
 {% load i18n %}
 {% block hat_title %}
-    {% blocktranslate %}Confirm that you want to detach {{ child.first_name }}{% endblocktranslate %}
+    {% blocktranslate with first_name=child.first_name %}Confirm that you want to detach {{ first_name }}{% endblocktranslate %}
 {% endblock hat_title %}
 {% block subcontent %}
     {% if not allow_dettach %}

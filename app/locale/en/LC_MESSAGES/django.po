@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-24 16:04+0200\n"
+"POT-Creation-Date: 2026-07-24 16:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -112,7 +112,7 @@ msgstr ""
 
 #: finance/templates/finance/billing_overview.html:4
 #, python-format
-msgid "Financial management — %(school_year.range)s"
+msgid "Financial management — %(year_range)s"
 msgstr ""
 
 #: finance/templates/finance/billing_overview.html:7
@@ -146,7 +146,7 @@ msgstr ""
 
 #: finance/templates/finance/billing_overview.html:27
 #, python-format
-msgid "Children (%(children_balances|length)s)"
+msgid "Children (%(count)s)"
 msgstr ""
 
 #: finance/templates/finance/billing_overview.html:31
@@ -201,7 +201,7 @@ msgstr ""
 
 #: finance/templates/finance/billing_overview.html:59
 #, python-format
-msgid "Animators (%(animateur_balances|length)s)"
+msgid "Animators (%(count)s)"
 msgstr ""
 
 #: finance/templates/finance/payment_history.html:4
@@ -958,7 +958,7 @@ msgstr ""
 
 #: members/templates/members/admin_list.html:92
 #, python-format
-msgid "Incompatible age: %(member.age_mismatch_detail)s"
+msgid "Incompatible age: %(detail)s"
 msgstr ""
 
 #: members/templates/members/admin_list.html:99
@@ -978,11 +978,15 @@ msgstr ""
 
 #: members/templates/members/admin_list.html:119
 #, python-format
-msgid "Page %(page_obj.number)s of %(page_obj.paginator.num_pages)s"
+msgid "Page %(page_num)s of %(page_count)s"
 msgstr ""
 
 #: members/templates/members/admin_list.html:123
 msgid "Next"
+msgstr ""
+
+#: members/templates/members/admin_list.html:128
+msgid "last"
 msgstr ""
 
 #: members/templates/members/admin_update.html:11
@@ -997,7 +1001,7 @@ msgstr ""
 #: members/templates/members/admin_update.html:66
 #: members/templates/members/profile.html:24
 #, python-format
-msgid "Account type cannot be changed. Reason: %(form.lock_reason)s."
+msgid "Account type cannot be changed. Reason: %(reason)s."
 msgstr ""
 
 #: members/templates/members/admin_update.html:132
@@ -1006,7 +1010,7 @@ msgstr ""
 
 #: members/templates/members/child_account.html:5
 #, python-format
-msgid "Create an account for %(child.first_name)s"
+msgid "Create an account for %(first_name)s"
 msgstr ""
 
 #: members/templates/members/child_account.html:9
@@ -1084,7 +1088,7 @@ msgstr ""
 
 #: members/templates/members/deregister_child.html:5
 #, python-format
-msgid "Confirm that you want to deregister %(child.first_name)s"
+msgid "Confirm that you want to deregister %(first_name)s"
 msgstr ""
 
 #: members/templates/members/deregister_child.html:11
@@ -1106,17 +1110,17 @@ msgstr ""
 
 #: members/templates/members/deregister_child.html:21
 #, python-format
-msgid "Deregister %(child.first_name)s for the current year"
+msgid "Deregister %(first_name)s for the current year"
 msgstr ""
 
 #: members/templates/members/deregister_child.html:23
 #, python-format
-msgid "Deregister %(child.first_name)s for next year"
+msgid "Deregister %(first_name)s for next year"
 msgstr ""
 
 #: members/templates/members/dettach_child.html:5
 #, python-format
-msgid "Confirm that you want to detach %(child.first_name)s"
+msgid "Confirm that you want to detach %(first_name)s"
 msgstr ""
 
 #: members/templates/members/dettach_child.html:10

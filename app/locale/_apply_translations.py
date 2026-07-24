@@ -157,17 +157,18 @@ TRANSLATIONS = {
     'Filter': ("Filtrer", "Filteren"),
     'Reset': ("Réinitialiser", "Resetten"),
     'Actions': ("Actions", "Acties"),
-    'Incompatible age: %(member.age_mismatch_detail)s': ("Âge incompatible : %(member.age_mismatch_detail)s", "Incompatibele leeftijd: %(member.age_mismatch_detail)s"),
+    'Incompatible age: %(detail)s': ("Âge incompatible : %(detail)s", "Incompatibele leeftijd: %(detail)s"),
     'Edit': ("Modifier", "Bewerken"),
     'No results': ("Aucun résultat", "Geen resultaten"),
     'Previous': ("Précédent", "Vorige"),
-    'Page %(page_obj.number)s of %(page_obj.paginator.num_pages)s': ("Page %(page_obj.number)s sur %(page_obj.paginator.num_pages)s", "Pagina %(page_obj.number)s van %(page_obj.paginator.num_pages)s"),
+    'Page %(page_num)s of %(page_count)s': ("Page %(page_num)s sur %(page_count)s", "Pagina %(page_num)s van %(page_count)s"),
     'Next': ("Suivant", "Volgende"),
+    'last': ("dernier", "laatste"),
     'Child': ("Enfant", "Kind"),
     'Member': ("Membre", "Lid"),
-    'Account type cannot be changed. Reason: %(form.lock_reason)s.': ("Le type de compte ne peut pas être modifié. Raison : %(form.lock_reason)s.", "Het accounttype kan niet worden gewijzigd. Reden: %(form.lock_reason)s."),
+    'Account type cannot be changed. Reason: %(reason)s.': ("Le type de compte ne peut pas être modifié. Raison : %(reason)s.", "Het accounttype kan niet worden gewijzigd. Reden: %(reason)s."),
     'Parents': ("Parents", "Ouders"),
-    'Create an account for %(child.first_name)s': ("Créer un compte pour %(child.first_name)s", "Een account aanmaken voor %(child.first_name)s"),
+    'Create an account for %(first_name)s': ("Créer un compte pour %(first_name)s", "Een account aanmaken voor %(first_name)s"),
     "Create an account so your child can access their section's information and edit their own details.": (
         "Créez un compte pour que votre enfant puisse accéder aux informations de sa section et modifier ses propres données.",
         "Maak een account aan zodat je kind de informatie van zijn sectie kan raadplegen en zijn eigen gegevens kan bewerken.",
@@ -200,7 +201,7 @@ TRANSLATIONS = {
     # --- deregister / detach ---
     'Deregister': ("Désinscrire", "Uitschrijven"),
     'Detach': ("Détacher", "Loskoppelen"),
-    'Confirm that you want to deregister %(child.first_name)s': ("Confirmez que vous souhaitez désinscrire %(child.first_name)s", "Bevestig dat je %(child.first_name)s wilt uitschrijven"),
+    'Confirm that you want to deregister %(first_name)s': ("Confirmez que vous souhaitez désinscrire %(first_name)s", "Bevestig dat je %(first_name)s wilt uitschrijven"),
     "A deregistration for the following year or for an enrollment in the 'request' state will be processed immediately.": (
         "Une désinscription pour l'année suivante ou pour une inscription dans l'état « request » sera traitée immédiatement.",
         "Een uitschrijving voor het volgende jaar of voor een inschrijving in de status 'request' wordt onmiddellijk verwerkt.",
@@ -210,9 +211,9 @@ TRANSLATIONS = {
         "Als de uitschrijving wordt aangevraagd voor het lopende jaar en de inschrijving actief is, is een handmatige tussenkomst nodig. Zorg ervoor dat je de procedure uit het huishoudelijk reglement hebt gevolgd.",
     ),
     'The year starts on August 1st, right after camp.': ("L'année commence le 1er août, juste après le camp.", "Het jaar start op 1 augustus, vlak na het kamp."),
-    'Deregister %(child.first_name)s for the current year': ("Désinscrire %(child.first_name)s pour l'année en cours", "%(child.first_name)s uitschrijven voor het lopende jaar"),
-    'Deregister %(child.first_name)s for next year': ("Désinscrire %(child.first_name)s pour l'année suivante", "%(child.first_name)s uitschrijven voor het volgende jaar"),
-    'Confirm that you want to detach %(child.first_name)s': ("Confirmez que vous souhaitez détacher %(child.first_name)s", "Bevestig dat je %(child.first_name)s wilt loskoppelen"),
+    'Deregister %(first_name)s for the current year': ("Désinscrire %(first_name)s pour l'année en cours", "%(first_name)s uitschrijven voor het lopende jaar"),
+    'Deregister %(first_name)s for next year': ("Désinscrire %(first_name)s pour l'année suivante", "%(first_name)s uitschrijven voor het volgende jaar"),
+    'Confirm that you want to detach %(first_name)s': ("Confirmez que vous souhaitez détacher %(first_name)s", "Bevestig dat je %(first_name)s wilt loskoppelen"),
 
     # --- documents / onboarding / profile ---
     'Back': ("Retour", "Terug"),
@@ -347,7 +348,7 @@ TRANSLATIONS = {
     'Payment': ("Paiement", "Betaling"),
     'Payments': ("Paiements", "Betalingen"),
     'Membership fees': ("Cotisations", "Lidgelden"),
-    'Financial management — %(school_year.range)s': ("Gestion financière — %(school_year.range)s", "Financieel beheer — %(school_year.range)s"),
+    'Financial management — %(year_range)s': ("Gestion financière — %(year_range)s", "Financieel beheer — %(year_range)s"),
     'Send reminders': ("Envoyer les rappels", "Herinneringen versturen"),
     'Configuration': ("Configuration", "Instellingen"),
     'Full fee': ("Cotisation complète", "Volledig lidgeld"),
@@ -355,7 +356,7 @@ TRANSLATIONS = {
     'Animator flat fee': ("Cotisation forfaitaire animateur", "Forfaitair lidgeld animator"),
     'Late penalty': ("Pénalité de retard", "Boete laatte betaling"),
     'Deadline': ("Date limite", "Uiterste datum"),
-    'Children (%(children_balances|length)s)': ("Enfants (%(children_balances|length)s)", "Kinderen (%(children_balances|length)s)"),
+    'Children (%(count)s)': ("Enfants (%(count)s)", "Kinderen (%(count)s)"),
     'Name': ("Nom", "Naam"),
     'Due': ("À payer", "Te betalen"),
     'Paid': ("Payé", "Betaald"),
@@ -366,7 +367,7 @@ TRANSLATIONS = {
     'Pay': ("Payer", "Betalen"),
     'History': ("Historique", "Geschiedenis"),
     'No child enrolled.': ("Aucun enfant inscrit.", "Geen kind ingeschreven."),
-    'Animators (%(animateur_balances|length)s)': ("Animateurs (%(animateur_balances|length)s)", "Animators (%(animateur_balances|length)s)"),
+    'Animators (%(count)s)': ("Animateurs (%(count)s)", "Animators (%(count)s)"),
     'Payment history — %(person)s': ("Historique des paiements — %(person)s", "Betalingengeschiedenis — %(person)s"),
     'Close': ("Fermer", "Sluiten"),
     'Amount': ("Montant", "Bedrag"),
@@ -495,6 +496,28 @@ PLURALS = {
 }
 
 
+def _comment_prefix(entry, stop, include_stop=False):
+    """Comment/msgid lines up to `stop`, dropping fuzzy flags and msgmerge's
+    `#|` previous-msgid references. Dict translations are authoritative, so a
+    fuzzy marker left by a changed msgid would otherwise suppress them at runtime.
+    """
+    prefix = []
+    for ln in entry:
+        if ln.startswith(stop):
+            if include_stop:
+                prefix.append(ln)
+            break
+        if ln.startswith("#,"):
+            flags = [f.strip() for f in ln[2:].split(",") if f.strip() not in ("", "fuzzy")]
+            if flags:
+                prefix.append("#, " + ", ".join(flags))
+            continue
+        if ln.startswith("#|"):
+            continue
+        prefix.append(ln)
+    return prefix
+
+
 def _rewrite(path, lang):
     lines = _read(path)
     entries = _entries(lines)
@@ -530,11 +553,7 @@ def _rewrite(path, lang):
         if is_plural:
             if key in PLURALS:
                 sing, plur = PLURALS[key][0 if lang == "fr" else 1]
-                prefix = []
-                for ln in entry:
-                    prefix.append(ln)
-                    if ln.startswith("msgid_plural"):
-                        break
+                prefix = _comment_prefix(entry, "msgid_plural", include_stop=True)
                 updated.append(
                     "\n".join(prefix)
                     + f'\nmsgstr[0] "{_escape(sing)}"\nmsgstr[1] "{_escape(plur)}"'
@@ -544,11 +563,7 @@ def _rewrite(path, lang):
                 updated.append("\n".join(entry))
         elif key in TRANSLATIONS:
             val = TRANSLATIONS[key][0 if lang == "fr" else 1]
-            prefix = []
-            i = 0
-            while i < len(entry) and not entry[i].startswith("msgstr "):
-                prefix.append(entry[i])
-                i += 1
+            prefix = _comment_prefix(entry, "msgstr")
             updated.append("\n".join(prefix) + f'\nmsgstr "{_escape(val)}"')
         else:
             missing.append(key)

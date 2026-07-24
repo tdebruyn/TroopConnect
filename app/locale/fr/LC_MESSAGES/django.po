@@ -4,10 +4,10 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-07-24 16:04+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect <noreply@troop.tomctl.be>\nLanguage-Team: fr <fr@li.org>\nLanguage: fr\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\n"
+msgstr "Project-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-07-24 16:35+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect <noreply@troop.tomctl.be>\nLanguage-Team: fr <fr@li.org>\nLanguage: fr\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\n"
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-24 16:04+0200\n"
+"POT-Creation-Date: 2026-07-24 16:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,6 +15,50 @@ msgstr "Project-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creatio
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -114,8 +158,8 @@ msgstr "Cotisations"
 
 #: finance/templates/finance/billing_overview.html:4
 #, python-format
-msgid "Financial management — %(school_year.range)s"
-msgstr "Gestion financière — %(school_year.range)s"
+msgid "Financial management — %(year_range)s"
+msgstr "Gestion financière — %(year_range)s"
 
 #: finance/templates/finance/billing_overview.html:7
 #: finance/templates/finance/send_reminders.html:3
@@ -148,8 +192,8 @@ msgstr "Date limite"
 
 #: finance/templates/finance/billing_overview.html:27
 #, python-format
-msgid "Children (%(children_balances|length)s)"
-msgstr "Enfants (%(children_balances|length)s)"
+msgid "Children (%(count)s)"
+msgstr "Enfants (%(count)s)"
 
 #: finance/templates/finance/billing_overview.html:31
 #: finance/templates/finance/billing_overview.html:63 members/admin.py:103
@@ -203,8 +247,8 @@ msgstr "Aucun enfant inscrit."
 
 #: finance/templates/finance/billing_overview.html:59
 #, python-format
-msgid "Animators (%(animateur_balances|length)s)"
-msgstr "Animateurs (%(animateur_balances|length)s)"
+msgid "Animators (%(count)s)"
+msgstr "Animateurs (%(count)s)"
 
 #: finance/templates/finance/payment_history.html:4
 #, python-format
@@ -960,8 +1004,8 @@ msgstr "Actions"
 
 #: members/templates/members/admin_list.html:92
 #, python-format
-msgid "Incompatible age: %(member.age_mismatch_detail)s"
-msgstr "Âge incompatible : %(member.age_mismatch_detail)s"
+msgid "Incompatible age: %(detail)s"
+msgstr "Âge incompatible : %(detail)s"
 
 #: members/templates/members/admin_list.html:99
 #: members/templates/members/admin_update.html:151
@@ -980,12 +1024,16 @@ msgstr "Précédent"
 
 #: members/templates/members/admin_list.html:119
 #, python-format
-msgid "Page %(page_obj.number)s of %(page_obj.paginator.num_pages)s"
-msgstr "Page %(page_obj.number)s sur %(page_obj.paginator.num_pages)s"
+msgid "Page %(page_num)s of %(page_count)s"
+msgstr "Page %(page_num)s sur %(page_count)s"
 
 #: members/templates/members/admin_list.html:123
 msgid "Next"
 msgstr "Suivant"
+
+#: members/templates/members/admin_list.html:128
+msgid "last"
+msgstr "dernier"
 
 #: members/templates/members/admin_update.html:11
 msgid "Child"
@@ -999,8 +1047,8 @@ msgstr "Membre"
 #: members/templates/members/admin_update.html:66
 #: members/templates/members/profile.html:24
 #, python-format
-msgid "Account type cannot be changed. Reason: %(form.lock_reason)s."
-msgstr "Le type de compte ne peut pas être modifié. Raison : %(form.lock_reason)s."
+msgid "Account type cannot be changed. Reason: %(reason)s."
+msgstr "Le type de compte ne peut pas être modifié. Raison : %(reason)s."
 
 #: members/templates/members/admin_update.html:132
 msgid "Parents"
@@ -1008,8 +1056,8 @@ msgstr "Parents"
 
 #: members/templates/members/child_account.html:5
 #, python-format
-msgid "Create an account for %(child.first_name)s"
-msgstr "Créer un compte pour %(child.first_name)s"
+msgid "Create an account for %(first_name)s"
+msgstr "Créer un compte pour %(first_name)s"
 
 #: members/templates/members/child_account.html:9
 msgid ""
@@ -1086,8 +1134,8 @@ msgstr "Détacher"
 
 #: members/templates/members/deregister_child.html:5
 #, python-format
-msgid "Confirm that you want to deregister %(child.first_name)s"
-msgstr "Confirmez que vous souhaitez désinscrire %(child.first_name)s"
+msgid "Confirm that you want to deregister %(first_name)s"
+msgstr "Confirmez que vous souhaitez désinscrire %(first_name)s"
 
 #: members/templates/members/deregister_child.html:11
 msgid ""
@@ -1108,18 +1156,18 @@ msgstr "L'année commence le 1er août, juste après le camp."
 
 #: members/templates/members/deregister_child.html:21
 #, python-format
-msgid "Deregister %(child.first_name)s for the current year"
-msgstr "Désinscrire %(child.first_name)s pour l'année en cours"
+msgid "Deregister %(first_name)s for the current year"
+msgstr "Désinscrire %(first_name)s pour l'année en cours"
 
 #: members/templates/members/deregister_child.html:23
 #, python-format
-msgid "Deregister %(child.first_name)s for next year"
-msgstr "Désinscrire %(child.first_name)s pour l'année suivante"
+msgid "Deregister %(first_name)s for next year"
+msgstr "Désinscrire %(first_name)s pour l'année suivante"
 
 #: members/templates/members/dettach_child.html:5
 #, python-format
-msgid "Confirm that you want to detach %(child.first_name)s"
-msgstr "Confirmez que vous souhaitez détacher %(child.first_name)s"
+msgid "Confirm that you want to detach %(first_name)s"
+msgstr "Confirmez que vous souhaitez détacher %(first_name)s"
 
 #: members/templates/members/dettach_child.html:10
 msgid "Back"
@@ -1509,6 +1557,10 @@ msgstr "Se déconnecter"
 #: templates/base.html:171
 msgid "Sign up"
 msgstr "S'inscrire"
+
+#, python-format
+#~ msgid "Animators (%(animateur_balances|length)s)"
+#~ msgstr "Animateurs (%(animateur_balances|length)s)"
 
 #~| msgid "Languages available to users in the site language selector."
 #~ msgid "Languages shown to users in the site language selector."

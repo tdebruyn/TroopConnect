@@ -89,7 +89,7 @@
                                 {{ member.section_display }}
                                 {% if member.age_mismatch %}
                                     <i class="bi bi-exclamation-triangle-fill text-warning"
-                                       title="{% blocktranslate %}Incompatible age: {{ member.age_mismatch_detail }}{% endblocktranslate %}"
+                                       title="{% blocktranslate with detail=member.age_mismatch_detail %}Incompatible age: {{ detail }}{% endblocktranslate %}"
                                        data-bs-toggle="tooltip"></i>
                                 {% endif %}
                             </td>
@@ -116,7 +116,7 @@
                     </li>
                 {% endif %}
                 <li class="page-item">
-                    <span class="page-link current">{% blocktranslate %}Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}{% endblocktranslate %}</span>
+                    <span class="page-link current">{% blocktranslate with page_num=page_obj.number page_count=page_obj.paginator.num_pages %}Page {{ page_num }} of {{ page_count }}{% endblocktranslate %}</span>
                 </li>
                 {% if page_obj.has_next %}
                     <li class="page-item">
@@ -125,7 +125,7 @@
                     <li class="page-item">
                         <a class="page-link"
                            aria-label="Next"
-                           href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                           href="?page={{ page_obj.paginator.num_pages }}">{% trans "last" %} &raquo;</a>
                     </li>
                 {% endif %}
             </ul>

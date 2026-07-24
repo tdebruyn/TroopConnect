@@ -2,7 +2,7 @@
 {% load account %}
 {% load i18n %}
 {% block hat_title %}
-    {% blocktranslate %}Confirm that you want to deregister {{ child.first_name }}{% endblocktranslate %}
+    {% blocktranslate with first_name=child.first_name %}Confirm that you want to deregister {{ first_name }}{% endblocktranslate %}
 {% endblock hat_title %}
 {% block subcontent %}
     <p>
@@ -18,8 +18,8 @@
     </p>
     <div class="container">
         <a class="btn btn-primary me-1"
-           href="{% url 'members:deregister_confirm' child.pk 'this_year' %}">{% blocktranslate %}Deregister {{ child.first_name }} for the current year{% endblocktranslate %}</a>
+           href="{% url 'members:deregister_confirm' child.pk 'this_year' %}">{% blocktranslate with first_name=child.first_name %}Deregister {{ first_name }} for the current year{% endblocktranslate %}</a>
         <a class="btn btn-primary"
-           href="{% url 'members:deregister_confirm' child.pk 'next_year' %}">{% blocktranslate %}Deregister {{ child.first_name }} for next year{% endblocktranslate %}</a>
+           href="{% url 'members:deregister_confirm' child.pk 'next_year' %}">{% blocktranslate with first_name=child.first_name %}Deregister {{ first_name }} for next year{% endblocktranslate %}</a>
     </div>
 {% endblock subcontent %}

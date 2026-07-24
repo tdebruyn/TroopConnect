@@ -1,7 +1,7 @@
 {% extends "members/base.html" %}
 {% load i18n %}
 {% block hat_title %}{% trans "Membership fees" %}{% endblock hat_title %}
-{% block hat_text %}{% blocktranslate %}Financial management — {{ school_year.range }}{% endblocktranslate %}{% endblock hat_text %}
+{% block hat_text %}{% blocktranslate with year_range=school_year.range %}Financial management — {{ year_range }}{% endblocktranslate %}{% endblock hat_text %}
 {% block subcontent %}
 <div class="mb-3">
     <a href="{% url 'finance:reminders' %}" class="btn btn-warning">{% trans "Send reminders" %}</a>
@@ -24,7 +24,7 @@
     </div>
 </div>
 
-<h5>{% blocktranslate %}Children ({{ children_balances|length }}){% endblocktranslate %}</h5>
+<h5>{% blocktranslate with count=children_balances|length %}Children ({{ count }}){% endblocktranslate %}</h5>
 <table class="table table-striped">
     <thead>
         <tr>
@@ -56,7 +56,7 @@
 </table>
 
 {% if animateur_balances %}
-<h5>{% blocktranslate %}Animators ({{ animateur_balances|length }}){% endblocktranslate %}</h5>
+<h5>{% blocktranslate with count=animateur_balances|length %}Animators ({{ count }}){% endblocktranslate %}</h5>
 <table class="table table-striped">
     <thead>
         <tr>
