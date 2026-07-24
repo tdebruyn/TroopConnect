@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-24 16:35+0200\n"
+"POT-Creation-Date: 2026-07-24 16:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -972,6 +972,10 @@ msgstr ""
 msgid "No results"
 msgstr ""
 
+#: members/templates/members/admin_list.html:112
+msgid "First"
+msgstr ""
+
 #: members/templates/members/admin_list.html:115
 msgid "Previous"
 msgstr ""
@@ -985,8 +989,8 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
-#: members/templates/members/admin_list.html:128
-msgid "last"
+#: members/templates/members/admin_list.html:126
+msgid "Last"
 msgstr ""
 
 #: members/templates/members/admin_update.html:11
