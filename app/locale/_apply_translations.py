@@ -476,6 +476,13 @@ TRANSLATIONS = {
     'Important document': ("Document important", "Belangrijk document"),
     'Important documents': ("Documents importants", "Belangrijke documenten"),
 
+    # --- site settings: language selection ---
+    'Available languages': ("Langues disponibles", "Beschikbare talen"),
+    'Default language': ("Langue par défaut", "Standaardtaal"),
+    'Default language for visitors. Must be one of the available languages.': ("Langue par défaut des visiteurs. Doit faire partie des langues disponibles.", "Standaardtaal voor bezoekers. Moet een van de beschikbare talen zijn."),
+    'Select at least one available language.': ("Sélectionnez au moins une langue disponible.", "Selecteer minstens één beschikbare taal."),
+    'The default language must be one of the available languages.': ("La langue par défaut doit faire partie des langues disponibles.", "De standaardtaal moet een van de beschikbare talen zijn."),
+
 }
 
 

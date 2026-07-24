@@ -4,10 +4,10 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-07-24 08:55+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect <noreply@troop.tomctl.be>\nLanguage-Team: nl <nl@li.org>\nLanguage: nl\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n != 1);\n"
+msgstr "Project-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-07-24 16:04+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect <noreply@troop.tomctl.be>\nLanguage-Team: nl <nl@li.org>\nLanguage: nl\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n != 1);\nPlural-Forms: nplurals=2; plural=(n != 1);\nPlural-Forms: nplurals=2; plural=(n != 1);\nPlural-Forms: nplurals=2; plural=(n != 1);\n"
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-24 08:55+0200\n"
+"POT-Creation-Date: 2026-07-24 16:04+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,6 +15,9 @@ msgstr "Project-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creatio
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: finance/forms.py:12
@@ -379,31 +382,55 @@ msgstr "Voorkeuren"
 msgid "Permissions"
 msgstr "Machtigingen"
 
-#: members/admin.py:152
+#: members/admin.py:153
+msgid "Available languages"
+msgstr "Beschikbare talen"
+
+#: members/admin.py:154 members/models.py:729
+msgid "Languages available to users in the site language selector."
+msgstr "Talen die beschikbaar zijn voor gebruikers in de taalkiezer van de website."
+
+#: members/admin.py:160
+msgid "Default language"
+msgstr "Standaardtaal"
+
+#: members/admin.py:161 members/models.py:739
+msgid "Default language for visitors. Must be one of the available languages."
+msgstr "Standaardtaal voor bezoekers. Moet een van de beschikbare talen zijn."
+
+#: members/admin.py:198 members/models.py:769
+msgid "Select at least one available language."
+msgstr "Selecteer minstens één beschikbare taal."
+
+#: members/admin.py:203 members/models.py:774
+msgid "The default language must be one of the available languages."
+msgstr "De standaardtaal moet een van de beschikbare talen zijn."
+
+#: members/admin.py:215
 msgid "Languages"
 msgstr "Talen"
 
-#: members/admin.py:154
+#: members/admin.py:217
 msgid "Site information"
 msgstr "Websitegegevens"
 
-#: members/admin.py:158
+#: members/admin.py:221
 msgid "Contact information"
 msgstr "Contactgegevens"
 
-#: members/admin.py:161
+#: members/admin.py:224
 msgid "Social media"
 msgstr "Sociale media"
 
-#: members/admin.py:162
+#: members/admin.py:225
 msgid "Email settings"
 msgstr "E-mailinstellingen"
 
-#: members/admin.py:164
+#: members/admin.py:227
 msgid "Registration settings"
 msgstr "Inschrijvingsinstellingen"
 
-#: members/admin.py:168
+#: members/admin.py:231
 msgid "Customizable text"
 msgstr "Aanpasbare tekst"
 
@@ -659,22 +686,18 @@ msgstr "Leeftijd van de oudste leden van de sectie op 31 december van het school
 msgid "%(name)s (%(min)s-%(max)s years old)"
 msgstr "%(name)s (%(min)s-%(max)s jaar)"
 
-#: members/models.py:729
-msgid "Languages available to users in the site language selector."
-msgstr "Talen die beschikbaar zijn voor gebruikers in de taalkiezer van de website."
-
-#: members/models.py:737
+#: members/models.py:747
 msgid ""
 "Last school year (the « name » field) for which the automatic passage was "
 "executed. Anti-replay: if Celery was stopped on the passage day, the task "
 "catches up at the next startup."
 msgstr "Laatste schooljaar (het veld « name ») waarvoor de automatische passage werd uitgevoerd. Anti-herhaling: als Celery stopte op de dag van de passage, haalt de taal dit in bij de volgende opstart."
 
-#: members/models.py:766
+#: members/models.py:791
 msgid "Important document"
 msgstr "Belangrijk document"
 
-#: members/models.py:767 members/templates/members/documents.html:5
+#: members/models.py:792 members/templates/members/documents.html:5
 #: messaging/templates/messaging/compose.html:41
 #: messaging/templates/messaging/compose_all.html:33
 msgid "Important documents"
@@ -1486,3 +1509,9 @@ msgstr "Afmelden"
 #: templates/base.html:171
 msgid "Sign up"
 msgstr "Registreren"
+
+#~| msgid "Languages available to users in the site language selector."
+#~ msgid "Languages shown to users in the site language selector."
+#~ msgstr ""
+#~ "Talen die beschikbaar zijn voor gebruikers in de taalkiezer van de "
+#~ "website."

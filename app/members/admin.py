@@ -1,6 +1,5 @@
 from django.contrib import admin
-from django.contrib.postgres.fields import ArrayField
-from django.forms import CheckboxSelectMultiple
+from django import forms
 from django.utils.translation import gettext_lazy as _
 
 # from django.contrib.auth.admin import UserAdmin, GroupAdmin
@@ -17,6 +16,7 @@ from .models import (
     Branch,
     SiteSettings,
     ImportantDocument,
+    AVAILABLE_LANGUAGE_CHOICES,
 )
 
 from .forms import AccountChangeForm, AccountCreationForm, AdminAccountChangeForm
@@ -139,17 +139,80 @@ class BranchAdmin(TranslationAdmin):
     search_fields = ("name",)
 
 
+class SiteSettingsForm(forms.ModelForm):
+    """Explicit selectors for available + default languages.
+
+    Declaring the fields here (rather than relying on formfield_overrides for the
+    ArrayField) guarantees the checkboxes/dropdown render reliably.
+    """
+
+    available_languages = forms.MultipleChoiceField(
+        required=True,
+        choices=AVAILABLE_LANGUAGE_CHOICES,
+        widget=forms.CheckboxSelectMultiple,
+        label=_("Available languages"),
+        help_text=_("Languages available to users in the site language selector."),
+    )
+    default_language = forms.ChoiceField(
+        required=True,
+        choices=AVAILABLE_LANGUAGE_CHOICES,
+        widget=forms.Select,
+        label=_("Default language"),
+        help_text=_("Default language for visitors. Must be one of the available languages."),
+    )
+
+    class Meta:
+        model = SiteSettings
+        fields = "__all__"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Constrain the default-language dropdown to the currently-selected
+        # available languages (from POST when saving, else the stored value).
+        available = self._selected_available()
+        if available:
+            self.fields["default_language"].choices = [
+                (code, label) for code, label in AVAILABLE_LANGUAGE_CHOICES if code in available
+            ]
+
+    def _selected_available(self):
+        """Languages the user has marked available, from bound data or instance."""
+        if self.is_bound:
+            if hasattr(self.data, "getlist"):  # QueryDict (real request)
+                return self.data.getlist("available_languages")
+            value = self.data.get("available_languages", [])
+        elif self.instance and self.instance.pk:
+            value = self.instance.available_languages or []
+        else:
+            value = self.initial.get("available_languages", [])
+        if isinstance(value, str):
+            return [value]
+        return list(value or [])
+
+    def clean(self):
+        cleaned = super().clean()
+        available = cleaned.get("available_languages") or []
+        default = cleaned.get("default_language")
+        if not available:
+            self.add_error(
+                "available_languages", _("Select at least one available language.")
+            )
+        elif default and default not in available:
+            self.add_error(
+                "default_language",
+                _("The default language must be one of the available languages."),
+            )
+        return cleaned
+
+
 @admin.register(SiteSettings)
 class SiteSettingsAdmin(TranslationAdmin):
     """Admin interface for site settings (multilingual + language toggle)."""
 
-    # Render the available_languages ArrayField as checkboxes.
-    formfield_overrides = {
-        ArrayField: {"widget": CheckboxSelectMultiple},
-    }
+    form = SiteSettingsForm
 
     fieldsets = (
-        (_("Languages"), {"fields": ("available_languages",)}),
+        (_("Languages"), {"fields": ("available_languages", "default_language")}),
         (
             _("Site information"),
             {"fields": ("site_name", "site_description", "site_keywords")},

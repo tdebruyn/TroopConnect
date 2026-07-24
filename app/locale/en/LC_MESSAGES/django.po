@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-24 08:55+0200\n"
+"POT-Creation-Date: 2026-07-24 16:04+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -380,31 +380,55 @@ msgstr ""
 msgid "Permissions"
 msgstr ""
 
-#: members/admin.py:152
+#: members/admin.py:153
+msgid "Available languages"
+msgstr ""
+
+#: members/admin.py:154 members/models.py:729
+msgid "Languages available to users in the site language selector."
+msgstr ""
+
+#: members/admin.py:160
+msgid "Default language"
+msgstr ""
+
+#: members/admin.py:161 members/models.py:739
+msgid "Default language for visitors. Must be one of the available languages."
+msgstr ""
+
+#: members/admin.py:198 members/models.py:769
+msgid "Select at least one available language."
+msgstr ""
+
+#: members/admin.py:203 members/models.py:774
+msgid "The default language must be one of the available languages."
+msgstr ""
+
+#: members/admin.py:215
 msgid "Languages"
 msgstr ""
 
-#: members/admin.py:154
+#: members/admin.py:217
 msgid "Site information"
 msgstr ""
 
-#: members/admin.py:158
+#: members/admin.py:221
 msgid "Contact information"
 msgstr ""
 
-#: members/admin.py:161
+#: members/admin.py:224
 msgid "Social media"
 msgstr ""
 
-#: members/admin.py:162
+#: members/admin.py:225
 msgid "Email settings"
 msgstr ""
 
-#: members/admin.py:164
+#: members/admin.py:227
 msgid "Registration settings"
 msgstr ""
 
-#: members/admin.py:168
+#: members/admin.py:231
 msgid "Customizable text"
 msgstr ""
 
@@ -660,22 +684,18 @@ msgstr ""
 msgid "%(name)s (%(min)s-%(max)s years old)"
 msgstr ""
 
-#: members/models.py:729
-msgid "Languages available to users in the site language selector."
-msgstr ""
-
-#: members/models.py:737
+#: members/models.py:747
 msgid ""
 "Last school year (the « name » field) for which the automatic passage was "
 "executed. Anti-replay: if Celery was stopped on the passage day, the task "
 "catches up at the next startup."
 msgstr ""
 
-#: members/models.py:766
+#: members/models.py:791
 msgid "Important document"
 msgstr ""
 
-#: members/models.py:767 members/templates/members/documents.html:5
+#: members/models.py:792 members/templates/members/documents.html:5
 #: messaging/templates/messaging/compose.html:41
 #: messaging/templates/messaging/compose_all.html:33
 msgid "Important documents"

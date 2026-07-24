@@ -729,6 +729,16 @@ class SiteSettings(models.Model):
         help_text=_("Languages available to users in the site language selector."),
     )
 
+    # Language shown to visitors whose browser/cookie language isn't one of the
+    # enabled languages (or on a first visit). Must be one of available_languages
+    # — enforced in clean() and the admin form.
+    default_language = models.CharField(
+        max_length=5,
+        choices=AVAILABLE_LANGUAGE_CHOICES,
+        default="fr",
+        help_text=_("Default language for visitors. Must be one of the available languages."),
+    )
+
     # Automated passage (run_passage task) — idempotency marker
     last_passage_school_year = models.IntegerField(
         null=True,
@@ -750,6 +760,21 @@ class SiteSettings(models.Model):
         """Get the site settings, creating them if they don't exist."""
         settings, created = cls.objects.get_or_create(pk=1)
         return settings
+
+    def clean(self):
+        """The default language must be one of the enabled languages."""
+        super().clean()
+        available = self.available_languages or []
+        if not available:
+            raise ValidationError(_("Select at least one available language."))
+        if self.default_language not in available:
+            raise ValidationError(
+                {
+                    "default_language": _(
+                        "The default language must be one of the available languages."
+                    )
+                }
+            )
 
 
 class ImportantDocument(models.Model):

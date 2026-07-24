@@ -61,8 +61,8 @@ class AvailableLanguagesMiddleware:
 
     Placed immediately after ``django.middleware.locale.LocaleMiddleware``. If
     the language it resolved is not in ``SiteSettings.available_languages``,
-    fall back to the first enabled language (the site default). With exactly one
-    enabled language the site is locked to it and the navbar selector is hidden.
+    fall back to ``SiteSettings.default_language``. With exactly one enabled
+    language the site is locked to it and the navbar selector is hidden.
     """
 
     def __init__(self, get_response):
@@ -75,7 +75,8 @@ class AvailableLanguagesMiddleware:
         active = translation.get_language()
         clamped = False
         if active not in available:
-            active = available[0]
+            default = self._default_language()
+            active = default if default in available else available[0]
             translation.activate(active)
             request.LANGUAGE_CODE = active
             clamped = True
@@ -109,3 +110,11 @@ class AvailableLanguagesMiddleware:
         if not available:
             available = [settings.LANGUAGE_CODE]
         return available
+
+    @staticmethod
+    def _default_language():
+        # Local import to avoid a circular import at module load time.
+        from .models import SiteSettings
+
+        default = SiteSettings.get_settings().default_language
+        return default or settings.LANGUAGE_CODE
