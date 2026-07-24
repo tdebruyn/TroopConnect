@@ -104,30 +104,6 @@
                                 <a class="nav-link active" href="{% url 'faq' %}">{% trans "FAQ" %}</a>
                             </li>
                         </ul>
-                        {% if show_language_selector %}
-                            <form action="{% url 'set_language' %}"
-                                  method="post"
-                                  class="d-inline-block ms-2 align-middle">
-                                {% csrf_token %}
-                                <input name="next" type="hidden" value="{{ request.get_full_path }}" />
-                                {% get_language_info_list for available_languages as langs %}
-                                <label for="language-select" class="visually-hidden">{% trans "Language" %}</label>
-                                <select id="language-select"
-                                        name="language"
-                                        class="form-select form-select-sm"
-                                        onchange="this.form.submit()">
-                                    {% for language in langs %}
-                                        <option value="{{ language.code }}"
-                                                {% if language.code == current_language %}selected{% endif %}>
-                                            {{ language.name_local }}
-                                        </option>
-                                    {% endfor %}
-                                </select>
-                                <noscript>
-                                    <button type="submit" class="btn btn-sm btn-light">{% trans "Change" %}</button>
-                                </noscript>
-                            </form>
-                        {% endif %}
                         {% if user.is_authenticated %}
                             <div class="btn-group">
                                 <a role="button"
@@ -169,6 +145,36 @@
                         {% else %}
                             <a class="nav-link" href="{% url 'account_signup' %}">{% trans "Sign up" %}</a>
                             <a class="btn btn-info" role="button" href="{% url 'account_login' %}">{% trans "Log in" %}</a>
+                        {% endif %}
+                        {% if show_language_selector %}
+                            <form action="{% url 'set_language' %}"
+                                  method="post"
+                                  class="d-inline-block ms-3 align-self-center">
+                                {% csrf_token %}
+                                <input name="next" type="hidden" value="{{ request.get_full_path }}" />
+                                {% get_language_info_list for available_languages as langs %}
+                                <div class="dropdown d-inline-block">
+                                    <button class="btn btn-sm btn-outline-light dropdown-toggle"
+                                            type="button"
+                                            data-bs-toggle="dropdown"
+                                            aria-expanded="false"
+                                            aria-label="{% trans 'Language' %}">
+                                        <i class="bi bi-globe me-1"></i>{% for language in langs %}{% if language.code == current_language %}{{ language.name_local }}{% endif %}{% endfor %}
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        {% for language in langs %}
+                                            <li>
+                                                <button type="submit"
+                                                        name="language"
+                                                        value="{{ language.code }}"
+                                                        class="dropdown-item{% if language.code == current_language %} active{% endif %}">
+                                                    {{ language.name_local }}
+                                                </button>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </form>
                         {% endif %}
                     </div>
                 </div>
