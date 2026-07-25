@@ -161,7 +161,7 @@
                                             aria-label="{% trans 'Language' %}">
                                         <i class="bi bi-globe me-1"></i>{% for language in langs %}{% if language.code == current_language %}{{ language.name_local }}{% endif %}{% endfor %}
                                     </button>
-                                    <ul class="dropdown-menu dropdown-menu-end">
+                                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
                                         {% for language in langs %}
                                             <li>
                                                 <button type="submit"
