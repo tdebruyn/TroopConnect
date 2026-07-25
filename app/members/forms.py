@@ -117,10 +117,17 @@ class AdminUserUpdateForm(forms.ModelForm):
             self.lock_reason = reason
 
             if locked:
-                # Replace the select with a hidden field preserving current value
-                self.fields["primary_role"] = forms.CharField(
+                # Keep the role locked: a hidden ModelChoiceField that
+                # round-trips the current primary_role. The cleaned value
+                # stays a Role object, so the section validation in clean()
+                # and the assignment in save() keep working. The field is
+                # still rendered (as a hidden input) in the template.
+                self.fields["primary_role"] = forms.ModelChoiceField(
+                    queryset=Role.objects.filter(is_primary=True),
                     widget=forms.HiddenInput,
                     initial=self.instance.primary_role_id,
+                    required=True,
+                    label=_("Primary role"),
                 )
             else:
                 self.fields["primary_role"].initial = self.instance.primary_role
