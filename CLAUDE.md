@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-TroopConnect is a Django 5.2 web application for managing a Belgian scout unit ("Scouts de Limal"). It handles member registration (children, parents, animators), section enrollment by school year, email notifications via AWS SES, and admin management. Production domain: `troop.tomctl.be`. Language: Belgian French (`fr-be`).
+TroopConnect is a Django 6.0 web application for managing a Belgian scout unit ("Scouts de Limal"). It handles member registration (children, parents, animators), section enrollment by school year, email notifications via AWS SES, and admin management. Production domain: `troop.tomctl.be`. Language: Belgian French (`fr-be`).
 
 ## Development Commands
 
@@ -17,8 +17,15 @@ docker compose -f docker-compose-local.yml exec web uv run /app/manage.py migrat
 docker compose -f docker-compose-local.yml exec web uv run /app/manage.py createsuperuser
 docker compose -f docker-compose-local.yml exec web uv run /app/manage.py shell
 
-# Run tests (currently empty stubs)
-docker compose -f docker-compose-local.yml exec web uv run /app/manage.py test
+# Run the test suite in app/tests/ (also runs a ruff lint check via test_lint.py).
+# Note: bare `manage.py test` only discovers apps in INSTALLED_APPS; `tests` is a
+# top-level package, so name it explicitly.
+docker compose -f docker-compose-local.yml exec web uv run /app/manage.py test tests
+# Run a single module, e.g. just the lint check:
+docker compose -f docker-compose-local.yml exec web uv run /app/manage.py test tests.test_lint
+
+# Lint with ruff (config: app/ruff.toml). Append `--fix` to auto-fix safe issues.
+docker compose -f docker-compose-local.yml exec web uv run ruff check /app
 
 # Run Celery locally (outside Docker, needs Redis running)
 celery -A troopconnect worker -l INFO
@@ -69,7 +76,7 @@ ansible-playbook -i deploy/ansible/inventory.ini deploy/ansible/playbook.yml
 ```
 
 ## Important Notes
-- No test suite exists (only empty stubs in `app/tests/` and `app/homepage/tests.py`).
+- Test suite lives in `app/tests/` (plus per-app `tests.py` for `finance`/`homepage`). `manage.py test tests` also runs a ruff lint check (`tests/test_lint.py`); linter config is `app/ruff.toml`.
 - No CI/CD pipelines configured.
 - `django-simple-history` is installed but not actively used on models.
 - `members/signals.py` exists but is entirely commented out.
