@@ -1,7 +1,5 @@
-from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 from allauth.account.utils import filter_users_by_email
-from allauth.exceptions import ImmediateHttpResponse
-from django.shortcuts import redirect
+from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 
 
 class SocialAccountAdapter(DefaultSocialAccountAdapter):

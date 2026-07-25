@@ -1,25 +1,16 @@
+from datetime import datetime
+
 import django_filters
+from django.utils.translation import gettext_lazy as _
+
 from .models import (
-    Account,
+    Branch,
+    Enrollment,
     Person,
+    Role,
     SchoolYear,
     Section,
-    Role,
-    Enrollment,
-    PersonRole,
-    Branch,
 )
-from django_filters import (
-    DateFromToRangeFilter,
-    DateFilter,
-    CharFilter,
-    NumberFilter,
-    ModelChoiceFilter,
-)
-from django.utils.translation import gettext_lazy as _
-from unidecode import unidecode
-from django.db.models import Q
-from datetime import datetime
 
 
 class PersonFilter(django_filters.FilterSet):

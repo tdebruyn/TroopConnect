@@ -1,8 +1,9 @@
-from pathlib import Path
 import json
-from django.core.exceptions import ImproperlyConfigured
-from celery.schedules import crontab
 import os
+from pathlib import Path
+
+from celery.schedules import crontab
+from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -17,8 +18,8 @@ def sec(setting, mysettings=secret_settings):
     try:
         return mysettings[setting]
     except KeyError:
-        error_msg = "Set the {0} environment variable".format(setting)
-        raise ImproperlyConfigured(error_msg)
+        error_msg = f"Set the {setting} environment variable"
+        raise ImproperlyConfigured(error_msg) from None
 
 
 SECRET_KEY = sec("SECRET_KEY")
@@ -323,7 +324,7 @@ CELERY_BEAT_SCHEDULE = {
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": f"redis://troopconnect-redis-1:6379/0",
+        "LOCATION": "redis://troopconnect-redis-1:6379/0",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         },

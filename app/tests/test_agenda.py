@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-from django.test import TestCase, Client
+from django.test import Client, TestCase
 from django.utils import timezone
 
 from homepage.models import Event

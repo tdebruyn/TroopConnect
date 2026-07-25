@@ -1,6 +1,6 @@
-from django.test import TestCase, Client
+from django.test import Client, TestCase
 
-from members.models import Account, Person, Role, SchoolYear, Section, Enrollment
+from members.models import Account, Enrollment, Person, Role, SchoolYear, Section
 
 
 class MessagingPermissionTest(TestCase):

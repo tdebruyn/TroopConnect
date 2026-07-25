@@ -1,4 +1,5 @@
 import os
+
 from celery import Celery
 from celery.signals import worker_ready
 from django.conf import settings

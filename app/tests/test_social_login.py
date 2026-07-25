@@ -1,9 +1,9 @@
-from django.test import TestCase, Client
-from django.template import Template, Context
 from django.template.loader import get_template
+from django.test import Client, TestCase
 from django.urls import reverse
-from members.models import Account, Person, Role
+
 from members.adapters import SocialAccountAdapter
+from members.models import Account, Person, Role
 
 
 class FacebookButtonTemplateTest(TestCase):

@@ -3,12 +3,15 @@ from unittest.mock import patch
 
 from django.test import TestCase
 from django.utils import timezone
+from post_office.models import EmailTemplate
 
 from members.models import (
-    Account, Person, Role, SchoolYear, Section, Branch, Enrollment, ParentChild,
+    Account,
+    ParentChild,
+    Person,
+    Role,
 )
 from members.tasks import delete_archived_users, notify_upcoming_deletion
-from post_office.models import EmailTemplate
 
 
 class DataRetentionTestBase(TestCase):
@@ -83,7 +86,7 @@ class NotifyUpcomingDeletionTest(DataRetentionTestBase):
             first_name="Parent", last_name="Test",
             primary_role=self.role_parent, status="a",
         )
-        parent_account = Account.objects.create_user(
+        Account.objects.create_user(
             email="parent@test.com", password="testpass", person=parent,
         )
         child = Person.objects.create(

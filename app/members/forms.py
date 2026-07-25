@@ -1,28 +1,18 @@
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from django import forms
-from .models import Account, Person, SchoolYear, Role, Section, PersonRole, Enrollment
 
-from django.db.models import Q
-from django.utils.translation import gettext_lazy as _
-from django.core.exceptions import ValidationError
-from django.contrib.auth.tokens import default_token_generator
-from django.utils import timezone
-
-from datetime import datetime
 from allauth.account.forms import ResetPasswordForm, ResetPasswordKeyForm, SignupForm
-from allauth.account.utils import filter_users_by_email
-from allauth.account.views import PasswordResetView, PasswordResetFromKeyView
 from allauth.account.models import EmailConfirmation
-from allauth.account.utils import user_pk_to_url_str
-from allauth.utils import build_absolute_uri
-from django.urls import reverse
-import uuid
+from allauth.account.utils import filter_users_by_email, user_pk_to_url_str
+from django import forms
+from django.contrib.auth.forms import UserChangeForm, UserCreationForm
+from django.contrib.auth.tokens import default_token_generator
+from django.core.exceptions import ValidationError
+from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from .constants import (
     ROLE_CHOICES,
-    FORM_LABELS,
-    ERROR_MESSAGES,
 )
+from .models import Account, Enrollment, Person, PersonRole, Role, SchoolYear, Section
 
 
 class SectionModelChoiceField(forms.ModelChoiceField):

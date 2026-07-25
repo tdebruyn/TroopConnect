@@ -1,20 +1,26 @@
 import hashlib
 
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.http import Http404
-from django.utils import timezone
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.http import Http404
+from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from django.views.decorators.http import require_POST
-
 from post_office import mail
 
-from members.models import Person, SchoolYear, Enrollment, ParentChild, ImportantDocument, Section, Role
 from homepage.models import Event
-from .models import SectionMessage, SectionMessageRecipient, MessageAttachment
+from members.models import (
+    Enrollment,
+    ImportantDocument,
+    Person,
+    Role,
+    SchoolYear,
+    Section,
+)
+
 from .forms import ComposeMessageForm
+from .models import MessageAttachment, SectionMessage, SectionMessageRecipient
 
 
 def _get_animateur_person(user):
@@ -230,7 +236,7 @@ def _handle_attachment_and_docs(request, msg):
 
     # Handle ImportantDocument checkboxes — append links to body
     selected_docs = []
-    for key, value in request.POST.items():
+    for key, _value in request.POST.items():
         if key.startswith("doc_"):
             doc_id = key[4:]
             doc = ImportantDocument.objects.filter(pk=doc_id).first()

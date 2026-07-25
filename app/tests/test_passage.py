@@ -3,13 +3,19 @@ from unittest import mock
 
 from django.test import TestCase
 from django.utils import timezone
+from post_office.models import EmailTemplate
 
 from members.models import (
-    Person, Role, SchoolYear, Section, Branch, Enrollment, ParentChild, Account,
+    Branch,
+    Enrollment,
+    ParentChild,
+    Person,
+    Role,
+    SchoolYear,
+    Section,
     SiteSettings,
 )
 from members.tasks import run_passage
-from post_office.models import EmailTemplate
 
 
 class PassageTestBase(TestCase):

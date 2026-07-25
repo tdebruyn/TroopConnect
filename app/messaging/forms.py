@@ -3,7 +3,6 @@ from django.utils.translation import gettext_lazy as _
 
 from members.models import Section
 
-
 RECIPIENT_GROUP_CHOICES = [
     ("section_parents", _("Parents of a section")),
     ("section_animateurs", _("Animators of a section")),

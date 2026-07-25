@@ -1,7 +1,7 @@
-from django.shortcuts import render
-from django.views.generic import TemplateView
-from django.utils import timezone
 from datetime import timedelta
+
+from django.utils import timezone
+from django.views.generic import TemplateView
 
 from homepage.models import Event
 

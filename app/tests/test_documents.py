@@ -1,8 +1,8 @@
 from django.test import TestCase
 from django.urls import reverse
-
-from members.models import Account, Person, Role, ImportantDocument
 from post_office.models import EmailTemplate
+
+from members.models import Account, ImportantDocument, Person, Role
 
 
 class ImportantDocumentModelTest(TestCase):
@@ -22,8 +22,8 @@ class ImportantDocumentModelTest(TestCase):
         self.assertEqual(ImportantDocument.objects.count(), 1)
 
     def test_document_ordering(self):
-        d1 = ImportantDocument.objects.create(title="Old", url="https://a.com")
-        d2 = ImportantDocument.objects.create(title="New", url="https://b.com")
+        ImportantDocument.objects.create(title="Old", url="https://a.com")
+        ImportantDocument.objects.create(title="New", url="https://b.com")
         docs = list(ImportantDocument.objects.values_list("title", flat=True))
         self.assertEqual(docs, ["New", "Old"])
 

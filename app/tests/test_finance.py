@@ -1,14 +1,26 @@
-from decimal import Decimal
 from datetime import timedelta
+from decimal import Decimal
 
-from django.test import TestCase, Client
+from django.test import TestCase
 from django.utils import timezone
-
-from members.models import (
-    Account, Person, Role, SchoolYear, Section, Branch, Enrollment, ParentChild,
-)
 from post_office.models import EmailTemplate
-from finance.models import CotisationConfig, Payment, calculate_balances, get_adults_with_balance
+
+from finance.models import (
+    CotisationConfig,
+    Payment,
+    calculate_balances,
+    get_adults_with_balance,
+)
+from members.models import (
+    Account,
+    Branch,
+    Enrollment,
+    ParentChild,
+    Person,
+    Role,
+    SchoolYear,
+    Section,
+)
 
 
 class FinanceTestBase(TestCase):

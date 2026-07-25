@@ -1,18 +1,23 @@
-from django.shortcuts import render, redirect
-from django.urls import reverse
-from django.contrib.auth.decorators import login_required
-from django.http import Http404, HttpResponse
+
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.http import Http404, HttpResponse
+from django.shortcuts import redirect, render
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from decimal import Decimal
-
 from post_office import mail
 
 from members.models import Person, SchoolYear
-from .models import CotisationConfig, Payment, calculate_balances, get_adults_with_balance
+
 from .forms import PaymentForm, ReminderForm
+from .models import (
+    CotisationConfig,
+    Payment,
+    calculate_balances,
+    get_adults_with_balance,
+)
 
 
 def _is_tresorier(user):

@@ -5,9 +5,9 @@ for editorial/admin-editable content. Untranslated values fall back to French
 (settings.MODELTRANSLATION_FALLBACK_LANGUAGES). Source strings here are English
 msgids so they also work for Django's static translation catalog.
 """
-from modeltranslation.translator import register, TranslationOptions
+from modeltranslation.translator import TranslationOptions, register
 
-from .models import SiteSettings, Role, Branch, Section, ImportantDocument
+from .models import Branch, ImportantDocument, Role, Section, SiteSettings
 
 
 @register(SiteSettings)

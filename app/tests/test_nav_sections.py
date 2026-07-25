@@ -1,7 +1,16 @@
-from django.test import TestCase, Client
-
-from members.models import Account, Branch, Section, Person, Role, SchoolYear, Enrollment, ParentChild
+from django.test import TestCase
 from post_office.models import EmailTemplate
+
+from members.models import (
+    Account,
+    Branch,
+    Enrollment,
+    ParentChild,
+    Person,
+    Role,
+    SchoolYear,
+    Section,
+)
 
 
 class NavSectionsContextProcessorTest(TestCase):

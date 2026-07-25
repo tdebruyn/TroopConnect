@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.utils import translation
+
 from .models import SiteSettings
 
 
@@ -27,7 +28,7 @@ def contact_info(request):
 
 def nav_sections(request):
     """Provide sections the current user is connected to for the navigation dropdown."""
-    from .models import Section, SchoolYear, Enrollment
+    from .models import Enrollment, SchoolYear, Section
 
     if not hasattr(request, "user") or not request.user.is_authenticated:
         return {"nav_sections": Section.objects.none()}

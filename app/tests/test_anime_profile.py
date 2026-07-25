@@ -1,9 +1,9 @@
 from django.test import TestCase
 from django.urls import reverse
-
-from members.models import Account, Person, Role
-from members.forms import AnimeProfileForm
 from post_office.models import EmailTemplate
+
+from members.forms import AnimeProfileForm
+from members.models import Account, Person, Role
 
 
 class AnimeProfileEditTest(TestCase):

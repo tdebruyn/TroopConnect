@@ -1,30 +1,24 @@
-from django.contrib import admin
 from django import forms
-from django.utils.translation import gettext_lazy as _
+from django.contrib import admin
 
 # from django.contrib.auth.admin import UserAdmin, GroupAdmin
 from django.contrib.auth.admin import UserAdmin
+from django.utils.translation import gettext_lazy as _
+from modeltranslation.admin import TranslationAdmin
 
-from django.contrib.auth.models import Group
+from .forms import AccountCreationForm, AdminAccountChangeForm
 
 # from .models import CustomUser, CustomGroup, SchoolYear, Age
 from .models import (
-    Account,
-    SchoolYear,
-    Person,
-    Section,
-    Branch,
-    SiteSettings,
-    ImportantDocument,
     AVAILABLE_LANGUAGE_CHOICES,
+    Account,
+    Branch,
+    ImportantDocument,
+    Person,
+    SchoolYear,
+    Section,
+    SiteSettings,
 )
-
-from .forms import AccountChangeForm, AccountCreationForm, AdminAccountChangeForm
-from django.utils.html import format_html
-from django.db.models import F
-from django.db.models.functions import Concat
-
-from modeltranslation.admin import TranslationAdmin
 
 
 class AccountAdmin(UserAdmin):
@@ -163,7 +157,7 @@ class SiteSettingsForm(forms.ModelForm):
 
     class Meta:
         model = SiteSettings
-        fields = "__all__"
+        fields = "__all__"  # noqa: DJ007 — admin-only singleton form
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

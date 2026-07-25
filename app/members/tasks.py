@@ -1,6 +1,7 @@
+from datetime import date, datetime
+
 from celery import shared_task
 from celery.utils.log import get_task_logger
-from datetime import date, datetime
 
 logger = get_task_logger(__name__)
 
@@ -259,8 +260,9 @@ def notify_upcoming_deletion():
             logger.warning(f"No email recipient for archived {person}")
             continue
 
-        from post_office import mail
         from django.conf import settings
+        from post_office import mail
+
         from .models import Account
 
         for email in recipients:

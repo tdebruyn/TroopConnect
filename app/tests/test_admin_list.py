@@ -1,10 +1,16 @@
 from django.test import TestCase
 from django.urls import reverse
+from post_office.models import EmailTemplate
 
 from members.models import (
-    Account, Person, Role, SchoolYear, Section, Branch, Enrollment,
+    Account,
+    Branch,
+    Enrollment,
+    Person,
+    Role,
+    SchoolYear,
+    Section,
 )
-from post_office.models import EmailTemplate
 
 
 class AdminListFilterTest(TestCase):

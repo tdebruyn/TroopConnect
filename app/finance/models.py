@@ -1,9 +1,10 @@
+from decimal import Decimal
+
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from decimal import Decimal
 
-from members.models import Person, SchoolYear, ParentChild, Enrollment
+from members.models import ParentChild, Person, SchoolYear
 
 
 class CotisationConfig(models.Model):
@@ -122,7 +123,7 @@ def calculate_balances(school_year):
     dues = {}  # person_id -> Decimal amount due
 
     # Children: eldest full fee, siblings discounted
-    for addr, children in households.items():
+    for _addr, children in households.items():
         for i, child in enumerate(children):
             if i == 0:
                 dues[child.pk] = config.full_fee

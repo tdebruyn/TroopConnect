@@ -1,7 +1,7 @@
 from django.conf import settings
+from django.contrib.sites.models import Site
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.contrib.sites.models import Site
 from post_office import mail
 
 from .models import Person, get_registration_admins

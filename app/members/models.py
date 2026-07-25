@@ -1,19 +1,17 @@
-from django.db import models
+import uuid
+from datetime import date, datetime
+
 from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager,
     PermissionsMixin,
 )
-from django.conf import settings
+from django.contrib.postgres.fields import ArrayField
+from django.core.exceptions import ValidationError
+from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from django.contrib.postgres.fields import ArrayField
 from phonenumber_field.modelfields import PhoneNumberField
-from django.db.models import Q, Count
-from datetime import datetime, date
-from django.core.exceptions import ValidationError
-from simple_history.models import HistoricalRecords
-import uuid
 
 # class CustomAccountManager(BaseUserManager):
 #     def create_user(
@@ -240,6 +238,9 @@ class PersonRole(models.Model):
             models.UniqueConstraint(fields=["person", "role"], name="uniq_person_role"),
         ]
 
+    def __str__(self):
+        return f"{self.person} — {self.role}"
+
 
 class ParentChild(models.Model):
     """
@@ -256,6 +257,9 @@ class ParentChild(models.Model):
         constraints = [
             models.UniqueConstraint(fields=["parent", "child"], name="uniq_parent_child"),
         ]
+
+    def __str__(self):
+        return f"{self.parent} → {self.child}"
 
 
 class AccountManager(BaseUserManager):
@@ -610,7 +614,9 @@ class SchoolYear(models.Model):
 
     @classmethod
     def create(cls, year):
-        year = cls()
+        # TODO: dead/broken — `year` shadows the parameter, the method returns
+        # None, and there are no callers. Remove it or implement it properly.
+        year = cls()  # noqa: F841
 
 
 class Branch(models.Model):
@@ -754,6 +760,9 @@ class SiteSettings(models.Model):
     class Meta:
         verbose_name = "Site Settings"
         verbose_name_plural = "Site Settings"
+
+    def __str__(self):
+        return self.site_name
 
     @classmethod
     def get_settings(cls):

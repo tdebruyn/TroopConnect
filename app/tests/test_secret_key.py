@@ -1,7 +1,10 @@
 from django.test import TestCase
-
-from members.models import Account, Person, Role, SchoolYear, Section, Branch, Enrollment
 from post_office.models import EmailTemplate
+
+from members.models import (
+    Person,
+    Role,
+)
 
 
 class SecretKeyTest(TestCase):
