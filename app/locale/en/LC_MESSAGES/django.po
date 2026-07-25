@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-24 16:41+0200\n"
+"POT-Creation-Date: 2026-07-25 06:23+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -214,7 +214,7 @@ msgstr ""
 #: finance/templates/finance/record_payment_modal.html:8
 #: members/templates/members/child_form.html:12
 #: members/templates/members/child_from_key_form.html:12
-#: templates/base.html:193
+#: templates/base.html:199
 msgid "Close"
 msgstr ""
 
@@ -812,7 +812,7 @@ msgid ""
 "email confirmation request</a>."
 msgstr ""
 
-#: members/templates/account/login.html:6 templates/base.html:172
+#: members/templates/account/login.html:6 templates/base.html:148
 msgid "Log in"
 msgstr ""
 
@@ -944,52 +944,60 @@ msgid ""
 "a verification email in the next few minutes."
 msgstr ""
 
-#: members/templates/members/admin_list.html:50
+#: members/templates/members/admin_list.html:4 templates/base.html:80
+msgid "Member management"
+msgstr ""
+
+#: members/templates/members/admin_list.html:5
+msgid "Find and manage unit members."
+msgstr ""
+
+#: members/templates/members/admin_list.html:52
 msgid "Filter"
 msgstr ""
 
-#: members/templates/members/admin_list.html:51
+#: members/templates/members/admin_list.html:53
 msgid "Reset"
 msgstr ""
 
-#: members/templates/members/admin_list.html:78
+#: members/templates/members/admin_list.html:80
 msgid "Actions"
 msgstr ""
 
-#: members/templates/members/admin_list.html:92
+#: members/templates/members/admin_list.html:94
 #, python-format
 msgid "Incompatible age: %(detail)s"
 msgstr ""
 
-#: members/templates/members/admin_list.html:99
+#: members/templates/members/admin_list.html:101
 #: members/templates/members/admin_update.html:151
 #: members/templates/members/admin_update.html:161
 #: members/templates/members/child_list.html:25
 msgid "Edit"
 msgstr ""
 
-#: members/templates/members/admin_list.html:104
+#: members/templates/members/admin_list.html:106
 msgid "No results"
 msgstr ""
 
-#: members/templates/members/admin_list.html:112
+#: members/templates/members/admin_list.html:114
 msgid "First"
 msgstr ""
 
-#: members/templates/members/admin_list.html:115
+#: members/templates/members/admin_list.html:117
 msgid "Previous"
 msgstr ""
 
-#: members/templates/members/admin_list.html:119
+#: members/templates/members/admin_list.html:121
 #, python-format
 msgid "Page %(page_num)s of %(page_count)s"
 msgstr ""
 
-#: members/templates/members/admin_list.html:123
+#: members/templates/members/admin_list.html:125
 msgid "Next"
 msgstr ""
 
-#: members/templates/members/admin_list.html:126
+#: members/templates/members/admin_list.html:128
 msgid "Last"
 msgstr ""
 
@@ -1480,38 +1488,30 @@ msgstr ""
 msgid "Administration"
 msgstr ""
 
-#: templates/base.html:80
-msgid "Member management"
-msgstr ""
-
 #: templates/base.html:97
 msgid "Animator tools"
 msgstr ""
 
-#: templates/base.html:115
-msgid "Language"
-msgstr ""
-
-#: templates/base.html:128
-msgid "Change"
-msgstr ""
-
-#: templates/base.html:141
+#: templates/base.html:117
 msgid "Toggle dropdown"
 msgstr ""
 
-#: templates/base.html:145
+#: templates/base.html:121
 msgid "My profile"
 msgstr ""
 
-#: templates/base.html:148
+#: templates/base.html:124
 msgid "My documents"
 msgstr ""
 
-#: templates/base.html:166
+#: templates/base.html:142
 msgid "Log out"
 msgstr ""
 
-#: templates/base.html:171
+#: templates/base.html:147
 msgid "Sign up"
+msgstr ""
+
+#: templates/base.html:162
+msgid "Language"
 msgstr ""

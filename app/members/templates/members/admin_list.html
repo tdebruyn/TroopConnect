@@ -1,6 +1,8 @@
 {% extends "members/base.html" %}
 {% load widget_tweaks %}
 {% load i18n %}
+{% block hat_title %}{% trans "Member management" %}{% endblock hat_title %}
+{% block hat_text %}{% trans "Find and manage unit members." %}{% endblock hat_text %}
 {% block subcontent %}
     <div class="container">
         <form action="" method="get">

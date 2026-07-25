@@ -4,10 +4,10 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-07-24 16:41+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect <noreply@troop.tomctl.be>\nLanguage-Team: fr <fr@li.org>\nLanguage: fr\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\n"
+msgstr "Project-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-07-25 06:23+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect <noreply@troop.tomctl.be>\nLanguage-Team: fr <fr@li.org>\nLanguage: fr\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\n"
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-24 16:41+0200\n"
+"POT-Creation-Date: 2026-07-25 06:23+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,6 +15,102 @@ msgstr "Project-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creatio
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -308,7 +404,7 @@ msgstr "Historique des paiements — %(person)s"
 #: finance/templates/finance/record_payment_modal.html:8
 #: members/templates/members/child_form.html:12
 #: members/templates/members/child_from_key_form.html:12
-#: templates/base.html:193
+#: templates/base.html:199
 msgid "Close"
 msgstr "Fermer"
 
@@ -906,7 +1002,7 @@ msgid ""
 "email confirmation request</a>."
 msgstr "Ce lien n'est plus valide. Veuillez <a href=\"%(email_url)s\">soumettre une nouvelle demande de confirmation</a>."
 
-#: members/templates/account/login.html:6 templates/base.html:172
+#: members/templates/account/login.html:6 templates/base.html:148
 msgid "Log in"
 msgstr "Se connecter"
 
@@ -1038,52 +1134,60 @@ msgid ""
 "a verification email in the next few minutes."
 msgstr "Un e-mail de vérification a été envoyé. Suivez le lien fourni pour finaliser la création de votre compte. Si vous ne trouvez pas l'e-mail de vérification dans votre boîte de réception principale, vérifiez vos courriers indésirables et notifications. Contactez-nous à <span style=\"white-space: nowrap;\">%(contact_email)s</span> si vous ne recevez pas d'e-mail de vérification dans les prochaines minutes."
 
-#: members/templates/members/admin_list.html:50
+#: members/templates/members/admin_list.html:4 templates/base.html:80
+msgid "Member management"
+msgstr "Gestion des membres"
+
+#: members/templates/members/admin_list.html:5
+msgid "Find and manage unit members."
+msgstr "Rechercher et gérer les membres de l'unité."
+
+#: members/templates/members/admin_list.html:52
 msgid "Filter"
 msgstr "Filtrer"
 
-#: members/templates/members/admin_list.html:51
+#: members/templates/members/admin_list.html:53
 msgid "Reset"
 msgstr "Réinitialiser"
 
-#: members/templates/members/admin_list.html:78
+#: members/templates/members/admin_list.html:80
 msgid "Actions"
 msgstr "Actions"
 
-#: members/templates/members/admin_list.html:92
+#: members/templates/members/admin_list.html:94
 #, python-format
 msgid "Incompatible age: %(detail)s"
 msgstr "Âge incompatible : %(detail)s"
 
-#: members/templates/members/admin_list.html:99
+#: members/templates/members/admin_list.html:101
 #: members/templates/members/admin_update.html:151
 #: members/templates/members/admin_update.html:161
 #: members/templates/members/child_list.html:25
 msgid "Edit"
 msgstr "Modifier"
 
-#: members/templates/members/admin_list.html:104
+#: members/templates/members/admin_list.html:106
 msgid "No results"
 msgstr "Aucun résultat"
 
-#: members/templates/members/admin_list.html:112
+#: members/templates/members/admin_list.html:114
 msgid "First"
 msgstr "Premier"
 
-#: members/templates/members/admin_list.html:115
+#: members/templates/members/admin_list.html:117
 msgid "Previous"
 msgstr "Précédent"
 
-#: members/templates/members/admin_list.html:119
+#: members/templates/members/admin_list.html:121
 #, python-format
 msgid "Page %(page_num)s of %(page_count)s"
 msgstr "Page %(page_num)s sur %(page_count)s"
 
-#: members/templates/members/admin_list.html:123
+#: members/templates/members/admin_list.html:125
 msgid "Next"
 msgstr "Suivant"
 
-#: members/templates/members/admin_list.html:126
+#: members/templates/members/admin_list.html:128
 msgid "Last"
 msgstr "Dernier"
 
@@ -1574,41 +1678,36 @@ msgstr "Aucune section"
 msgid "Administration"
 msgstr "Administration"
 
-#: templates/base.html:80
-msgid "Member management"
-msgstr "Gestion des membres"
-
 #: templates/base.html:97
 msgid "Animator tools"
 msgstr "Outils animateur"
 
-#: templates/base.html:115
-msgid "Language"
-msgstr "Langue"
-
-#: templates/base.html:128
-msgid "Change"
-msgstr "Modifier"
-
-#: templates/base.html:141
+#: templates/base.html:117
 msgid "Toggle dropdown"
 msgstr "Ouvrir le menu déroulant"
 
-#: templates/base.html:145
+#: templates/base.html:121
 msgid "My profile"
 msgstr "Mon profil"
 
-#: templates/base.html:148
+#: templates/base.html:124
 msgid "My documents"
 msgstr "Mes documents"
 
-#: templates/base.html:166
+#: templates/base.html:142
 msgid "Log out"
 msgstr "Se déconnecter"
 
-#: templates/base.html:171
+#: templates/base.html:147
 msgid "Sign up"
 msgstr "S'inscrire"
+
+#: templates/base.html:162
+msgid "Language"
+msgstr "Langue"
+
+#~ msgid "Change"
+#~ msgstr "Modifier"
 
 #~ msgid "last"
 #~ msgstr "dernier"

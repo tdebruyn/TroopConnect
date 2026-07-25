@@ -316,6 +316,7 @@ TRANSLATIONS = {
     'No section': ("Aucune section", "Geen sectie"),
     'Administration': ("Administration", "Beheer"),
     'Member management': ("Gestion des membres", "Ledenbeheer"),
+    'Find and manage unit members.': ("Rechercher et gérer les membres de l'unité.", "Zoek en beheer de leden van de eenheid."),
     'Animator tools': ("Outils animateur", "Animator-tools"),
     'Language': ("Langue", "Taal"),
     'Change': ("Modifier", "Wijzigen"),
