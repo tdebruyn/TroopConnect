@@ -1510,7 +1510,7 @@ msgid "My documents"
 msgstr ""
 
 #: templates/base.html:128
-msgid "Django admin"
+msgid "Site administration"
 msgstr ""
 
 #: templates/base.html:147

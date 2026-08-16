@@ -2021,8 +2021,8 @@ msgid "My documents"
 msgstr "Mijn documenten"
 
 #: templates/base.html:128
-msgid "Django admin"
-msgstr "Django-beheer"
+msgid "Site administration"
+msgstr "Sitebeheer"
 
 #: templates/base.html:147
 msgid "Log out"
