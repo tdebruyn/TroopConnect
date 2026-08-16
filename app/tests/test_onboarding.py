@@ -1,7 +1,10 @@
+from datetime import date
+
 from django.test import Client, TestCase
 from django.urls import reverse
 
-from members.models import Account, Person, Role
+from members.forms import OnboardingForm
+from members.models import Account, Branch, Person, Role, SchoolYear
 
 
 class OnboardingMiddlewareTest(TestCase):
@@ -217,3 +220,80 @@ class OnboardingViewTest(TestCase):
         self.assertRedirects(response, reverse("homepage"))
         self.account.person.refresh_from_db()
         self.assertEqual(self.account.person.primary_role.short, "e")
+
+
+class OnboardingBranchAgeTest(TestCase):
+    """Rule 2: a person of branch age can only be a Participant.
+    OnboardingForm restricts the choices and rejects other values."""
+
+    ERROR_MESSAGE = "Une personne en âge de branche ne peut être qu'un Animé."
+
+    def setUp(self):
+        self.client = Client()
+        year = SchoolYear.current()
+        Branch.objects.create(name="Baladins", min_age_dec_31=6, max_age_dec_31=9)
+        # Age 8 on Dec 31 of the current school year.
+        self.person = Person.objects.create(
+            first_name="",
+            last_name="",
+            primary_role=Role.objects.get(short="n"),
+            status="r",
+            birthday=date(year.name - 8, 6, 15),
+        )
+        self.account = Account.objects.create_user(
+            email="branch@test.be",
+            password="Test1234!",
+            person=self.person,
+        )
+
+    def _data(self, primary_role):
+        return {
+            "first_name": "Jeanne",
+            "last_name": "Dupont",
+            "primary_role": primary_role,
+        }
+
+    def test_choices_restricted_to_participant(self):
+        form = OnboardingForm(person=self.person)
+        self.assertEqual(
+            [c[0] for c in form.fields["primary_role"].choices], ["e"]
+        )
+        self.assertEqual(form.fields["primary_role"].initial, "e")
+
+    def test_post_non_participant_rejected(self):
+        self.client.force_login(self.account)
+        response = self.client.post(
+            reverse("members:onboarding"), self._data("p")
+        )
+        self.assertEqual(response.status_code, 200)
+        self.person.refresh_from_db()
+        self.assertEqual(self.person.primary_role.short, "n")
+        self.assertEqual(self.person.status, "r")
+
+    def test_clean_raises_when_choices_not_restricted(self):
+        form = OnboardingForm(self._data("p"), person=self.person)
+        # Simulate a caller that did not restrict the field choices.
+        from members.constants import ROLE_CHOICES
+
+        form.fields["primary_role"].choices = ROLE_CHOICES
+        self.assertFalse(form.is_valid())
+        self.assertIn(self.ERROR_MESSAGE, form.errors["__all__"])
+
+    def test_post_participant_allowed(self):
+        self.client.force_login(self.account)
+        response = self.client.post(
+            reverse("members:onboarding"), self._data("e")
+        )
+        self.assertRedirects(response, reverse("homepage"))
+        self.person.refresh_from_db()
+        self.assertEqual(self.person.primary_role.short, "e")
+        self.assertEqual(self.person.status, "a")
+
+    def test_adult_onboarding_unrestricted(self):
+        """An adult (no branch-age birthday) keeps all role choices."""
+        self.person.birthday = date(SchoolYear.current().name - 40, 6, 15)
+        self.person.save()
+        form = OnboardingForm(person=self.person)
+        self.assertEqual(
+            [c[0] for c in form.fields["primary_role"].choices], ["p", "a", "e"]
+        )

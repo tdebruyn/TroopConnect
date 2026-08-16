@@ -1,0 +1,6 @@
+.git
+.ruff_cache
+app/.ruff_cache
+**/__pycache__
+*.pyc
+db.sqlite3

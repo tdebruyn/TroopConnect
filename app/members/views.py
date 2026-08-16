@@ -59,17 +59,18 @@ class OnboardingView(LoginRequiredMixin, TemplateView):
     def get(self, request, *args, **kwargs):
         person = request.user.person
         form = OnboardingForm(
+            person=person,
             initial={
                 "first_name": person.first_name,
                 "last_name": person.last_name,
                 "address": person.address,
                 "phone": person.phone,
-            }
+            },
         )
         return self.render_to_response(self.get_context_data(form=form))
 
     def post(self, request, *args, **kwargs):
-        form = OnboardingForm(request.POST)
+        form = OnboardingForm(request.POST, person=request.user.person)
         if form.is_valid():
             form.save(request.user)
             return redirect("homepage")

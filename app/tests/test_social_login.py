@@ -136,4 +136,4 @@ class SocialAccountSignupTemplateTest(TestCase):
     def test_social_signup_template_has_submit_button(self):
         template = get_template("socialaccount/signup.html")
         source = template.template.source
-        self.assertIn("Continuer", source)
+        self.assertIn("Continue", source)

@@ -122,10 +122,14 @@ class AdminUserUpdateForm(forms.ModelForm):
             else:
                 self.fields["primary_role"].initial = self.instance.primary_role
 
-            # Set secondary roles
-            secondary_roles = self.instance.roles.filter(is_primary=False)
-            if secondary_roles.exists():
-                self.fields["secondary_roles"].initial = secondary_roles.all()
+            # Secondary roles are never shown or configurable for a Participant
+            # (rule 1). Drop the field entirely so it is not rendered.
+            if self.instance.primary_role.short == Person.CHILD_ROLE_SHORT:
+                self.fields.pop("secondary_roles", None)
+            else:
+                secondary_roles = self.instance.roles.filter(is_primary=False)
+                if secondary_roles.exists():
+                    self.fields["secondary_roles"].initial = secondary_roles.all()
 
     def clean(self):
         cleaned_data = super().clean()
@@ -145,6 +149,12 @@ class AdminUserUpdateForm(forms.ModelForm):
                 )
             )
 
+        # A Participant can never have secondary roles (rule 1). Drop anything
+        # submitted, e.g. when staff switch the role to Participant in the same
+        # submit. save() then clears the stored roles.
+        if primary_role and primary_role.short == Person.CHILD_ROLE_SHORT:
+            cleaned_data["secondary_roles"] = Role.objects.none()
+
         return cleaned_data
 
     def save(self, commit=True):
@@ -161,7 +171,7 @@ class AdminUserUpdateForm(forms.ModelForm):
 
             # Handle roles
             PersonRole.objects.filter(person=person, role__is_primary=False).delete()
-            for role in secondary_roles:
+            for role in (secondary_roles or []):
                 PersonRole.objects.create(person=person, role=role)
 
             # Handle section enrollments
@@ -304,7 +314,13 @@ class ProfileEditForm(UserChangeForm):
             )
             self.fields["parent_active"].widget = forms.HiddenInput()
         else:
-            if person.primary_role.short == "p":
+            if person.age_fits_branch():
+                # Rule 2: a person of branch age can only be a Participant.
+                self.fields["primary_role"].choices = [
+                    c for c in ROLE_CHOICES if c[0] == Person.CHILD_ROLE_SHORT
+                ]
+                self.fields["primary_role"].initial = Person.CHILD_ROLE_SHORT
+            elif person.primary_role.short == "p":
                 self.fields["primary_role"].initial = "p"
                 if parent_active_role in person.roles.all():
                     self.fields["parent_active"].initial = True
@@ -312,6 +328,21 @@ class ProfileEditForm(UserChangeForm):
                 self.fields["primary_role"].initial = "a"
             elif person.primary_role.short == "e":
                 self.fields["primary_role"].initial = "e"
+
+    def clean(self):
+        cleaned_data = super().clean()
+        person = self.instance.person
+        primary_role = cleaned_data.get("primary_role")
+        if (
+            primary_role
+            and not getattr(self, "role_locked", False)
+            and person.age_fits_branch()
+            and primary_role != Person.CHILD_ROLE_SHORT
+        ):
+            raise ValidationError(
+                _("A person of branch age can only be a Participant.")
+            )
+        return cleaned_data
 
     def save(self, commit=True):
         person = self.instance.person
@@ -550,10 +581,30 @@ class OnboardingForm(forms.Form):
     )
 
     def __init__(self, *args, **kwargs):
+        person = kwargs.pop("person", None)
         super().__init__(*args, **kwargs)
         from .models import SiteSettings
         site_settings = SiteSettings.get_settings()
         self.fields["photo_consent"].label = site_settings.photo_consent_text
+
+        # Rule 2: a person of branch age can only be a Participant.
+        self.fits_branch = bool(person and person.age_fits_branch())
+        if self.fits_branch:
+            self.fields["primary_role"].choices = [
+                c for c in ROLE_CHOICES if c[0] == Person.CHILD_ROLE_SHORT
+            ]
+            self.fields["primary_role"].initial = Person.CHILD_ROLE_SHORT
+
+    def clean(self):
+        cleaned_data = super().clean()
+        if (
+            self.fits_branch
+            and cleaned_data.get("primary_role") != Person.CHILD_ROLE_SHORT
+        ):
+            raise ValidationError(
+                _("A person of branch age can only be a Participant.")
+            )
+        return cleaned_data
 
     def save(self, account):
         person = account.person

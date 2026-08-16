@@ -213,6 +213,36 @@ class Person(models.Model):
             return True, _("linked children")
         return False, ""
 
+    def age_on_dec_31(self, school_year=None):
+        """Whole-year age on 31 December of the given (or current) school year.
+
+        Mirrors the age computation used by the run_passage task
+        ((dec_31 - birthday).days // 365). Returns None when the birthday or
+        the school year cannot be resolved.
+        """
+        if not self.birthday:
+            return None
+        if school_year is None:
+            school_year = SchoolYear.current()
+        if school_year is None:
+            return None
+        dec_31 = date(school_year.name, 12, 31)
+        return (dec_31 - self.birthday).days // 365
+
+    def age_fits_branch(self, school_year=None):
+        """True if this person is of an age that fits some Branch on 31 Dec of
+        the school year — i.e. they must be a Participant (rule 2).
+        """
+        age = self.age_on_dec_31(school_year)
+        if age is None:
+            return False
+        return Branch.objects.filter(
+            min_age_dec_31__isnull=False,
+            max_age_dec_31__isnull=False,
+            min_age_dec_31__lte=age,
+            max_age_dec_31__gte=age,
+        ).exists()
+
 
 class Role(models.Model):
     short = models.CharField(max_length=2, unique=True)

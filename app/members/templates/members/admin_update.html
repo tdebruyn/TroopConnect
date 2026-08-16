@@ -73,9 +73,11 @@
                             </div>
                         {% endif %}
                         <div class="alert-danger">{{ form.primary_role.errors }}</div>
-                        <div class="form-label">{{ form.secondary_roles.label_tag }}</div>
-                        <div class="input-group">{% render_field form.secondary_roles %}</div>
-                        <div class="alert-danger">{{ form.secondary_roles.errors }}</div>
+                        {% if "secondary_roles" in form.fields %}
+                            <div class="form-label">{{ form.secondary_roles.label_tag }}</div>
+                            <div class="input-group">{% render_field form.secondary_roles %}</div>
+                            <div class="alert-danger">{{ form.secondary_roles.errors }}</div>
+                        {% endif %}
                         <div class="form-label">{{ form.current_section.label_tag }}</div>
                         <div class="input-group">
                             {% render_field form.current_section class="form-select" id=form.current_section.id value=form.current_section.initial %}
