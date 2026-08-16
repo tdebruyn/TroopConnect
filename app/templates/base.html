@@ -122,6 +122,11 @@
                                     <li>
                                         <a class="dropdown-item" href="{% url 'members:documents' %}">{% trans "My documents" %}</a>
                                     </li>
+                                    {% if user.is_superuser %}
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'admin:index' %}">{% trans "Django admin" %}</a>
+                                        </li>
+                                    {% endif %}
                                     <li>
                                         <hr class="dropdown-divider">
                                     </li>

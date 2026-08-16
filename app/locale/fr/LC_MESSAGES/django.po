@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-25 09:34+0200\n"
+"POT-Creation-Date: 2026-08-16 13:25+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -603,7 +603,7 @@ msgstr "Historique des paiements — %(person)s"
 #: finance/templates/finance/record_payment_modal.html:8
 #: members/templates/members/child_form.html:12
 #: members/templates/members/child_from_key_form.html:12
-#: templates/base.html:199
+#: templates/base.html:204
 msgid "Close"
 msgstr "Fermer"
 
@@ -1269,7 +1269,7 @@ msgstr ""
 "Ce lien n'est plus valide. Veuillez <a href=\"%(email_url)s\">soumettre une "
 "nouvelle demande de confirmation</a>."
 
-#: members/templates/account/login.html:6 templates/base.html:148
+#: members/templates/account/login.html:6 templates/base.html:153
 msgid "Log in"
 msgstr "Se connecter"
 
@@ -2021,15 +2021,19 @@ msgstr "Mon profil"
 msgid "My documents"
 msgstr "Mes documents"
 
-#: templates/base.html:142
+#: templates/base.html:128
+msgid "Django admin"
+msgstr "Administration Django"
+
+#: templates/base.html:147
 msgid "Log out"
 msgstr "Se déconnecter"
 
-#: templates/base.html:147
+#: templates/base.html:152
 msgid "Sign up"
 msgstr "S'inscrire"
 
-#: templates/base.html:162
+#: templates/base.html:167
 msgid "Language"
 msgstr "Langue"
 
