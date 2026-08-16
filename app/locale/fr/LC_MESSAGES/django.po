@@ -4,10 +4,10 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr ""
+msgstr "Project-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-08-16 14:14+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect <noreply@troop.tomctl.be>\nLanguage-Team: fr <fr@li.org>\nLanguage: fr\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\n"
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-16 13:25+0200\n"
+"POT-Creation-Date: 2026-08-16 14:14+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -405,7 +405,7 @@ msgid "Amount (€)"
 msgstr "Montant (€)"
 
 #: finance/forms.py:16 finance/templates/finance/payment_history.html:15
-#: homepage/models.py:11
+#: homepage/models.py:13
 #: messaging/templates/messaging/animateur_history.html:12
 #: messaging/templates/messaging/message_detail.html:9
 #: messaging/templates/messaging/section_history.html:9
@@ -445,14 +445,7 @@ msgid ""
 "\n"
 "Best regards,\n"
 "The treasurer"
-msgstr ""
-"Bonjour {prenom},\n"
-"\n"
-"Le solde de votre cotisation est de {solde}€.\n"
-"Merci de procéder au paiement.\n"
-"\n"
-"Cordialement,\n"
-"Le trésorier"
+msgstr "Bonjour {prenom},\n\nLe solde de votre cotisation est de {solde}€.\nMerci de procéder au paiement.\n\nCordialement,\nLe trésorier"
 
 #: finance/models.py:18
 msgid "Full fee (eldest child)"
@@ -603,7 +596,7 @@ msgstr "Historique des paiements — %(person)s"
 #: finance/templates/finance/record_payment_modal.html:8
 #: members/templates/members/child_form.html:12
 #: members/templates/members/child_from_key_form.html:12
-#: templates/base.html:204
+#: templates/base.html:207
 msgid "Close"
 msgstr "Fermer"
 
@@ -630,6 +623,7 @@ msgstr "Trésorier"
 
 #: finance/templates/finance/record_payment.html:29
 #: finance/templates/finance/record_payment_modal.html:36
+#: homepage/templates/homepage/editor.html:61
 #: members/templates/members/child_form.html:100
 #: members/templates/members/child_from_key_form.html:29
 #: members/templates/members/profile.html:98
@@ -704,20 +698,51 @@ msgstr "Échec d'envoi à %(email)s."
 msgid "Reminders sent to %(count)s adult(s)."
 msgstr "Rappels envoyés à %(count)s adulte(s)."
 
-#: homepage/models.py:9
+#: homepage/models.py:11
 msgid "Title"
 msgstr "Titre"
 
-#: homepage/models.py:10
+#: homepage/models.py:12
 msgid "Description"
 msgstr "Description"
 
-#: homepage/models.py:18 members/filters.py:47 members/filters.py:48
+#: homepage/models.py:20 members/filters.py:47 members/filters.py:48
 #: members/forms.py:73 members/templates/members/admin_update.html:144
 #: members/templates/members/profile.html:123 members/views.py:178
 #: messaging/forms.py:28
 msgid "Section"
 msgstr "Section"
+
+#: homepage/models.py:62
+#, python-format
+msgid "Unsupported image extension. Allowed: %(extensions)s."
+msgstr "Extension d'image non prise en charge. Autorisées : %(extensions)s."
+
+#: homepage/models.py:77 homepage/templates/homepage/editor.html:42
+msgid "Home"
+msgstr "Accueil"
+
+#: homepage/models.py:78 homepage/templates/homepage/editor.html:44
+#: homepage/templates/homepage/snippets/faq_default.html:5
+#: templates/base.html:105
+msgid "FAQ"
+msgstr "FAQ"
+
+#: homepage/models.py:88
+msgid "Site content"
+msgstr "Contenu du site"
+
+#: homepage/models.py:89
+msgid "Site contents"
+msgstr "Contenus du site"
+
+#: homepage/models.py:111
+msgid "Image asset"
+msgstr "Image"
+
+#: homepage/models.py:112
+msgid "Image assets"
+msgstr "Images"
 
 #: homepage/templates/homepage/agenda.html:7 templates/base.html:70
 msgid "Agenda"
@@ -736,28 +761,56 @@ msgstr "Section : %(section_name)s"
 msgid "No upcoming event."
 msgstr "Aucun événement à venir."
 
-#: homepage/templates/homepage/faq.html:7 templates/base.html:105
-msgid "FAQ"
-msgstr "FAQ"
+#: homepage/templates/homepage/editor.html:7
+#: homepage/templates/homepage/editor.html:39
+msgid "Homepage editor"
+msgstr "Éditeur de la page d'accueil"
 
-#: homepage/templates/homepage/faq.html:9
+#: homepage/templates/homepage/editor.html:56
+msgid "View site"
+msgstr "Voir le site"
+
+#: homepage/templates/homepage/editor.html:58
+msgid "Site name and other settings are edited in the site settings."
+msgstr "Le nom du site et d'autres réglages se modifient dans les paramètres du site."
+
+#: homepage/templates/homepage/editor.html:59
+msgid "Site settings"
+msgstr "Paramètres du site"
+
+#: homepage/templates/homepage/editor.html:74
+msgid "Saved."
+msgstr "Enregistré."
+
+#: homepage/templates/homepage/faq.html:13
+#: homepage/templates/homepage/home.html:17
+msgid "Edit this page"
+msgstr "Modifier cette page"
+
+#: homepage/templates/homepage/snippets/faq_default.html:7
 msgid "Frequently asked questions."
 msgstr "Questions fréquemment posées."
 
-#: homepage/templates/homepage/home.html:11
+#: homepage/templates/homepage/snippets/home_default.html:5
 msgid "Main Description"
 msgstr "Description principale"
 
-#: homepage/templates/homepage/home.html:13
+#: homepage/templates/homepage/snippets/home_default.html:7
 msgid ""
 "Roll on the floor purring your whiskers off intrigued by the shower burrow "
 "under covers, and play time, rub face on everything, intently sniff hand, or "
 "pelt around the house and up and down stairs chasing phantoms. Attack feet. "
 "Damn that dog shake treat bag under the bed drink water out of the faucet "
 "for lick butt love to play with owner's hair tie. Swat at dog give attitude."
-msgstr ""
-"Texte de présentation de l'unité. Modifiez-le depuis les paramètres du site "
-"pour décrire votre unité, ses sections et ses activités."
+msgstr "Texte de présentation de l'unité. Modifiez-le depuis les paramètres du site pour décrire votre unité, ses sections et ses activités."
+
+#: homepage/views.py:113
+msgid "Image upload failed."
+msgstr "Échec du téléversement de l'image."
+
+#: homepage/views.py:114
+msgid "Save failed."
+msgstr "Échec de l'enregistrement."
 
 #: members/admin.py:42
 msgid "Personal info"
@@ -777,8 +830,7 @@ msgstr "Langues disponibles"
 
 #: members/admin.py:148 members/models.py:765
 msgid "Languages available to users in the site language selector."
-msgstr ""
-"Langues proposées aux utilisateurs dans le sélecteur de langue du site."
+msgstr "Langues proposées aux utilisateurs dans le sélecteur de langue du site."
 
 #: members/admin.py:154
 msgid "Default language"
@@ -786,8 +838,7 @@ msgstr "Langue par défaut"
 
 #: members/admin.py:155 members/models.py:775
 msgid "Default language for visitors. Must be one of the available languages."
-msgstr ""
-"Langue par défaut des visiteurs. Doit faire partie des langues disponibles."
+msgstr "Langue par défaut des visiteurs. Doit faire partie des langues disponibles."
 
 #: members/admin.py:192 members/models.py:808
 msgid "Select at least one available language."
@@ -879,10 +930,7 @@ msgstr "Activer un rôle secondaire"
 msgid ""
 "I agree that photos or videos in which my child(ren) appear may be used by "
 "Les Scouts ASBL, of which my unit is part"
-msgstr ""
-"J'accepte que les photos ou vidéos dans lesquelles mon/mes enfant(s) "
-"apparaît(apparaissent) puissent être utilisées par Les Scouts ASBL, dont mon "
-"unité fait partie"
+msgstr "J'accepte que les photos ou vidéos dans lesquelles mon/mes enfant(s) apparaît(apparaissent) puissent être utilisées par Les Scouts ASBL, dont mon unité fait partie"
 
 #: members/constants.py:44
 msgid "Your profile has been updated successfully."
@@ -936,9 +984,7 @@ msgstr "Tous les rôles"
 msgid ""
 "If an email is provided, an account will be created. Otherwise, the existing "
 "account will be used."
-msgstr ""
-"Si une adresse e-mail est fournie, un compte sera créé. Sinon, le compte "
-"existant sera utilisé."
+msgstr "Si une adresse e-mail est fournie, un compte sera créé. Sinon, le compte existant sera utilisé."
 
 #: members/forms.py:57 members/forms.py:120
 #: members/templates/members/admin_update.html:63
@@ -961,9 +1007,7 @@ msgstr "Section %(range)s"
 #: members/forms.py:148
 msgid ""
 "Only the 'Participant' and 'Animator' roles can be enrolled in a section."
-msgstr ""
-"Seuls les rôles « Animé » et « Animateur » peuvent être inscrits dans une "
-"section."
+msgstr "Seuls les rôles « Animé » et « Animateur » peuvent être inscrits dans une section."
 
 #: members/forms.py:240
 msgid "Photos allowed"
@@ -1039,8 +1083,7 @@ msgstr "Date à laquelle le membre a été archivé"
 
 #: members/models.py:130
 msgid "Manual override for passage: section assigned the following year"
-msgstr ""
-"Remplacement manuel pour le passage : section attribuée l'année suivante"
+msgstr "Remplacement manuel pour le passage : section attribuée l'année suivante"
 
 #: members/models.py:162
 msgid "Date of birth is required for a participant."
@@ -1078,15 +1121,12 @@ msgstr "%(name)s — du %(start)s au %(end)s"
 #: members/models.py:658
 msgid ""
 "Age of the youngest members of the section on December 31 of the school year"
-msgstr ""
-"Âge des plus jeunes membres de la section au 31 décembre de l'année scolaire"
+msgstr "Âge des plus jeunes membres de la section au 31 décembre de l'année scolaire"
 
 #: members/models.py:665
 msgid ""
 "Age of the oldest members of the section on December 31 of the school year"
-msgstr ""
-"Âge des plus âgés des membres de la section au 31 décembre de l'année "
-"scolaire"
+msgstr "Âge des plus âgés des membres de la section au 31 décembre de l'année scolaire"
 
 #: members/models.py:670
 #, python-format
@@ -1098,10 +1138,7 @@ msgid ""
 "Last school year (the « name » field) for which the automatic passage was "
 "executed. Anti-replay: if Celery was stopped on the passage day, the task "
 "catches up at the next startup."
-msgstr ""
-"Dernière année scolaire (champ « name ») pour laquelle le passage "
-"automatique a été exécuté. Anti-rejeu : si Celery était arrêté le jour du "
-"passage, la tâche se rattrape au prochain démarrage."
+msgstr "Dernière année scolaire (champ « name ») pour laquelle le passage automatique a été exécuté. Anti-rejeu : si Celery était arrêté le jour du passage, la tâche se rattrape au prochain démarrage."
 
 #: members/models.py:830
 msgid "Important document"
@@ -1126,17 +1163,7 @@ msgid ""
 "de passe oublié pour récupérer votre compte.\n"
 "\n"
 "%(password_reset_url)s"
-msgstr ""
-"Vous recevez ce mail parce que vous ou quelqu'un d'autre a tenté de créer un "
-"compte avec l'adresse e-mail suivante :\n"
-"\n"
-"%(email)s\n"
-"\n"
-"Cependant, un compte utilisant cette adresse e-mail existe déjà. En cas où "
-"vous avez oublié votre mot de passe, veuillez utiliser la procédure de mot "
-"de passe oublié pour récupérer votre compte.\n"
-"\n"
-"%(password_reset_url)s"
+msgstr "Vous recevez ce mail parce que vous ou quelqu'un d'autre a tenté de créer un compte avec l'adresse e-mail suivante :\n\n%(email)s\n\nCependant, un compte utilisant cette adresse e-mail existe déjà. En cas où vous avez oublié votre mot de passe, veuillez utiliser la procédure de mot de passe oublié pour récupérer votre compte.\n\n%(password_reset_url)s"
 
 #: members/templates/account/email/account_already_exists_subject.txt:3
 msgid "Compte déjà existant"
@@ -1153,15 +1180,7 @@ msgid ""
 "%(password_reset_url)s\n"
 "Cela peut être ignoré si tu n'as pas demandé de réinitialisation de mot de "
 "passe. "
-msgstr ""
-"Tu reçois ce message parce qu'un de tes parents a choisi de te créer un "
-"compte sur le site de l'unité.\n"
-"Pour finaliser l'inscription et choisir un mot de passe, clique sur le lien "
-"ci-dessous.\n"
-"\n"
-"%(password_reset_url)s\n"
-"Tu peux ignorer ce message si tu n'as pas demandé de réinitialisation de mot "
-"de passe."
+msgstr "Tu reçois ce message parce qu'un de tes parents a choisi de te créer un compte sur le site de l'unité.\nPour finaliser l'inscription et choisir un mot de passe, clique sur le lien ci-dessous.\n\n%(password_reset_url)s\nTu peux ignorer ce message si tu n'as pas demandé de réinitialisation de mot de passe."
 
 #: members/templates/account/email/child_password_reset_key_subject.txt:3
 #: members/templates/account/email/password_reset_key_subject.txt:3
@@ -1174,10 +1193,7 @@ msgid ""
 "Tu a reçu ce message parce qu'un de tes parents à choisi de te créer un "
 "compte sur le site de l'unité.  Pour finaliser l'inscription et choisir un "
 "mot de passe, clique sur le lien ci-desous."
-msgstr ""
-"Tu as reçu ce message parce qu'un de tes parents a choisi de te créer un "
-"compte sur le site de l'unité. Pour finaliser l'inscription et choisir un "
-"mot de passe, clique sur le lien ci-dessous."
+msgstr "Tu as reçu ce message parce qu'un de tes parents a choisi de te créer un compte sur le site de l'unité. Pour finaliser l'inscription et choisir un mot de passe, clique sur le lien ci-dessous."
 
 #: members/templates/account/email/create_child_account_message.txt:8
 #, python-format
@@ -1205,17 +1221,7 @@ msgid ""
 "\n"
 "Si tu n’es pas à l’origine de cette demande, tu peux simplement ignorer ce "
 "message."
-msgstr ""
-"Tu reçois ce message parce qu'un compte a été créé pour toi sur le site de "
-"l'unité, ou qu'une réinitialisation de mot de passe a été demandée.\n"
-"\n"
-"Pour finaliser l'inscription ou choisir un nouveau mot de passe, clique sur "
-"le lien ci-dessous :\n"
-"\n"
-"%(password_reset_url)s\n"
-"\n"
-"Si tu n'es pas à l'origine de cette demande, tu peux simplement ignorer ce "
-"message."
+msgstr "Tu reçois ce message parce qu'un compte a été créé pour toi sur le site de l'unité, ou qu'une réinitialisation de mot de passe a été demandée.\n\nPour finaliser l'inscription ou choisir un nouveau mot de passe, clique sur le lien ci-dessous :\n\n%(password_reset_url)s\n\nSi tu n'es pas à l'origine de cette demande, tu peux simplement ignorer ce message."
 
 #: members/templates/account/email/unknown_account_message.txt:4
 #, python-format
@@ -1230,17 +1236,7 @@ msgid ""
 "\n"
 "Si c'était vous, vous pouvez vous inscrire pour un compte en utilisant le "
 "lien ci-dessous."
-msgstr ""
-"Vous recevez ce mail parce que vous ou quelqu'un d'autre a demandé un mot de "
-"passe pour votre compte utilisateur.\n"
-"Cependant, nous n'avons pas de compte avec l'adresse e-mail %(email)s dans "
-"notre base de données.\n"
-"\n"
-"Ce mail peut être ignoré si vous n'avez pas demandé de réinitialisation de "
-"mot de passe.\n"
-"\n"
-"Si c'était vous, vous pouvez vous inscrire pour un compte en utilisant le "
-"lien ci-dessous."
+msgstr "Vous recevez ce mail parce que vous ou quelqu'un d'autre a demandé un mot de passe pour votre compte utilisateur.\nCependant, nous n'avons pas de compte avec l'adresse e-mail %(email)s dans notre base de données.\n\nCe mail peut être ignoré si vous n'avez pas demandé de réinitialisation de mot de passe.\n\nSi c'était vous, vous pouvez vous inscrire pour un compte en utilisant le lien ci-dessous."
 
 #: members/templates/account/email_confirm.html:5
 msgid "Confirm email address"
@@ -1251,9 +1247,7 @@ msgstr "Confirmer l'adresse e-mail"
 msgid ""
 "Please confirm that <a href=\"mailto:%(email)s\">%(email_addr)s</a> is the "
 "email address of %(user_display)s."
-msgstr ""
-"Veuillez confirmer que <a href=\"mailto:%(email)s\">%(email_addr)s</a> est "
-"l'adresse e-mail de %(user_display)s."
+msgstr "Veuillez confirmer que <a href=\"mailto:%(email)s\">%(email_addr)s</a> est l'adresse e-mail de %(user_display)s."
 
 #: members/templates/account/email_confirm.html:17
 #: members/templates/members/admin_update.html:124
@@ -1265,11 +1259,9 @@ msgstr "Confirmer"
 msgid ""
 "This link is no longer valid. Please <a href=\"%(email_url)s\">submit a new "
 "email confirmation request</a>."
-msgstr ""
-"Ce lien n'est plus valide. Veuillez <a href=\"%(email_url)s\">soumettre une "
-"nouvelle demande de confirmation</a>."
+msgstr "Ce lien n'est plus valide. Veuillez <a href=\"%(email_url)s\">soumettre une nouvelle demande de confirmation</a>."
 
-#: members/templates/account/login.html:6 templates/base.html:153
+#: members/templates/account/login.html:6 templates/base.html:156
 msgid "Log in"
 msgstr "Se connecter"
 
@@ -1331,9 +1323,7 @@ msgstr "Réinitialisation du mot de passe"
 msgid ""
 "Forgotten your password? Enter your e-mail address below, and we'll send you "
 "an e-mail allowing you to reset it."
-msgstr ""
-"Mot de passe oublié ? Saisissez votre adresse e-mail ci-dessous et nous vous "
-"enverrons un e-mail pour le réinitialiser."
+msgstr "Mot de passe oublié ? Saisissez votre adresse e-mail ci-dessous et nous vous enverrons un e-mail pour le réinitialiser."
 
 #: members/templates/account/password_reset.html:25
 msgid "Reset My Password"
@@ -1341,19 +1331,14 @@ msgstr "Réinitialiser mon mot de passe"
 
 #: members/templates/account/password_reset.html:28
 msgid "Please contact us if you have any trouble resetting your password."
-msgstr ""
-"Contactez-nous si vous rencontrez des difficultés pour réinitialiser votre "
-"mot de passe."
+msgstr "Contactez-nous si vous rencontrez des difficultés pour réinitialiser votre mot de passe."
 
 #: members/templates/account/password_reset_done.html:12
 msgid ""
 "We have sent you an email. If you haven't received it, check your spam "
 "folder. Otherwise, contact us if you haven't received it within a few "
 "minutes."
-msgstr ""
-"Nous vous avons envoyé un e-mail. Si vous ne l'avez pas reçu, vérifiez vos "
-"courriers indésirables. Sinon, contactez-nous si vous ne l'avez pas reçu "
-"dans les quelques minutes."
+msgstr "Nous vous avons envoyé un e-mail. Si vous ne l'avez pas reçu, vérifiez vos courriers indésirables. Sinon, contactez-nous si vous ne l'avez pas reçu dans les quelques minutes."
 
 #: members/templates/account/password_reset_from_key.html:10
 msgid "Bad Token"
@@ -1365,10 +1350,7 @@ msgid ""
 "The password reset link was invalid, possibly because it has already been "
 "used.  Please request a <a href=\"%(passwd_reset_url)s\">new password reset</"
 "a>."
-msgstr ""
-"Le lien de réinitialisation du mot de passe était invalide, peut-être parce "
-"qu'il a déjà été utilisé. Veuillez demander une <a "
-"href=\"%(passwd_reset_url)s\">nouvelle réinitialisation</a>."
+msgstr "Le lien de réinitialisation du mot de passe était invalide, peut-être parce qu'il a déjà été utilisé. Veuillez demander une <a href=\"%(passwd_reset_url)s\">nouvelle réinitialisation</a>."
 
 #: members/templates/account/password_reset_from_key.html:35
 msgid "change password"
@@ -1387,11 +1369,7 @@ msgid ""
 "To request enrollment for one or more children in our unit, a parent must "
 "first register on our site by following the procedure below. Then, the "
 "parent can add their children to submit an enrollment request."
-msgstr ""
-"Pour demander l'inscription d'un ou plusieurs enfants dans notre unité, un "
-"parent doit d'abord s'inscrire sur notre site en suivant la procédure ci-"
-"dessous. Ensuite, le parent peut ajouter ses enfants pour soumettre une "
-"demande d'inscription."
+msgstr "Pour demander l'inscription d'un ou plusieurs enfants dans notre unité, un parent doit d'abord s'inscrire sur notre site en suivant la procédure ci-dessous. Ensuite, le parent peut ajouter ses enfants pour soumettre une demande d'inscription."
 
 #: members/templates/account/signup.html:12
 msgid "Create your account (for parents and animators only)"
@@ -1413,13 +1391,7 @@ msgid ""
 "main inbox, check your spam and notifications. Contact us at <span "
 "style=\"white-space: nowrap;\">%(contact_email)s</span> if you don't receive "
 "a verification email in the next few minutes."
-msgstr ""
-"Un e-mail de vérification a été envoyé. Suivez le lien fourni pour finaliser "
-"la création de votre compte. Si vous ne trouvez pas l'e-mail de vérification "
-"dans votre boîte de réception principale, vérifiez vos courriers "
-"indésirables et notifications. Contactez-nous à <span style=\"white-space: "
-"nowrap;\">%(contact_email)s</span> si vous ne recevez pas d'e-mail de "
-"vérification dans les prochaines minutes."
+msgstr "Un e-mail de vérification a été envoyé. Suivez le lien fourni pour finaliser la création de votre compte. Si vous ne trouvez pas l'e-mail de vérification dans votre boîte de réception principale, vérifiez vos courriers indésirables et notifications. Contactez-nous à <span style=\"white-space: nowrap;\">%(contact_email)s</span> si vous ne recevez pas d'e-mail de vérification dans les prochaines minutes."
 
 #: members/templates/members/admin_list.html:4 templates/base.html:80
 msgid "Member management"
@@ -1506,27 +1478,20 @@ msgstr "Créer un compte pour %(first_name)s"
 msgid ""
 "Create an account so your child can access their section's information and "
 "edit their own details."
-msgstr ""
-"Créez un compte pour que votre enfant puisse accéder aux informations de sa "
-"section et modifier ses propres données."
+msgstr "Créez un compte pour que votre enfant puisse accéder aux informations de sa section et modifier ses propres données."
 
 #: members/templates/members/child_account.html:11
 msgid ""
 "If they are over 18, they will also be able to detach their account from "
 "their parents', who will no longer receive information about them or "
 "membership fee reminders."
-msgstr ""
-"S'il a plus de 18 ans, il pourra également détacher son compte de celui de "
-"ses parents, qui ne recevront plus d'informations le concernant ni de "
-"rappels de cotisation."
+msgstr "S'il a plus de 18 ans, il pourra également détacher son compte de celui de ses parents, qui ne recevront plus d'informations le concernant ni de rappels de cotisation."
 
 #: members/templates/members/child_account.html:14
 msgid ""
 "An email will be sent to your child's address with a link. It will allow "
 "them to create a password and validate their account."
-msgstr ""
-"Un e-mail sera envoyé à l'adresse de votre enfant avec un lien. Il lui "
-"permettra de créer un mot de passe et de valider son compte."
+msgstr "Un e-mail sera envoyé à l'adresse de votre enfant avec un lien. Il lui permettra de créer un mot de passe et de valider son compte."
 
 #: members/templates/members/child_account_done.html:5
 msgid "Email sent"
@@ -1536,9 +1501,7 @@ msgstr "E-mail envoyé"
 msgid ""
 "An email with a link has been sent to your child. They must click this link "
 "to finalize the creation of their account and set a password."
-msgstr ""
-"Un e-mail contenant un lien a été envoyé à votre enfant. Il doit cliquer sur "
-"ce lien pour finaliser la création de son compte et définir un mot de passe."
+msgstr "Un e-mail contenant un lien a été envoyé à votre enfant. Il doit cliquer sur ce lien pour finaliser la création de son compte et définir un mot de passe."
 
 #: members/templates/members/child_form.html:8
 msgid "Child information"
@@ -1557,9 +1520,7 @@ msgstr "Si différente de celle du parent"
 msgid ""
 "The field below should only be filled in if you want to create an account "
 "for the child, which is recommended after age 12."
-msgstr ""
-"Le champ ci-dessous ne doit être rempli que si vous souhaitez créer un "
-"compte pour l'enfant, ce qui est recommandé à partir de 12 ans."
+msgstr "Le champ ci-dessous ne doit être rempli que si vous souhaitez créer un compte pour l'enfant, ce qui est recommandé à partir de 12 ans."
 
 #: members/templates/members/child_form.html:64
 msgid "They will receive an email to choose a password."
@@ -1595,19 +1556,14 @@ msgstr "Confirmez que vous souhaitez désinscrire %(first_name)s"
 msgid ""
 "A deregistration for the following year or for an enrollment in the "
 "'request' state will be processed immediately."
-msgstr ""
-"Une désinscription pour l'année suivante ou pour une inscription dans l'état "
-"« request » sera traitée immédiatement."
+msgstr "Une désinscription pour l'année suivante ou pour une inscription dans l'état « request » sera traitée immédiatement."
 
 #: members/templates/members/deregister_child.html:14
 msgid ""
 "If the deregistration is requested for the current year and the enrollment "
 "is active, it will require manual intervention. Make sure you have followed "
 "the procedure described in the internal regulations."
-msgstr ""
-"Si la désinscription est demandée pour l'année en cours et que l'inscription "
-"est active, une intervention manuelle sera nécessaire. Assurez-vous d'avoir "
-"suivi la procédure décrite dans le règlement intérieur."
+msgstr "Si la désinscription est demandée pour l'année en cours et que l'inscription est active, une intervention manuelle sera nécessaire. Assurez-vous d'avoir suivi la procédure décrite dans le règlement intérieur."
 
 #: members/templates/members/deregister_child.html:17
 msgid "The year starts on August 1st, right after camp."
@@ -1652,9 +1608,7 @@ msgstr "Bienvenue ! Complétez votre profil"
 msgid ""
 "To continue, please complete your profile by filling in the information "
 "below."
-msgstr ""
-"Pour continuer, veuillez compléter votre profil en remplissant les "
-"informations ci-dessous."
+msgstr "Pour continuer, veuillez compléter votre profil en remplissant les informations ci-dessous."
 
 #: members/templates/members/onboarding.html:51
 #: members/templates/socialaccount/signup.html:35
@@ -1679,21 +1633,14 @@ msgid ""
 "span>, ask the parent who enrolled the child for the \"Secret key\" and "
 "click on <span class=\"text-ls-vert-base\">Add an existing child with a key</"
 "span>."
-msgstr ""
-"Pour associer un <span class=\"text-ls-bleu-clair\">enfant</span> déjà "
-"inscrit, demandez le « Code secret » au parent qui a inscrit l'enfant et "
-"cliquez sur <span class=\"text-ls-vert-base\">Ajouter un enfant existant "
-"avec un code</span>."
+msgstr "Pour associer un <span class=\"text-ls-bleu-clair\">enfant</span> déjà inscrit, demandez le « Code secret » au parent qui a inscrit l'enfant et cliquez sur <span class=\"text-ls-vert-base\">Ajouter un enfant existant avec un code</span>."
 
 #: members/templates/members/profile.html:114
 msgid ""
 "If a parent no longer wishes to receive emails about an enrolled child, they "
 "can <span class=\"text-ls-orange\">detach</span> them, provided at least one "
 "other parent remains."
-msgstr ""
-"Si un parent ne souhaite plus recevoir d'e-mails concernant un enfant "
-"inscrit, il peut le <span class=\"text-ls-orange\">détacher</span>, à "
-"condition qu'au moins un autre parent reste."
+msgstr "Si un parent ne souhaite plus recevoir d'e-mails concernant un enfant inscrit, il peut le <span class=\"text-ls-orange\">détacher</span>, à condition qu'au moins un autre parent reste."
 
 #: members/templates/members/profile.html:121
 msgid "Copy key"
@@ -1728,10 +1675,7 @@ msgstr "Complétez votre inscription"
 msgid ""
 "You are about to log in with your %(provider_name)s account. Please complete "
 "the form below to finalize your registration."
-msgstr ""
-"Vous êtes sur le point de vous connecter avec votre compte "
-"%(provider_name)s. Veuillez compléter le formulaire ci-dessous pour "
-"finaliser votre inscription."
+msgstr "Vous êtes sur le point de vous connecter avec votre compte %(provider_name)s. Veuillez compléter le formulaire ci-dessous pour finaliser votre inscription."
 
 #: members/views.py:149
 #, python-format
@@ -1765,12 +1709,7 @@ msgid ""
 "18 years old and have an associated account.\n"
 "%(first)s has %(count)s parent(s)\n"
 "%(first)s was born on %(birthday)s and %(has_account)s."
-msgstr ""
-"Vous ne pouvez pas détacher %(first)s.\n"
-"Pour détacher un enfant, il doit soit être rattaché à d'autres parents, soit "
-"avoir plus de 18 ans et disposer d'un compte.\n"
-"%(first)s a %(count)s parent(s)\n"
-"%(first)s est né(e) le %(birthday)s et %(has_account)s."
+msgstr "Vous ne pouvez pas détacher %(first)s.\nPour détacher un enfant, il doit soit être rattaché à d'autres parents, soit avoir plus de 18 ans et disposer d'un compte.\n%(first)s a %(count)s parent(s)\n%(first)s est né(e) le %(birthday)s et %(has_account)s."
 
 #: members/views.py:479
 msgid "has an account"
@@ -1785,9 +1724,7 @@ msgstr "n'a pas de compte"
 msgid ""
 "To confirm that you want to detach %(first)s from your account, click "
 "\"Detach\"."
-msgstr ""
-"Pour confirmer que vous souhaitez détacher %(first)s de votre compte, "
-"cliquez sur « Détacher »."
+msgstr "Pour confirmer que vous souhaitez détacher %(first)s de votre compte, cliquez sur « Détacher »."
 
 #: messaging/forms.py:7
 msgid "Parents of a section"
@@ -1928,9 +1865,7 @@ msgstr "Charger"
 
 #: messaging/templates/messaging/compose.html:75
 msgid "Select a group and click \"Load\" to display recipients."
-msgstr ""
-"Sélectionnez un groupe et cliquez sur « Charger » pour afficher les "
-"destinataires."
+msgstr "Sélectionnez un groupe et cliquez sur « Charger » pour afficher les destinataires."
 
 #: messaging/templates/messaging/compose_all.html:71
 msgid "No member found."
@@ -1975,10 +1910,7 @@ msgid ""
 "\n"
 "\n"
 "Important documents:\n"
-msgstr ""
-"\n"
-"\n"
-"Documents importants :\n"
+msgstr "\n\nDocuments importants :\n"
 
 #: messaging/views.py:273
 msgid "You are not enrolled in any section this year."
@@ -2025,15 +1957,19 @@ msgstr "Mes documents"
 msgid "Site administration"
 msgstr "Administration du site"
 
-#: templates/base.html:147
+#: templates/base.html:131
+msgid "Edit homepage"
+msgstr "Modifier la page d'accueil"
+
+#: templates/base.html:150
 msgid "Log out"
 msgstr "Se déconnecter"
 
-#: templates/base.html:152
+#: templates/base.html:155
 msgid "Sign up"
 msgstr "S'inscrire"
 
-#: templates/base.html:167
+#: templates/base.html:170
 msgid "Language"
 msgstr "Langue"
 

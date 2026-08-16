@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-16 13:25+0200\n"
+"POT-Creation-Date: 2026-08-16 14:14+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,7 +23,7 @@ msgid "Amount (€)"
 msgstr ""
 
 #: finance/forms.py:16 finance/templates/finance/payment_history.html:15
-#: homepage/models.py:11
+#: homepage/models.py:13
 #: messaging/templates/messaging/animateur_history.html:12
 #: messaging/templates/messaging/message_detail.html:9
 #: messaging/templates/messaging/section_history.html:9
@@ -214,7 +214,7 @@ msgstr ""
 #: finance/templates/finance/record_payment_modal.html:8
 #: members/templates/members/child_form.html:12
 #: members/templates/members/child_from_key_form.html:12
-#: templates/base.html:204
+#: templates/base.html:207
 msgid "Close"
 msgstr ""
 
@@ -241,6 +241,7 @@ msgstr ""
 
 #: finance/templates/finance/record_payment.html:29
 #: finance/templates/finance/record_payment_modal.html:36
+#: homepage/templates/homepage/editor.html:61
 #: members/templates/members/child_form.html:100
 #: members/templates/members/child_from_key_form.html:29
 #: members/templates/members/profile.html:98
@@ -315,19 +316,50 @@ msgstr ""
 msgid "Reminders sent to %(count)s adult(s)."
 msgstr ""
 
-#: homepage/models.py:9
+#: homepage/models.py:11
 msgid "Title"
 msgstr ""
 
-#: homepage/models.py:10
+#: homepage/models.py:12
 msgid "Description"
 msgstr ""
 
-#: homepage/models.py:18 members/filters.py:47 members/filters.py:48
+#: homepage/models.py:20 members/filters.py:47 members/filters.py:48
 #: members/forms.py:73 members/templates/members/admin_update.html:144
 #: members/templates/members/profile.html:123 members/views.py:178
 #: messaging/forms.py:28
 msgid "Section"
+msgstr ""
+
+#: homepage/models.py:62
+#, python-format
+msgid "Unsupported image extension. Allowed: %(extensions)s."
+msgstr ""
+
+#: homepage/models.py:77 homepage/templates/homepage/editor.html:42
+msgid "Home"
+msgstr ""
+
+#: homepage/models.py:78 homepage/templates/homepage/editor.html:44
+#: homepage/templates/homepage/snippets/faq_default.html:5
+#: templates/base.html:105
+msgid "FAQ"
+msgstr ""
+
+#: homepage/models.py:88
+msgid "Site content"
+msgstr ""
+
+#: homepage/models.py:89
+msgid "Site contents"
+msgstr ""
+
+#: homepage/models.py:111
+msgid "Image asset"
+msgstr ""
+
+#: homepage/models.py:112
+msgid "Image assets"
 msgstr ""
 
 #: homepage/templates/homepage/agenda.html:7 templates/base.html:70
@@ -347,25 +379,55 @@ msgstr ""
 msgid "No upcoming event."
 msgstr ""
 
-#: homepage/templates/homepage/faq.html:7 templates/base.html:105
-msgid "FAQ"
+#: homepage/templates/homepage/editor.html:7
+#: homepage/templates/homepage/editor.html:39
+msgid "Homepage editor"
 msgstr ""
 
-#: homepage/templates/homepage/faq.html:9
+#: homepage/templates/homepage/editor.html:56
+msgid "View site"
+msgstr ""
+
+#: homepage/templates/homepage/editor.html:58
+msgid "Site name and other settings are edited in the site settings."
+msgstr ""
+
+#: homepage/templates/homepage/editor.html:59
+msgid "Site settings"
+msgstr ""
+
+#: homepage/templates/homepage/editor.html:74
+msgid "Saved."
+msgstr ""
+
+#: homepage/templates/homepage/faq.html:13
+#: homepage/templates/homepage/home.html:17
+msgid "Edit this page"
+msgstr ""
+
+#: homepage/templates/homepage/snippets/faq_default.html:7
 msgid "Frequently asked questions."
 msgstr ""
 
-#: homepage/templates/homepage/home.html:11
+#: homepage/templates/homepage/snippets/home_default.html:5
 msgid "Main Description"
 msgstr ""
 
-#: homepage/templates/homepage/home.html:13
+#: homepage/templates/homepage/snippets/home_default.html:7
 msgid ""
 "Roll on the floor purring your whiskers off intrigued by the shower burrow "
 "under covers, and play time, rub face on everything, intently sniff hand, or "
 "pelt around the house and up and down stairs chasing phantoms. Attack feet. "
 "Damn that dog shake treat bag under the bed drink water out of the faucet "
 "for lick butt love to play with owner's hair tie. Swat at dog give attitude."
+msgstr ""
+
+#: homepage/views.py:113
+msgid "Image upload failed."
+msgstr ""
+
+#: homepage/views.py:114
+msgid "Save failed."
 msgstr ""
 
 #: members/admin.py:42
@@ -817,7 +879,7 @@ msgid ""
 "email confirmation request</a>."
 msgstr ""
 
-#: members/templates/account/login.html:6 templates/base.html:153
+#: members/templates/account/login.html:6 templates/base.html:156
 msgid "Log in"
 msgstr ""
 
@@ -1513,14 +1575,18 @@ msgstr ""
 msgid "Site administration"
 msgstr ""
 
-#: templates/base.html:147
+#: templates/base.html:131
+msgid "Edit homepage"
+msgstr ""
+
+#: templates/base.html:150
 msgid "Log out"
 msgstr ""
 
-#: templates/base.html:152
+#: templates/base.html:155
 msgid "Sign up"
 msgstr ""
 
-#: templates/base.html:167
+#: templates/base.html:170
 msgid "Language"
 msgstr ""

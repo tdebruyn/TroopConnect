@@ -5,14 +5,16 @@
     <script src="{% static 'js/base.js' %}"></script>
 {% endblock header %}
 {% block content %}
-    <div class="container row">
-        <header class="masthead">
-            <div class="card">
-                <h2>{% trans "Main Description" %}</h2>
-                <p>
-                    {% trans "Roll on the floor purring your whiskers off intrigued by the shower burrow under covers, and play time, rub face on everything, intently sniff hand, or pelt around the house and up and down stairs chasing phantoms. Attack feet. Damn that dog shake treat bag under the bed drink water out of the faucet for lick butt love to play with owner's hair tie. Swat at dog give attitude." %}
-                </p>
-            </div>
-        </header>
-    </div>
+    {% if page_html %}
+        {{ page_html|safe }}
+        <style>{{ page_css|safe }}</style>
+    {% else %}
+        {% include "homepage/snippets/home_default.html" %}
+    {% endif %}
+    {% if user.is_superuser %}
+        <a href="{% url 'homepage_editor' %}?page=home"
+           class="btn btn-outline-secondary position-absolute bottom-0 end-0 m-3">
+            ✎ {% trans "Edit this page" %}
+        </a>
+    {% endif %}
 {% endblock content %}

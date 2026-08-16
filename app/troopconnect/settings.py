@@ -186,6 +186,10 @@ if DEBUG:
         BASE_DIR / "static",
     ]
     MEDIA_ROOT = BASE_DIR / "media"
+    # Serve user-uploaded media through Django in dev; in production Caddy's
+    # handle_path /media/* serves the media volume directly. Explicit flag
+    # rather than DEBUG because DEBUG is force-enabled below.
+    SERVE_MEDIA_LOCALLY = True
 else:
     # Production settings - use paths within the container that the app user can write to
     STATIC_ROOT = (

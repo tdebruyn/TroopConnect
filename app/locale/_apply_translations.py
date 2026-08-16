@@ -65,6 +65,28 @@ def _escape(s):
 
 # msgid text -> (French, Dutch). Key is the .po inner-quote (escaped) form.
 TRANSLATIONS = {
+    # --- homepage editor ---
+    "Homepage editor": ("Éditeur de la page d'accueil", "Editor voor de startpagina"),
+    "View site": ("Voir le site", "Site bekijken"),
+    "Site name and other settings are edited in the site settings.": (
+        "Le nom du site et d'autres réglages se modifient dans les paramètres du site.",
+        "De sitenaam en andere instellingen worden gewijzigd in de site-instellingen.",
+    ),
+    "Site settings": ("Paramètres du site", "Site-instellingen"),
+    "Saved.": ("Enregistré.", "Opgeslagen."),
+    "Edit this page": ("Modifier cette page", "Deze pagina bewerken"),
+    "Edit homepage": ("Modifier la page d'accueil", "Startpagina bewerken"),
+    "Image upload failed.": ("Échec du téléversement de l'image.", "Uploaden van de afbeelding mislukt."),
+    "Save failed.": ("Échec de l'enregistrement.", "Opslaan mislukt."),
+    "Site content": ("Contenu du site", "Site-inhoud"),
+    "Site contents": ("Contenus du site", "Site-inhouden"),
+    "Image asset": ("Image", "Afbeelding"),
+    "Image assets": ("Images", "Afbeeldingen"),
+    "Home": ("Accueil", "Startpagina"),
+    "Unsupported image extension. Allowed: %(extensions)s.": (
+        "Extension d'image non prise en charge. Autorisées : %(extensions)s.",
+        "Niet-ondersteunde afbeeldingsextensie. Toegestaan: %(extensions)s.",
+    ),
     # --- participant (English source; fr=animé, nl=deelnemer) ---
     "Participant": ("Animé", "Deelnemer"),
     "Participants of a section": ("Animés d'une section", "Deelnemers van een sectie"),
