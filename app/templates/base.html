@@ -39,9 +39,12 @@
                         padding-bottom: 0px;
                         height: 110px;
                         background: var(--bs-navbar-toggler-border-color)">
-                <div class="container">
-                    <a class="navbar-brand d-flex align-items-center" target="_top"><span style="margin-right: 0px;padding-right: 15px;text-align: right;">
+                <div class="container-fluid px-3">
+                    <a class="navbar-brand d-flex align-items-center"
+                       href="{% url 'homepage' %}"
+                       target="_top"><span style="margin-right: 0px;padding-right: 15px;text-align: right;">
                         <img src="{% static '/images/logos/mini-logo-moutons.png' %}"
+                             alt=""
                              width="84"
                              height="93" />
                     {{ site_name }}</span></a>

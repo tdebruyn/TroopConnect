@@ -1,4 +1,5 @@
 import json
+import re
 import shutil
 import tempfile
 from pathlib import Path
@@ -13,7 +14,7 @@ from members.models import Account, Person, Role
 
 
 class HomePageEditorTestBase(TestCase):
-    """Shared users for the homepage editor tests."""
+    """Shared users and helpers for the homepage editor tests."""
 
     @classmethod
     def setUpTestData(cls):
@@ -50,6 +51,21 @@ class HomePageEditorTestBase(TestCase):
                 primary_role=cls.role_parent,
                 status="a",
             ),
+        )
+
+    def _save(self, client, page, lang, html, css="", project=None):
+        return client.post(
+            reverse("homepage_editor_save"),
+            data=json.dumps(
+                {
+                    "page": page,
+                    "lang": lang,
+                    "html": html,
+                    "css": css,
+                    "project": project if project is not None else {"pages": []},
+                }
+            ),
+            content_type="application/json",
         )
 
 
@@ -89,21 +105,6 @@ class EditorPageAccessTest(HomePageEditorTestBase):
 
 class EditorSaveTest(HomePageEditorTestBase):
     """Saving content from the editor and rendering it on the pages."""
-
-    def _save(self, client, page, lang, html, css="", project=None):
-        return client.post(
-            reverse("homepage_editor_save"),
-            data=json.dumps(
-                {
-                    "page": page,
-                    "lang": lang,
-                    "html": html,
-                    "css": css,
-                    "project": project if project is not None else {"pages": []},
-                }
-            ),
-            content_type="application/json",
-        )
 
     def test_superuser_can_save_home_content(self):
         self.client.force_login(self.superuser)
@@ -237,3 +238,78 @@ class SiteContentModelTest(HomePageEditorTestBase):
 
     def test_get_content_returns_none_when_absent(self):
         self.assertIsNone(SiteContent.get_content(SiteContent.Page.HOME))
+
+
+class WrapperSanitizerTest(HomePageEditorTestBase):
+    """GrapesJS wrapper output cannot restyle the real page.
+
+    The editor exports its canvas wrapper as a literal <body> element;
+    injected mid-page the browser merges that tag's attributes onto the
+    real <body>, shifting the page chrome (navbar included).
+    """
+
+    def test_save_strips_body_wrapper(self):
+        self.client.force_login(self.superuser)
+        response = self._save(
+            self.client,
+            "home",
+            "fr",
+            '<body style="padding: 60px;"><div><h1>x</h1></div></body>',
+        )
+        self.assertEqual(response.status_code, 200)
+        content = SiteContent.get_content(SiteContent.Page.HOME)
+        self.assertEqual(content.html, "<div><h1>x</h1></div>")
+
+    def test_render_strips_wrapper_from_legacy_saves(self):
+        # Content saved before sanitization existed still renders unwrapped.
+        SiteContent.objects.create(
+            page=SiteContent.Page.HOME,
+            project_json="{}",
+            html='<body style="padding: 60px;"><div><h1>legacy</h1></div></body>',
+            css="body { padding: 60px; } #id1 { color: red; }",
+        )
+        response = self.client.get(reverse("homepage"))
+        self.assertNotContains(response, '<body style="padding: 60px;">')
+        self.assertNotContains(response, "padding: 60px")
+        self.assertContains(response, "color: red")
+
+    def test_save_strips_wrapper_css_rules(self):
+        self.client.force_login(self.superuser)
+        response = self._save(
+            self.client,
+            "home",
+            "fr",
+            "<div class='x'>y</div>",
+            css=(
+                "* { box-sizing: border-box; } body {margin: 0;}"
+                "#gjs-x{color:red}"
+                "@media (max-width: 768px) { body { padding: 0; } #gjs-x{color:blue} }"
+            ),
+        )
+        self.assertEqual(response.status_code, 200)
+        content = SiteContent.get_content(SiteContent.Page.HOME)
+        self.assertEqual(
+            content.css,
+            "#gjs-x{color:red}@media (max-width: 768px) {#gjs-x{color:blue}}",
+        )
+
+    def test_content_selectors_survive(self):
+        # Rules that merely mention body (descendant selectors) must stay.
+        SiteContent.objects.create(
+            page=SiteContent.Page.HOME,
+            project_json="{}",
+            html="<div><h1>hi</h1></div>",
+            css="body > div { color: red; }",
+        )
+        response = self.client.get(reverse("homepage"))
+        self.assertContains(response, "body > div { color: red; }")
+
+
+class NavbarBrandLinkTest(HomePageEditorTestBase):
+    """Logo and site name link back to the home page."""
+
+    def test_brand_links_to_homepage(self):
+        response = self.client.get(reverse("homepage"))
+        brands = re.findall(r'<a class="navbar-brand[^>]*>', response.content.decode())
+        self.assertEqual(len(brands), 1)
+        self.assertIn(f'href="{reverse("homepage")}"', brands[0])

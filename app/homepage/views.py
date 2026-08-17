@@ -1,4 +1,5 @@
 import json
+import re
 from datetime import timedelta
 
 from django.conf import settings
@@ -24,6 +25,65 @@ EDITOR_SEED_TEMPLATES = {
     SiteContent.Page.FAQ: "homepage/snippets/faq_default.html",
 }
 
+# GrapesJS exports its canvas wrapper as a literal <body> element. Injected
+# mid-page, the browser merges that tag's attributes onto the real <body>,
+# so wrapper styling (padding, background…) shifts the whole page chrome.
+# The attribute part is quote-aware so a ">" inside an attribute cannot end
+# the tag early.
+_TAG_ATTRS = r"(?:\"[^\"]*\"|'[^']*'|[^>])"
+_WRAPPER_OPEN_RE = re.compile(
+    rf"^\s*(?:<html{_TAG_ATTRS}*>\s*)?<body{_TAG_ATTRS}*>", re.IGNORECASE
+)
+_WRAPPER_CLOSE_RE = re.compile(r"</body>\s*(?:</html>\s*)?$", re.IGNORECASE)
+# CSS selectors that target the page itself rather than editor content.
+_WRAPPER_SELECTORS = {"", "html", "body", "*"}
+
+
+def _sanitize_html(html):
+    """Unwrap the GrapesJS <body> wrapper from saved editor HTML."""
+    if not html:
+        return html
+    html = _WRAPPER_OPEN_RE.sub("", html)
+    html = _WRAPPER_CLOSE_RE.sub("", html)
+    return html.strip()
+
+
+def _sanitize_css(css):
+    """Drop wrapper-targeting (html/body/*) rules from saved editor CSS.
+
+    Scans rule by rule (brace-matching) so dropped rules cannot swallow the
+    next one, and recurses into at-rule blocks (@media…) to catch responsive
+    wrapper styling.
+    """
+    if not css:
+        return css
+    kept = []
+    pos = 0
+    while True:
+        brace = css.find("{", pos)
+        if brace == -1:
+            kept.append(css[pos:])
+            break
+        selector = css[pos:brace]
+        # Find the matching close brace, counting nested braces (@media…).
+        depth = 1
+        end = brace + 1
+        while end < len(css) and depth:
+            if css[end] == "{":
+                depth += 1
+            elif css[end] == "}":
+                depth -= 1
+            end += 1
+        selectors = [part.strip() for part in selector.split(",")]
+        if selectors and all(part in _WRAPPER_SELECTORS for part in selectors):
+            pass  # wrapper rule: drop selector + block entirely
+        elif selector.strip().startswith("@"):
+            kept.append(selector + "{" + _sanitize_css(css[brace + 1 : end - 1]) + "}")
+        else:
+            kept.append(selector + css[brace:end])
+        pos = end
+    return "".join(kept).strip()
+
 
 def _edited_context(page):
     """Context entries for rendering a page's edited content (if any)."""
@@ -31,8 +91,12 @@ def _edited_context(page):
     if content is None:
         return {"page_html": None, "page_css": None}
     # modeltranslation resolves the active language, falling back to French
-    # when the current language was never edited.
-    return {"page_html": content.html, "page_css": content.css}
+    # when the current language was never edited. Sanitizing at render (not
+    # only at save) also fixes content saved before the wrapper was stripped.
+    return {
+        "page_html": _sanitize_html(content.html),
+        "page_css": _sanitize_css(content.css),
+    }
 
 
 class HomePage(TemplateView):
@@ -152,13 +216,15 @@ class HomePageEditorSaveView(UserPassesTestMixin, View):
         # The project arrives as a parsed JSON object; re-serialize it so the
         # TextField holds real JSON (str(dict) would store a Python repr).
         project = data.get("project")
+        html = _sanitize_html(data.get("html"))
+        css = _sanitize_css(data.get("css"))
         with override(lang):
             content, _ = SiteContent.objects.get_or_create(page=page)
             content.project_json = (
                 json.dumps(project, ensure_ascii=False) if project else None
             )
-            content.html = data.get("html") or None
-            content.css = data.get("css") or None
+            content.html = html or None
+            content.css = css or None
             content.save()
         return JsonResponse({"ok": True})
 
