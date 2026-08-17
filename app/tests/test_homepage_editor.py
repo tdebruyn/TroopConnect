@@ -102,6 +102,25 @@ class EditorPageAccessTest(HomePageEditorTestBase):
         response = self.client.get(reverse("homepage_editor"), {"lang": "de"})
         self.assertEqual(response.status_code, 400)
 
+    def test_empty_project_seeds_default_content(self):
+        # A project without components (abandoned session) must not load a
+        # blank canvas — the editor seeds the current default look instead.
+        SiteContent.objects.create(page=SiteContent.Page.HOME, project_json='{"pages": []}')
+        self.client.force_login(self.superuser)
+        response = self.client.get(reverse("homepage_editor"))
+        self.assertContains(response, "Description principale")
+
+    def test_project_with_components_is_loaded(self):
+        SiteContent.objects.create(
+            page=SiteContent.Page.HOME,
+            project_json='{"pages": [{"component": true}]}',
+        )
+        self.client.force_login(self.superuser)
+        response = self.client.get(reverse("homepage_editor"))
+        # The saved project ships to the editor; no seed markup is injected.
+        self.assertContains(response, "project-json")
+        self.assertNotContains(response, "Description principale")
+
 
 class EditorSaveTest(HomePageEditorTestBase):
     """Saving content from the editor and rendering it on the pages."""

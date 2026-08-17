@@ -48,6 +48,25 @@ def _sanitize_html(html):
     return html.strip()
 
 
+def _has_content(project_json):
+    """Whether a saved project actually holds editable content.
+
+    An empty project ({"pages": []} or pages without components — e.g. from
+    an abandoned editor session) must seed the canvas with the current page
+    look instead of loading a blank project.
+    """
+    if not project_json:
+        return False
+    try:
+        project = json.loads(project_json)
+    except (TypeError, json.JSONDecodeError):
+        return False
+    pages = project.get("pages") if isinstance(project, dict) else None
+    if not isinstance(pages, list):
+        return False
+    return any(page.get("component") or page.get("components") for page in pages)
+
+
 def _sanitize_css(css):
     """Drop wrapper-targeting (html/body/*) rules from saved editor CSS.
 
@@ -156,14 +175,15 @@ class HomePageEditorView(UserPassesTestMixin, TemplateView):
         content = SiteContent.get_content(page)
         with override(lang):
             project_json = content.project_json if content else None
-            if not project_json:
+            if _has_content(project_json):
+                seed_html = None
+            else:
                 # Seed the canvas with the default look, translated for the
                 # editor language.
+                project_json = None
                 seed_html = render_to_string(
                     EDITOR_SEED_TEMPLATES[page], context={"user": self.request.user}
                 )
-            else:
-                seed_html = None
 
         context["page"] = page
         context["lang"] = lang
