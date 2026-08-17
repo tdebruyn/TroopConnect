@@ -112,6 +112,22 @@ class HomePageEditorView(UserPassesTestMixin, TemplateView):
         context["editor_strings"] = {
             "uploadFailed": str(_("Image upload failed.")),
             "saveFailed": str(_("Save failed.")),
+            "catStructure": str(_("Structure")),
+            "catBasic": str(_("Basic")),
+            "blockSection": str(_("Section")),
+            "blockColumns": str(_("2 columns")),
+            "blockColumns3": str(_("3 columns")),
+            "blockHeading": str(_("Heading")),
+            "blockText": str(_("Text")),
+            "blockTextContent": str(_("Your text here.")),
+            "blockImage": str(_("Image")),
+            "blockButton": str(_("Button")),
+            "blockButtonContent": str(_("Click here")),
+            "blockDivider": str(_("Divider")),
+            "sectorDimension": str(_("Dimensions")),
+            "sectorTypography": str(_("Typography")),
+            "sectorDecorations": str(_("Decorations")),
+            "sectorExtra": str(_("Extra")),
         }
         return context
 
@@ -133,9 +149,14 @@ class HomePageEditorSaveView(UserPassesTestMixin, View):
             return HttpResponseBadRequest("Invalid language.")
 
         # Empty string => None so a cleared language falls back to French.
+        # The project arrives as a parsed JSON object; re-serialize it so the
+        # TextField holds real JSON (str(dict) would store a Python repr).
+        project = data.get("project")
         with override(lang):
             content, _ = SiteContent.objects.get_or_create(page=page)
-            content.project_json = data.get("project") or None
+            content.project_json = (
+                json.dumps(project, ensure_ascii=False) if project else None
+            )
             content.html = data.get("html") or None
             content.css = data.get("css") or None
             content.save()

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-16 14:14+0200\n"
+"POT-Creation-Date: 2026-08-17 06:33+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,7 +23,7 @@ msgid "Amount (€)"
 msgstr ""
 
 #: finance/forms.py:16 finance/templates/finance/payment_history.html:15
-#: homepage/models.py:13
+#: homepage/models.py:12
 #: messaging/templates/messaging/animateur_history.html:12
 #: messaging/templates/messaging/message_detail.html:9
 #: messaging/templates/messaging/section_history.html:9
@@ -316,49 +316,50 @@ msgstr ""
 msgid "Reminders sent to %(count)s adult(s)."
 msgstr ""
 
-#: homepage/models.py:11
+#: homepage/models.py:10
 msgid "Title"
 msgstr ""
 
-#: homepage/models.py:12
+#: homepage/models.py:11
 msgid "Description"
 msgstr ""
 
-#: homepage/models.py:20 members/filters.py:47 members/filters.py:48
-#: members/forms.py:73 members/templates/members/admin_update.html:144
+#: homepage/models.py:19 homepage/views.py:117 members/filters.py:47
+#: members/filters.py:48 members/forms.py:73
+#: members/templates/members/admin_update.html:144
 #: members/templates/members/profile.html:123 members/views.py:178
 #: messaging/forms.py:28
 msgid "Section"
 msgstr ""
 
-#: homepage/models.py:62
+#: homepage/models.py:61
 #, python-format
 msgid "Unsupported image extension. Allowed: %(extensions)s."
 msgstr ""
 
-#: homepage/models.py:77 homepage/templates/homepage/editor.html:42
+#: homepage/models.py:76 homepage/templates/homepage/editor.html:42
 msgid "Home"
 msgstr ""
 
-#: homepage/models.py:78 homepage/templates/homepage/editor.html:44
+#: homepage/models.py:77 homepage/templates/homepage/editor.html:44
 #: homepage/templates/homepage/snippets/faq_default.html:5
 #: templates/base.html:105
 msgid "FAQ"
 msgstr ""
 
-#: homepage/models.py:88
+#: homepage/models.py:86
 msgid "Site content"
 msgstr ""
 
-#: homepage/models.py:89
+#: homepage/models.py:87
 msgid "Site contents"
 msgstr ""
 
-#: homepage/models.py:111
+#: homepage/models.py:109
 msgid "Image asset"
 msgstr ""
 
-#: homepage/models.py:112
+#: homepage/models.py:110
 msgid "Image assets"
 msgstr ""
 
@@ -428,6 +429,66 @@ msgstr ""
 
 #: homepage/views.py:114
 msgid "Save failed."
+msgstr ""
+
+#: homepage/views.py:115
+msgid "Structure"
+msgstr ""
+
+#: homepage/views.py:116
+msgid "Basic"
+msgstr ""
+
+#: homepage/views.py:118
+msgid "2 columns"
+msgstr ""
+
+#: homepage/views.py:119
+msgid "3 columns"
+msgstr ""
+
+#: homepage/views.py:120
+msgid "Heading"
+msgstr ""
+
+#: homepage/views.py:121
+msgid "Text"
+msgstr ""
+
+#: homepage/views.py:122
+msgid "Your text here."
+msgstr ""
+
+#: homepage/views.py:123
+msgid "Image"
+msgstr ""
+
+#: homepage/views.py:124
+msgid "Button"
+msgstr ""
+
+#: homepage/views.py:125
+msgid "Click here"
+msgstr ""
+
+#: homepage/views.py:126
+msgid "Divider"
+msgstr ""
+
+#: homepage/views.py:127
+msgid "Dimensions"
+msgstr ""
+
+#: homepage/views.py:128
+msgid "Typography"
+msgstr ""
+
+#: homepage/views.py:129
+msgid "Decorations"
+msgstr ""
+
+#: homepage/views.py:130
+msgid "Extra"
 msgstr ""
 
 #: members/admin.py:42

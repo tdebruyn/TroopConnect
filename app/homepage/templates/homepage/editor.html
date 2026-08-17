@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex, nofollow">
     <title>{% trans "Homepage editor" %}</title>
-    <!-- GrapesJS core + webpage preset, pinned versions (same CDN pattern as Bootstrap/htmx in base.html) -->
+    <!-- GrapesJS core, pinned version (same CDN pattern as Bootstrap/htmx in base.html).
+         Core only: grapesjs-preset-webpage 0.1.5 is incompatible with modern core. -->
     <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/grapesjs@0.23.21/css/grapes.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/grapesjs@0.23.21/dist/grapes.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/grapesjs-preset-webpage@0.1.5/dist/grapesjs-preset-webpage.min.js"></script>
+          href="https://cdn.jsdelivr.net/npm/grapesjs@0.23.5/dist/css/grapes.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/grapesjs@0.23.5/dist/grapes.min.js"></script>
     <style>
       html, body { margin: 0; padding: 0; height: 100%; }
       body { display: flex; flex-direction: column; }
