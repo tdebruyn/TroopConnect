@@ -39,6 +39,24 @@ _WRAPPER_CLOSE_RE = re.compile(r"</body>\s*(?:</html>\s*)?$", re.IGNORECASE)
 _WRAPPER_SELECTORS = {"", "html", "body", "*"}
 
 
+# The FAQ page renders a fixed hat banner above edited content (like the
+# other pages). Content saved before the banner existed still embeds the
+# masthead card the old default snippet seeded, duplicating the title.
+# Stripped at both render and save; the Home page keeps its card (it is
+# real content there, and "masthead" carries no styling of its own).
+_FAQ_MASTHEAD_RE = re.compile(r"<header class=\"masthead\">.*?</header>", re.DOTALL)
+_FAQ_EMPTIED_CONTAINER_RE = re.compile(r"<div class=\"container row\">\s*</div>")
+
+
+def _strip_legacy_faq_header(html):
+    """Drop the pre-banner masthead card (and its emptied wrapper) from FAQ HTML."""
+    if not html:
+        return html
+    html = _FAQ_MASTHEAD_RE.sub("", html)
+    html = _FAQ_EMPTIED_CONTAINER_RE.sub("", html)
+    return html.strip()
+
+
 def _sanitize_html(html):
     """Unwrap the GrapesJS <body> wrapper from saved editor HTML."""
     if not html:
@@ -112,8 +130,11 @@ def _edited_context(page):
     # modeltranslation resolves the active language, falling back to French
     # when the current language was never edited. Sanitizing at render (not
     # only at save) also fixes content saved before the wrapper was stripped.
+    html = _sanitize_html(content.html)
+    if page == SiteContent.Page.FAQ:
+        html = _strip_legacy_faq_header(html)
     return {
-        "page_html": _sanitize_html(content.html),
+        "page_html": html,
         "page_css": _sanitize_css(content.css),
     }
 
@@ -238,6 +259,8 @@ class HomePageEditorSaveView(UserPassesTestMixin, View):
         project = data.get("project")
         html = _sanitize_html(data.get("html"))
         css = _sanitize_css(data.get("css"))
+        if page == SiteContent.Page.FAQ:
+            html = _strip_legacy_faq_header(html)
         with override(lang):
             content, _ = SiteContent.objects.get_or_create(page=page)
             content.project_json = (

@@ -324,6 +324,57 @@ class WrapperSanitizerTest(HomePageEditorTestBase):
         self.assertContains(response, "body > div { color: red; }")
 
 
+class LegacyFaqHeaderTest(HomePageEditorTestBase):
+    """The FAQ page renders a fixed hat banner; saved content must not duplicate it.
+
+    FAQ content saved before the banner existed still embeds the masthead
+    card the old default snippet seeded. It is stripped at render and at
+    save; the Home page keeps its own card (real content there).
+    """
+
+    LEGACY_FAQ_HTML = (
+        '<body><div class="container row"><header class="masthead"><div class="card">'
+        '<h2>FAQ</h2><p>Questions fréquemment posées.</p></div></header>'
+        '<p id="ihuux">Ceci est un test</p></div></body>'
+    )
+
+    def test_render_strips_legacy_header_from_faq(self):
+        SiteContent.objects.create(
+            page=SiteContent.Page.FAQ,
+            project_json="{}",
+            html=self.LEGACY_FAQ_HTML,
+        )
+        response = self.client.get(reverse("faq"))
+        # The saved body content stays; the seeded card does not.
+        self.assertContains(response, "Ceci est un test")
+        self.assertContains(response, "Questions fréquemment posées.")  # banner text
+        self.assertNotContains(response, "masthead")
+        self.assertNotContains(response, '<h2>FAQ</h2>')
+
+    def test_save_strips_legacy_header_from_faq(self):
+        self.client.force_login(self.superuser)
+        response = self._save(self.client, "faq", "fr", self.LEGACY_FAQ_HTML)
+        self.assertEqual(response.status_code, 200)
+        content = SiteContent.get_content(SiteContent.Page.FAQ)
+        # The user's own wrapper div stays; only the seeded card is dropped.
+        self.assertEqual(
+            content.html,
+            '<div class="container row"><p id="ihuux">Ceci est un test</p></div>',
+        )
+
+    def test_home_masthead_is_kept(self):
+        SiteContent.objects.create(
+            page=SiteContent.Page.HOME,
+            project_json="{}",
+            html=(
+                '<div class="container row"><header class="masthead">'
+                "<h2>Description principale</h2></header></div>"
+            ),
+        )
+        response = self.client.get(reverse("homepage"))
+        self.assertContains(response, "masthead")
+
+
 class NavbarBrandLinkTest(HomePageEditorTestBase):
     """Logo and site name link back to the home page."""
 
