@@ -380,6 +380,10 @@ msgstr ""
 msgid "No upcoming event."
 msgstr ""
 
+#: homepage/templates/homepage/snippets/faq_default.html:6
+msgid "No question yet."
+msgstr ""
+
 #: homepage/templates/homepage/editor.html:7
 #: homepage/templates/homepage/editor.html:39
 msgid "Homepage editor"
@@ -406,7 +410,7 @@ msgstr ""
 msgid "Edit this page"
 msgstr ""
 
-#: homepage/templates/homepage/snippets/faq_default.html:7
+#: homepage/templates/homepage/faq.html:10
 msgid "Frequently asked questions."
 msgstr ""
 

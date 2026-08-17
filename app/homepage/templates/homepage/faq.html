@@ -1,12 +1,26 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% block content %}
-    {% if page_html %}
-        {{ page_html|safe }}
-        <style>{{ page_css|safe }}</style>
-    {% else %}
-        {% include "homepage/snippets/faq_default.html" %}
-    {% endif %}
+    <div class="bg-ls-bleu-clair bg-topping-federation topping-white bg-topping-opacity-10">
+        <div class="container">
+            <div class="row ">
+                <div class="col-11 offset-md-1 pb-1 mt-1">
+                    <h1 class="mt-2">{% trans "FAQ" %}</h1>
+                    <div class="pb-5">
+                        <p>{% trans "Frequently asked questions." %}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container mb-5">
+        {% if page_html %}
+            {{ page_html|safe }}
+            <style>{{ page_css|safe }}</style>
+        {% else %}
+            {% include "homepage/snippets/faq_default.html" %}
+        {% endif %}
+    </div>
     {% if user.is_superuser %}
         <a href="{% url 'homepage_editor' %}?page=faq"
            class="btn btn-outline-secondary position-absolute bottom-0 end-0 m-3">

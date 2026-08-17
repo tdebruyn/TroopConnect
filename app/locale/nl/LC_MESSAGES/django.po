@@ -1172,9 +1172,13 @@ msgstr "Opgeslagen."
 msgid "Edit this page"
 msgstr "Deze pagina bewerken"
 
-#: homepage/templates/homepage/snippets/faq_default.html:7
+#: homepage/templates/homepage/faq.html:10
 msgid "Frequently asked questions."
 msgstr "Veelgestelde vragen."
+
+#: homepage/templates/homepage/snippets/faq_default.html:6
+msgid "No question yet."
+msgstr "Nog geen vragen."
 
 #: homepage/templates/homepage/snippets/home_default.html:5
 msgid "Main Description"

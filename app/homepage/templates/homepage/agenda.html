@@ -1,32 +1,44 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% block content %}
-    <div class="container">
-        <header class="masthead mb-4">
-            <div class="card">
-                <h2>{% trans "Agenda" %}</h2>
-                <p>{% trans "Calendar of activities" %}</p>
-            </div>
-        </header>
-        {% if events %}
-            <div class="list-group">
-                {% for event in events %}
-                    <div class="list-group-item {% if event.css_class %}{{ event.css_class }}{% endif %}">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1">{{ event.title }}</h5>
-                            <small>{{ event.date|date:"d/m/Y" }}</small>
-                        </div>
-                        {% if event.description %}
-                            <p class="mb-1">{{ event.description }}</p>
-                        {% endif %}
-                        {% if event.section %}
-                            <small>{% blocktranslate with section_name=event.section.name %}Section: {{ section_name }}{% endblocktranslate %}</small>
-                        {% endif %}
+    <div class="bg-ls-bleu-clair bg-topping-federation topping-white bg-topping-opacity-10">
+        <div class="container">
+            <div class="row ">
+                <div class="col-11 offset-md-1 pb-1 mt-1">
+                    <h1 class="mt-2">{% trans "Agenda" %}</h1>
+                    <div class="pb-5">
+                        <p>{% trans "Calendar of activities" %}</p>
                     </div>
-                {% endfor %}
+                </div>
             </div>
-        {% else %}
-            <p class="text-muted">{% trans "No upcoming event." %}</p>
-        {% endif %}
+        </div>
+    </div>
+    <div class="container mb-5">
+        <div class="row mt-5">
+            <div class="col-md-12 mb-5">
+                <div class="above-topping">
+                    {% if events %}
+                        <div class="list-group">
+                            {% for event in events %}
+                                <div class="list-group-item {% if event.css_class %}{{ event.css_class }}{% endif %}">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">{{ event.title }}</h5>
+                                        <small>{{ event.date|date:"d/m/Y" }}</small>
+                                    </div>
+                                    {% if event.description %}
+                                        <p class="mb-1">{{ event.description }}</p>
+                                    {% endif %}
+                                    {% if event.section %}
+                                        <small>{% blocktranslate with section_name=event.section.name %}Section: {{ section_name }}{% endblocktranslate %}</small>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">{% trans "No upcoming event." %}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock content %}
