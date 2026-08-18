@@ -1,4 +1,9 @@
 {% load i18n %}
+{% for token in loaded_groups %}
+<input type="hidden" name="loaded_groups" value="{{ token }}">
+{% endfor %}
+<input type="hidden" name="known_recipients" value="{% for entry in recipients %}{{ entry.person.pk }}{% if not forloop.last %},{% endif %}{% endfor %}">
+{% if recipients %}
 <table class="table table-striped">
     <thead>
         <tr>
@@ -19,14 +24,10 @@
                     <input type="checkbox"
                            class="form-check-input recipient-checkbox"
                            name="recipient_{{ entry.person.pk }}"
-                           checked>
+                           {% if entry.checked %}checked{% endif %}>
                 </td>
                 <td>{{ entry.person.first_name }} {{ entry.person.last_name }}</td>
                 <td>{{ entry.detail }}</td>
-            </tr>
-        {% empty %}
-            <tr>
-                <td colspan="3">{% trans "No recipient found." %}</td>
             </tr>
         {% endfor %}
     </tbody>
@@ -38,3 +39,6 @@
         });
     });
 </script>
+{% else %}
+<p class="text-muted">{% trans "No recipient found." %}</p>
+{% endif %}

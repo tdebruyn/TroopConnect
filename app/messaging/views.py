@@ -19,7 +19,7 @@ from members.models import (
     Section,
 )
 
-from .forms import ComposeMessageForm
+from .forms import RECIPIENT_GROUP_CHOICES, ComposeMessageForm
 from .models import MessageAttachment, SectionMessage, SectionMessageRecipient
 
 
@@ -177,6 +177,8 @@ def _get_everyone():
 
 SECTION_GROUPS = {"section_parents", "section_animateurs", "section_animes", "section_all"}
 
+VALID_GROUPS = {choice[0] for choice in RECIPIENT_GROUP_CHOICES}
+
 
 def _resolve_recipients(group, section, school_year):
     """Resolve recipient group + section into a list of {person, detail} dicts."""
@@ -199,6 +201,94 @@ def _resolve_recipients(group, section, school_year):
     elif group == "everyone":
         return _get_everyone()
     return []
+
+
+def _parse_group_token(token):
+    """Split a "group" or "group:section_id" token, returning (group, section_id).
+
+    Returns (None, None) for malformed or unknown groups.
+    """
+    group, _, section_id = token.partition(":")
+    if group not in VALID_GROUPS:
+        return None, None
+    return group, section_id or None
+
+
+def _loaded_group_tokens(request_post, current_group, current_section_id, append_current=True):
+    """Return the ordered, deduplicated list of loaded group tokens.
+
+    Tokens accumulate across "Load" clicks: previously loaded ones come back as
+    hidden inputs, the newly selected group/section is appended last. With
+    append_current=False, only previously posted tokens are returned (used on
+    send, where the dropdown selection is just a fallback when nothing was
+    ever loaded).
+    """
+    tokens = [t for t in request_post.getlist("loaded_groups") if t]
+    if append_current:
+        new_token = current_group
+        if current_group in SECTION_GROUPS and current_section_id:
+            new_token = f"{current_group}:{current_section_id}"
+        if new_token and new_token not in tokens:
+            tokens.append(new_token)
+    elif not tokens and current_group:
+        # Nothing was ever loaded: fall back to the dropdown selection
+        new_token = current_group
+        if current_group in SECTION_GROUPS and current_section_id:
+            new_token = f"{current_group}:{current_section_id}"
+        tokens = [new_token]
+    return tokens
+
+
+def _resolve_all_recipients(tokens, school_year, person, animateur_section):
+    """Resolve every loaded token into one merged, deduplicated recipient list.
+
+    Animateurs locked to their section have section-group tokens resolved
+    against their own section, regardless of the posted section id.
+    The sender is filtered out of the result.
+    """
+    merged = []
+    seen = set()
+    for token in tokens:
+        group, section_id = _parse_group_token(token)
+        if group is None:
+            continue
+        section = None
+        if group in SECTION_GROUPS:
+            if animateur_section is not None:
+                section = animateur_section
+            elif section_id:
+                section = Section.objects.filter(pk=section_id).first()
+        for entry in _resolve_recipients(group, section, school_year):
+            pk = entry["person"].pk
+            if pk not in seen and pk != person.pk:
+                seen.add(pk)
+                merged.append(entry)
+    merged.sort(key=lambda e: (e["person"].last_name, e["person"].first_name))
+    return merged
+
+
+def _checked_recipient_pks(request_post):
+    """Return the set of person pks (as strings) whose recipient checkbox is checked.
+
+    Unchecked checkboxes are absent from the POST, so a pk present in a loaded
+    group but missing here means the user manually deselected it.
+    """
+    return {
+        key[len("recipient_"):]
+        for key in request_post.keys()
+        if key.startswith("recipient_") and key != "recipient_group"
+    }
+
+
+def _known_recipient_pks(request_post):
+    """Return the person pks (as strings) displayed on the previous render.
+
+    Posted back as one comma-joined hidden input by the recipient list partial;
+    lets the next load distinguish "user deselected this row" (known but
+    unchecked) from "row is newly loaded" (default to checked).
+    """
+    raw = request_post.get("known_recipients", "")
+    return {pk for pk in raw.split(",") if pk}
 
 
 def _get_doc_url(doc):
@@ -279,23 +369,31 @@ def compose_message(request):
         group = request.POST.get("recipient_group")
         section_id = request.POST.get("section")
 
-        section = None
-        if section_id:
-            section = Section.objects.filter(pk=section_id).first()
-
-        # Animateurs are locked to their own section for section-based groups
+        # Animateurs locked to their own section cannot load other sections
         if is_animateur and not can_send_all and group in SECTION_GROUPS:
-            section = animateur_section
+            section_id = animateur_section.pk if animateur_section else None
 
-        recipients = _resolve_recipients(group, section, current_year)
+        tokens = _loaded_group_tokens(request.POST, group, section_id)
+        recipients = _resolve_all_recipients(
+            tokens, current_year, person,
+            animateur_section if (is_animateur and not can_send_all) else None,
+        )
 
-        # Filter out the sender
-        recipients = [r for r in recipients if r["person"].pk != person.pk]
+        checked_pks = _checked_recipient_pks(request.POST)
+        known_pks = _known_recipient_pks(request.POST)
+        for entry in recipients:
+            pk = str(entry["person"].pk)
+            if pk in known_pks:
+                # Previously displayed: keep the user's checkbox state
+                entry["checked"] = pk in checked_pks
+            else:
+                # Newly loaded: default to checked
+                entry["checked"] = True
 
         return render(
             request,
             "messaging/_recipient_list.html",
-            {"recipients": recipients},
+            {"recipients": recipients, "loaded_groups": tokens},
         )
 
     # Handle form submission (send message)
@@ -309,10 +407,20 @@ def compose_message(request):
             if is_animateur and not can_send_all and group in SECTION_GROUPS:
                 section = animateur_section
 
-            recipients = _resolve_recipients(group, section, current_year)
-            recipients = [r for r in recipients if r["person"].pk != person.pk]
+            # Recipients come from every group loaded so far (accumulated via
+            # hidden inputs); fall back to the selected dropdown group if the
+            # user never clicked "Load".
+            tokens = _loaded_group_tokens(
+                request.POST, group,
+                section.pk if section else None,
+                append_current=False,
+            )
+            recipients = _resolve_all_recipients(
+                tokens, current_year, person,
+                animateur_section if (is_animateur and not can_send_all) else None,
+            )
 
-            # Determine the section for the message record
+            # The message is filed under the currently selected section (if any)
             msg_section = section if group in SECTION_GROUPS else None
 
             msg = SectionMessage.objects.create(
