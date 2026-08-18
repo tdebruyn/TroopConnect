@@ -1210,7 +1210,7 @@ msgid "They will receive an email to choose a password."
 msgstr ""
 
 #: members/templates/members/child_form.html:66
-msgid "Do not enter your own address."
+msgid "Do not enter your own email address."
 msgstr ""
 
 #: members/templates/members/child_form.html:74

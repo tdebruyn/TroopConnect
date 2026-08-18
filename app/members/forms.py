@@ -474,25 +474,34 @@ class ChildForm(forms.ModelForm):
 
         if commit:
             person.save()
-
-        # Create Account if email is provided
-        email = self.cleaned_data.get("email")
-        if email and commit:
-            # Check if this Person already has an Account
-            if Account.objects.filter(person=person).exists():
-                # Update the existing Account's email
-                account = Account.objects.get(person=person)
-                account.email = email
-                account.save()
-            else:
-                # Create a new Account for this Person
-                account = Account(person=person, email=email)
-                account.save()
-                reset_password_form = ResetPasswordForm({"email": email})
-                if reset_password_form.is_valid():
-                    reset_password_form.save(request=None)
+            self.save_account(person)
 
         return person
+
+    def save_account(self, person):
+        """Create or update the child's Account when an email was provided.
+
+        Sending the "choose a password" email is part of the promise made in
+        the child form, so it must also happen when the caller saved the
+        Person itself (commit=False in add_new_child_view).
+        """
+        email = self.cleaned_data.get("email")
+        if not email:
+            return
+
+        if Account.objects.filter(person=person).exists():
+            # Update the existing Account's email
+            account = Account.objects.get(person=person)
+            if account.email != email:
+                account.email = email
+                account.save()
+        else:
+            # Create a new Account for this Person
+            account = Account(person=person, email=email)
+            account.save()
+            reset_password_form = ResetPasswordForm({"email": email})
+            if reset_password_form.is_valid():
+                reset_password_form.save(request=None)
 
 
 class ChildFromKey(forms.Form):

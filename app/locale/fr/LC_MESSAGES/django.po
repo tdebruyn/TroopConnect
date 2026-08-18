@@ -1976,8 +1976,8 @@ msgid "They will receive an email to choose a password."
 msgstr "Il recevra un e-mail pour choisir un mot de passe."
 
 #: members/templates/members/child_form.html:66
-msgid "Do not enter your own address."
-msgstr "N'indiquez pas votre propre adresse."
+msgid "Do not enter your own email address."
+msgstr "N'indiquez pas votre propre adresse e-mail."
 
 #: members/templates/members/child_form.html:74
 msgid "To create an account"

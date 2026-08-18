@@ -343,6 +343,7 @@ def add_new_child_view(request):
             child.phone = request.user.person.phone
             child.photo_consent = request.user.person.photo_consent
             child.save()
+            form.save_account(child)
             child.parents.add(request.user.person)
 
             mail.send(
