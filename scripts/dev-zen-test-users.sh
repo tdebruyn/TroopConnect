@@ -94,7 +94,7 @@ session_for() {
         code=$(curl -s -b "$jar" -o /dev/null -w '%{http_code}' \
             "$BASE_URL/accounts/email/")
         if [ "$code" = "200" ]; then
-            say "  session still valid, reusing it"
+            say "  session still valid, reusing it" >&2
             awk '$6 == "sessionid" {print $7; exit}' "$jar"
             return 0
         fi
