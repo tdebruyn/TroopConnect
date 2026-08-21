@@ -253,6 +253,19 @@ TRANSLATIONS = {
     'Deregister %(first_name)s for the current year': ("Désinscrire %(first_name)s pour l'année en cours", "%(first_name)s uitschrijven voor het lopende jaar"),
     'Deregister %(first_name)s for next year': ("Désinscrire %(first_name)s pour l'année suivante", "%(first_name)s uitschrijven voor het volgende jaar"),
     'Confirm that you want to detach %(first_name)s': ("Confirmez que vous souhaitez détacher %(first_name)s", "Bevestig dat je %(first_name)s wilt loskoppelen"),
+    'Confirm that you want to remove %(first_name)s': ("Confirmez que vous souhaitez retirer %(first_name)s", "Bevestig dat je %(first_name)s wilt verwijderen"),
+    'This will permanently delete %(first_name)s and their account. This cannot be undone.': (
+        "Cela supprimera définitivement %(first_name)s et son compte. Cette action est irréversible.",
+        "Dit zal %(first_name)s en hun account permanent verwijderen. Dit kan niet ongedaan worden gemaakt.",
+    ),
+    '%(first)s is assigned to a section and must be deregistered, not removed.': (
+        "%(first)s est inscrit(e) à une section et doit être désinscrit(e), pas retiré(e).",
+        "%(first)s is ingeschreven in een sectie en moet worden uitgeschreven, niet verwijderd.",
+    ),
+    '%(first)s %(last)s is already attached to your account.': (
+        "%(first)s %(last)s est déjà rattaché(e) à votre compte.",
+        "%(first)s %(last)s is al aan je account gekoppeld.",
+    ),
 
     # --- documents / onboarding / profile ---
     'Back': ("Retour", "Terug"),

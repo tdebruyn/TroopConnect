@@ -199,6 +199,23 @@ class Person(models.Model):
 
         return {"name": _("Pending")}
 
+    @property
+    def has_section(self) -> bool:
+        """True when enrolled in the current or upcoming school year.
+
+        Mirrors get_section(): a child whose Section column shows "Pending"
+        has no section assigned and should be removed rather than deregistered.
+        """
+        current_year = SchoolYear.current()
+        if current_year and self.enrollment_set.filter(
+            school_year=current_year
+        ).exists():
+            return True
+        next_year = SchoolYear.next_school_year()
+        return bool(
+            next_year and self.enrollment_set.filter(school_year=next_year).exists()
+        )
+
     def has_role_dependencies(self):
         """Check if changing this person's primary role is blocked by existing data.
 

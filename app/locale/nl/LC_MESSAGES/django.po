@@ -2033,6 +2033,16 @@ msgstr "%(first_name)s uitschrijven voor het volgende jaar"
 msgid "Confirm that you want to detach %(first_name)s"
 msgstr "Bevestig dat je %(first_name)s wilt loskoppelen"
 
+#: members/templates/members/remove_child.html:5
+#, python-format
+msgid "Confirm that you want to remove %(first_name)s"
+msgstr "Bevestig dat je %(first_name)s wilt verwijderen"
+
+#: members/templates/members/remove_child.html:13
+#, python-format
+msgid "This will permanently delete %(first_name)s and their account. This cannot be undone."
+msgstr "Dit zal %(first_name)s en hun account permanent verwijderen. Dit kan niet ongedaan worden gemaakt."
+
 #: members/templates/members/dettach_child.html:10
 msgid "Back"
 msgstr "Terug"
@@ -2174,6 +2184,16 @@ msgid ""
 "To confirm that you want to detach %(first)s from your account, click "
 "\"Detach\"."
 msgstr "Om te bevestigen dat je %(first)s van je account wilt loskoppelen, klik op \"Loskoppelen\"."
+
+#: members/views.py:351
+#, python-format
+msgid "%(first)s %(last)s is already attached to your account."
+msgstr "%(first)s %(last)s is al aan je account gekoppeld."
+
+#: members/views.py:576
+#, python-format
+msgid "%(first)s is assigned to a section and must be deregistered, not removed."
+msgstr "%(first)s is ingeschreven in een sectie en moet worden uitgeschreven, niet verwijderd."
 
 #: messaging/forms.py:7
 msgid "Parents of a section"

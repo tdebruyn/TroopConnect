@@ -131,6 +131,31 @@ class AddNewChildAccountTest(ChildAccountTestBase):
             Email.objects.filter(template__name="new_child_parent").exists()
         )
 
+    def test_duplicate_child_rejected(self):
+        """Adding a child with the same first+last name for the same parent
+        must not create a second Person."""
+        self.client.post(reverse("members:add_new_child"), self.child_data())
+        response = self.client.post(
+            reverse("members:add_new_child"), self.child_data(),
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("first_name", response.context["form"].errors)
+        self.assertEqual(
+            Person.objects.filter(first_name="Child", last_name="One").count(), 1,
+        )
+
+    def test_duplicate_child_case_insensitive(self):
+        """Duplicate detection ignores case, so "Child One" and "child one"
+        are treated as the same child."""
+        self.client.post(reverse("members:add_new_child"), self.child_data())
+        response = self.client.post(
+            reverse("members:add_new_child"),
+            self.child_data(first_name="child", last_name="one"),
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("first_name", response.context["form"].errors)
+        self.assertEqual(Person.objects.filter(first_name="Child").count(), 1)
+
     def test_parent_own_email_rejected(self):
         """The form warns against reusing the parent's address; validation
         must reject it instead of silently re-linking the parent account."""

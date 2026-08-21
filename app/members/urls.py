@@ -47,6 +47,12 @@ urlpatterns = [
         views.dettach_confirm,
         name="dettach_confirm",
     ),
+    path("remove/<str:pk>", views.remove_child, name="remove_child"),
+    path(
+        "remove_confirm/<str:pk>",
+        views.remove_child_confirm,
+        name="remove_child_confirm",
+    ),
     path(
         "childaccountcreate/<str:pk>",
         views.ChildAccountCreate.as_view(),

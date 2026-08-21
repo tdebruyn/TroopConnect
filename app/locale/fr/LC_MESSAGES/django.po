@@ -2033,6 +2033,16 @@ msgstr "Désinscrire %(first_name)s pour l'année suivante"
 msgid "Confirm that you want to detach %(first_name)s"
 msgstr "Confirmez que vous souhaitez détacher %(first_name)s"
 
+#: members/templates/members/remove_child.html:5
+#, python-format
+msgid "Confirm that you want to remove %(first_name)s"
+msgstr "Confirmez que vous souhaitez retirer %(first_name)s"
+
+#: members/templates/members/remove_child.html:13
+#, python-format
+msgid "This will permanently delete %(first_name)s and their account. This cannot be undone."
+msgstr "Cela supprimera définitivement %(first_name)s et son compte. Cette action est irréversible."
+
 #: members/templates/members/dettach_child.html:10
 msgid "Back"
 msgstr "Retour"
@@ -2174,6 +2184,16 @@ msgid ""
 "To confirm that you want to detach %(first)s from your account, click "
 "\"Detach\"."
 msgstr "Pour confirmer que vous souhaitez détacher %(first)s de votre compte, cliquez sur « Détacher »."
+
+#: members/views.py:351
+#, python-format
+msgid "%(first)s %(last)s is already attached to your account."
+msgstr "%(first)s %(last)s est déjà rattaché(e) à votre compte."
+
+#: members/views.py:576
+#, python-format
+msgid "%(first)s is assigned to a section and must be deregistered, not removed."
+msgstr "%(first)s est inscrit(e) à une section et doit être désinscrit(e), pas retiré(e)."
 
 #: messaging/forms.py:7
 msgid "Parents of a section"

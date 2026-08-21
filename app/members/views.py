@@ -338,6 +338,24 @@ def add_new_child_view(request):
     if request.method == "POST":
         form = ChildForm(request.POST)
         if form.is_valid():
+            # Reject a duplicate: the same parent re-adding a child with the
+            # same first and last name. Comparison is case-insensitive so
+            # "Jean" and "jean" are treated as the same name.
+            if Person.objects.filter(
+                parents=request.user.person,
+                first_name__iexact=form.cleaned_data["first_name"],
+                last_name__iexact=form.cleaned_data["last_name"],
+            ).exists():
+                form.add_error(
+                    "first_name",
+                    _("%(first)s %(last)s is already attached to your account.")
+                    % {
+                        "first": form.cleaned_data["first_name"],
+                        "last": form.cleaned_data["last_name"],
+                    },
+                )
+                return render(request, "members/child_form.html", {"form": form})
+
             child = form.save(commit=False)
             child.address = request.user.person.address
             child.phone = request.user.person.phone
@@ -538,6 +556,40 @@ def deregister_confirm(request, pk, action):
     child.status = "ar"
     child.archived_date = timezone.now().date()
     child.save()
+    return redirect(reverse_lazy("members:profile", kwargs={"pk": request.user.pk}))
+
+
+def remove_child(request, pk):
+    """Confirmation page for deleting a child that has no section assigned yet.
+
+    Only offered in place of "Deregister" when the child is not enrolled (see
+    child_list.html). Deleting is final, so the actual removal happens in a
+    separate confirm view.
+    """
+    child = get_object_or_404(Person, id=pk)
+    parent = request.user.person
+    context = {"child": child, "allow_remove": False}
+    if not child.parents.filter(id=parent.id).exists():
+        return redirect(reverse_lazy("members:profile", kwargs={"pk": request.user.pk}))
+    if child.has_section:
+        context["message"] = _(
+            "%(first)s is assigned to a section and must be deregistered, not removed."
+        ) % {"first": child.first_name}
+    else:
+        context["allow_remove"] = True
+    return render(
+        request=request, template_name="members/remove_child.html", context=context
+    )
+
+
+def remove_child_confirm(request, pk):
+    child = get_object_or_404(Person, id=pk)
+    parent = request.user.person
+    if not child.parents.filter(id=parent.id).exists():
+        return redirect(reverse_lazy("members:profile", kwargs={"pk": request.user.pk}))
+    # Never delete an enrolled child — they go through deregister_confirm.
+    if not child.has_section:
+        child.delete()
     return redirect(reverse_lazy("members:profile", kwargs={"pk": request.user.pk}))
 
 

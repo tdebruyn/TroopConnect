@@ -14,8 +14,13 @@
       </td>
       <td>{{ child.get_section.name }}</td>
       <td>
+         {% if child.has_section %}
          <a class="btn btn-outline-danger btn-sm"
             href="{% url 'members:deregister_child' pk=child.pk %}">{% trans "Deregister" %}</a>
+         {% else %}
+         <a class="btn btn-outline-danger btn-sm"
+            href="{% url 'members:remove_child' pk=child.pk %}">{% trans "Remove" %}</a>
+         {% endif %}
          <a class="btn btn-outline-warning btn-sm me-1"
             href="{% url 'members:dettach_child' pk=child.pk %}">{% trans "Detach" %}</a>
          {% comment %} <a class="btn btn-outline-info btn-sm me-1" href="{% url 'members:child_account_create' pk=child.pk %}">Créer compte</a> {% endcomment %}
