@@ -1,5 +1,6 @@
 """Custom Django email backend for MailerSend HTTP API."""
 
+import base64
 import logging
 
 import requests
@@ -79,7 +80,6 @@ class MailerSendBackend(BaseEmailBackend):
                     filename, content, mimetype = attachment
                 else:
                     continue
-                import base64
 
                 if isinstance(content, str):
                     content = content.encode("utf-8")

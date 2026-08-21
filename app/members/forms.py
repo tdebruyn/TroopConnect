@@ -358,7 +358,6 @@ class ProfileEditForm(UserChangeForm):
         person.primary_role = Role.objects.get(
             short=self.cleaned_data.get("primary_role")
         )
-        print(person.primary_role.short, person.primary_role.name)
         account = super().save(commit=False)
         account.email = self.cleaned_data["email"]
         if commit:
