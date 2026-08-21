@@ -4,7 +4,7 @@ from unittest.mock import MagicMock, patch
 from django.core import mail
 from django.test import TestCase
 from django.urls import reverse
-from post_office.models import EmailTemplate
+from post_office.models import Email, EmailTemplate
 
 from members.forms import ChildForm
 from members.models import Account, ParentChild, Person, PersonRole, Role
@@ -18,13 +18,15 @@ class ChildAccountTestBase(TestCase):
     def setUpTestData(cls):
         # post_office looks templates up by exact (name, language); both
         # notifications are sent in "fr" (account default / LANGUAGE_CODE).
-        EmailTemplate.objects.create(
-            name="new_child_parent", subject="Test", content="Test",
-            language="fr",
+        # Migration 0019 already seeds these "fr" templates, so get-or-create
+        # to avoid a duplicate (unique on name+language).
+        EmailTemplate.objects.get_or_create(
+            name="new_child_parent", language="fr",
+            defaults={"subject": "Test", "content": "Test"},
         )
-        EmailTemplate.objects.create(
-            name="new_child_staff", subject="Test", content="Test",
-            language="fr",
+        EmailTemplate.objects.get_or_create(
+            name="new_child_staff", language="fr",
+            defaults={"subject": "Test", "content": "Test"},
         )
         cls.role_parent = Role.objects.get(short="p")
         cls.role_child = Role.objects.get(short="e")
@@ -109,6 +111,25 @@ class AddNewChildAccountTest(ChildAccountTestBase):
         child = Person.objects.get(first_name="Child")
         self.assertFalse(Account.objects.filter(person=child).exists())
         self.assertFalse(self.password_mail_outbox("child@test.be"))
+
+    def test_no_parent_confirmation_when_child_has_no_email(self):
+        response = self.client.post(
+            reverse("members:add_new_child"), self.child_data(),
+        )
+        self.assertEqual(response.status_code, 204)
+        self.assertFalse(
+            Email.objects.filter(template__name="new_child_parent").exists()
+        )
+
+    def test_parent_confirmation_sent_when_child_has_email(self):
+        response = self.client.post(
+            reverse("members:add_new_child"),
+            self.child_data(email="child@test.be"),
+        )
+        self.assertEqual(response.status_code, 204)
+        self.assertTrue(
+            Email.objects.filter(template__name="new_child_parent").exists()
+        )
 
     def test_parent_own_email_rejected(self):
         """The form warns against reusing the parent's address; validation

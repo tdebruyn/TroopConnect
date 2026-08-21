@@ -346,17 +346,22 @@ def add_new_child_view(request):
             form.save_account(child)
             child.parents.add(request.user.person)
 
-            mail.send(
-                recipients=request.user.email,
-                sender=settings.DEFAULT_FROM_EMAIL,
-                template="new_child_parent",
-                language=getattr(request.user, "preferred_language", None) or settings.LANGUAGE_CODE,
-                context={
-                    "first_name": child.first_name,
-                    "last_name": child.last_name,
-                    "parent": f"{request.user.person.first_name} {request.user.person.last_name}",
-                },
-            )
+            # The parent confirmation email only makes sense when the child has
+            # an email (and thus an account). Adding a child without an email is
+            # a quick add: the HTMX childListChanged/showMessage response is the
+            # confirmation, so no email should be sent.
+            if form.cleaned_data.get("email"):
+                mail.send(
+                    recipients=request.user.email,
+                    sender=settings.DEFAULT_FROM_EMAIL,
+                    template="new_child_parent",
+                    language=getattr(request.user, "preferred_language", None) or settings.LANGUAGE_CODE,
+                    context={
+                        "first_name": child.first_name,
+                        "last_name": child.last_name,
+                        "parent": f"{request.user.person.first_name} {request.user.person.last_name}",
+                    },
+                )
             mail.send(
                 recipients=get_registration_admins(),
                 # sender="tom@tomctl.be",
