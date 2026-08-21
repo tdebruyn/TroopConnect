@@ -1,16 +1,15 @@
 from datetime import date
-from unittest.mock import MagicMock, patch
 
 from django.core import mail
-from django.test import TestCase
 from django.urls import reverse
 from post_office.models import Email, EmailTemplate
 
 from members.forms import ChildForm
 from members.models import Account, ParentChild, Person, PersonRole, Role
+from tests.mail import MailTestCase
 
 
-class ChildAccountTestBase(TestCase):
+class ChildAccountTestBase(MailTestCase):
     """Shared setup: a logged-in parent, a registration admin (so the staff
     notification has a recipient), and the two notification templates."""
 
@@ -52,17 +51,8 @@ class ChildAccountTestBase(TestCase):
         )
 
     def setUp(self):
+        super().setUp()
         self.client.force_login(self.parent_account)
-        # The two post_office notifications are dispatched synchronously
-        # (priority "now") through the MailerSend backend; never hit the real
-        # API from tests. (The "choose a password" email is sent by allauth
-        # via the locmem backend in tests — see password_mail_outbox().)
-        patcher = patch(
-            "troopconnect.mailersend_backend.requests.post",
-            return_value=MagicMock(status_code=202),
-        )
-        patcher.start()
-        self.addCleanup(patcher.stop)
 
     def password_mail_outbox(self, email_address):
         """Allauth sends the "choose a password" email through Django's email

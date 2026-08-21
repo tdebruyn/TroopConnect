@@ -4,10 +4,10 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-08-17 06:33+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect <noreply@troop.tomctl.be>\nLanguage-Team: fr <fr@li.org>\nLanguage: fr\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\n"
+msgstr "Project-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-08-21 19:35+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect <noreply@troop.tomctl.be>\nLanguage-Team: fr <fr@li.org>\nLanguage: fr\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\n"
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-17 06:33+0200\n"
+"POT-Creation-Date: 2026-08-21 19:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,6 +15,774 @@ msgstr "Project-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creatio
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -872,7 +1640,7 @@ msgstr "Paiement"
 msgid "Payments"
 msgstr "Paiements"
 
-#: finance/templates/finance/billing_overview.html:3 templates/base.html:83
+#: finance/templates/finance/billing_overview.html:3 templates/base.html:86
 msgid "Membership fees"
 msgstr "Cotisations"
 
@@ -917,7 +1685,7 @@ msgstr "Enfants (%(count)s)"
 
 #: finance/templates/finance/billing_overview.html:31
 #: finance/templates/finance/billing_overview.html:63 members/admin.py:97
-#: messaging/templates/messaging/_recipient_list.html:11
+#: messaging/templates/messaging/_recipient_list.html:16
 #: messaging/templates/messaging/message_detail.html:50
 msgid "Name"
 msgstr "Nom"
@@ -980,7 +1748,7 @@ msgstr "Historique des paiements — %(person)s"
 #: finance/templates/finance/record_payment_modal.html:8
 #: members/templates/members/child_form.html:12
 #: members/templates/members/child_from_key_form.html:12
-#: templates/base.html:207
+#: templates/base.html:222
 msgid "Close"
 msgstr "Fermer"
 
@@ -1020,6 +1788,7 @@ msgstr "Enregistrer"
 #: members/templates/members/child_form.html:99
 #: members/templates/members/child_from_key_form.html:28
 #: members/templates/members/dettach_child.html:17
+#: members/templates/members/remove_child.html:19
 #: messaging/templates/messaging/compose.html:79
 #: messaging/templates/messaging/compose_all.html:77
 msgid "Cancel"
@@ -1072,7 +1841,7 @@ msgstr "Personne introuvable."
 msgid "Payment of %(amount)s€ recorded for %(person)s."
 msgstr "Paiement de %(amount)s€ enregistré pour %(person)s."
 
-#: finance/views.py:181 messaging/views.py:367
+#: finance/views.py:181 messaging/views.py:475
 #, python-format
 msgid "Failed to send to %(email)s."
 msgstr "Échec d'envoi à %(email)s."
@@ -1090,10 +1859,10 @@ msgstr "Titre"
 msgid "Description"
 msgstr "Description"
 
-#: homepage/models.py:19 homepage/views.py:117 members/filters.py:47
-#: members/filters.py:48 members/forms.py:73
+#: homepage/models.py:19 homepage/views.py:222 members/filters.py:47
+#: members/filters.py:48 members/forms.py:69
 #: members/templates/members/admin_update.html:144
-#: members/templates/members/profile.html:123 members/views.py:178
+#: members/templates/members/profile.html:123 members/views.py:173
 #: messaging/forms.py:28
 msgid "Section"
 msgstr "Section"
@@ -1108,8 +1877,7 @@ msgid "Home"
 msgstr "Accueil"
 
 #: homepage/models.py:77 homepage/templates/homepage/editor.html:44
-#: homepage/templates/homepage/snippets/faq_default.html:5
-#: templates/base.html:105
+#: homepage/templates/homepage/faq.html:8 templates/base.html:108
 msgid "FAQ"
 msgstr "FAQ"
 
@@ -1129,20 +1897,20 @@ msgstr "Image"
 msgid "Image assets"
 msgstr "Images"
 
-#: homepage/templates/homepage/agenda.html:7 templates/base.html:70
+#: homepage/templates/homepage/agenda.html:8 templates/base.html:73
 msgid "Agenda"
 msgstr "Agenda"
 
-#: homepage/templates/homepage/agenda.html:8
+#: homepage/templates/homepage/agenda.html:10
 msgid "Calendar of activities"
 msgstr "Calendrier des activités"
 
-#: homepage/templates/homepage/agenda.html:23
+#: homepage/templates/homepage/agenda.html:32
 #, python-format
 msgid "Section: %(section_name)s"
 msgstr "Section : %(section_name)s"
 
-#: homepage/templates/homepage/agenda.html:29
+#: homepage/templates/homepage/agenda.html:38
 msgid "No upcoming event."
 msgstr "Aucun événement à venir."
 
@@ -1167,16 +1935,16 @@ msgstr "Paramètres du site"
 msgid "Saved."
 msgstr "Enregistré."
 
-#: homepage/templates/homepage/faq.html:13
-#: homepage/templates/homepage/home.html:17
-msgid "Edit this page"
-msgstr "Modifier cette page"
-
 #: homepage/templates/homepage/faq.html:10
 msgid "Frequently asked questions."
 msgstr "Questions fréquemment posées."
 
-#: homepage/templates/homepage/snippets/faq_default.html:6
+#: homepage/templates/homepage/faq.html:27
+#: homepage/templates/homepage/home.html:17
+msgid "Edit this page"
+msgstr "Modifier cette page"
+
+#: homepage/templates/homepage/snippets/faq_default.html:5
 msgid "No question yet."
 msgstr "Aucune question pour le moment."
 
@@ -1193,71 +1961,71 @@ msgid ""
 "for lick butt love to play with owner's hair tie. Swat at dog give attitude."
 msgstr "Texte de présentation de l'unité. Modifiez-le depuis les paramètres du site pour décrire votre unité, ses sections et ses activités."
 
-#: homepage/views.py:113
+#: homepage/views.py:218
 msgid "Image upload failed."
 msgstr "Échec du téléversement de l'image."
 
-#: homepage/views.py:114
+#: homepage/views.py:219
 msgid "Save failed."
 msgstr "Échec de l'enregistrement."
 
-#: homepage/views.py:115
+#: homepage/views.py:220
 msgid "Structure"
 msgstr "Structure"
 
-#: homepage/views.py:116
+#: homepage/views.py:221
 msgid "Basic"
 msgstr "Basique"
 
-#: homepage/views.py:118
+#: homepage/views.py:223
 msgid "2 columns"
 msgstr "2 colonnes"
 
-#: homepage/views.py:119
+#: homepage/views.py:224
 msgid "3 columns"
 msgstr "3 colonnes"
 
-#: homepage/views.py:120
+#: homepage/views.py:225
 msgid "Heading"
 msgstr "Titre"
 
-#: homepage/views.py:121
+#: homepage/views.py:226
 msgid "Text"
 msgstr "Texte"
 
-#: homepage/views.py:122
+#: homepage/views.py:227
 msgid "Your text here."
 msgstr "Votre texte ici."
 
-#: homepage/views.py:123
+#: homepage/views.py:228
 msgid "Image"
 msgstr "Image"
 
-#: homepage/views.py:124
+#: homepage/views.py:229
 msgid "Button"
 msgstr "Bouton"
 
-#: homepage/views.py:125
+#: homepage/views.py:230
 msgid "Click here"
 msgstr "Cliquez ici"
 
-#: homepage/views.py:126
+#: homepage/views.py:231
 msgid "Divider"
 msgstr "Séparateur"
 
-#: homepage/views.py:127
+#: homepage/views.py:232
 msgid "Dimensions"
 msgstr "Dimensions"
 
-#: homepage/views.py:128
+#: homepage/views.py:233
 msgid "Typography"
 msgstr "Typographie"
 
-#: homepage/views.py:129
+#: homepage/views.py:234
 msgid "Decorations"
 msgstr "Décorations"
 
-#: homepage/views.py:130
+#: homepage/views.py:235
 msgid "Extra"
 msgstr "Extra"
 
@@ -1277,7 +2045,7 @@ msgstr "Permissions"
 msgid "Available languages"
 msgstr "Langues disponibles"
 
-#: members/admin.py:148 members/models.py:765
+#: members/admin.py:148 members/models.py:785
 msgid "Languages available to users in the site language selector."
 msgstr "Langues proposées aux utilisateurs dans le sélecteur de langue du site."
 
@@ -1285,15 +2053,15 @@ msgstr "Langues proposées aux utilisateurs dans le sélecteur de langue du site
 msgid "Default language"
 msgstr "Langue par défaut"
 
-#: members/admin.py:155 members/models.py:775
+#: members/admin.py:155 members/models.py:795
 msgid "Default language for visitors. Must be one of the available languages."
 msgstr "Langue par défaut des visiteurs. Doit faire partie des langues disponibles."
 
-#: members/admin.py:192 members/models.py:808
+#: members/admin.py:192 members/models.py:828
 msgid "Select at least one available language."
 msgstr "Sélectionnez au moins une langue disponible."
 
-#: members/admin.py:197 members/models.py:813
+#: members/admin.py:197 members/models.py:833
 msgid "The default language must be one of the available languages."
 msgstr "La langue par défaut doit faire partie des langues disponibles."
 
@@ -1333,37 +2101,37 @@ msgstr "Animateur"
 msgid "Participant"
 msgstr "Animé"
 
-#: members/constants.py:29 members/forms.py:32 members/forms.py:47
-#: members/forms.py:382 members/forms.py:409
+#: members/constants.py:29 members/forms.py:28 members/forms.py:43
+#: members/forms.py:377 members/forms.py:404
 #: messaging/templates/messaging/compose_all.html:54
 #: messaging/templates/messaging/message_detail.html:51
 msgid "Email"
 msgstr "E-mail"
 
-#: members/constants.py:30 members/filters.py:26 members/forms.py:236
-#: members/forms.py:249 members/forms.py:427 members/forms.py:568
+#: members/constants.py:30 members/filters.py:26 members/forms.py:232
+#: members/forms.py:245 members/forms.py:422 members/forms.py:507
 #: members/templates/members/admin_update.html:142
 #: members/templates/members/child_form.html:18
-#: members/templates/members/profile.html:119 members/views.py:174
+#: members/templates/members/profile.html:119 members/views.py:169
 msgid "First name"
 msgstr "Prénom"
 
-#: members/constants.py:31 members/filters.py:29 members/forms.py:237
-#: members/forms.py:250 members/forms.py:428 members/forms.py:569
+#: members/constants.py:31 members/filters.py:29 members/forms.py:233
+#: members/forms.py:246 members/forms.py:423 members/forms.py:508
 #: members/templates/members/admin_update.html:143
 #: members/templates/members/child_form.html:24
-#: members/templates/members/profile.html:120 members/views.py:175
+#: members/templates/members/profile.html:120 members/views.py:170
 msgid "Last name"
 msgstr "Nom"
 
-#: members/constants.py:32 members/forms.py:238 members/forms.py:252
-#: members/forms.py:429 members/forms.py:570
+#: members/constants.py:32 members/forms.py:234 members/forms.py:248
+#: members/forms.py:424 members/forms.py:509
 #: members/templates/members/profile.html:75
 msgid "Address"
 msgstr "Adresse"
 
-#: members/constants.py:33 members/forms.py:239 members/forms.py:253
-#: members/forms.py:381 members/forms.py:430 members/forms.py:571
+#: members/constants.py:33 members/forms.py:235 members/forms.py:249
+#: members/forms.py:376 members/forms.py:425 members/forms.py:510
 msgid "Phone"
 msgstr "Téléphone"
 
@@ -1421,7 +2189,7 @@ msgstr "Année de naissance"
 msgid "School year"
 msgstr "Année scolaire"
 
-#: members/filters.py:53 members/views.py:179
+#: members/filters.py:53 members/views.py:174
 msgid "Role"
 msgstr "Rôle"
 
@@ -1429,88 +2197,88 @@ msgstr "Rôle"
 msgid "All roles"
 msgstr "Tous les rôles"
 
-#: members/forms.py:49
+#: members/forms.py:45
 msgid ""
 "If an email is provided, an account will be created. Otherwise, the existing "
 "account will be used."
 msgstr "Si une adresse e-mail est fournie, un compte sera créé. Sinon, le compte existant sera utilisé."
 
-#: members/forms.py:57 members/forms.py:120
+#: members/forms.py:53 members/forms.py:116
 #: members/templates/members/admin_update.html:63
 msgid "Primary role"
 msgstr "Rôle principal"
 
-#: members/forms.py:64
+#: members/forms.py:60
 msgid "Secondary roles"
 msgstr "Rôles secondaires"
 
-#: members/forms.py:78
+#: members/forms.py:74
 msgid "Next section"
 msgstr "Section suivante"
 
-#: members/forms.py:95 members/forms.py:99
+#: members/forms.py:91 members/forms.py:95
 #, python-format
 msgid "Section %(range)s"
 msgstr "Section %(range)s"
 
-#: members/forms.py:148
+#: members/forms.py:144
 msgid ""
 "Only the 'Participant' and 'Animator' roles can be enrolled in a section."
 msgstr "Seuls les rôles « Animé » et « Animateur » peuvent être inscrits dans une section."
 
-#: members/forms.py:240
+#: members/forms.py:236
 msgid "Photos allowed"
 msgstr "Photos autorisées"
 
-#: members/forms.py:241
+#: members/forms.py:237
 msgid "Date of birth (only for participants)"
 msgstr "Date de naissance (uniquement pour les animé(e)s)"
 
-#: members/forms.py:242
+#: members/forms.py:238
 msgid "Sex (only for participants)"
 msgstr "Sexe (uniquement pour les animé(e)s)"
 
-#: members/forms.py:243 members/forms.py:251 members/forms.py:380
-#: members/forms.py:433 members/templates/members/child_form.html:32
+#: members/forms.py:239 members/forms.py:247 members/forms.py:375
+#: members/forms.py:428 members/templates/members/child_form.html:32
 msgid "Totem"
 msgstr "Totem"
 
-#: members/forms.py:244 members/forms.py:431
+#: members/forms.py:240 members/forms.py:426
 msgid "Notes"
 msgstr "Notes"
 
-#: members/forms.py:265 members/forms.py:575
+#: members/forms.py:261 members/forms.py:514
 #: members/templates/members/onboarding.html:17
 #: members/templates/members/profile.html:21
 #: members/templates/members/profile.html:28
 msgid "Account type"
 msgstr "Type de compte"
 
-#: members/forms.py:272
+#: members/forms.py:268
 msgid "Active parent, I want to help the unit occasionally"
 msgstr "Parent actif, je souhaite aider l'unité occasionnellement"
 
-#: members/forms.py:343 members/forms.py:605
+#: members/forms.py:339 members/forms.py:544
 msgid "A person of branch age can only be a Participant."
 msgstr "Une personne en âge de branche ne peut être qu'un Animé."
 
-#: members/forms.py:410
+#: members/forms.py:405
 msgid "If an email is provided, an account will be created for the child."
 msgstr "Si une adresse e-mail est fournie, un compte sera créé pour l'enfant."
 
-#: members/forms.py:426 members/views.py:177
+#: members/forms.py:421 members/views.py:172
 msgid "Sex"
 msgstr "Sexe"
 
-#: members/forms.py:432 members/views.py:176
+#: members/forms.py:427 members/views.py:171
 msgid "Date of birth"
 msgstr "Date de naissance"
 
-#: members/forms.py:467
+#: members/forms.py:462
 msgid "This email already exists for another user"
 msgstr "Cette adresse e-mail existe déjà pour un autre utilisateur"
 
-#: members/forms.py:499
+#: members/forms.py:503
 msgid "Secret key (6 characters)"
 msgstr "Code secret (6 caractères)"
 
@@ -1542,58 +2310,54 @@ msgstr "La date de naissance est obligatoire pour un animé."
 msgid "Sex is required for a participant."
 msgstr "Le sexe est obligatoire pour un animé."
 
-#: members/models.py:200
-msgid "Pending"
-msgstr "En attente"
-
-#: members/models.py:211
+#: members/models.py:228
 msgid "linked sections"
 msgstr "sections liées"
 
-#: members/models.py:213
+#: members/models.py:230
 msgid "linked children"
 msgstr "enfants liés"
 
-#: members/models.py:363
+#: members/models.py:380
 msgid "Language used for outgoing emails to this user."
 msgstr "Langue utilisée pour les e-mails sortants adressés à cet utilisateur."
 
-#: members/models.py:592
+#: members/models.py:609
 msgid "Calendar year from the start of the time period"
 msgstr "Année civile à partir du début de la période"
 
-#: members/models.py:600
+#: members/models.py:617
 #, python-format
 msgid "%(name)s — from %(start)s to %(end)s"
 msgstr "%(name)s — du %(start)s au %(end)s"
 
-#: members/models.py:658
+#: members/models.py:675
 msgid ""
 "Age of the youngest members of the section on December 31 of the school year"
 msgstr "Âge des plus jeunes membres de la section au 31 décembre de l'année scolaire"
 
-#: members/models.py:665
+#: members/models.py:682
 msgid ""
 "Age of the oldest members of the section on December 31 of the school year"
 msgstr "Âge des plus âgés des membres de la section au 31 décembre de l'année scolaire"
 
-#: members/models.py:670
+#: members/models.py:687
 #, python-format
 msgid "%(name)s (%(min)s-%(max)s years old)"
 msgstr "%(name)s (%(min)s-%(max)s ans)"
 
-#: members/models.py:783
+#: members/models.py:803
 msgid ""
 "Last school year (the « name » field) for which the automatic passage was "
 "executed. Anti-replay: if Celery was stopped on the passage day, the task "
 "catches up at the next startup."
 msgstr "Dernière année scolaire (champ « name ») pour laquelle le passage automatique a été exécuté. Anti-rejeu : si Celery était arrêté le jour du passage, la tâche se rattrape au prochain démarrage."
 
-#: members/models.py:830
+#: members/models.py:850
 msgid "Important document"
 msgstr "Document important"
 
-#: members/models.py:831 members/templates/members/documents.html:5
+#: members/models.py:851 members/templates/members/documents.html:5
 #: messaging/templates/messaging/compose.html:41
 #: messaging/templates/messaging/compose_all.html:33
 msgid "Important documents"
@@ -1710,13 +2474,12 @@ msgid ""
 "email confirmation request</a>."
 msgstr "Ce lien n'est plus valide. Veuillez <a href=\"%(email_url)s\">soumettre une nouvelle demande de confirmation</a>."
 
-#: members/templates/account/login.html:6 templates/base.html:156
+#: members/templates/account/login.html:6 templates/base.html:159
 msgid "Log in"
 msgstr "Se connecter"
 
 #: members/templates/account/login.html:38
 #: members/templates/account/signup.html:43
-#: members/templates/members/child_account.html:20
 #: messaging/templates/messaging/compose.html:78
 #: messaging/templates/messaging/compose_all.html:76
 msgid "Send"
@@ -1842,7 +2605,7 @@ msgid ""
 "a verification email in the next few minutes."
 msgstr "Un e-mail de vérification a été envoyé. Suivez le lien fourni pour finaliser la création de votre compte. Si vous ne trouvez pas l'e-mail de vérification dans votre boîte de réception principale, vérifiez vos courriers indésirables et notifications. Contactez-nous à <span style=\"white-space: nowrap;\">%(contact_email)s</span> si vous ne recevez pas d'e-mail de vérification dans les prochaines minutes."
 
-#: members/templates/members/admin_list.html:4 templates/base.html:80
+#: members/templates/members/admin_list.html:4 templates/base.html:83
 msgid "Member management"
 msgstr "Gestion des membres"
 
@@ -1870,7 +2633,7 @@ msgstr "Âge incompatible : %(detail)s"
 #: members/templates/members/admin_list.html:101
 #: members/templates/members/admin_update.html:155
 #: members/templates/members/admin_update.html:165
-#: members/templates/members/child_list.html:25
+#: members/templates/members/child_list.html:30
 msgid "Edit"
 msgstr "Modifier"
 
@@ -1918,39 +2681,10 @@ msgstr "Le type de compte ne peut pas être modifié. Raison : %(reason)s."
 msgid "Parents"
 msgstr "Parents"
 
-#: members/templates/members/child_account.html:5
-#, python-format
-msgid "Create an account for %(first_name)s"
-msgstr "Créer un compte pour %(first_name)s"
-
-#: members/templates/members/child_account.html:9
-msgid ""
-"Create an account so your child can access their section's information and "
-"edit their own details."
-msgstr "Créez un compte pour que votre enfant puisse accéder aux informations de sa section et modifier ses propres données."
-
-#: members/templates/members/child_account.html:11
-msgid ""
-"If they are over 18, they will also be able to detach their account from "
-"their parents', who will no longer receive information about them or "
-"membership fee reminders."
-msgstr "S'il a plus de 18 ans, il pourra également détacher son compte de celui de ses parents, qui ne recevront plus d'informations le concernant ni de rappels de cotisation."
-
-#: members/templates/members/child_account.html:14
-msgid ""
-"An email will be sent to your child's address with a link. It will allow "
-"them to create a password and validate their account."
-msgstr "Un e-mail sera envoyé à l'adresse de votre enfant avec un lien. Il lui permettra de créer un mot de passe et de valider son compte."
-
-#: members/templates/members/child_account_done.html:5
-msgid "Email sent"
-msgstr "E-mail envoyé"
-
-#: members/templates/members/child_account_done.html:9
-msgid ""
-"An email with a link has been sent to your child. They must click this link "
-"to finalize the creation of their account and set a password."
-msgstr "Un e-mail contenant un lien a été envoyé à votre enfant. Il doit cliquer sur ce lien pour finaliser la création de son compte et définir un mot de passe."
+#: members/templates/members/admin_update.html:152
+#: members/templates/members/child_list.html:15
+msgid "Pending"
+msgstr "En attente"
 
 #: members/templates/members/child_form.html:8
 msgid "Child information"
@@ -1987,11 +2721,20 @@ msgstr "Pour créer un compte"
 msgid "Child's secret key"
 msgstr "Code secret de l'enfant"
 
-#: members/templates/members/child_list.html:18
+#: members/templates/members/child_list.html:19
 msgid "Deregister"
 msgstr "Désinscrire"
 
-#: members/templates/members/child_list.html:20
+#: members/templates/members/child_list.html:22
+#: members/templates/members/remove_child.html:17
+#: messaging/templates/messaging/compose.html:35
+#: messaging/templates/messaging/compose.html:82
+#: messaging/templates/messaging/compose_all.html:27
+#: messaging/templates/messaging/compose_all.html:80
+msgid "Remove"
+msgstr "Retirer"
+
+#: members/templates/members/child_list.html:25
 #: members/templates/members/dettach_child.html:15
 msgid "Detach"
 msgstr "Détacher"
@@ -2033,17 +2776,8 @@ msgstr "Désinscrire %(first_name)s pour l'année suivante"
 msgid "Confirm that you want to detach %(first_name)s"
 msgstr "Confirmez que vous souhaitez détacher %(first_name)s"
 
-#: members/templates/members/remove_child.html:5
-#, python-format
-msgid "Confirm that you want to remove %(first_name)s"
-msgstr "Confirmez que vous souhaitez retirer %(first_name)s"
-
-#: members/templates/members/remove_child.html:13
-#, python-format
-msgid "This will permanently delete %(first_name)s and their account. This cannot be undone."
-msgstr "Cela supprimera définitivement %(first_name)s et son compte. Cette action est irréversible."
-
 #: members/templates/members/dettach_child.html:10
+#: members/templates/members/remove_child.html:10
 msgid "Back"
 msgstr "Retour"
 
@@ -2058,6 +2792,40 @@ msgstr "Télécharger"
 #: members/templates/members/documents.html:20
 msgid "No documents available."
 msgstr "Aucun document disponible."
+
+#: members/templates/members/mail_queue.html:4
+msgid "Email queue"
+msgstr "File d'attente des e-mails"
+
+#: members/templates/members/mail_queue.html:7
+msgid "Review outgoing emails that could not be delivered."
+msgstr "Consultez les e-mails sortants qui n'ont pas pu être envoyés."
+
+#: members/templates/members/mail_queue.html:14
+msgid "Queued"
+msgstr "En file d'attente"
+
+#: members/templates/members/mail_queue.html:22
+msgid "Waiting for retry"
+msgstr "En attente de nouvel essai"
+
+#: members/templates/members/mail_queue.html:30
+msgid "Failed"
+msgstr "En échec"
+
+#: members/templates/members/mail_queue.html:37
+msgid ""
+"Failed emails are no longer retried automatically. Requeue them to send "
+"again once the mail service is back, or purge them permanently."
+msgstr "Les e-mails en échec ne sont plus réessayés automatiquement. Remettez-les en file pour les renvoyer une fois le service de messagerie rétabli, ou purgez-les définitivement."
+
+#: members/templates/members/mail_queue.html:46
+msgid "Requeue failed emails"
+msgstr "Remettre en file les e-mails en échec"
+
+#: members/templates/members/mail_queue.html:53
+msgid "Purge failed emails"
+msgstr "Purger les e-mails en échec"
 
 #: members/templates/members/onboarding.html:5
 msgid "Welcome! Complete your profile"
@@ -2121,9 +2889,17 @@ msgstr "Ajouter un nouvel enfant"
 msgid "Add an existing child with a key"
 msgstr "Ajouter un enfant existant avec un code"
 
-#: members/templates/members/secondary_role.html:4
-msgid "Secondary role"
-msgstr "Rôle secondaire"
+#: members/templates/members/remove_child.html:5
+#, python-format
+msgid "Confirm that you want to remove %(first_name)s"
+msgstr "Confirmez que vous souhaitez retirer %(first_name)s"
+
+#: members/templates/members/remove_child.html:13
+#, python-format
+msgid ""
+"This will permanently delete %(first_name)s and their account. This cannot "
+"be undone."
+msgstr "Cela supprimera définitivement %(first_name)s et son compte. Cette action est irréversible."
 
 #: members/templates/socialaccount/signup.html:5
 msgid "Complete your registration"
@@ -2136,31 +2912,36 @@ msgid ""
 "the form below to finalize your registration."
 msgstr "Vous êtes sur le point de vous connecter avec votre compte %(provider_name)s. Veuillez compléter le formulaire ci-dessous pour finaliser votre inscription."
 
-#: members/views.py:149
+#: members/views.py:144
 #, python-format
 msgid "%(age)s years old — branch %(branch)s: %(min)s-%(max)s years old"
 msgstr "%(age)s ans — branche %(branch)s : %(min)s-%(max)s ans"
 
-#: members/views.py:378 members/views.py:448
+#: members/views.py:320
+#, python-format
+msgid "%(first)s %(last)s is already attached to your account."
+msgstr "%(first)s %(last)s est déjà rattaché(e) à votre compte."
+
+#: members/views.py:371 members/views.py:441
 #, python-format
 msgid "%(first)s %(last)s added."
 msgstr "%(first)s %(last)s ajouté(e)."
 
-#: members/views.py:390 members/views.py:402
+#: members/views.py:383 members/views.py:395
 msgid "Invalid request"
 msgstr "Requête invalide"
 
-#: members/views.py:416
+#: members/views.py:409
 #, python-format
 msgid "%(first)s modified."
 msgstr "%(first)s modifié(e)."
 
-#: members/views.py:465
+#: members/views.py:458
 #, python-format
 msgid "%(first)s is not attached to your account."
 msgstr "%(first)s n'est pas rattaché(e) à votre compte."
 
-#: members/views.py:470
+#: members/views.py:463
 #, python-format
 msgid ""
 "You cannot detach %(first)s.\n"
@@ -2170,30 +2951,36 @@ msgid ""
 "%(first)s was born on %(birthday)s and %(has_account)s."
 msgstr "Vous ne pouvez pas détacher %(first)s.\nPour détacher un enfant, il doit soit être rattaché à d'autres parents, soit avoir plus de 18 ans et disposer d'un compte.\n%(first)s a %(count)s parent(s)\n%(first)s est né(e) le %(birthday)s et %(has_account)s."
 
-#: members/views.py:479
+#: members/views.py:472
 msgid "has an account"
 msgstr "a un compte"
 
-#: members/views.py:479
+#: members/views.py:472
 msgid "does not have an account"
 msgstr "n'a pas de compte"
 
-#: members/views.py:483
+#: members/views.py:476
 #, python-format
 msgid ""
 "To confirm that you want to detach %(first)s from your account, click "
 "\"Detach\"."
 msgstr "Pour confirmer que vous souhaitez détacher %(first)s de votre compte, cliquez sur « Détacher »."
 
-#: members/views.py:351
+#: members/views.py:539
 #, python-format
-msgid "%(first)s %(last)s is already attached to your account."
-msgstr "%(first)s %(last)s est déjà rattaché(e) à votre compte."
-
-#: members/views.py:576
-#, python-format
-msgid "%(first)s is assigned to a section and must be deregistered, not removed."
+msgid ""
+"%(first)s is assigned to a section and must be deregistered, not removed."
 msgstr "%(first)s est inscrit(e) à une section et doit être désinscrit(e), pas retiré(e)."
+
+#: members/views.py:597
+#, python-format
+msgid "%(count)s email(s) requeued."
+msgstr "%(count)s e-mail(s) remis en file."
+
+#: members/views.py:601
+#, python-format
+msgid "%(count)s email(s) purged."
+msgstr "%(count)s e-mail(s) purgé(s)."
 
 #: messaging/forms.py:7
 msgid "Parents of a section"
@@ -2263,17 +3050,17 @@ msgstr "envoyé"
 msgid "ignored"
 msgstr "ignoré"
 
-#: messaging/templates/messaging/_recipient_list.html:12
+#: messaging/templates/messaging/_recipient_list.html:17
 msgid "Info"
 msgstr "Info"
 
-#: messaging/templates/messaging/_recipient_list.html:29
+#: messaging/templates/messaging/_recipient_list.html:43
 msgid "No recipient found."
 msgstr "Aucun destinataire trouvé."
 
 #: messaging/templates/messaging/animateur_history.html:3
-#: messaging/templates/messaging/section_history.html:3 templates/base.html:87
-#: templates/base.html:100
+#: messaging/templates/messaging/section_history.html:3 templates/base.html:90
+#: templates/base.html:103
 msgid "Message history"
 msgstr "Historique des messages"
 
@@ -2283,8 +3070,8 @@ msgstr "Messages envoyés"
 
 #: messaging/templates/messaging/animateur_history.html:7
 #: messaging/templates/messaging/compose.html:3
-#: messaging/templates/messaging/compose_all.html:3 templates/base.html:86
-#: templates/base.html:99
+#: messaging/templates/messaging/compose_all.html:3 templates/base.html:89
+#: templates/base.html:102
 msgid "Send a message"
 msgstr "Envoyer un message"
 
@@ -2299,7 +3086,7 @@ msgstr "Ignoré"
 
 #: messaging/templates/messaging/animateur_history.html:27
 #: messaging/templates/messaging/compose_all.html:4
-#: messaging/templates/messaging/message_detail.html:20 messaging/views.py:358
+#: messaging/templates/messaging/message_detail.html:20 messaging/views.py:466
 msgid "All members"
 msgstr "Tous les membres"
 
@@ -2315,13 +3102,6 @@ msgstr "Composer un message"
 #: messaging/templates/messaging/compose_all.html:23
 msgid "Attachments (optional, max 10)"
 msgstr "Pièces jointes (facultatif, max 10)"
-
-#: messaging/templates/messaging/compose.html:35
-#: messaging/templates/messaging/compose.html:82
-#: messaging/templates/messaging/compose_all.html:27
-#: messaging/templates/messaging/compose_all.html:80
-msgid "Remove"
-msgstr "Retirer"
 
 #: messaging/templates/messaging/compose.html:42
 #: messaging/templates/messaging/compose_all.html:34
@@ -2374,73 +3154,122 @@ msgstr "Envoyé %(sent_at)s"
 msgid "No message."
 msgstr "Aucun message."
 
-#: messaging/views.py:248
+#: messaging/views.py:338
 msgid ""
 "\n"
 "\n"
 "Important documents:\n"
 msgstr "\n\nDocuments importants :\n"
 
-#: messaging/views.py:273
+#: messaging/views.py:363
 msgid "You are not enrolled in any section this year."
 msgstr "Vous n'êtes inscrit(e) dans aucune section cette année."
 
-#: messaging/views.py:377
+#: messaging/views.py:485
 #, python-format
 msgid "Message sent to %(count)s recipient(s)."
 msgstr "Message envoyé à %(count)s destinataire(s)."
 
-#: templates/base.html:52
+#: templates/base.html:55
 msgid "Toggle navigation"
 msgstr "Basculer la navigation"
 
-#: templates/base.html:60
+#: templates/base.html:63
 msgid "Sections"
 msgstr "Sections"
 
-#: templates/base.html:65
+#: templates/base.html:68
 msgid "No section"
 msgstr "Aucune section"
 
-#: templates/base.html:77
+#: templates/base.html:80
 msgid "Administration"
 msgstr "Administration"
 
-#: templates/base.html:97
+#: templates/base.html:100
 msgid "Animator tools"
 msgstr "Outils animateur"
 
-#: templates/base.html:117
+#: templates/base.html:120
 msgid "Toggle dropdown"
 msgstr "Ouvrir le menu déroulant"
 
-#: templates/base.html:121
+#: templates/base.html:124
 msgid "My profile"
 msgstr "Mon profil"
 
-#: templates/base.html:124
+#: templates/base.html:127
 msgid "My documents"
 msgstr "Mes documents"
 
-#: templates/base.html:128
+#: templates/base.html:131
 msgid "Site administration"
 msgstr "Administration du site"
 
-#: templates/base.html:131
+#: templates/base.html:134
 msgid "Edit homepage"
 msgstr "Modifier la page d'accueil"
 
-#: templates/base.html:150
+#: templates/base.html:153
 msgid "Log out"
 msgstr "Se déconnecter"
 
-#: templates/base.html:155
+#: templates/base.html:158
 msgid "Sign up"
 msgstr "S'inscrire"
 
-#: templates/base.html:170
+#: templates/base.html:173
 msgid "Language"
 msgstr "Langue"
+
+#: templates/base.html:198
+#, python-format
+msgid "%(counter)s email could not be sent."
+msgid_plural "%(counter)s emails could not be sent."
+msgstr[0] "%(counter)s e-mail n'a pas pu être envoyé."
+msgstr[1] "%(counter)s e-mails n'ont pas pu être envoyés."
+
+#: templates/base.html:204
+msgid "Manage"
+msgstr "Gérer"
+
+#, python-format
+#~ msgid "Create an account for %(first_name)s"
+#~ msgstr "Créer un compte pour %(first_name)s"
+
+#~ msgid ""
+#~ "Create an account so your child can access their section's information "
+#~ "and edit their own details."
+#~ msgstr ""
+#~ "Créez un compte pour que votre enfant puisse accéder aux informations de "
+#~ "sa section et modifier ses propres données."
+
+#~ msgid ""
+#~ "If they are over 18, they will also be able to detach their account from "
+#~ "their parents', who will no longer receive information about them or "
+#~ "membership fee reminders."
+#~ msgstr ""
+#~ "S'il a plus de 18 ans, il pourra également détacher son compte de celui "
+#~ "de ses parents, qui ne recevront plus d'informations le concernant ni de "
+#~ "rappels de cotisation."
+
+#~ msgid ""
+#~ "An email will be sent to your child's address with a link. It will allow "
+#~ "them to create a password and validate their account."
+#~ msgstr ""
+#~ "Un e-mail sera envoyé à l'adresse de votre enfant avec un lien. Il lui "
+#~ "permettra de créer un mot de passe et de valider son compte."
+
+#~ msgid ""
+#~ "An email with a link has been sent to your child. They must click this "
+#~ "link to finalize the creation of their account and set a password."
+#~ msgstr ""
+#~ "Un e-mail contenant un lien a été envoyé à votre enfant. Il doit cliquer "
+#~ "sur ce lien pour finaliser la création de son compte et définir un mot de "
+#~ "passe."
+
+#~ msgid "Secondary role"
+#~ msgstr "Rôle secondaire"
 
 #~ msgid "Change"
 #~ msgstr "Modifier"

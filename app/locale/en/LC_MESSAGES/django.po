@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-17 06:33+0200\n"
+"POT-Creation-Date: 2026-08-21 19:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -106,7 +106,7 @@ msgstr ""
 msgid "Payments"
 msgstr ""
 
-#: finance/templates/finance/billing_overview.html:3 templates/base.html:83
+#: finance/templates/finance/billing_overview.html:3 templates/base.html:86
 msgid "Membership fees"
 msgstr ""
 
@@ -151,7 +151,7 @@ msgstr ""
 
 #: finance/templates/finance/billing_overview.html:31
 #: finance/templates/finance/billing_overview.html:63 members/admin.py:97
-#: messaging/templates/messaging/_recipient_list.html:11
+#: messaging/templates/messaging/_recipient_list.html:16
 #: messaging/templates/messaging/message_detail.html:50
 msgid "Name"
 msgstr ""
@@ -214,7 +214,7 @@ msgstr ""
 #: finance/templates/finance/record_payment_modal.html:8
 #: members/templates/members/child_form.html:12
 #: members/templates/members/child_from_key_form.html:12
-#: templates/base.html:207
+#: templates/base.html:222
 msgid "Close"
 msgstr ""
 
@@ -254,6 +254,7 @@ msgstr ""
 #: members/templates/members/child_form.html:99
 #: members/templates/members/child_from_key_form.html:28
 #: members/templates/members/dettach_child.html:17
+#: members/templates/members/remove_child.html:19
 #: messaging/templates/messaging/compose.html:79
 #: messaging/templates/messaging/compose_all.html:77
 msgid "Cancel"
@@ -306,7 +307,7 @@ msgstr ""
 msgid "Payment of %(amount)s€ recorded for %(person)s."
 msgstr ""
 
-#: finance/views.py:181 messaging/views.py:367
+#: finance/views.py:181 messaging/views.py:475
 #, python-format
 msgid "Failed to send to %(email)s."
 msgstr ""
@@ -324,10 +325,10 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
-#: homepage/models.py:19 homepage/views.py:117 members/filters.py:47
-#: members/filters.py:48 members/forms.py:73
+#: homepage/models.py:19 homepage/views.py:222 members/filters.py:47
+#: members/filters.py:48 members/forms.py:69
 #: members/templates/members/admin_update.html:144
-#: members/templates/members/profile.html:123 members/views.py:178
+#: members/templates/members/profile.html:123 members/views.py:173
 #: messaging/forms.py:28
 msgid "Section"
 msgstr ""
@@ -342,8 +343,7 @@ msgid "Home"
 msgstr ""
 
 #: homepage/models.py:77 homepage/templates/homepage/editor.html:44
-#: homepage/templates/homepage/snippets/faq_default.html:5
-#: templates/base.html:105
+#: homepage/templates/homepage/faq.html:8 templates/base.html:108
 msgid "FAQ"
 msgstr ""
 
@@ -363,25 +363,21 @@ msgstr ""
 msgid "Image assets"
 msgstr ""
 
-#: homepage/templates/homepage/agenda.html:7 templates/base.html:70
+#: homepage/templates/homepage/agenda.html:8 templates/base.html:73
 msgid "Agenda"
 msgstr ""
 
-#: homepage/templates/homepage/agenda.html:8
+#: homepage/templates/homepage/agenda.html:10
 msgid "Calendar of activities"
 msgstr ""
 
-#: homepage/templates/homepage/agenda.html:23
+#: homepage/templates/homepage/agenda.html:32
 #, python-format
 msgid "Section: %(section_name)s"
 msgstr ""
 
-#: homepage/templates/homepage/agenda.html:29
+#: homepage/templates/homepage/agenda.html:38
 msgid "No upcoming event."
-msgstr ""
-
-#: homepage/templates/homepage/snippets/faq_default.html:6
-msgid "No question yet."
 msgstr ""
 
 #: homepage/templates/homepage/editor.html:7
@@ -405,13 +401,17 @@ msgstr ""
 msgid "Saved."
 msgstr ""
 
-#: homepage/templates/homepage/faq.html:13
+#: homepage/templates/homepage/faq.html:10
+msgid "Frequently asked questions."
+msgstr ""
+
+#: homepage/templates/homepage/faq.html:27
 #: homepage/templates/homepage/home.html:17
 msgid "Edit this page"
 msgstr ""
 
-#: homepage/templates/homepage/faq.html:10
-msgid "Frequently asked questions."
+#: homepage/templates/homepage/snippets/faq_default.html:5
+msgid "No question yet."
 msgstr ""
 
 #: homepage/templates/homepage/snippets/home_default.html:5
@@ -427,71 +427,71 @@ msgid ""
 "for lick butt love to play with owner's hair tie. Swat at dog give attitude."
 msgstr ""
 
-#: homepage/views.py:113
+#: homepage/views.py:218
 msgid "Image upload failed."
 msgstr ""
 
-#: homepage/views.py:114
+#: homepage/views.py:219
 msgid "Save failed."
 msgstr ""
 
-#: homepage/views.py:115
+#: homepage/views.py:220
 msgid "Structure"
 msgstr ""
 
-#: homepage/views.py:116
+#: homepage/views.py:221
 msgid "Basic"
 msgstr ""
 
-#: homepage/views.py:118
+#: homepage/views.py:223
 msgid "2 columns"
 msgstr ""
 
-#: homepage/views.py:119
+#: homepage/views.py:224
 msgid "3 columns"
 msgstr ""
 
-#: homepage/views.py:120
+#: homepage/views.py:225
 msgid "Heading"
 msgstr ""
 
-#: homepage/views.py:121
+#: homepage/views.py:226
 msgid "Text"
 msgstr ""
 
-#: homepage/views.py:122
+#: homepage/views.py:227
 msgid "Your text here."
 msgstr ""
 
-#: homepage/views.py:123
+#: homepage/views.py:228
 msgid "Image"
 msgstr ""
 
-#: homepage/views.py:124
+#: homepage/views.py:229
 msgid "Button"
 msgstr ""
 
-#: homepage/views.py:125
+#: homepage/views.py:230
 msgid "Click here"
 msgstr ""
 
-#: homepage/views.py:126
+#: homepage/views.py:231
 msgid "Divider"
 msgstr ""
 
-#: homepage/views.py:127
+#: homepage/views.py:232
 msgid "Dimensions"
 msgstr ""
 
-#: homepage/views.py:128
+#: homepage/views.py:233
 msgid "Typography"
 msgstr ""
 
-#: homepage/views.py:129
+#: homepage/views.py:234
 msgid "Decorations"
 msgstr ""
 
-#: homepage/views.py:130
+#: homepage/views.py:235
 msgid "Extra"
 msgstr ""
 
@@ -511,7 +511,7 @@ msgstr ""
 msgid "Available languages"
 msgstr ""
 
-#: members/admin.py:148 members/models.py:765
+#: members/admin.py:148 members/models.py:785
 msgid "Languages available to users in the site language selector."
 msgstr ""
 
@@ -519,15 +519,15 @@ msgstr ""
 msgid "Default language"
 msgstr ""
 
-#: members/admin.py:155 members/models.py:775
+#: members/admin.py:155 members/models.py:795
 msgid "Default language for visitors. Must be one of the available languages."
 msgstr ""
 
-#: members/admin.py:192 members/models.py:808
+#: members/admin.py:192 members/models.py:828
 msgid "Select at least one available language."
 msgstr ""
 
-#: members/admin.py:197 members/models.py:813
+#: members/admin.py:197 members/models.py:833
 msgid "The default language must be one of the available languages."
 msgstr ""
 
@@ -567,37 +567,37 @@ msgstr ""
 msgid "Participant"
 msgstr ""
 
-#: members/constants.py:29 members/forms.py:32 members/forms.py:47
-#: members/forms.py:382 members/forms.py:409
+#: members/constants.py:29 members/forms.py:28 members/forms.py:43
+#: members/forms.py:377 members/forms.py:404
 #: messaging/templates/messaging/compose_all.html:54
 #: messaging/templates/messaging/message_detail.html:51
 msgid "Email"
 msgstr ""
 
-#: members/constants.py:30 members/filters.py:26 members/forms.py:236
-#: members/forms.py:249 members/forms.py:427 members/forms.py:568
+#: members/constants.py:30 members/filters.py:26 members/forms.py:232
+#: members/forms.py:245 members/forms.py:422 members/forms.py:507
 #: members/templates/members/admin_update.html:142
 #: members/templates/members/child_form.html:18
-#: members/templates/members/profile.html:119 members/views.py:174
+#: members/templates/members/profile.html:119 members/views.py:169
 msgid "First name"
 msgstr ""
 
-#: members/constants.py:31 members/filters.py:29 members/forms.py:237
-#: members/forms.py:250 members/forms.py:428 members/forms.py:569
+#: members/constants.py:31 members/filters.py:29 members/forms.py:233
+#: members/forms.py:246 members/forms.py:423 members/forms.py:508
 #: members/templates/members/admin_update.html:143
 #: members/templates/members/child_form.html:24
-#: members/templates/members/profile.html:120 members/views.py:175
+#: members/templates/members/profile.html:120 members/views.py:170
 msgid "Last name"
 msgstr ""
 
-#: members/constants.py:32 members/forms.py:238 members/forms.py:252
-#: members/forms.py:429 members/forms.py:570
+#: members/constants.py:32 members/forms.py:234 members/forms.py:248
+#: members/forms.py:424 members/forms.py:509
 #: members/templates/members/profile.html:75
 msgid "Address"
 msgstr ""
 
-#: members/constants.py:33 members/forms.py:239 members/forms.py:253
-#: members/forms.py:381 members/forms.py:430 members/forms.py:571
+#: members/constants.py:33 members/forms.py:235 members/forms.py:249
+#: members/forms.py:376 members/forms.py:425 members/forms.py:510
 msgid "Phone"
 msgstr ""
 
@@ -655,7 +655,7 @@ msgstr ""
 msgid "School year"
 msgstr ""
 
-#: members/filters.py:53 members/views.py:179
+#: members/filters.py:53 members/views.py:174
 msgid "Role"
 msgstr ""
 
@@ -663,88 +663,88 @@ msgstr ""
 msgid "All roles"
 msgstr ""
 
-#: members/forms.py:49
+#: members/forms.py:45
 msgid ""
 "If an email is provided, an account will be created. Otherwise, the existing "
 "account will be used."
 msgstr ""
 
-#: members/forms.py:57 members/forms.py:120
+#: members/forms.py:53 members/forms.py:116
 #: members/templates/members/admin_update.html:63
 msgid "Primary role"
 msgstr ""
 
-#: members/forms.py:64
+#: members/forms.py:60
 msgid "Secondary roles"
 msgstr ""
 
-#: members/forms.py:78
+#: members/forms.py:74
 msgid "Next section"
 msgstr ""
 
-#: members/forms.py:95 members/forms.py:99
+#: members/forms.py:91 members/forms.py:95
 #, python-format
 msgid "Section %(range)s"
 msgstr ""
 
-#: members/forms.py:148
+#: members/forms.py:144
 msgid ""
 "Only the 'Participant' and 'Animator' roles can be enrolled in a section."
 msgstr ""
 
-#: members/forms.py:240
+#: members/forms.py:236
 msgid "Photos allowed"
 msgstr ""
 
-#: members/forms.py:241
+#: members/forms.py:237
 msgid "Date of birth (only for participants)"
 msgstr ""
 
-#: members/forms.py:242
+#: members/forms.py:238
 msgid "Sex (only for participants)"
 msgstr ""
 
-#: members/forms.py:243 members/forms.py:251 members/forms.py:380
-#: members/forms.py:433 members/templates/members/child_form.html:32
+#: members/forms.py:239 members/forms.py:247 members/forms.py:375
+#: members/forms.py:428 members/templates/members/child_form.html:32
 msgid "Totem"
 msgstr ""
 
-#: members/forms.py:244 members/forms.py:431
+#: members/forms.py:240 members/forms.py:426
 msgid "Notes"
 msgstr ""
 
-#: members/forms.py:265 members/forms.py:575
+#: members/forms.py:261 members/forms.py:514
 #: members/templates/members/onboarding.html:17
 #: members/templates/members/profile.html:21
 #: members/templates/members/profile.html:28
 msgid "Account type"
 msgstr ""
 
-#: members/forms.py:272
+#: members/forms.py:268
 msgid "Active parent, I want to help the unit occasionally"
 msgstr ""
 
-#: members/forms.py:343 members/forms.py:605
+#: members/forms.py:339 members/forms.py:544
 msgid "A person of branch age can only be a Participant."
 msgstr ""
 
-#: members/forms.py:410
+#: members/forms.py:405
 msgid "If an email is provided, an account will be created for the child."
 msgstr ""
 
-#: members/forms.py:426 members/views.py:177
+#: members/forms.py:421 members/views.py:172
 msgid "Sex"
 msgstr ""
 
-#: members/forms.py:432 members/views.py:176
+#: members/forms.py:427 members/views.py:171
 msgid "Date of birth"
 msgstr ""
 
-#: members/forms.py:467
+#: members/forms.py:462
 msgid "This email already exists for another user"
 msgstr ""
 
-#: members/forms.py:499
+#: members/forms.py:503
 msgid "Secret key (6 characters)"
 msgstr ""
 
@@ -776,58 +776,54 @@ msgstr ""
 msgid "Sex is required for a participant."
 msgstr ""
 
-#: members/models.py:200
-msgid "Pending"
-msgstr ""
-
-#: members/models.py:211
+#: members/models.py:228
 msgid "linked sections"
 msgstr ""
 
-#: members/models.py:213
+#: members/models.py:230
 msgid "linked children"
 msgstr ""
 
-#: members/models.py:363
+#: members/models.py:380
 msgid "Language used for outgoing emails to this user."
 msgstr ""
 
-#: members/models.py:592
+#: members/models.py:609
 msgid "Calendar year from the start of the time period"
 msgstr ""
 
-#: members/models.py:600
+#: members/models.py:617
 #, python-format
 msgid "%(name)s — from %(start)s to %(end)s"
 msgstr ""
 
-#: members/models.py:658
+#: members/models.py:675
 msgid ""
 "Age of the youngest members of the section on December 31 of the school year"
 msgstr ""
 
-#: members/models.py:665
+#: members/models.py:682
 msgid ""
 "Age of the oldest members of the section on December 31 of the school year"
 msgstr ""
 
-#: members/models.py:670
+#: members/models.py:687
 #, python-format
 msgid "%(name)s (%(min)s-%(max)s years old)"
 msgstr ""
 
-#: members/models.py:783
+#: members/models.py:803
 msgid ""
 "Last school year (the « name » field) for which the automatic passage was "
 "executed. Anti-replay: if Celery was stopped on the passage day, the task "
 "catches up at the next startup."
 msgstr ""
 
-#: members/models.py:830
+#: members/models.py:850
 msgid "Important document"
 msgstr ""
 
-#: members/models.py:831 members/templates/members/documents.html:5
+#: members/models.py:851 members/templates/members/documents.html:5
 #: messaging/templates/messaging/compose.html:41
 #: messaging/templates/messaging/compose_all.html:33
 msgid "Important documents"
@@ -944,13 +940,12 @@ msgid ""
 "email confirmation request</a>."
 msgstr ""
 
-#: members/templates/account/login.html:6 templates/base.html:156
+#: members/templates/account/login.html:6 templates/base.html:159
 msgid "Log in"
 msgstr ""
 
 #: members/templates/account/login.html:38
 #: members/templates/account/signup.html:43
-#: members/templates/members/child_account.html:20
 #: messaging/templates/messaging/compose.html:78
 #: messaging/templates/messaging/compose_all.html:76
 msgid "Send"
@@ -1076,7 +1071,7 @@ msgid ""
 "a verification email in the next few minutes."
 msgstr ""
 
-#: members/templates/members/admin_list.html:4 templates/base.html:80
+#: members/templates/members/admin_list.html:4 templates/base.html:83
 msgid "Member management"
 msgstr ""
 
@@ -1104,7 +1099,7 @@ msgstr ""
 #: members/templates/members/admin_list.html:101
 #: members/templates/members/admin_update.html:155
 #: members/templates/members/admin_update.html:165
-#: members/templates/members/child_list.html:25
+#: members/templates/members/child_list.html:30
 msgid "Edit"
 msgstr ""
 
@@ -1152,38 +1147,9 @@ msgstr ""
 msgid "Parents"
 msgstr ""
 
-#: members/templates/members/child_account.html:5
-#, python-format
-msgid "Create an account for %(first_name)s"
-msgstr ""
-
-#: members/templates/members/child_account.html:9
-msgid ""
-"Create an account so your child can access their section's information and "
-"edit their own details."
-msgstr ""
-
-#: members/templates/members/child_account.html:11
-msgid ""
-"If they are over 18, they will also be able to detach their account from "
-"their parents', who will no longer receive information about them or "
-"membership fee reminders."
-msgstr ""
-
-#: members/templates/members/child_account.html:14
-msgid ""
-"An email will be sent to your child's address with a link. It will allow "
-"them to create a password and validate their account."
-msgstr ""
-
-#: members/templates/members/child_account_done.html:5
-msgid "Email sent"
-msgstr ""
-
-#: members/templates/members/child_account_done.html:9
-msgid ""
-"An email with a link has been sent to your child. They must click this link "
-"to finalize the creation of their account and set a password."
+#: members/templates/members/admin_update.html:152
+#: members/templates/members/child_list.html:15
+msgid "Pending"
 msgstr ""
 
 #: members/templates/members/child_form.html:8
@@ -1221,11 +1187,20 @@ msgstr ""
 msgid "Child's secret key"
 msgstr ""
 
-#: members/templates/members/child_list.html:18
+#: members/templates/members/child_list.html:19
 msgid "Deregister"
 msgstr ""
 
-#: members/templates/members/child_list.html:20
+#: members/templates/members/child_list.html:22
+#: members/templates/members/remove_child.html:17
+#: messaging/templates/messaging/compose.html:35
+#: messaging/templates/messaging/compose.html:82
+#: messaging/templates/messaging/compose_all.html:27
+#: messaging/templates/messaging/compose_all.html:80
+msgid "Remove"
+msgstr ""
+
+#: members/templates/members/child_list.html:25
 #: members/templates/members/dettach_child.html:15
 msgid "Detach"
 msgstr ""
@@ -1268,6 +1243,7 @@ msgid "Confirm that you want to detach %(first_name)s"
 msgstr ""
 
 #: members/templates/members/dettach_child.html:10
+#: members/templates/members/remove_child.html:10
 msgid "Back"
 msgstr ""
 
@@ -1281,6 +1257,40 @@ msgstr ""
 
 #: members/templates/members/documents.html:20
 msgid "No documents available."
+msgstr ""
+
+#: members/templates/members/mail_queue.html:4
+msgid "Email queue"
+msgstr ""
+
+#: members/templates/members/mail_queue.html:7
+msgid "Review outgoing emails that could not be delivered."
+msgstr ""
+
+#: members/templates/members/mail_queue.html:14
+msgid "Queued"
+msgstr ""
+
+#: members/templates/members/mail_queue.html:22
+msgid "Waiting for retry"
+msgstr ""
+
+#: members/templates/members/mail_queue.html:30
+msgid "Failed"
+msgstr ""
+
+#: members/templates/members/mail_queue.html:37
+msgid ""
+"Failed emails are no longer retried automatically. Requeue them to send "
+"again once the mail service is back, or purge them permanently."
+msgstr ""
+
+#: members/templates/members/mail_queue.html:46
+msgid "Requeue failed emails"
+msgstr ""
+
+#: members/templates/members/mail_queue.html:53
+msgid "Purge failed emails"
 msgstr ""
 
 #: members/templates/members/onboarding.html:5
@@ -1345,8 +1355,16 @@ msgstr ""
 msgid "Add an existing child with a key"
 msgstr ""
 
-#: members/templates/members/secondary_role.html:4
-msgid "Secondary role"
+#: members/templates/members/remove_child.html:5
+#, python-format
+msgid "Confirm that you want to remove %(first_name)s"
+msgstr ""
+
+#: members/templates/members/remove_child.html:13
+#, python-format
+msgid ""
+"This will permanently delete %(first_name)s and their account. This cannot "
+"be undone."
 msgstr ""
 
 #: members/templates/socialaccount/signup.html:5
@@ -1360,31 +1378,36 @@ msgid ""
 "the form below to finalize your registration."
 msgstr ""
 
-#: members/views.py:149
+#: members/views.py:144
 #, python-format
 msgid "%(age)s years old — branch %(branch)s: %(min)s-%(max)s years old"
 msgstr ""
 
-#: members/views.py:378 members/views.py:448
+#: members/views.py:320
+#, python-format
+msgid "%(first)s %(last)s is already attached to your account."
+msgstr ""
+
+#: members/views.py:371 members/views.py:441
 #, python-format
 msgid "%(first)s %(last)s added."
 msgstr ""
 
-#: members/views.py:390 members/views.py:402
+#: members/views.py:383 members/views.py:395
 msgid "Invalid request"
 msgstr ""
 
-#: members/views.py:416
+#: members/views.py:409
 #, python-format
 msgid "%(first)s modified."
 msgstr ""
 
-#: members/views.py:465
+#: members/views.py:458
 #, python-format
 msgid "%(first)s is not attached to your account."
 msgstr ""
 
-#: members/views.py:470
+#: members/views.py:463
 #, python-format
 msgid ""
 "You cannot detach %(first)s.\n"
@@ -1394,19 +1417,35 @@ msgid ""
 "%(first)s was born on %(birthday)s and %(has_account)s."
 msgstr ""
 
-#: members/views.py:479
+#: members/views.py:472
 msgid "has an account"
 msgstr ""
 
-#: members/views.py:479
+#: members/views.py:472
 msgid "does not have an account"
 msgstr ""
 
-#: members/views.py:483
+#: members/views.py:476
 #, python-format
 msgid ""
 "To confirm that you want to detach %(first)s from your account, click "
 "\"Detach\"."
+msgstr ""
+
+#: members/views.py:539
+#, python-format
+msgid ""
+"%(first)s is assigned to a section and must be deregistered, not removed."
+msgstr ""
+
+#: members/views.py:597
+#, python-format
+msgid "%(count)s email(s) requeued."
+msgstr ""
+
+#: members/views.py:601
+#, python-format
+msgid "%(count)s email(s) purged."
 msgstr ""
 
 #: messaging/forms.py:7
@@ -1477,17 +1516,17 @@ msgstr ""
 msgid "ignored"
 msgstr ""
 
-#: messaging/templates/messaging/_recipient_list.html:12
+#: messaging/templates/messaging/_recipient_list.html:17
 msgid "Info"
 msgstr ""
 
-#: messaging/templates/messaging/_recipient_list.html:29
+#: messaging/templates/messaging/_recipient_list.html:43
 msgid "No recipient found."
 msgstr ""
 
 #: messaging/templates/messaging/animateur_history.html:3
-#: messaging/templates/messaging/section_history.html:3 templates/base.html:87
-#: templates/base.html:100
+#: messaging/templates/messaging/section_history.html:3 templates/base.html:90
+#: templates/base.html:103
 msgid "Message history"
 msgstr ""
 
@@ -1497,8 +1536,8 @@ msgstr ""
 
 #: messaging/templates/messaging/animateur_history.html:7
 #: messaging/templates/messaging/compose.html:3
-#: messaging/templates/messaging/compose_all.html:3 templates/base.html:86
-#: templates/base.html:99
+#: messaging/templates/messaging/compose_all.html:3 templates/base.html:89
+#: templates/base.html:102
 msgid "Send a message"
 msgstr ""
 
@@ -1513,7 +1552,7 @@ msgstr ""
 
 #: messaging/templates/messaging/animateur_history.html:27
 #: messaging/templates/messaging/compose_all.html:4
-#: messaging/templates/messaging/message_detail.html:20 messaging/views.py:358
+#: messaging/templates/messaging/message_detail.html:20 messaging/views.py:466
 msgid "All members"
 msgstr ""
 
@@ -1528,13 +1567,6 @@ msgstr ""
 #: messaging/templates/messaging/compose.html:31
 #: messaging/templates/messaging/compose_all.html:23
 msgid "Attachments (optional, max 10)"
-msgstr ""
-
-#: messaging/templates/messaging/compose.html:35
-#: messaging/templates/messaging/compose.html:82
-#: messaging/templates/messaging/compose_all.html:27
-#: messaging/templates/messaging/compose_all.html:80
-msgid "Remove"
 msgstr ""
 
 #: messaging/templates/messaging/compose.html:42
@@ -1588,70 +1620,81 @@ msgstr ""
 msgid "No message."
 msgstr ""
 
-#: messaging/views.py:248
+#: messaging/views.py:338
 msgid ""
 "\n"
 "\n"
 "Important documents:\n"
 msgstr ""
 
-#: messaging/views.py:273
+#: messaging/views.py:363
 msgid "You are not enrolled in any section this year."
 msgstr ""
 
-#: messaging/views.py:377
+#: messaging/views.py:485
 #, python-format
 msgid "Message sent to %(count)s recipient(s)."
 msgstr ""
 
-#: templates/base.html:52
+#: templates/base.html:55
 msgid "Toggle navigation"
 msgstr ""
 
-#: templates/base.html:60
+#: templates/base.html:63
 msgid "Sections"
 msgstr ""
 
-#: templates/base.html:65
+#: templates/base.html:68
 msgid "No section"
 msgstr ""
 
-#: templates/base.html:77
+#: templates/base.html:80
 msgid "Administration"
 msgstr ""
 
-#: templates/base.html:97
+#: templates/base.html:100
 msgid "Animator tools"
 msgstr ""
 
-#: templates/base.html:117
+#: templates/base.html:120
 msgid "Toggle dropdown"
 msgstr ""
 
-#: templates/base.html:121
+#: templates/base.html:124
 msgid "My profile"
 msgstr ""
 
-#: templates/base.html:124
+#: templates/base.html:127
 msgid "My documents"
 msgstr ""
 
-#: templates/base.html:128
+#: templates/base.html:131
 msgid "Site administration"
 msgstr ""
 
-#: templates/base.html:131
+#: templates/base.html:134
 msgid "Edit homepage"
 msgstr ""
 
-#: templates/base.html:150
+#: templates/base.html:153
 msgid "Log out"
 msgstr ""
 
-#: templates/base.html:155
+#: templates/base.html:158
 msgid "Sign up"
 msgstr ""
 
-#: templates/base.html:170
+#: templates/base.html:173
 msgid "Language"
+msgstr ""
+
+#: templates/base.html:198
+#, python-format
+msgid "%(counter)s email could not be sent."
+msgid_plural "%(counter)s emails could not be sent."
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/base.html:204
+msgid "Manage"
 msgstr ""

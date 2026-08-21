@@ -537,6 +537,25 @@ TRANSLATIONS = {
     'Select at least one available language.': ("Sélectionnez au moins une langue disponible.", "Selecteer minstens één beschikbare taal."),
     'The default language must be one of the available languages.': ("La langue par défaut doit faire partie des langues disponibles.", "De standaardtaal moet een van de beschikbare talen zijn."),
 
+    # --- email queue ---
+    "Email queue": ("File d'attente des e-mails", "E-mailwachtrij"),
+    "Review outgoing emails that could not be delivered.": (
+        "Consultez les e-mails sortants qui n'ont pas pu être envoyés.",
+        "Bekijk uitgaande e-mails die niet konden worden bezorgd.",
+    ),
+    "Queued": ("En file d'attente", "In wachtrij"),
+    "Waiting for retry": ("En attente de nouvel essai", "Wachten op nieuwe poging"),
+    "Failed": ("En échec", "Mislukt"),
+    "Failed emails are no longer retried automatically. Requeue them to send again once the mail service is back, or purge them permanently.": (
+        "Les e-mails en échec ne sont plus réessayés automatiquement. Remettez-les en file pour les renvoyer une fois le service de messagerie rétabli, ou purgez-les définitivement.",
+        "Mislukte e-mails worden niet langer automatisch opnieuw verzonden. Zet ze opnieuw in de wachtrij om ze te versturen zodra de mailservice terug werkt, of verwijder ze permanent.",
+    ),
+    "Requeue failed emails": ("Remettre en file les e-mails en échec", "Mislukte e-mails opnieuw in de wachtrij"),
+    "Purge failed emails": ("Purger les e-mails en échec", "Mislukte e-mails verwijderen"),
+    "%(count)s email(s) requeued.": ("%(count)s e-mail(s) remis en file.", "%(count)s e-mail(s) opnieuw in de wachtrij."),
+    "%(count)s email(s) purged.": ("%(count)s e-mail(s) purgé(s).", "%(count)s e-mail(s) verwijderd."),
+    "Manage": ("Gérer", "Beheren"),
+
 }
 
 
@@ -545,6 +564,10 @@ PLURALS = {
     "%(counter)s adult with an unpaid balance.": (
         ("%(counter)s adulte avec un solde impayé.", "%(counter)s adultes avec un solde impayé."),
         ("%(counter)s volwassene met een openstaand saldo.", "%(counter)s volwassenen met een openstaand saldo."),
+    ),
+    "%(counter)s email could not be sent.": (
+        ("%(counter)s e-mail n'a pas pu être envoyé.", "%(counter)s e-mails n'ont pas pu être envoyés."),
+        ("%(counter)s e-mail kon niet worden verzonden.", "%(counter)s e-mails konden niet worden verzonden."),
     ),
 }
 

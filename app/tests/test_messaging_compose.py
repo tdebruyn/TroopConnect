@@ -1,4 +1,4 @@
-from django.test import Client, TestCase
+from django.test import Client
 
 from members.models import (
     Account,
@@ -10,12 +10,14 @@ from members.models import (
     Section,
 )
 from messaging.models import SectionMessage
+from tests.mail import MailTestCase
 
 
-class ComposeRecipientAccumulationTest(TestCase):
+class ComposeRecipientAccumulationTest(MailTestCase):
     """Loading several recipient groups accumulates instead of replacing."""
 
     def setUp(self):
+        super().setUp()
         self.client = Client()
         self.current_year = SchoolYear.current()
 
@@ -209,8 +211,9 @@ class ComposeRecipientAccumulationTest(TestCase):
         self.assertNotIn(f'value="section_parents:{self.other_section.pk}"', html)
 
 
-class ComposeEmptyGroupTest(TestCase):
+class ComposeEmptyGroupTest(MailTestCase):
     def setUp(self):
+        super().setUp()
         self.client = Client()
         self.current_year = SchoolYear.current()
         self.role_ar = Role.objects.get(short="ar")
