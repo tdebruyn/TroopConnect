@@ -1,0 +1,56 @@
+{% extends "members/base.html" %}
+{% load i18n %}
+{% block hat_title %}
+  {% trans "Email queue" %}
+{% endblock hat_title %}
+{% block hat_text %}
+  {% trans "Review outgoing emails that could not be delivered." %}
+{% endblock hat_text %}
+{% block subcontent %}
+  <div class="row mb-4">
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm mb-3">
+        <div class="card-body text-center">
+          <div class="text-muted">{% trans "Queued" %}</div>
+          <div class="display-5">{{ queued_count }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm mb-3">
+        <div class="card-body text-center">
+          <div class="text-muted">{% trans "Waiting for retry" %}</div>
+          <div class="display-5">{{ requeued_count }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm mb-3">
+        <div class="card-body text-center">
+          <div class="text-muted">{% trans "Failed" %}</div>
+          <div class="display-5">{{ failed_count }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p>
+    {% trans "Failed emails are no longer retried automatically. Requeue them to send again once the mail service is back, or purge them permanently." %}
+  </p>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit"
+            name="action"
+            value="requeue"
+            class="btn btn-primary me-2"
+            {% if not failed_count %}disabled{% endif %}>
+      {% trans "Requeue failed emails" %}
+    </button>
+    <button type="submit"
+            name="action"
+            value="purge"
+            class="btn btn-outline-danger"
+            {% if not failed_count %}disabled{% endif %}>
+      {% trans "Purge failed emails" %}
+    </button>
+  </form>
+{% endblock subcontent %}

@@ -63,3 +63,18 @@ def nav_sections(request):
         "branch__name", "name"
     )
     return {"nav_sections": sections}
+
+
+def mail_queue_status(request):
+    """Expose the failed-email count to staff for the queue warning banner."""
+    if not (
+        hasattr(request, "user")
+        and request.user.is_authenticated
+        and request.user.is_staff
+    ):
+        return {}
+    from post_office.models import STATUS, Email
+
+    return {
+        "failed_mail_count": Email.objects.filter(status=STATUS.failed).count(),
+    }

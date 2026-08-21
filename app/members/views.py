@@ -2,6 +2,7 @@ import json
 
 # from django.contrib.auth import get_user_model
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.sites.models import Site
 from django.http import Http404, HttpResponse, HttpResponseBadRequest
@@ -10,6 +11,7 @@ from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
 from django.views.generic import ListView, TemplateView, UpdateView
 from post_office import mail
+from post_office.models import STATUS, Email
 
 from .constants import (
     ERROR_MESSAGES,
@@ -566,3 +568,35 @@ class DocumentListView(LoginRequiredMixin, ListView):
     model = ImportantDocument
     template_name = "members/documents.html"
     context_object_name = "documents"
+
+
+class MailQueueView(UserPassesTestMixin, TemplateView):
+    """Staff view to monitor and recover the post_office email queue."""
+
+    template_name = "members/mail_queue.html"
+
+    def test_func(self):
+        return self.request.user.is_staff
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["queued_count"] = Email.objects.filter(status=STATUS.queued).count()
+        context["requeued_count"] = Email.objects.filter(status=STATUS.requeued).count()
+        context["failed_count"] = Email.objects.filter(status=STATUS.failed).count()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        action = request.POST.get("action")
+        if action == "requeue":
+            count = Email.objects.filter(status=STATUS.failed).update(
+                status=STATUS.queued,
+                number_of_retries=0,
+                scheduled_time=None,
+            )
+            messages.success(
+                request, _("%(count)s email(s) requeued.") % {"count": count}
+            )
+        elif action == "purge":
+            count, _deleted = Email.objects.filter(status=STATUS.failed).delete()
+            messages.success(request, _("%(count)s email(s) purged.") % {"count": count})
+        return redirect("members:mail_queue")

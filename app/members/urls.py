@@ -48,4 +48,5 @@ urlpatterns = [
         name="remove_child_confirm",
     ),
     path("documents/", views.DocumentListView.as_view(), name="documents"),
+    path("mailqueue", views.MailQueueView.as_view(), name="mail_queue"),
 ]
