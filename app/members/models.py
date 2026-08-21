@@ -183,21 +183,21 @@ class Person(models.Model):
         return True
 
     def get_section(self):
-        # Returns the current section enrollment for the person.
-        # If no enrollment exists for the current year, returns next year's enrollment with the year between parentheses.
-        # If no enrollment exists for the next year, returns None.
+        """Return the person's current section, else next year's, else None.
 
+        Templates render "Pending" themselves when this returns None.
+        """
         current_year = SchoolYear.current()
-        enrollment = self.enrollment_set.filter(school_year=current_year).first()
-        if enrollment:
-            return enrollment.section
-        else:
-            next_year = SchoolYear.next_school_year()
+        if current_year:
+            enrollment = self.enrollment_set.filter(school_year=current_year).first()
+            if enrollment:
+                return enrollment.section
+        next_year = SchoolYear.next_school_year()
+        if next_year:
             enrollment = self.enrollment_set.filter(school_year=next_year).first()
             if enrollment:
-                return f"{enrollment.section} ({next_year.range})"
-
-        return {"name": _("Pending")}
+                return enrollment.section
+        return None
 
     @property
     def has_section(self) -> bool:
@@ -722,11 +722,14 @@ class Enrollment(models.Model):
 
 
 def get_registration_admins():
-    # Get the list of Person who's roles includes "Responsable inscriptions",
-    # "Animateur responsable" or "Admin"
-    # and return a list of their emails address found in the Account corresponding to the Person
-    admin_role_names = ["Responsable inscriptions", "Animateur responsable", "Admin"]
-    admins = Person.objects.filter(roles__name__in=admin_role_names).distinct()
+    """Return the email addresses of the registration admins.
+
+    Registration admins hold the "Responsable inscriptions" (ri),
+    "Animateur responsable" (ar) or "Admin" (ad) secondary roles. Matching on
+    the role short code (not the translated name) keeps this correct across
+    languages.
+    """
+    admins = Person.objects.filter(roles__short__in=["ri", "ar", "ad"]).distinct()
     admins_accounts = Account.objects.filter(person__in=admins)
     return [admin.email for admin in admins_accounts]
 

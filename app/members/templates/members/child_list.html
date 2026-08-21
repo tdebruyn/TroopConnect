@@ -12,7 +12,7 @@
       <td>
          <span id="textToCopy">{{ child.secret_key }}</span>
       </td>
-      <td>{{ child.get_section.name }}</td>
+      <td>{% with section=child.get_section %}{% if section %}{{ section.name }}{% else %}{% trans "Pending" %}{% endif %}{% endwith %}</td>
       <td>
          {% if child.has_section %}
          <a class="btn btn-outline-danger btn-sm"

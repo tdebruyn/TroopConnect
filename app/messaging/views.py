@@ -28,7 +28,7 @@ def _get_animateur_person(user):
     if not hasattr(user, "person"):
         return None
     person = user.person
-    if person.primary_role.short not in ["a", "ar"]:
+    if person.primary_role.short != "a":
         return None
     return person
 
@@ -508,11 +508,9 @@ def compose_message(request):
 
 @login_required
 def animateur_history(request):
-    person = _get_animateur_person(request.user)
-    if person is None and not _can_send_all(request.user):
+    person = getattr(request.user, "person", None)
+    if person is None or not _is_authorized(request.user):
         raise Http404
-
-    person = request.user.person
 
     sent_messages = (
         SectionMessage.objects.filter(sender=person)

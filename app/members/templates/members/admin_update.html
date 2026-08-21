@@ -148,7 +148,7 @@
                         <tr id="child-{{ child.pk }}" class="child-row">
                             <td>{{ child.first_name }}</td>
                             <td>{{ child.last_name }}</td>
-                            <td>{{ child.get_section.name }}</td>
+                            <td>{% with section=child.get_section %}{% if section %}{{ section.name }}{% else %}{% trans "Pending" %}{% endif %}{% endwith %}</td>
                             <td>
                                 <a class="btn btn-primary btn-sm"
                                    href="{% url 'members:admin_update' pk=child.pk %}">{% trans "Edit" %}</a>
