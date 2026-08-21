@@ -54,13 +54,16 @@ Package management uses `uv` (not pip directly). Dependencies are pinned in `app
 - Templates in `app/templates/` (project-level) and per-app `templates/` dirs.
 
 ### Email Pipeline
-- `django-post_office` queues emails (Celery-integrated)
-- `django-ses` sends via AWS SES
-- Email backend: `post_office.EmailBackend` wrapping `django_ses.SESBackend`
+- `django-post_office` queues emails. `POST_OFFICE["DEFAULT_PRIORITY"]="medium"`, so `mail.send()` creates a queued `Email` instead of dispatching synchronously.
+- Flushed asynchronously by Celery: the `send_queued_mail` beat task (every 5 min) plus the `email_queued` signal (with `CELERY_ENABLED`).
+- Sending backend is chosen by `MAIL_SEND_MODE` (`.settings.json`): `"real"` → MailerSend HTTP API (`troopconnect/mailersend_backend.py`), `"dummy"` → `troopconnect/dummy_backend.py` (records to `django.core.mail.outbox`). Defaults to `"real"` when `MAILERSEND_API_KEY` is set.
+- Failed sends (after `MAX_RETRIES=3`) trigger a staff warning banner linking to the email queue page (`members:mail_queue`), where staff can **requeue** or **purge** failed emails.
+- `MAILERSEND_API_KEY` comes from a gitignored `.env` (referenced via `${MAILERSEND_API_KEY}` in docker-compose).
 
 ### Secrets & Config
 - Secrets loaded from `app/troopconnect/.settings.json` (gitignored). Template at `.settings.json-default`.
 - DB password from `POSTGRES_PASSWORD` env var.
+- `MAILERSEND_API_KEY` from a gitignored `.env` at the repo root.
 - `ALLOWED_HOSTS` is set based on `DEBUG` flag: localhost in dev, `troop.tomctl.be` in prod.
 
 ## Deployment
@@ -79,5 +82,5 @@ ansible-playbook -i deploy/ansible/inventory.ini deploy/ansible/playbook.yml
 - Test suite lives in `app/tests/` (plus per-app `tests.py` for `finance`/`homepage`). `manage.py test tests` also runs a ruff lint check (`tests/test_lint.py`); linter config is `app/ruff.toml`.
 - No CI/CD pipelines configured.
 - `django-simple-history` is installed but not actively used on models.
-- `members/signals.py` exists but is entirely commented out.
+- `members/signals.py` defines a `post_save` handler but is never imported (`members/apps.py` `ready()` is `pass`), so it is dead.
 - The SQLite files (`db.sqlite3`) are legacy; the project uses PostgreSQL exclusively.
