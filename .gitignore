@@ -10,6 +10,7 @@ vault.yml
 dump.rdb
 config.yml
 .settings.json
+.env
 Caddyfile
 __pypackages__
 .python-version

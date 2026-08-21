@@ -36,7 +36,7 @@ services:
       - DEBUG=True
       - POSTGRES_PASSWORD=localpassword
       - POSTGRES_USER=dbuser
-      - MAILERSEND_API_KEY="mlsn.8adc88bf825a8880e8f86a7cf551f97810f9a57b33e4006160750342164b7500"
+      - MAILERSEND_API_KEY=${MAILERSEND_API_KEY}
     depends_on:
       - postgres
       - redis
@@ -58,7 +58,7 @@ services:
       - POSTGRES_HOST=postgres
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CELERY_WORKER_STATE_DB=/tmp/celery-worker-state.db
-      - MAILERSEND_API_KEY="mlsn.8adc88bf825a8880e8f86a7cf551f97810f9a57b33e4006160750342164b7500"
+      - MAILERSEND_API_KEY=${MAILERSEND_API_KEY}
     depends_on:
       - postgres
       - redis

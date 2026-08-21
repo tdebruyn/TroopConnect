@@ -6,5 +6,6 @@
   "AWS_SES_REGION_ENDPOINT": "",
   "DEFAULT_FROM_EMAIL": "",
   "ALIAS_EMAIL": "",
-  "CONTACT_EMAIL": ""
+  "CONTACT_EMAIL": "",
+  "MAIL_SEND_MODE": "real"
 }

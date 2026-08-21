@@ -100,6 +100,7 @@ TEMPLATES = [
                 "members.context_processors.contact_info",
                 "members.context_processors.nav_sections",
                 "messaging.context_processors.is_animateur",
+                "members.context_processors.mail_queue_status",
             ],
         },
     },
@@ -213,11 +214,27 @@ AUTH_USER_MODEL = "members.Account"
 
 MAILERSEND_API_KEY = os.environ.get("MAILERSEND_API_KEY", "")
 EMAIL_BACKEND = "post_office.EmailBackend"
+
+# "real" sends through MailerSend; "dummy" records emails without sending
+# (for testing / when no mail service is configured). Defaults to real when
+# an API key is present, otherwise dummy.
+MAIL_SEND_MODE = secret_settings.get(
+    "MAIL_SEND_MODE", "real" if MAILERSEND_API_KEY else "dummy"
+)
+
 POST_OFFICE = {
     "BACKENDS": {
-        "default": "troopconnect.mailersend_backend.MailerSendBackend",
+        "default": (
+            "troopconnect.mailersend_backend.MailerSendBackend"
+            if MAIL_SEND_MODE == "real"
+            else "troopconnect.dummy_backend.DummyEmailBackend"
+        ),
     },
-    "DEFAULT_PRIORITY": "now",
+    # Queue emails (status "queued") instead of dispatching synchronously;
+    # Celery flushes them (immediate on queue, plus the 5-minute beat backstop).
+    "DEFAULT_PRIORITY": "medium",
+    # Retry a failed send a few times before marking it "failed" and warning.
+    "MAX_RETRIES": 3,
     "CELERY_ENABLED": True,
 }
 
