@@ -1,12 +1,8 @@
 
-from allauth.account.forms import ResetPasswordForm, ResetPasswordKeyForm, SignupForm
-from allauth.account.models import EmailConfirmation
-from allauth.account.utils import filter_users_by_email, user_pk_to_url_str
+from allauth.account.forms import ResetPasswordForm, SignupForm
 from django import forms
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
-from django.contrib.auth.tokens import default_token_generator
 from django.core.exceptions import ValidationError
-from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from .constants import (
@@ -505,71 +501,6 @@ class ChildForm(forms.ModelForm):
 
 class ChildFromKey(forms.Form):
     secret_key = forms.CharField(max_length=6, label=_("Secret key (6 characters)"))
-
-
-class ChildAccountCreateForm(ResetPasswordForm):
-    def __init__(self, *args, **kwargs):
-        child = kwargs.pop("child_user", None)
-        self.user = Person.objects.get(username=child)
-        super(ResetPasswordForm, self).__init__(*args, **kwargs)
-
-    # def _send_password_reset_mail(self, request, email, users, **kwargs):
-    #     token_generator = kwargs.get("token_generator", default_token_generator)
-
-    #     temp_key = token_generator.make_token(self.user)
-
-    #     # save it to the password reset model
-    #     # password_reset = PasswordReset(user=user, temp_key=temp_key)
-    #     # password_reset.save()
-
-    #     # send the password reset email
-    #     uid = user_pk_to_url_str(self.user)
-    #     path = reverse(
-    #         "members:child_account_create_confirm",
-    #         kwargs=dict(uidb36=uid, key=temp_key),
-    #     )
-    #     url = build_absolute_uri(request, path)
-
-    #     context = {
-    #         "current_site": get_current_site(request),
-    #         "user": self.user,
-    #         "password_reset_url": url,
-    #         "uid": uid,
-    #         "key": temp_key,
-    #         "request": request,
-    #     }
-
-    #     context["username"] = user_username(self.user)
-    #     get_adapter(request).send_mail(
-    #         "account/email/create_child_account", email, context
-    #     )
-
-
-class ChildAccountCreateConfirmForm(ResetPasswordKeyForm):
-    def save(self, request, **kwargs):
-        email = self.cleaned_data["email"]
-        for user in filter_users_by_email(email):
-            self.create_password_and_verify_email(request, user)
-
-    def create_password_and_verify_email(self, request, user):
-        # Mark the email address as verified
-        user.emailaddress_set.update(verified=True)
-
-        # Create the email confirmation object
-        email_address = user.emailaddress_set.get(email=user.email)
-        email_confirmation = EmailConfirmation.create(email_address)
-        email_confirmation.sent = timezone.now()
-        email_confirmation.save()
-
-        # Use the default token generator to create a token for the password reset
-        temp_key = default_token_generator.make_token(user)
-
-        # Send the email confirmation
-        email_address.send_confirmation(request, signup=False)
-
-        # Update the user's password reset key with the temporary key
-        user_pk = user_pk_to_url_str(user)
-        request.session[f"password_reset_key_{user_pk}"] = temp_key
 
 
 class OnboardingForm(forms.Form):

@@ -23,12 +23,6 @@ app_name = "members"
 urlpatterns = [
     path("onboarding/", views.OnboardingView.as_view(), name="onboarding"),
     path("profile/<uuid:pk>/", views.ProfileView.as_view(), name="profile"),
-    path("load-secondary-role/", views.load_secondary_role, name="load_secondary_role"),
-    path(
-        "get_secondary_role_label/",
-        views.get_secondary_role_label,
-        name="get_secondary_role_label",
-    ),
     path("addnewchild", views.add_new_child_view, name="add_new_child"),
     path("addchildkey", views.add_child_key_view, name="add_key_child"),
     path("children", views.child_list, name="child_list"),
@@ -52,21 +46,6 @@ urlpatterns = [
         "remove_confirm/<str:pk>",
         views.remove_child_confirm,
         name="remove_child_confirm",
-    ),
-    path(
-        "childaccountcreate/<str:pk>",
-        views.ChildAccountCreate.as_view(),
-        name="child_account_create",
-    ),
-    path(
-        "childaccountcreateconfirm/<str:uidb36>/<str:key>/",
-        views.ChildAccountCreateConfirm.as_view(),
-        name="child_account_create_confirm",
-    ),
-    path(
-        "childaccountcreatedone",
-        views.ChildAccountCreateDone.as_view(),
-        name="child_account_create_done",
     ),
     path("documents/", views.DocumentListView.as_view(), name="documents"),
 ]

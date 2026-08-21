@@ -1,11 +1,6 @@
 import json
 
 # from django.contrib.auth import get_user_model
-from allauth.account.views import (
-    PasswordResetDoneView,
-    PasswordResetFromKeyView,
-    PasswordResetView,
-)
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.sites.models import Site
@@ -23,8 +18,6 @@ from .filters import PersonFilter
 from .forms import (
     AdminUserUpdateForm,
     AnimeProfileForm,
-    ChildAccountCreateConfirmForm,
-    ChildAccountCreateForm,
     ChildForm,
     ChildFromKey,
     OnboardingForm,
@@ -307,32 +300,6 @@ class ProfileView(LoginRequiredMixin, UpdateView):
     #     return super().form_valid(form)
 
 
-class ChildAccountCreate(PasswordResetView):
-    template_name = "members/child_account.html"
-    success_url = reverse_lazy("members:child_account_create_done")
-    form_class = ChildAccountCreateForm
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs["child_user"] = self.kwargs.get("pk")  # Pass the "pk" value to the form
-        return kwargs
-
-    def get_email_confirmation_redirect_url(self):
-        return reverse_lazy("members:child_account_create_confirm")
-
-
-class ChildAccountCreateConfirm(PasswordResetFromKeyView):
-    form_class = ChildAccountCreateConfirmForm
-
-    def form_valid(self, form):
-        form.save(self.request)
-        return super().form_valid(form)
-
-
-class ChildAccountCreateDone(PasswordResetDoneView):
-    template_name = "members/child_account_done.html"
-
-
 def add_new_child_view(request):
     form = ChildForm()
     if request.method == "POST":
@@ -512,12 +479,6 @@ def dettach_child(request, pk):
     )
 
 
-def load_secondary_role(request):
-    primary = request.GET.get("primary_role")
-    form = ProfileEditForm(primary_role_value=primary)
-    return render(request, "secondary_role.html", {"form": form})
-
-
 def dettach_confirm(request, pk):
     child = get_object_or_404(Person, id=pk)
     parent = request.user.person
@@ -599,23 +560,6 @@ def remove_child_confirm(request, pk):
 
 #     def get_queryset(self):
 #         return CustomUser.objects.filter(username=self.request.user)
-
-
-# TODO: get_secondary_role_label is a half-removed feature — it is wired into
-# members/urls.py, but the constants it uses (PARENT_ROLE, ROLE_LABELS,
-# SECONDARY_ROLE_LABEL_TEMPLATE) were commented out in members/constants.py, so
-# this view raises NameError if hit. Decide whether to finish removing it or to
-# restore the constants.
-def get_secondary_role_label(request):
-    primary_role = request.GET.get("primary_role", PARENT_ROLE)  # noqa: F821
-
-    if primary_role == PARENT_ROLE:  # noqa: F821
-        role_label = ROLE_LABELS["ACTIVE_PARENT_ROLE"]  # noqa: F821
-    else:
-        role_label = ROLE_LABELS["RESPONSIBLE_ANIMATOR_ROLE"]  # noqa: F821
-
-    label = SECONDARY_ROLE_LABEL_TEMPLATE.format(role=role_label)  # noqa: F821
-    return HttpResponse(label)
 
 
 class DocumentListView(LoginRequiredMixin, ListView):
