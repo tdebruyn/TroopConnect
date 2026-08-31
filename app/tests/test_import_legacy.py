@@ -180,3 +180,16 @@ class ImportLegacyTest(TestCase):
         # Section sex is inferred from the code.
         self.assertEqual(Section.objects.get(name="Petit Bonheur").sex, "B")
         self.assertEqual(Section.objects.get(name="Route").sex, "B")
+
+    def test_dry_run_imports_nothing(self):
+        path = _source_db()
+        try:
+            call_command("import_legacy", path, dry_run=True)
+        finally:
+            os.remove(path)
+
+        # A dry run reports what it would do but persists nothing.
+        self.assertEqual(Person.objects.count(), 0)
+        self.assertEqual(Account.objects.count(), 0)
+        self.assertEqual(Payment.objects.count(), 0)
+        self.assertEqual(Enrollment.objects.count(), 0)

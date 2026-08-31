@@ -16,6 +16,7 @@ the SQLite file directly and rebuilds the data into the current models:
 
 Usage:
     manage.py import_legacy /path/to/db21sv_20240520.sqlite
+    manage.py import_legacy /path/to/db21sv_20240520.sqlite --dry-run
 
 Designed for a freshly-migrated database (roles/branches/school years from
 migrations are reused via get_or_create).  The whole import runs inside a
@@ -49,14 +50,14 @@ from members.models import (
 # --- Static mapping tables (edit these to adjust the import) -----------------
 
 # Scout age branches.  min/max are ages on 31 Dec of the school year.
-# Route has no real upper bound; we cap it so the passage task can still
-# "age out" members who grow past the oldest branch.
+# Route has no upper limit, and there is no automatic passage from Pionniers
+# to Route — a member only reaches Route through a manual section change.
 BRANCHES = [
     ("Baladins", 6, 8),
     ("Louveteaux", 8, 12),
     ("Éclaireurs", 12, 16),
     ("Pionniers", 16, 18),
-    ("Route", 18, 25),
+    ("Route", 18, None),
 ]
 
 # Legacy section code -> (branch name, sex).  `None` marks the pseudo-sections
@@ -104,6 +105,11 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument("sqlite_path", help="Path to the legacy .sqlite file.")
+        parser.add_argument(
+            "--dry-run",
+            action="store_true",
+            help="Run the import and print the summary, but roll back all changes.",
+        )
 
     @transaction.atomic
     def handle(self, *args, **options):
@@ -111,7 +117,16 @@ class Command(BaseCommand):
         conn = sqlite3.connect(path)
         conn.row_factory = sqlite3.Row
         try:
+            if options["dry_run"]:
+                self.stdout.write(
+                    self.style.WARNING("DRY RUN — no changes will be committed.")
+                )
             self._import(conn)
+            if options["dry_run"]:
+                transaction.set_rollback(True)
+                self.stdout.write(
+                    self.style.WARNING("Dry run finished; all changes rolled back.")
+                )
         finally:
             conn.close()
 
