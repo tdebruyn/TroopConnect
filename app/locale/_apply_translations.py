@@ -556,6 +556,133 @@ TRANSLATIONS = {
     "%(count)s email(s) purged.": ("%(count)s e-mail(s) purgé(s).", "%(count)s e-mail(s) verwijderd."),
     "Manage": ("Gérer", "Beheren"),
 
+    # --- attestations wizard ---
+    "Attestations": ("Attestations", "Attesten"),
+    "Upload, sign and email attestation PDFs.": (
+        "Téléversez, signez et envoyez des PDF d'attestation.",
+        "Upload, onderteken en verstuur attest-PDF's.",
+    ),
+    "New campaign": ("Nouvelle campagne", "Nieuwe campagne"),
+    "Items": ("Éléments", "Items"),
+    "Created": ("Créée", "Aangemaakt"),
+    "Review": ("Revoir", "Beoordelen"),
+    "No campaign yet.": ("Aucune campagne pour le moment.", "Nog geen campagne."),
+    "Attestation campaign": ("Campagne d'attestations", "Attestcampagne"),
+    "Attestation campaigns": ("Campagnes d'attestations", "Attestcampagnes"),
+    "Attestation item": ("Élément d'attestation", "Attestitem"),
+    "Attestation items": ("Éléments d'attestation", "Attestitems"),
+    "Draft": ("Brouillon", "Concept"),
+    "Ready": ("Prêt", "Klaar"),
+    "Skipped": ("Ignoré", "Overgeslagen"),
+    "Page number (1-based) on which the first name appears.": (
+        "Numéro de page (à partir de 1) où apparaît le premier nom.",
+        "Paginanummer (vanaf 1) waarop de eerste naam verschijnt.",
+    ),
+    "First page (1-based) of one person's document.": (
+        "Première page (à partir de 1) du document d'une personne.",
+        "Eerste pagina (vanaf 1) van het document van één persoon.",
+    ),
+    "Last page (1-based) of one person's document.": (
+        "Dernière page (à partir de 1) du document d'une personne.",
+        "Laatste pagina (vanaf 1) van het document van één persoon.",
+    ),
+    "Page (1-based, within each person's document) to sign.": (
+        "Page (à partir de 1, dans le document de chaque personne) à signer.",
+        "Pagina (vanaf 1, binnen het document van elke persoon) om te ondertekenen.",
+    ),
+    "The last page must be greater than or equal to the first page.": (
+        "La dernière page doit être supérieure ou égale à la première page.",
+        "De laatste pagina moet groter dan of gelijk zijn aan de eerste pagina.",
+    ),
+    "Page %(page)s is beyond the %(count)s pages of this document.": (
+        "La page %(page)s dépasse les %(count)s pages de ce document.",
+        "Pagina %(page)s valt buiten de %(count)s pagina's van dit document.",
+    ),
+    "Name as shown on that page": (
+        "Nom tel qu'affiché sur cette page",
+        "Naam zoals weergegeven op die pagina",
+    ),
+    'Type exactly what you see (e.g. \\"Dupont Jean\\").': (
+        "Saisissez exactement ce que vous voyez (ex. « Dupont Jean »).",
+        'Typ precies wat je ziet (bv. "Dupont Jean").',
+    ),
+    "Each document has %(pages)s pages; pick a page between 1 and that.": (
+        "Chaque document compte %(pages)s pages ; choisissez une page entre 1 et ce nombre.",
+        "Elk document heeft %(pages)s pagina's; kies een pagina tussen 1 en dat aantal.",
+    ),
+    "Attestation for {prenom} {nom}": (
+        "Attestation pour {prenom} {nom}",
+        "Attest voor {prenom} {nom}",
+    ),
+    "Use {prenom} and {nom} as variables.": (
+        "Utilisez {prenom} et {nom} comme variables.",
+        "Gebruik {prenom} en {nom} als variabelen.",
+    ),
+    'Dear parent,\\n\\nPlease find attached the attestation for {prenom} {nom}.\\n\\nBest regards,\\nThe unit staff': (
+        "Bonjour,\n\nVeuillez trouver ci-joint l'attestation de {prenom} {nom}.\n\nCordialement,\nLe staff d'unité",
+        "Beste ouder,\n\nIn bijlage vind je het attest van {prenom} {nom}.\n\nMet vriendelijke groet,\nDe eenheidsstaf",
+    ),
+    "Could not find that name on page %(page)s.": (
+        "Impossible de trouver ce nom à la page %(page)s.",
+        "Kon die naam niet vinden op pagina %(page)s.",
+    ),
+    "%(sent)s sent, %(failed)s failed.": (
+        "%(sent)s envoyé(s), %(failed)s échoué(s).",
+        "%(sent)s verzonden, %(failed)s mislukt.",
+    ),
+    "Step %(current)s of %(total)s": (
+        "Étape %(current)s sur %(total)s",
+        "Stap %(current)s van %(total)s",
+    ),
+    "New attestation campaign": ("Nouvelle campagne d'attestations", "Nieuwe attestcampagne"),
+    "Step 1: give this batch of attestations a name.": (
+        "Étape 1 : donnez un nom à cette série d'attestations.",
+        "Stap 1: geef deze reeks attesten een naam.",
+    ),
+    "Upload the documents": ("Téléverser les documents", "Documenten uploaden"),
+    "Step 2: upload the PDF with all the attestations and describe how each one is laid out.": (
+        "Étape 2 : téléversez le PDF contenant toutes les attestations et décrivez la disposition de chacune.",
+        "Stap 2: upload de PDF met alle attesten en beschrijf hoe elk document is ingedeeld.",
+    ),
+    "Find the names": ("Trouver les noms", "Namen vinden"),
+    "Step 3: type the name you see on that page so the app can locate it on every other page.": (
+        "Étape 3 : saisissez le nom que vous voyez sur cette page afin que l'application puisse le localiser sur toutes les autres pages.",
+        "Stap 3: typ de naam die je op die pagina ziet zodat de app deze op elke andere pagina kan vinden.",
+    ),
+    "Name on page %(page)s": ("Nom à la page %(page)s", "Naam op pagina %(page)s"),
+    "Extracted text of page %(page)s": (
+        "Texte extrait de la page %(page)s",
+        "Geëxtraheerde tekst van pagina %(page)s",
+    ),
+    "Add the signature": ("Ajouter la signature", "Handtekening toevoegen"),
+    "Step 4: upload the signature, choose its page and position it on the preview.": (
+        "Étape 4 : téléversez la signature, choisissez sa page et positionnez-la sur l'aperçu.",
+        "Stap 4: upload de handtekening, kies de pagina en positioneer deze op de voorbeeldweergave.",
+    ),
+    "The signature PDF should be the same page size as the documents (e.g. A4), transparent except for the signature. Drag the signature over the preview to position it.": (
+        "Le PDF de signature doit avoir le même format de page que les documents (ex. A4), être transparent sauf pour la signature. Faites glisser la signature sur l'aperçu pour la positionner.",
+        "De handtekening-PDF moet hetzelfde paginaformaat hebben als de documenten (bv. A4) en transparant zijn, behalve de handtekening. Sleep de handtekening over de voorbeeldweergave om deze te positioneren.",
+    ),
+    "Preview": ("Aperçu", "Voorbeeld"),
+    "Review attestations": ("Vérifier les attestations", "Attesten controleren"),
+    "Check who each document goes to, then send.": (
+        "Vérifiez à qui chaque document est destiné, puis envoyez.",
+        "Controleer naar wie elk document gaat en verstuur.",
+    ),
+    "For each document, confirm the recipient or skip it. Recipients are re-resolved from the selected person when you send.": (
+        "Pour chaque document, confirmez le destinataire ou ignorez-le. Les destinataires sont recalculés à partir de la personne sélectionnée au moment de l'envoi.",
+        "Bevestig voor elk document de ontvanger of sla het over. Ontvangers worden opnieuw bepaald op basis van de geselecteerde persoon bij het versturen.",
+    ),
+    "Pages": ("Pages", "Pagina's"),
+    "Extracted name": ("Nom extrait", "Geëxtraheerde naam"),
+    "Recipient": ("Destinataire", "Ontvanger"),
+    "Will send to": ("Enverra à", "Wordt verstuurd naar"),
+    "Skip": ("Ignorer", "Overslaan"),
+    "— no match —": ("— aucune correspondance —", "— geen match —"),
+    "No recipient": ("Aucun destinataire", "Geen ontvanger"),
+    "No documents found.": ("Aucun document trouvé.", "Geen documenten gevonden."),
+    "Send signed attestations": ("Envoyer les attestations signées", "Ondertekende attesten versturen"),
+
 }
 
 

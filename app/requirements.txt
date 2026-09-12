@@ -48,6 +48,7 @@ kombu==5.5.3
 matplotlib-inline==0.1.7
 parso==0.8.4
 pathspec==0.12.1
+pdfminer.six==20260107
 pexpect==4.9.0
 phonenumbers==9.0.4
 prompt-toolkit==3.0.51
@@ -56,6 +57,7 @@ ptyprocess==0.7.0
 pure-eval==0.2.3
 pycparser==2.22
 pygments==2.19.1
+pypdf==6.16.2
 python-crontab==3.2.0
 python-dateutil==2.9.0.post0
 pyyaml==6.0.2

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-21 19:35+0200\n"
+"POT-Creation-Date: 2026-09-12 18:48+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,306 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: attestations/forms.py:49
+msgid "The last page must be greater than or equal to the first page."
+msgstr ""
+
+#: attestations/forms.py:67
+#, python-format
+msgid "Page %(page)s is beyond the %(count)s pages of this document."
+msgstr ""
+
+#: attestations/forms.py:77
+msgid "Name as shown on that page"
+msgstr ""
+
+#: attestations/forms.py:78
+msgid "Type exactly what you see (e.g. \"Dupont Jean\")."
+msgstr ""
+
+#: attestations/forms.py:122
+#, python-format
+msgid "Each document has %(pages)s pages; pick a page between 1 and that."
+msgstr ""
+
+#: attestations/forms.py:132 finance/forms.py:30
+#: messaging/templates/messaging/animateur_history.html:14
+#: messaging/templates/messaging/message_detail.html:24
+#: messaging/templates/messaging/section_history.html:10
+msgid "Subject"
+msgstr ""
+
+#: attestations/forms.py:133
+#, python-brace-format
+msgid "Attestation for {prenom} {nom}"
+msgstr ""
+
+#: attestations/forms.py:137 finance/forms.py:35
+msgid "Message"
+msgstr ""
+
+#: attestations/forms.py:138
+#, python-brace-format
+msgid "Use {prenom} and {nom} as variables."
+msgstr ""
+
+#: attestations/forms.py:140
+#, python-brace-format
+msgid ""
+"Dear parent,\n"
+"\n"
+"Please find attached the attestation for {prenom} {nom}.\n"
+"\n"
+"Best regards,\n"
+"The unit staff"
+msgstr ""
+
+#: attestations/models.py:11
+msgid "Draft"
+msgstr ""
+
+#: attestations/models.py:12 attestations/models.py:89
+msgid "Ready"
+msgstr ""
+
+#: attestations/models.py:13 attestations/models.py:90
+#: attestations/templates/attestations/index.html:16
+#: messaging/templates/messaging/animateur_history.html:15
+msgid "Sent"
+msgstr ""
+
+#: attestations/models.py:21
+msgid "Page number (1-based) on which the first name appears."
+msgstr ""
+
+#: attestations/models.py:25
+msgid "First page (1-based) of one person's document."
+msgstr ""
+
+#: attestations/models.py:29
+msgid "Last page (1-based) of one person's document."
+msgstr ""
+
+#: attestations/models.py:40
+msgid "Page (1-based, within each person's document) to sign."
+msgstr ""
+
+#: attestations/models.py:62
+msgid "Attestation campaign"
+msgstr ""
+
+#: attestations/models.py:63
+msgid "Attestation campaigns"
+msgstr ""
+
+#: attestations/models.py:88 members/templates/members/admin_update.html:152
+#: members/templates/members/child_list.html:15
+msgid "Pending"
+msgstr ""
+
+#: attestations/models.py:91 members/templates/members/mail_queue.html:30
+msgid "Failed"
+msgstr ""
+
+#: attestations/models.py:92
+msgid "Skipped"
+msgstr ""
+
+#: attestations/models.py:117
+msgid "Attestation item"
+msgstr ""
+
+#: attestations/models.py:118
+msgid "Attestation items"
+msgstr ""
+
+#: attestations/templates/attestations/_steps.html:4
+#, python-format
+msgid "Step %(current)s of %(total)s"
+msgstr ""
+
+#: attestations/templates/attestations/index.html:3 templates/base.html:91
+msgid "Attestations"
+msgstr ""
+
+#: attestations/templates/attestations/index.html:4
+msgid "Upload, sign and email attestation PDFs."
+msgstr ""
+
+#: attestations/templates/attestations/index.html:7
+msgid "New campaign"
+msgstr ""
+
+#: attestations/templates/attestations/index.html:13 homepage/models.py:10
+msgid "Title"
+msgstr ""
+
+#: attestations/templates/attestations/index.html:14
+#: messaging/templates/messaging/message_detail.html:52
+msgid "Status"
+msgstr ""
+
+#: attestations/templates/attestations/index.html:15
+msgid "Items"
+msgstr ""
+
+#: attestations/templates/attestations/index.html:17
+msgid "Created"
+msgstr ""
+
+#: attestations/templates/attestations/index.html:31
+#: attestations/templates/attestations/step1.html:21
+#: attestations/templates/attestations/step2.html:21
+#: attestations/templates/attestations/step3.html:20
+#: attestations/templates/attestations/step4.html:37
+#: members/templates/members/onboarding.html:51
+#: members/templates/socialaccount/signup.html:35
+msgid "Continue"
+msgstr ""
+
+#: attestations/templates/attestations/index.html:33
+msgid "Review"
+msgstr ""
+
+#: attestations/templates/attestations/index.html:38
+msgid "No campaign yet."
+msgstr ""
+
+#: attestations/templates/attestations/review.html:3
+msgid "Review attestations"
+msgstr ""
+
+#: attestations/templates/attestations/review.html:4
+msgid "Check who each document goes to, then send."
+msgstr ""
+
+#: attestations/templates/attestations/review.html:8
+msgid ""
+"For each document, confirm the recipient or skip it. Recipients are re-"
+"resolved from the selected person when you send."
+msgstr ""
+
+#: attestations/templates/attestations/review.html:17
+msgid "Pages"
+msgstr ""
+
+#: attestations/templates/attestations/review.html:18
+msgid "Extracted name"
+msgstr ""
+
+#: attestations/templates/attestations/review.html:19
+msgid "Recipient"
+msgstr ""
+
+#: attestations/templates/attestations/review.html:20
+msgid "Will send to"
+msgstr ""
+
+#: attestations/templates/attestations/review.html:21
+msgid "Skip"
+msgstr ""
+
+#: attestations/templates/attestations/review.html:31
+msgid "— no match —"
+msgstr ""
+
+#: attestations/templates/attestations/review.html:38
+msgid "No recipient"
+msgstr ""
+
+#: attestations/templates/attestations/review.html:45
+msgid "No documents found."
+msgstr ""
+
+#: attestations/templates/attestations/review.html:52 members/constants.py:29
+#: members/forms.py:28 members/forms.py:43 members/forms.py:377
+#: members/forms.py:404 messaging/templates/messaging/compose_all.html:54
+#: messaging/templates/messaging/message_detail.html:51
+msgid "Email"
+msgstr ""
+
+#: attestations/templates/attestations/review.html:68
+msgid "Send signed attestations"
+msgstr ""
+
+#: attestations/templates/attestations/review.html:69
+#: attestations/templates/attestations/step1.html:22
+#: attestations/templates/attestations/step2.html:22
+#: attestations/templates/attestations/step3.html:21
+#: attestations/templates/attestations/step4.html:38
+#: members/templates/members/dettach_child.html:10
+#: members/templates/members/remove_child.html:10
+msgid "Back"
+msgstr ""
+
+#: attestations/templates/attestations/step1.html:3
+msgid "New attestation campaign"
+msgstr ""
+
+#: attestations/templates/attestations/step1.html:4
+msgid "Step 1: give this batch of attestations a name."
+msgstr ""
+
+#: attestations/templates/attestations/step2.html:3
+msgid "Upload the documents"
+msgstr ""
+
+#: attestations/templates/attestations/step2.html:4
+msgid ""
+"Step 2: upload the PDF with all the attestations and describe how each one "
+"is laid out."
+msgstr ""
+
+#: attestations/templates/attestations/step3.html:3
+msgid "Find the names"
+msgstr ""
+
+#: attestations/templates/attestations/step3.html:4
+msgid ""
+"Step 3: type the name you see on that page so the app can locate it on every "
+"other page."
+msgstr ""
+
+#: attestations/templates/attestations/step3.html:10
+#, python-format
+msgid "Name on page %(page)s"
+msgstr ""
+
+#: attestations/templates/attestations/step3.html:28
+#, python-format
+msgid "Extracted text of page %(page)s"
+msgstr ""
+
+#: attestations/templates/attestations/step4.html:3
+msgid "Add the signature"
+msgstr ""
+
+#: attestations/templates/attestations/step4.html:4
+msgid ""
+"Step 4: upload the signature, choose its page and position it on the preview."
+msgstr ""
+
+#: attestations/templates/attestations/step4.html:8
+msgid ""
+"The signature PDF should be the same page size as the documents (e.g. A4), "
+"transparent except for the signature. Drag the signature over the preview to "
+"position it."
+msgstr ""
+
+#: attestations/templates/attestations/step4.html:16
+msgid "Preview"
+msgstr ""
+
+#: attestations/views.py:130
+#, python-format
+msgid "Could not find that name on page %(page)s."
+msgstr ""
+
+#: attestations/views.py:282
+#, python-format
+msgid "%(sent)s sent, %(failed)s failed."
+msgstr ""
 
 #: finance/forms.py:13
 msgid "Amount (€)"
@@ -34,18 +334,8 @@ msgstr ""
 msgid "Note"
 msgstr ""
 
-#: finance/forms.py:30 messaging/templates/messaging/animateur_history.html:14
-#: messaging/templates/messaging/message_detail.html:24
-#: messaging/templates/messaging/section_history.html:10
-msgid "Subject"
-msgstr ""
-
 #: finance/forms.py:31
 msgid "Membership fee reminder"
-msgstr ""
-
-#: finance/forms.py:35
-msgid "Message"
 msgstr ""
 
 #: finance/forms.py:36
@@ -214,7 +504,7 @@ msgstr ""
 #: finance/templates/finance/record_payment_modal.html:8
 #: members/templates/members/child_form.html:12
 #: members/templates/members/child_from_key_form.html:12
-#: templates/base.html:222
+#: templates/base.html:223
 msgid "Close"
 msgstr ""
 
@@ -317,10 +607,6 @@ msgstr ""
 msgid "Reminders sent to %(count)s adult(s)."
 msgstr ""
 
-#: homepage/models.py:10
-msgid "Title"
-msgstr ""
-
 #: homepage/models.py:11
 msgid "Description"
 msgstr ""
@@ -343,7 +629,7 @@ msgid "Home"
 msgstr ""
 
 #: homepage/models.py:77 homepage/templates/homepage/editor.html:44
-#: homepage/templates/homepage/faq.html:8 templates/base.html:108
+#: homepage/templates/homepage/faq.html:8 templates/base.html:109
 msgid "FAQ"
 msgstr ""
 
@@ -565,13 +851,6 @@ msgstr ""
 
 #: members/constants.py:23
 msgid "Participant"
-msgstr ""
-
-#: members/constants.py:29 members/forms.py:28 members/forms.py:43
-#: members/forms.py:377 members/forms.py:404
-#: messaging/templates/messaging/compose_all.html:54
-#: messaging/templates/messaging/message_detail.html:51
-msgid "Email"
 msgstr ""
 
 #: members/constants.py:30 members/filters.py:26 members/forms.py:232
@@ -940,7 +1219,7 @@ msgid ""
 "email confirmation request</a>."
 msgstr ""
 
-#: members/templates/account/login.html:6 templates/base.html:159
+#: members/templates/account/login.html:6 templates/base.html:160
 msgid "Log in"
 msgstr ""
 
@@ -1147,11 +1426,6 @@ msgstr ""
 msgid "Parents"
 msgstr ""
 
-#: members/templates/members/admin_update.html:152
-#: members/templates/members/child_list.html:15
-msgid "Pending"
-msgstr ""
-
 #: members/templates/members/child_form.html:8
 msgid "Child information"
 msgstr ""
@@ -1242,11 +1516,6 @@ msgstr ""
 msgid "Confirm that you want to detach %(first_name)s"
 msgstr ""
 
-#: members/templates/members/dettach_child.html:10
-#: members/templates/members/remove_child.html:10
-msgid "Back"
-msgstr ""
-
 #: members/templates/members/documents.html:13
 msgid "Link"
 msgstr ""
@@ -1275,10 +1544,6 @@ msgstr ""
 msgid "Waiting for retry"
 msgstr ""
 
-#: members/templates/members/mail_queue.html:30
-msgid "Failed"
-msgstr ""
-
 #: members/templates/members/mail_queue.html:37
 msgid ""
 "Failed emails are no longer retried automatically. Requeue them to send "
@@ -1301,11 +1566,6 @@ msgstr ""
 msgid ""
 "To continue, please complete your profile by filling in the information "
 "below."
-msgstr ""
-
-#: members/templates/members/onboarding.html:51
-#: members/templates/socialaccount/signup.html:35
-msgid "Continue"
 msgstr ""
 
 #: members/templates/members/profile.html:6
@@ -1526,7 +1786,7 @@ msgstr ""
 
 #: messaging/templates/messaging/animateur_history.html:3
 #: messaging/templates/messaging/section_history.html:3 templates/base.html:90
-#: templates/base.html:103
+#: templates/base.html:104
 msgid "Message history"
 msgstr ""
 
@@ -1537,12 +1797,8 @@ msgstr ""
 #: messaging/templates/messaging/animateur_history.html:7
 #: messaging/templates/messaging/compose.html:3
 #: messaging/templates/messaging/compose_all.html:3 templates/base.html:89
-#: templates/base.html:102
+#: templates/base.html:103
 msgid "Send a message"
-msgstr ""
-
-#: messaging/templates/messaging/animateur_history.html:15
-msgid "Sent"
 msgstr ""
 
 #: messaging/templates/messaging/animateur_history.html:16
@@ -1607,10 +1863,6 @@ msgstr ""
 msgid "Attachments"
 msgstr ""
 
-#: messaging/templates/messaging/message_detail.html:52
-msgid "Status"
-msgstr ""
-
 #: messaging/templates/messaging/message_detail.html:62
 #, python-format
 msgid "Sent %(sent_at)s"
@@ -1652,49 +1904,49 @@ msgstr ""
 msgid "Administration"
 msgstr ""
 
-#: templates/base.html:100
+#: templates/base.html:101
 msgid "Animator tools"
 msgstr ""
 
-#: templates/base.html:120
+#: templates/base.html:121
 msgid "Toggle dropdown"
 msgstr ""
 
-#: templates/base.html:124
+#: templates/base.html:125
 msgid "My profile"
 msgstr ""
 
-#: templates/base.html:127
+#: templates/base.html:128
 msgid "My documents"
 msgstr ""
 
-#: templates/base.html:131
+#: templates/base.html:132
 msgid "Site administration"
 msgstr ""
 
-#: templates/base.html:134
+#: templates/base.html:135
 msgid "Edit homepage"
 msgstr ""
 
-#: templates/base.html:153
+#: templates/base.html:154
 msgid "Log out"
 msgstr ""
 
-#: templates/base.html:158
+#: templates/base.html:159
 msgid "Sign up"
 msgstr ""
 
-#: templates/base.html:173
+#: templates/base.html:174
 msgid "Language"
 msgstr ""
 
-#: templates/base.html:198
+#: templates/base.html:199
 #, python-format
 msgid "%(counter)s email could not be sent."
 msgid_plural "%(counter)s emails could not be sent."
 msgstr[0] ""
 msgstr[1] ""
 
-#: templates/base.html:204
+#: templates/base.html:205
 msgid "Manage"
 msgstr ""
