@@ -204,60 +204,79 @@ def _resolve_recipients(group, section, school_year):
 
 
 def _parse_group_token(token):
-    """Split a "group" or "group:section_id" token, returning (group, section_id).
+    """Split a "group[:section_id[:school_year_id]]" token.
 
-    Returns (None, None) for malformed or unknown groups.
+    Returns (group, section_id, school_year_id); absent parts are None. Returns
+    (None, None, None) for malformed or unknown groups.
     """
-    group, _, section_id = token.partition(":")
+    parts = token.split(":")
+    group = parts[0]
     if group not in VALID_GROUPS:
-        return None, None
-    return group, section_id or None
+        return None, None, None
+    section_id = parts[1] if len(parts) > 1 and parts[1] else None
+    school_year_id = parts[2] if len(parts) > 2 and parts[2] else None
+    return group, section_id, school_year_id
 
 
-def _loaded_group_tokens(request_post, current_group, current_section_id, append_current=True):
+def _loaded_group_tokens(
+    request_post, current_group, current_section_id, current_school_year_id=None,
+    append_current=True,
+):
     """Return the ordered, deduplicated list of loaded group tokens.
 
     Tokens accumulate across "Load" clicks: previously loaded ones come back as
-    hidden inputs, the newly selected group/section is appended last. With
-    append_current=False, only previously posted tokens are returned (used on
-    send, where the dropdown selection is just a fallback when nothing was
-    ever loaded).
+    hidden inputs, the newly selected group/section/school-year is appended
+    last. With append_current=False, only previously posted tokens are returned
+    (used on send, where the dropdown selection is just a fallback when nothing
+    was ever loaded).
     """
     tokens = [t for t in request_post.getlist("loaded_groups") if t]
+
+    def build_token():
+        if current_group not in SECTION_GROUPS:
+            return current_group
+        token = current_group
+        if current_section_id:
+            token = f"{current_group}:{current_section_id}"
+        if current_school_year_id:
+            token += f":{current_school_year_id}"
+        return token
+
     if append_current:
-        new_token = current_group
-        if current_group in SECTION_GROUPS and current_section_id:
-            new_token = f"{current_group}:{current_section_id}"
+        new_token = build_token()
         if new_token and new_token not in tokens:
             tokens.append(new_token)
     elif not tokens and current_group:
         # Nothing was ever loaded: fall back to the dropdown selection
-        new_token = current_group
-        if current_group in SECTION_GROUPS and current_section_id:
-            new_token = f"{current_group}:{current_section_id}"
-        tokens = [new_token]
+        tokens = [build_token()]
     return tokens
 
 
-def _resolve_all_recipients(tokens, school_year, person, animateur_section):
+def _resolve_all_recipients(tokens, default_school_year, person, animateur_section):
     """Resolve every loaded token into one merged, deduplicated recipient list.
 
     Animateurs locked to their section have section-group tokens resolved
-    against their own section, regardless of the posted section id.
-    The sender is filtered out of the result.
+    against their own section, regardless of the posted section id. Each
+    section-group token may carry its own school-year id; otherwise the default
+    (currently selected) year is used. The sender is filtered out of the result.
     """
     merged = []
     seen = set()
     for token in tokens:
-        group, section_id = _parse_group_token(token)
+        group, section_id, school_year_id = _parse_group_token(token)
         if group is None:
             continue
         section = None
+        school_year = default_school_year
         if group in SECTION_GROUPS:
             if animateur_section is not None:
                 section = animateur_section
             elif section_id:
                 section = Section.objects.filter(pk=section_id).first()
+            if school_year_id:
+                resolved_year = SchoolYear.objects.filter(pk=school_year_id).first()
+                if resolved_year is not None:
+                    school_year = resolved_year
         for entry in _resolve_recipients(group, section, school_year):
             pk = entry["person"].pk
             if pk not in seen and pk != person.pk:
@@ -296,6 +315,16 @@ def _get_doc_url(doc):
     if doc.file:
         return doc.file.url
     return doc.url
+
+
+def _posted_school_year(request_post, fallback):
+    """Resolve the posted school-year id to a SchoolYear, else return fallback."""
+    school_year_id = request_post.get("school_year")
+    if school_year_id:
+        school_year = SchoolYear.objects.filter(pk=school_year_id).first()
+        if school_year is not None:
+            return school_year
+    return fallback
 
 
 def _handle_attachment_and_docs(request, msg):
@@ -368,14 +397,17 @@ def compose_message(request):
     if request.method == "POST" and request.POST.get("hx_load_recipients"):
         group = request.POST.get("recipient_group")
         section_id = request.POST.get("section")
+        school_year = _posted_school_year(request.POST, current_year)
 
         # Animateurs locked to their own section cannot load other sections
         if is_animateur and not can_send_all and group in SECTION_GROUPS:
             section_id = animateur_section.pk if animateur_section else None
 
-        tokens = _loaded_group_tokens(request.POST, group, section_id)
+        tokens = _loaded_group_tokens(
+            request.POST, group, section_id, school_year.pk if school_year else None
+        )
         recipients = _resolve_all_recipients(
-            tokens, current_year, person,
+            tokens, school_year, person,
             animateur_section if (is_animateur and not can_send_all) else None,
         )
 
@@ -402,6 +434,7 @@ def compose_message(request):
         if form.is_valid():
             group = form.cleaned_data["recipient_group"]
             section = form.cleaned_data.get("section")
+            school_year = form.cleaned_data.get("school_year") or current_year
 
             # Animateurs are locked to their own section
             if is_animateur and not can_send_all and group in SECTION_GROUPS:
@@ -413,10 +446,11 @@ def compose_message(request):
             tokens = _loaded_group_tokens(
                 request.POST, group,
                 section.pk if section else None,
+                school_year.pk if school_year else None,
                 append_current=False,
             )
             recipients = _resolve_all_recipients(
-                tokens, current_year, person,
+                tokens, school_year, person,
                 animateur_section if (is_animateur and not can_send_all) else None,
             )
 

@@ -9,6 +9,7 @@ from members.models import (
     SchoolYear,
     Section,
 )
+from messaging.forms import ComposeMessageForm
 from messaging.models import SectionMessage
 from tests.mail import MailTestCase
 
@@ -84,10 +85,14 @@ class ComposeRecipientAccumulationTest(MailTestCase):
 
         self.client.login(email="staff@test.com", password="testpass")
 
-    def _load(self, group, section_id=None, **extra_post):
+    def _load(self, group, section_id=None, school_year=None, **extra_post):
         post = {"recipient_group": group, "hx_load_recipients": "1"}
         if section_id is not None:
             post["section"] = section_id
+        if school_year is not None:
+            post["school_year"] = str(
+                school_year.pk if hasattr(school_year, "pk") else school_year
+            )
         post.update(extra_post)
         return self.client.post("/messaging/compose/", post)
 
@@ -98,7 +103,9 @@ class ComposeRecipientAccumulationTest(MailTestCase):
         self.assertNotIn(f'name="recipient_{self.anim_person.pk}"', html)
         self.assertNotIn(f'name="recipient_{self.child_person.pk}"', html)
         # Hidden token is rendered so the next load accumulates
-        self.assertIn(f'value="section_parents:{self.section.pk}"', html)
+        self.assertIn(
+            f'value="section_parents:{self.section.pk}:{self.current_year.pk}"', html
+        )
 
     def test_second_load_merges_instead_of_replacing(self):
         first = self._load("section_parents", self.section.pk)
@@ -107,7 +114,9 @@ class ComposeRecipientAccumulationTest(MailTestCase):
         # Simulate the browser posting back hidden state from the first render
         second = self._load(
             "section_animateurs", self.section.pk,
-            loaded_groups=f"section_parents:{self.section.pk}",
+            loaded_groups=(
+                f"section_parents:{self.section.pk}:{self.current_year.pk}"
+            ),
             known_recipients=str(self.parent_person.pk),
         )
         html = second.content.decode()
@@ -115,8 +124,12 @@ class ComposeRecipientAccumulationTest(MailTestCase):
         self.assertIn(f'name="recipient_{self.parent_person.pk}"', html)
         self.assertIn(f'name="recipient_{self.anim_person.pk}"', html)
         # Both tokens now present in hidden state
-        self.assertIn(f'value="section_parents:{self.section.pk}"', html)
-        self.assertIn(f'value="section_animateurs:{self.section.pk}"', html)
+        self.assertIn(
+            f'value="section_parents:{self.section.pk}:{self.current_year.pk}"', html
+        )
+        self.assertIn(
+            f'value="section_animateurs:{self.section.pk}:{self.current_year.pk}"', html
+        )
 
     def test_deduplication_across_overlapping_groups(self):
         # section_all already contains the animateur; loading animateurs too must not duplicate
@@ -207,8 +220,94 @@ class ComposeRecipientAccumulationTest(MailTestCase):
         # Parents of THEIR section (Paul), not of the posted foreign section
         self.assertIn(f'name="recipient_{self.parent_person.pk}"', html)
         # Token records their own section, not the posted one
-        self.assertIn(f'value="section_parents:{self.section.pk}"', html)
+        self.assertIn(
+            f'value="section_parents:{self.section.pk}:{self.current_year.pk}"', html
+        )
         self.assertNotIn(f'value="section_parents:{self.other_section.pk}"', html)
+
+
+class ComposeSchoolYearSelectionTest(MailTestCase):
+    """A section group targets the members enrolled in the selected school year."""
+
+    def setUp(self):
+        super().setUp()
+        self.client = Client()
+        self.current_year = SchoolYear.current()
+        self.past_year = SchoolYear.objects.create_year(self.current_year.name - 1)
+
+        self.role_parent = Role.objects.get(short="p")
+        self.role_ar = Role.objects.get(short="ar")
+        self.role_anime = Role.objects.get(short="e")
+
+        self.section = Section.objects.create(name="Louveteaux")
+
+        self.staff_person = Person.objects.create(
+            first_name="Marie", last_name="Staff",
+            primary_role=self.role_parent, status="a",
+        )
+        self.staff_person.roles.add(self.role_ar)
+        Account.objects.create_user(
+            email="staff@test.com", password="testpass", person=self.staff_person,
+        )
+
+        self.parent_person = Person.objects.create(
+            first_name="Paul", last_name="Parent",
+            primary_role=self.role_parent, status="a",
+        )
+        Account.objects.create_user(
+            email="parent@test.com", password="testpass", person=self.parent_person,
+        )
+        self.child_person = Person.objects.create(
+            first_name="Camille", last_name="Parent",
+            primary_role=self.role_anime, status="a",
+        )
+        ParentChild.objects.create(parent=self.parent_person, child=self.child_person)
+        # The child is only enrolled in the PAST year (has since moved section).
+        Enrollment.objects.create(
+            user=self.child_person, section=self.section, school_year=self.past_year,
+        )
+
+        self.client.login(email="staff@test.com", password="testpass")
+
+    def _load(self, group, school_year, section=None):
+        post = {
+            "recipient_group": group,
+            "section": str((section or self.section).pk),
+            "school_year": str(school_year.pk),
+            "hx_load_recipients": "1",
+        }
+        return self.client.post("/messaging/compose/", post)
+
+    def test_past_year_resolves_children_of_that_year(self):
+        response = self._load("section_parents", self.past_year)
+        html = response.content.decode()
+        self.assertIn(f'name="recipient_{self.parent_person.pk}"', html)
+        # The hidden token records the selected year
+        self.assertIn(
+            f'value="section_parents:{self.section.pk}:{self.past_year.pk}"', html
+        )
+
+    def test_current_year_excludes_past_only_child(self):
+        response = self._load("section_parents", self.current_year)
+        html = response.content.decode()
+        self.assertNotIn(f'name="recipient_{self.parent_person.pk}"', html)
+        self.assertIn("Aucun destinataire trouvé.", html)
+
+    def test_form_school_year_options_are_recent_years(self):
+        # Plenty of past years: the dropdown must cap at last 5 + next year.
+        for offset in range(2, 9):
+            SchoolYear.objects.create_year(self.current_year.name - offset)
+
+        form = ComposeMessageForm()
+        years = list(form.fields["school_year"].queryset)
+        names = [year.name for year in years]
+
+        self.assertEqual(names, sorted(names))
+        self.assertEqual(len(years), 6)
+        self.assertIn(self.current_year.name, names)
+        self.assertIn(SchoolYear.next_school_year().name, names)
+        self.assertNotIn(self.current_year.name - 8, names)
+        self.assertEqual(form.fields["school_year"].initial, self.current_year)
 
 
 class ComposeEmptyGroupTest(MailTestCase):
