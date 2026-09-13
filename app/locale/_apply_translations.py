@@ -455,6 +455,13 @@ TRANSLATIONS = {
     'Payment of %(amount)s€ recorded for %(person)s.': ("Paiement de %(amount)s€ enregistré pour %(person)s.", "Betaling van %(amount)s€ geregistreerd voor %(person)s."),
     'Failed to send to %(email)s.': ("Échec d'envoi à %(email)s.", "Verzenden naar %(email)s mislukt."),
     'Reminders sent to %(count)s adult(s).': ("Rappels envoyés à %(count)s adulte(s).", "Herinneringen verstuurd naar %(count)s volwassene(n)."),
+    '%(count)s reminder(s) could not be sent.': ("Envoi impossible pour %(count)s rappel(s).", "Voor %(count)s herinnering(en) is het verzenden mislukt."),
+
+    # --- child lifecycle (detach / deregister / add by key) ---
+    '%(first)s will not be re-enrolled next year.': ("%(first)s ne sera pas réinscrit(e) l'année prochaine.", "%(first)s wordt volgend jaar niet opnieuw ingeschreven."),
+    '%(first)s has been deregistered.': ("%(first)s a été désinscrit(e).", "%(first)s is uitgeschreven."),
+    '%(first)s has been deregistered. The registration team has been notified to complete the current-year procedure.': ("%(first)s a été désinscrit(e). L'équipe des inscriptions a été prévenue pour finaliser la procédure de l'année en cours.", "%(first)s is uitgeschreven. Het inschrijvingsteam is verwittigd om de procedure voor het lopende jaar af te ronden."),
+    'No child matches that key.': ("Aucun enfant ne correspond à cette clé.", "Geen enkel kind komt overeen met deze sleutel."),
 
     # --- homepage / agenda / FAQ ---
     'Title': ("Titre", "Titel"),

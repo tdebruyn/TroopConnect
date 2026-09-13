@@ -4,10 +4,10 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr ""
+msgstr "Project-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-09-13 18:51+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect <noreply@troop.tomctl.be>\nLanguage-Team: fr <fr@li.org>\nLanguage: fr\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\n"
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-13 09:39+0200\n"
+"POT-Creation-Date: 2026-09-13 18:51+0200\n"
 "PO-Revision-Date: 2026-07-24 00:00+0200\n"
 "Last-Translator: TroopConnect <noreply@troop.tomctl.be>\n"
 "Language-Team: fr <fr@li.org>\n"
@@ -34,33 +34,33 @@ msgstr "Nom tel qu'affiché sur cette page"
 msgid "Type exactly what you see (e.g. \"Dupont Jean\")."
 msgstr "Saisissez exactement ce que vous voyez (ex. « Dupont Jean »)."
 
-#: attestations/forms.py:122
+#: attestations/forms.py:130
 #, python-format
 msgid "Each document has %(pages)s pages; pick a page between 1 and that."
 msgstr "Chaque document compte %(pages)s pages ; choisissez une page entre 1 et ce nombre."
 
-#: attestations/forms.py:132 finance/forms.py:119
+#: attestations/forms.py:140 finance/forms.py:119
 #: messaging/templates/messaging/animateur_history.html:14
 #: messaging/templates/messaging/message_detail.html:24
 #: messaging/templates/messaging/section_history.html:10
 msgid "Subject"
 msgstr "Sujet"
 
-#: attestations/forms.py:133
+#: attestations/forms.py:141
 #, python-brace-format
 msgid "Attestation for {prenom} {nom}"
 msgstr "Attestation pour {prenom} {nom}"
 
-#: attestations/forms.py:137 finance/forms.py:124
+#: attestations/forms.py:145 finance/forms.py:124
 msgid "Message"
 msgstr "Message"
 
-#: attestations/forms.py:138
+#: attestations/forms.py:146
 #, python-brace-format
 msgid "Use {prenom} and {nom} as variables."
 msgstr "Utilisez {prenom} et {nom} comme variables."
 
-#: attestations/forms.py:140
+#: attestations/forms.py:148
 #, python-brace-format
 msgid ""
 "Dear parent,\n"
@@ -657,15 +657,21 @@ msgstr "Personne introuvable."
 msgid "Payment of %(amount)s€ recorded for %(person)s."
 msgstr "Paiement de %(amount)s€ enregistré pour %(person)s."
 
-#: finance/views.py:265 messaging/views.py:509
+#: finance/views.py:270 messaging/views.py:509
 #, python-format
 msgid "Failed to send to %(email)s."
 msgstr "Échec d'envoi à %(email)s."
 
-#: finance/views.py:271
+#: finance/views.py:277 tests/test_finance_views.py:248
+#: tests/test_finance_views.py:277
 #, python-format
 msgid "Reminders sent to %(count)s adult(s)."
 msgstr "Rappels envoyés à %(count)s adulte(s)."
+
+#: finance/views.py:282 tests/test_finance_views.py:251
+#, python-format
+msgid "%(count)s reminder(s) could not be sent."
+msgstr "Envoi impossible pour %(count)s rappel(s)."
 
 #: homepage/models.py:11
 msgid "Description"
@@ -674,7 +680,7 @@ msgstr "Description"
 #: homepage/models.py:19 homepage/views.py:222 members/filters.py:47
 #: members/filters.py:48 members/forms.py:69
 #: members/templates/members/admin_update.html:144
-#: members/templates/members/profile.html:123 members/views.py:206
+#: members/templates/members/profile.html:123 members/views.py:208
 #: messaging/forms.py:62
 msgid "Section"
 msgstr "Section"
@@ -857,7 +863,7 @@ msgstr "Permissions"
 msgid "Available languages"
 msgstr "Langues disponibles"
 
-#: members/admin.py:148 members/models.py:785
+#: members/admin.py:148 members/models.py:795
 msgid "Languages available to users in the site language selector."
 msgstr "Langues proposées aux utilisateurs dans le sélecteur de langue du site."
 
@@ -865,15 +871,15 @@ msgstr "Langues proposées aux utilisateurs dans le sélecteur de langue du site
 msgid "Default language"
 msgstr "Langue par défaut"
 
-#: members/admin.py:155 members/models.py:795
+#: members/admin.py:155 members/models.py:805
 msgid "Default language for visitors. Must be one of the available languages."
 msgstr "Langue par défaut des visiteurs. Doit faire partie des langues disponibles."
 
-#: members/admin.py:192 members/models.py:828
+#: members/admin.py:192 members/models.py:838
 msgid "Select at least one available language."
 msgstr "Sélectionnez au moins une langue disponible."
 
-#: members/admin.py:197 members/models.py:833
+#: members/admin.py:197 members/models.py:843
 msgid "The default language must be one of the available languages."
 msgstr "La langue par défaut doit faire partie des langues disponibles."
 
@@ -910,29 +916,29 @@ msgid "Participant"
 msgstr "Animé"
 
 #: members/constants.py:30 members/filters.py:26 members/forms.py:232
-#: members/forms.py:245 members/forms.py:422 members/forms.py:507
+#: members/forms.py:245 members/forms.py:422 members/forms.py:519
 #: members/templates/members/admin_update.html:142
 #: members/templates/members/child_form.html:18
-#: members/templates/members/profile.html:119 members/views.py:202
+#: members/templates/members/profile.html:119 members/views.py:204
 msgid "First name"
 msgstr "Prénom"
 
 #: members/constants.py:31 members/filters.py:29 members/forms.py:233
-#: members/forms.py:246 members/forms.py:423 members/forms.py:508
+#: members/forms.py:246 members/forms.py:423 members/forms.py:520
 #: members/templates/members/admin_update.html:143
 #: members/templates/members/child_form.html:24
-#: members/templates/members/profile.html:120 members/views.py:203
+#: members/templates/members/profile.html:120 members/views.py:205
 msgid "Last name"
 msgstr "Nom"
 
 #: members/constants.py:32 members/forms.py:234 members/forms.py:248
-#: members/forms.py:424 members/forms.py:509
+#: members/forms.py:424 members/forms.py:521
 #: members/templates/members/profile.html:75
 msgid "Address"
 msgstr "Adresse"
 
 #: members/constants.py:33 members/forms.py:235 members/forms.py:249
-#: members/forms.py:376 members/forms.py:425 members/forms.py:510
+#: members/forms.py:376 members/forms.py:425 members/forms.py:522
 msgid "Phone"
 msgstr "Téléphone"
 
@@ -986,7 +992,7 @@ msgstr "Tri"
 msgid "Birth year"
 msgstr "Année de naissance"
 
-#: members/filters.py:53 members/views.py:207
+#: members/filters.py:53 members/views.py:209
 msgid "Role"
 msgstr "Rôle"
 
@@ -1044,7 +1050,7 @@ msgstr "Totem"
 msgid "Notes"
 msgstr "Notes"
 
-#: members/forms.py:261 members/forms.py:514
+#: members/forms.py:261 members/forms.py:526
 #: members/templates/members/onboarding.html:17
 #: members/templates/members/profile.html:21
 #: members/templates/members/profile.html:28
@@ -1055,7 +1061,7 @@ msgstr "Type de compte"
 msgid "Active parent, I want to help the unit occasionally"
 msgstr "Parent actif, je souhaite aider l'unité occasionnellement"
 
-#: members/forms.py:339 members/forms.py:544
+#: members/forms.py:339 members/forms.py:556
 msgid "A person of branch age can only be a Participant."
 msgstr "Une personne en âge de branche ne peut être qu'un Animé."
 
@@ -1063,11 +1069,11 @@ msgstr "Une personne en âge de branche ne peut être qu'un Animé."
 msgid "If an email is provided, an account will be created for the child."
 msgstr "Si une adresse e-mail est fournie, un compte sera créé pour l'enfant."
 
-#: members/forms.py:421 members/views.py:205
+#: members/forms.py:421 members/views.py:207
 msgid "Sex"
 msgstr "Sexe"
 
-#: members/forms.py:427 members/views.py:204
+#: members/forms.py:427 members/views.py:206
 msgid "Date of birth"
 msgstr "Date de naissance"
 
@@ -1078,6 +1084,10 @@ msgstr "Cette adresse e-mail existe déjà pour un autre utilisateur"
 #: members/forms.py:503
 msgid "Secret key (6 characters)"
 msgstr "Code secret (6 caractères)"
+
+#: members/forms.py:514
+msgid "No child matches that key."
+msgstr "Aucun enfant ne correspond à cette clé."
 
 #: members/models.py:73
 msgid "Boy"
@@ -1107,54 +1117,54 @@ msgstr "La date de naissance est obligatoire pour un animé."
 msgid "Sex is required for a participant."
 msgstr "Le sexe est obligatoire pour un animé."
 
-#: members/models.py:228
+#: members/models.py:238
 msgid "linked sections"
 msgstr "sections liées"
 
-#: members/models.py:230
+#: members/models.py:240
 msgid "linked children"
 msgstr "enfants liés"
 
-#: members/models.py:380
+#: members/models.py:390
 msgid "Language used for outgoing emails to this user."
 msgstr "Langue utilisée pour les e-mails sortants adressés à cet utilisateur."
 
-#: members/models.py:609
+#: members/models.py:619
 msgid "Calendar year from the start of the time period"
 msgstr "Année civile à partir du début de la période"
 
-#: members/models.py:617
+#: members/models.py:627
 #, python-format
 msgid "%(name)s — from %(start)s to %(end)s"
 msgstr "%(name)s — du %(start)s au %(end)s"
 
-#: members/models.py:675
+#: members/models.py:685
 msgid ""
 "Age of the youngest members of the section on December 31 of the school year"
 msgstr "Âge des plus jeunes membres de la section au 31 décembre de l'année scolaire"
 
-#: members/models.py:682
+#: members/models.py:692
 msgid ""
 "Age of the oldest members of the section on December 31 of the school year"
 msgstr "Âge des plus âgés des membres de la section au 31 décembre de l'année scolaire"
 
-#: members/models.py:687
+#: members/models.py:697
 #, python-format
 msgid "%(name)s (%(min)s-%(max)s years old)"
 msgstr "%(name)s (%(min)s-%(max)s ans)"
 
-#: members/models.py:803
+#: members/models.py:813
 msgid ""
 "Last school year (the « name » field) for which the automatic passage was "
 "executed. Anti-replay: if Celery was stopped on the passage day, the task "
 "catches up at the next startup."
 msgstr "Dernière année scolaire (champ « name ») pour laquelle le passage automatique a été exécuté. Anti-rejeu : si Celery était arrêté le jour du passage, la tâche se rattrape au prochain démarrage."
 
-#: members/models.py:850
+#: members/models.py:860
 msgid "Important document"
 msgstr "Document important"
 
-#: members/models.py:851 members/templates/members/documents.html:5
+#: members/models.py:861 members/templates/members/documents.html:5
 #: messaging/templates/messaging/compose.html:41
 #: messaging/templates/messaging/compose_all.html:33
 msgid "Important documents"
@@ -1686,36 +1696,36 @@ msgid ""
 "the form below to finalize your registration."
 msgstr "Vous êtes sur le point de vous connecter avec votre compte %(provider_name)s. Veuillez compléter le formulaire ci-dessous pour finaliser votre inscription."
 
-#: members/views.py:177
+#: members/views.py:179
 #, python-format
 msgid "%(age)s years old — branch %(branch)s: %(min)s-%(max)s years old"
 msgstr "%(age)s ans — branche %(branch)s : %(min)s-%(max)s ans"
 
-#: members/views.py:353
+#: members/views.py:355
 #, python-format
 msgid "%(first)s %(last)s is already attached to your account."
 msgstr "%(first)s %(last)s est déjà rattaché(e) à votre compte."
 
-#: members/views.py:404 members/views.py:474
+#: members/views.py:406 members/views.py:476
 #, python-format
 msgid "%(first)s %(last)s added."
 msgstr "%(first)s %(last)s ajouté(e)."
 
-#: members/views.py:416 members/views.py:428
+#: members/views.py:418 members/views.py:430
 msgid "Invalid request"
 msgstr "Requête invalide"
 
-#: members/views.py:442
+#: members/views.py:444
 #, python-format
 msgid "%(first)s modified."
 msgstr "%(first)s modifié(e)."
 
-#: members/views.py:491
+#: members/views.py:504
 #, python-format
 msgid "%(first)s is not attached to your account."
 msgstr "%(first)s n'est pas rattaché(e) à votre compte."
 
-#: members/views.py:496
+#: members/views.py:509
 #, python-format
 msgid ""
 "You cannot detach %(first)s.\n"
@@ -1725,33 +1735,50 @@ msgid ""
 "%(first)s was born on %(birthday)s and %(has_account)s."
 msgstr "Vous ne pouvez pas détacher %(first)s.\nPour détacher un enfant, il doit soit être rattaché à d'autres parents, soit avoir plus de 18 ans et disposer d'un compte.\n%(first)s a %(count)s parent(s)\n%(first)s est né(e) le %(birthday)s et %(has_account)s."
 
-#: members/views.py:505
+#: members/views.py:518
 msgid "has an account"
 msgstr "a un compte"
 
-#: members/views.py:505
+#: members/views.py:518
 msgid "does not have an account"
 msgstr "n'a pas de compte"
 
-#: members/views.py:509
+#: members/views.py:522
 #, python-format
 msgid ""
 "To confirm that you want to detach %(first)s from your account, click "
 "\"Detach\"."
 msgstr "Pour confirmer que vous souhaitez détacher %(first)s de votre compte, cliquez sur « Détacher »."
 
-#: members/views.py:572
+#: members/views.py:618
+#, python-format
+msgid "%(first)s will not be re-enrolled next year."
+msgstr "%(first)s ne sera pas réinscrit(e) l'année prochaine."
+
+#: members/views.py:631
+#, python-format
+msgid ""
+"%(first)s has been deregistered. The registration team has been notified to "
+"complete the current-year procedure."
+msgstr "%(first)s a été désinscrit(e). L'équipe des inscriptions a été prévenue pour finaliser la procédure de l'année en cours."
+
+#: members/views.py:639
+#, python-format
+msgid "%(first)s has been deregistered."
+msgstr "%(first)s a été désinscrit(e)."
+
+#: members/views.py:658
 #, python-format
 msgid ""
 "%(first)s is assigned to a section and must be deregistered, not removed."
 msgstr "%(first)s est inscrit(e) à une section et doit être désinscrit(e), pas retiré(e)."
 
-#: members/views.py:630
+#: members/views.py:716
 #, python-format
 msgid "%(count)s email(s) requeued."
 msgstr "%(count)s e-mail(s) remis en file."
 
-#: members/views.py:634
+#: members/views.py:720
 #, python-format
 msgid "%(count)s email(s) purged."
 msgstr "%(count)s e-mail(s) purgé(s)."
