@@ -258,6 +258,13 @@
                 document.querySelectorAll('.toast-container .toast:not(#toast)').forEach(function(el) {
                     new bootstrap.Toast(el).show();
                 });
+                // Tooltips opt in with data-bs-toggle="tooltip". Initialised here
+                // (rather than in each page's own script) because page content is
+                // rendered above this script: an inline init would run before the
+                // Bootstrap bundle is loaded and silently do nothing.
+                document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function(el) {
+                    new bootstrap.Tooltip(el);
+                });
             });
         </script>
     </body>

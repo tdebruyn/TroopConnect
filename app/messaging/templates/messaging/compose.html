@@ -103,10 +103,6 @@
         groupField.addEventListener('change', toggleSection);
         toggleSection();
 
-        document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function(el) {
-            new bootstrap.Tooltip(el);
-        });
-
         function onAttachmentSelected(input) {
             var container = document.getElementById('attachments-container');
             var rows = container.querySelectorAll('.attachment-row');

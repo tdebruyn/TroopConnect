@@ -294,6 +294,13 @@ class ComposeSchoolYearSelectionTest(MailTestCase):
         self.assertIn("Aucun destinataire trouvé.", html)
 
     def test_school_year_field_has_explanatory_tooltip(self):
+        """The tooltip markup and its translation are rendered.
+
+        This cannot prove the tooltip actually appears: it is shown by JS, and
+        the initialisation has to live in base.html (page content renders above
+        the Bootstrap bundle, so a page-level init runs too early and silently
+        does nothing). Verify appearance in a browser when touching this.
+        """
         response = self.client.get("/messaging/compose/")
         self.assertContains(response, 'data-bs-toggle="tooltip"')
         # Default language is French, so the explanation must be translated.
