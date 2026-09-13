@@ -12706,3 +12706,25 @@ h6,
   position: relative;
   z-index: 5;
 }
+/*
+ * Keep the site header (site name, sections, agenda, ...) visible while
+ * scrolling. It only contains the navbar, so it is a direct child of <body>
+ * and sticks for the whole page.
+ */
+.site-header {
+  position: sticky;
+  top: 0;
+  /* Above the page, below modals (1055), offcanvas (1045) and toasts (1090). */
+  z-index: 1030;
+}
+/*
+ * Below the navbar-expand-md breakpoint the collapsed menu is taller than the
+ * navbar, which has a fixed height, so the menu overflows onto the page
+ * without any background of its own. Paint it with the navbar colour so it
+ * stays readable once the header is pinned on screen.
+ */
+@media (max-width: 767.98px) {
+  .site-header .navbar-collapse.show {
+    background-color: var(--bs-primary);
+  }
+}
