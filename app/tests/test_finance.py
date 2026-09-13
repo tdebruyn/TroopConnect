@@ -193,13 +193,13 @@ class AnimateurFlatRateTest(FinanceTestBase):
         """Animateur fee comes from animator rules, not child branch pricing."""
         balances = calculate_balances(self.current_year)
         anim_balance = next(
-            b for b in balances if b["person_id"] == self.animateur.pk
+            balance for balance in balances if balance["person_id"] == self.animateur.pk
         )
         self.assertEqual(anim_balance["amount_due"], Decimal("30.00"))
         child_amounts = {
-            b["amount_due"]
-            for b in balances
-            if b["person_id"] in [
+            balance["amount_due"]
+            for balance in balances
+            if balance["person_id"] in [
                 self.child_eldest.pk,
                 self.child_youngest.pk,
                 self.child_other.pk,

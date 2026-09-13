@@ -203,9 +203,11 @@ def calculate_balances(school_year):
 
     # Calculate payments
     payments_by_person = {}
-    for p in Payment.objects.filter(school_year=school_year).values("person_id", "amount"):
-        payments_by_person.setdefault(p["person_id"], Decimal("0"))
-        payments_by_person[p["person_id"]] += p["amount"]
+    for payment in Payment.objects.filter(school_year=school_year).values(
+        "person_id", "amount"
+    ):
+        payments_by_person.setdefault(payment["person_id"], Decimal("0"))
+        payments_by_person[payment["person_id"]] += payment["amount"]
 
     results = []
     for person_id, amount_due in dues.items():

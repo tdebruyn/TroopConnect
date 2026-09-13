@@ -20,8 +20,8 @@ class PriceGridForm(forms.Form):
         self.branches = branches
 
         existing = {
-            (r.branch_id, r.rank, r.member_type): r.amount
-            for r in FeeRule.objects.filter(school_year=school_year)
+            (rule.branch_id, rule.rank, rule.member_type): rule.amount
+            for rule in FeeRule.objects.filter(school_year=school_year)
         }
 
         # Generic (all branches) child row.

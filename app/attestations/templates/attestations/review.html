@@ -5,6 +5,13 @@
 {% block subcontent %}
 {% include "attestations/_steps.html" with current=5 %}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/css/tom-select.bootstrap5.min.css">
+<style>
+    /* The clear button only means something once a recipient is chosen; on an
+       unmatched row it would sit alone in an otherwise empty field. */
+    .ts-wrapper:not(.has-items) .clear-button {
+        display: none;
+    }
+</style>
 <p class="text-muted">
     {% trans "For each document, confirm the recipient or skip it. Recipients are re-resolved from the selected person when you send." %}
 </p>
@@ -109,8 +116,13 @@
         document.querySelectorAll('select.person-select').forEach(function (el) {
             new TomSelect(el, {
                 maxOptions: 200,
-                allowEmptyOption: true,
+                // No allowEmptyOption: it makes Tom Select treat the empty
+                // <option> as a selected item, so every unmatched row showed
+                // "— no match —" as if it were a filled-in value. Leaving it out
+                // keeps the field empty, and the clear button (which we hide
+                // while nothing is selected) goes back to no recipient.
                 placeholder: '',
+                plugins: ['clear_button'],
             });
         });
     })();

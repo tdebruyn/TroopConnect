@@ -125,6 +125,19 @@ class AdminListFilterTest(TestCase):
         )
         self.assertEqual(response.status_code, 200)
 
+    def test_unknown_school_year_falls_back_instead_of_erroring(self):
+        """A stale or malformed ?year= must still render the list.
+
+        The year is round-tripped through the session filter, so a value that
+        no longer resolves is reachable from an ordinary navigation.
+        """
+        self.client.force_login(self.staff_user)
+        for bad_year in ("999999", "not-a-number"):
+            response = self.client.get(
+                reverse("members:admin_list"), {"year": bad_year}
+            )
+            self.assertEqual(response.status_code, 200)
+
     def test_default_sort_is_last_name(self):
         self.client.force_login(self.staff_user)
         response = self.client.get(reverse("members:admin_list"))
