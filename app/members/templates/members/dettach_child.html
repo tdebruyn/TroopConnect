@@ -7,14 +7,14 @@
 {% block subcontent %}
     {% if not allow_dettach %}
         {{ message | linebreaks }}
-        <a class="btn btn-primary" href="{% url 'members:profile' user %}">{% trans "Back" %}</a>
+        <a class="btn btn-primary" href="{% url 'members:profile' user.id %}">{% trans "Back" %}</a>
     {% else %}
         {{ message | linebreaks }}
         <div class="container">
             <a class="btn btn-primary me-1"
                href="{% url 'members:dettach_confirm' child.pk %}">{% trans "Detach" %}</a>
             <a class="btn btn-outline-primary"
-               href="{% url 'members:profile' user %}">{% trans "Cancel" %}</a>
+               href="{% url 'members:profile' user.id %}">{% trans "Cancel" %}</a>
         </div>
     {% endif %}
 {% endblock subcontent %}
