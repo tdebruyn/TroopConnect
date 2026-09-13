@@ -247,6 +247,7 @@ def send_reminders(request):
         form = ReminderForm(request.POST)
         if form.is_valid():
             sent_count = 0
+            failed_count = 0
             for adult in adults:
                 body = form.cleaned_data["body"]
                 body = body.replace("{prenom}", adult["person"].first_name)
@@ -260,16 +261,27 @@ def send_reminders(request):
                         message=body,
                     )
                 except Exception:
+                    # Count the outcome, not the attempt: reporting "sent" for
+                    # a failed send would tell the trésorier a household was
+                    # chased when the email never left.
+                    failed_count += 1
                     messages.error(
                         request,
                         _("Failed to send to %(email)s.") % {"email": adult["email"]},
                     )
-                sent_count += 1
+                else:
+                    sent_count += 1
 
             messages.success(
                 request,
                 _("Reminders sent to %(count)s adult(s).") % {"count": sent_count},
             )
+            if failed_count:
+                messages.warning(
+                    request,
+                    _("%(count)s reminder(s) could not be sent.")
+                    % {"count": failed_count},
+                )
             return redirect("finance:billing")
     else:
         form = ReminderForm()
