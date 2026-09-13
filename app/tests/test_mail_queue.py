@@ -1,15 +1,18 @@
+from unittest.mock import patch
+
 from django.contrib.auth.models import AnonymousUser
 from django.core import mail
 from django.core.mail import EmailMessage
-from django.test import RequestFactory
+from django.test import RequestFactory, TransactionTestCase, override_settings
 from django.urls import reverse
 from post_office import mail as post_office_mail
 from post_office.models import STATUS, Email
 
 from members.context_processors import mail_queue_status
 from members.models import Account, Person, Role
-from tests.mail import MailTestCase
+from tests.mail import DUMMY_POST_OFFICE, MailTestCase
 from troopconnect.dummy_backend import DummyEmailBackend
+from troopconnect.tasks import send_queued_mail
 
 
 class EmailQueueTest(MailTestCase):
@@ -39,6 +42,50 @@ class EmailQueueTest(MailTestCase):
             message="Body",
         )
         Email.objects.get().dispatch()
+        self.assertEqual(Email.objects.get().status, STATUS.sent)
+
+
+class SendQueuedMailTaskTest(TransactionTestCase):
+    """The beat task that flushes the queue is the email pipeline's heartbeat.
+
+    Schedule: CELERY_BEAT_SCHEDULE["send-queued-mail"], every 5 minutes. It had
+    no coverage, and these tests caught it calling post_office's management
+    command bare — ``Command.handle`` reads ``options['lockfile']`` out of the
+    argparse namespace, so every run raised KeyError and dispatched nothing.
+
+    TransactionTestCase rather than TestCase because
+    ``send_queued_mail_until_done`` closes the DB connection when it finishes —
+    right for a worker process, fatal inside TestCase's wrapping transaction.
+    """
+
+    def setUp(self):
+        super().setUp()
+        self._po_override = override_settings(POST_OFFICE=DUMMY_POST_OFFICE)
+        self._po_override.enable()
+        self.addCleanup(self._po_override.disable)
+        # Same guard as MailTestCase: queueing fires post_office's email_queued
+        # signal, whose handler would .delay() to the real broker. The whole
+        # point here is that the mail stays queued until the beat task runs.
+        self._delay_patcher = patch("post_office.tasks.send_queued_mail.delay")
+        self._delay_patcher.start()
+        self.addCleanup(self._delay_patcher.stop)
+
+    def test_task_runs_on_an_empty_queue(self):
+        """Regression guard: the task must not need options configured."""
+        send_queued_mail()
+        self.assertFalse(Email.objects.exists())
+
+    def test_queued_mail_is_actually_sent(self):
+        post_office_mail.send(
+            recipients=["to@test.be"],
+            sender="from@test.be",
+            subject="Hello",
+            message="Body",
+        )
+        self.assertEqual(Email.objects.get().status, STATUS.queued)
+
+        send_queued_mail()
+
         self.assertEqual(Email.objects.get().status, STATUS.sent)
 
 
