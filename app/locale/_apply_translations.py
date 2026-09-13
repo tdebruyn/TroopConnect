@@ -703,6 +703,18 @@ TRANSLATIONS = {
     "No recipient": ("Aucun destinataire", "Geen ontvanger"),
     "No documents found.": ("Aucun document trouvé.", "Geen documenten gevonden."),
     "Send signed attestations": ("Envoyer les attestations signées", "Ondertekende attesten versturen"),
+    "Recipient filter": ("Filtre des destinataires", "Filter ontvangers"),
+    "All (%(count)s)": ("Tous (%(count)s)", "Alle (%(count)s)"),
+    "Not found (%(count)s)": ("Non trouvés (%(count)s)", "Niet gevonden (%(count)s)"),
+    "Not found": ("Non trouvé", "Niet gevonden"),
+    "Documents whose recipient could not be found automatically.": (
+        "Documents dont le destinataire n'a pas pu être trouvé automatiquement.",
+        "Documenten waarvan de ontvanger niet automatisch kon worden gevonden.",
+    ),
+    "Every document has a recipient.": (
+        "Tous les documents ont un destinataire.",
+        "Elk document heeft een ontvanger.",
+    ),
 
 }
 

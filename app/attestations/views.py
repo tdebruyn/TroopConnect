@@ -194,8 +194,26 @@ def review(request, pk):
     return _render_review(request, campaign, SendForm())
 
 
+def _unmatched_only(request):
+    """Whether the 'recipient not found' filter is on.
+
+    Read from POST as well as GET so the filter survives a send that comes back
+    with an invalid email form.
+    """
+    value = request.POST.get("unmatched_only")
+    if value is None:
+        value = request.GET.get("unmatched_only")
+    return value in ("1", "on", "true")
+
+
 def _render_review(request, campaign, form):
+    unmatched_only = _unmatched_only(request)
+
     items = campaign.items.select_related("matched_person")
+    unmatched_items = campaign.items.filter(matched_person__isnull=True)
+    if unmatched_only:
+        items = unmatched_items
+
     persons = Person.objects.filter(status="a").order_by("last_name", "first_name")
     return render(
         request,
@@ -205,6 +223,9 @@ def _render_review(request, campaign, form):
             "items": items,
             "persons": persons,
             "form": form,
+            "unmatched_only": unmatched_only,
+            "total_count": campaign.items.count(),
+            "unmatched_count": unmatched_items.count(),
         },
     )
 

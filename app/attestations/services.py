@@ -9,7 +9,6 @@ template-generated PDF. Pages are split and merged with pypdf.
 import re
 from io import BytesIO
 
-from django.db.models import Q
 from pdfminer.high_level import extract_pages
 from pdfminer.layout import LTTextContainer, LTTextLine
 from pypdf import PdfReader, PdfWriter, Transformation
@@ -128,54 +127,144 @@ def extract_field(lines, anchor, tol=3.0):
 # Name matching and recipient resolution
 # ---------------------------------------------------------------------------
 
-def candidate_persons(name):
-    """Person objects whose first+last name tokens contain the extracted name's."""
-    tokens = _name_tokens(name)
-    if not tokens:
-        return Person.objects.none()
-
-    query = Q()
-    for token in tokens:
-        query |= Q(first_name__icontains=token) | Q(last_name__icontains=token)
-    candidates = Person.objects.filter(status="a").filter(query).distinct()
-
-    matches = []
-    for person in candidates:
-        person_tokens = _name_tokens(f"{person.first_name} {person.last_name}")
-        if not person_tokens:
-            continue
-        common = set(tokens) & set(person_tokens)
-        if len(tokens) == 1:
-            # A single token must equal the person's full name exactly.
-            if common == set(tokens) == set(person_tokens):
-                matches.append(person)
-        elif common == set(tokens) or common == set(person_tokens):
-            matches.append(person)
-    return matches
+# A token shorter than this is too easy to confuse with another name, so it has
+# to match exactly; and a name may differ from the database one by at most this
+# many letter-level mistakes in total.
+_TYPO_MIN_LEN = 4
+_MAX_TYPOS = 1
 
 
-def match_person(name, address=None):
-    """Return the unique Person matching ``name``, else None.
+def _is_one_typo_apart(a, b):
+    """True when ``a`` and ``b`` differ by a single letter-level mistake.
 
-    When several people share a name, the (normalised) address breaks the tie.
-    If it still cannot be disambiguated, None is returned and the operator must
-    decide during review.
+    Covers the mistakes that actually show up in a scanned document: a wrong
+    letter, a swapped pair of letters, or a missing/extra letter.
     """
-    candidates = list(candidate_persons(name))
-    if not candidates:
-        return None
-    if len(candidates) == 1:
-        return candidates[0]
-    if address:
-        norm_address = _normalize(address)
-        address_matches = [
-            person
-            for person in candidates
-            if person.address and _normalize(person.address) == norm_address
+    if a == b:
+        return True
+    if min(len(a), len(b)) < _TYPO_MIN_LEN:
+        return False
+    if abs(len(a) - len(b)) > 1:
+        return False
+
+    if len(a) == len(b):
+        diffs = [i for i in range(len(a)) if a[i] != b[i]]
+        if len(diffs) == 1:
+            return True
+        # Adjacent transposition, e.g. "Dupnot" for "Dupont".
+        return (
+            len(diffs) == 2
+            and diffs[1] == diffs[0] + 1
+            and a[diffs[0]] == b[diffs[1]]
+            and a[diffs[1]] == b[diffs[0]]
+        )
+
+    # Lengths differ by one: one insertion or deletion.
+    if len(a) > len(b):
+        a, b = b, a
+    i = 0
+    while i < len(a) and a[i] == b[i]:
+        i += 1
+    return a[i:] == b[i + 1 :]
+
+
+def _all_tokens_found(source, target, max_typos=_MAX_TYPOS):
+    """True when every token of ``source`` also occurs in ``target``.
+
+    Exact matches are tried first so that the typo budget is only spent when it
+    is actually needed. ``max_typos`` is the total across the whole name.
+    """
+    remaining = list(target)
+    typos = 0
+    for token in source:
+        if token in remaining:
+            remaining.remove(token)
+            continue
+        close = next((t for t in remaining if _is_one_typo_apart(token, t)), None)
+        if close is None or typos >= max_typos:
+            return False
+        remaining.remove(close)
+        typos += 1
+    return True
+
+
+def _names_match(name_tokens, person_tokens):
+    """Whether an extracted name and a person's name refer to the same name.
+
+    Order-insensitive and tolerant of case, accents (both handled upstream by
+    ``_name_tokens``) and a single typo. Either name may carry extra tokens —
+    a document often spells out a middle name the database does not hold, and
+    the reverse happens too — so a match in either direction counts.
+    """
+    if not name_tokens or not person_tokens:
+        return False
+    return _all_tokens_found(name_tokens, person_tokens) or _all_tokens_found(
+        person_tokens, name_tokens
+    )
+
+
+class PersonMatcher:
+    """Fuzzy name → Person lookup, built once and reused across a campaign.
+
+    Names are matched in Python rather than with an ``icontains`` query: SQL
+    cannot express "one letter off", and an accented database column does not
+    match the accent-stripped, typo-tolerant tokens we compare against. The unit
+    has a few hundred members, so scanning them is cheap.
+    """
+
+    def __init__(self, persons=None):
+        if persons is None:
+            persons = Person.objects.filter(status="a")
+        self._entries = [
+            (person, _name_tokens(f"{person.first_name} {person.last_name}"))
+            for person in persons
         ]
-        if len(address_matches) == 1:
-            return address_matches[0]
-    return None
+
+    def candidates(self, name):
+        """Every person whose name matches the extracted one."""
+        tokens = _name_tokens(name)
+        if not tokens:
+            return []
+        return [
+            person
+            for person, person_tokens in self._entries
+            if _names_match(tokens, person_tokens)
+        ]
+
+    def match(self, name, address=None):
+        """The unique matching Person, else None.
+
+        When several people share a name, the (normalised) address breaks the
+        tie. If it still cannot be disambiguated, None is returned and the
+        operator decides during review.
+        """
+        candidates = self.candidates(name)
+        if not candidates:
+            return None
+        if len(candidates) == 1:
+            return candidates[0]
+        if address:
+            norm_address = _normalize(address)
+            address_matches = [
+                person
+                for person in candidates
+                if person.address and _normalize(person.address) == norm_address
+            ]
+            if len(address_matches) == 1:
+                return address_matches[0]
+        return None
+
+
+def candidate_persons(name):
+    """The persons matching ``name``; kept for callers needing the raw list."""
+    return PersonMatcher().candidates(name)
+
+
+def match_person(name, address=None, matcher=None):
+    """Return the unique Person matching ``name``, else None."""
+    if matcher is None:
+        matcher = PersonMatcher()
+    return matcher.match(name, address)
 
 
 def resolve_recipients(person):
@@ -258,6 +347,7 @@ def process_campaign(campaign):
         len(reader.pages), campaign.page_range_start, campaign.page_range_end
     )
     lines_by_page = page_lines_map(campaign.documents.path)
+    matcher = PersonMatcher()
 
     items = []
     for start, end in ranges:
@@ -270,7 +360,7 @@ def process_campaign(campaign):
             if campaign.address_anchor
             else ""
         )
-        person = match_person(name, address)
+        person = matcher.match(name, address)
         recipients = resolve_recipients(person)
         items.append(
             AttestationItem(

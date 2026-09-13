@@ -3,6 +3,7 @@ from io import BytesIO
 from django.core.files.base import ContentFile
 from django.test import SimpleTestCase
 from django.urls import reverse
+from django.utils.translation import gettext
 from post_office.models import Email
 from pypdf import PdfReader, PdfWriter
 
@@ -157,12 +158,64 @@ class MatchPersonTest(AttestationDbTestBase):
         self.assertIsNotNone(person)
         self.assertEqual(person.first_name, "Hélène")
 
+    def test_matches_when_document_is_all_caps(self):
+        self.assertEqual(match_person("CHARLIE DUPONT"), self.child)
+
+    def test_matches_when_name_order_is_reversed(self):
+        self.assertEqual(match_person("Dupont Charlie"), self.child)
+
+    def test_matches_accented_database_name_without_accent_in_document(self):
+        # Both tokens are accented in the database, so the old SQL prefilter
+        # (an icontains on the raw column) could never find this person.
+        Person.objects.create(
+            first_name="Hélène", last_name="Lefèvre", primary_role=self.role_child, status="a"
+        )
+        person = match_person("Helene Lefevre")
+        self.assertIsNotNone(person)
+        self.assertEqual(person.first_name, "Hélène")
+
+    def test_matches_single_letter_substitution(self):
+        self.assertEqual(match_person("Charlle Dupont"), self.child)
+
+    def test_matches_transposed_letters(self):
+        self.assertEqual(match_person("Charlie Dupnot"), self.child)
+
+    def test_matches_missing_letter(self):
+        self.assertEqual(match_person("Charlie Dupot"), self.child)
+
+    def test_matches_extra_letter(self):
+        self.assertEqual(match_person("Charlie Dupondt"), self.child)
+
+    def test_matches_extra_token_in_document(self):
+        self.assertEqual(match_person("Charlie Jean Dupont"), self.child)
+
+    def test_two_typos_do_not_match(self):
+        self.assertIsNone(match_person("Charlle Dupnot"))
+
+    def test_typo_in_short_token_does_not_match(self):
+        # Below the typo threshold a token must match exactly, otherwise short
+        # names would start colliding with each other.
+        Person.objects.create(
+            first_name="Luc", last_name="Martin", primary_role=self.role_child, status="a"
+        )
+        self.assertIsNone(match_person("Lux Martin"))
+
+    def test_typo_does_not_match_unrelated_name(self):
+        self.assertIsNone(match_person("Charlie Durand"))
+
     def test_unknown_name_returns_none(self):
         self.assertIsNone(match_person("Zoe Inconnue"))
 
     def test_ambiguous_name_returns_none(self):
         Person.objects.create(
             first_name="Charlie", last_name="Dupont", primary_role=self.role_child, status="a"
+        )
+        self.assertIsNone(match_person("Charlie Dupont"))
+
+    def test_ambiguous_typo_match_returns_none(self):
+        # A typo that fits two people is not a match — the operator decides.
+        Person.objects.create(
+            first_name="Charlle", last_name="Dupont", primary_role=self.role_child, status="a"
         )
         self.assertIsNone(match_person("Charlie Dupont"))
 
@@ -284,3 +337,85 @@ class SendFlowTest(AttestationDbTestBase):
         self.item.refresh_from_db()
         self.assertEqual(self.item.status, AttestationItem.Status.SKIPPED)
         self.assertEqual(Email.objects.count(), 0)
+
+
+class ReviewFilterTest(AttestationDbTestBase):
+    """The step-5 'recipient not found' filter."""
+
+    def setUp(self):
+        super().setUp()
+        ar_role = Role.objects.get(short="ar")
+        self.animateur.roles.add(ar_role)
+        self.client.login(email="frank@test.com", password="testpass")
+
+        self.campaign = AttestationCampaign.objects.create(
+            title="Test", status=AttestationCampaign.Status.READY, created_by=self.animateur
+        )
+        self.campaign.documents.save("docs.pdf", ContentFile(_blank_pdf(2)))
+        self.campaign.signature.save("sig.pdf", ContentFile(_blank_pdf(1)))
+        self.matched = AttestationItem.objects.create(
+            campaign=self.campaign,
+            page_start=0,
+            page_end=0,
+            extracted_name="Charlie Dupont",
+            matched_person=self.child,
+            recipients=["alice@test.com", "bob@test.com"],
+            status=AttestationItem.Status.READY,
+        )
+        self.unmatched = AttestationItem.objects.create(
+            campaign=self.campaign,
+            page_start=1,
+            page_end=1,
+            extracted_name="Zoe Inconnue",
+            status=AttestationItem.Status.PENDING,
+        )
+
+    def _review(self, **params):
+        return self.client.get(
+            reverse("attestations:review", args=[self.campaign.pk]), params
+        )
+
+    def test_review_lists_every_item_by_default(self):
+        response = self._review()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context["items"]), 2)
+        self.assertFalse(response.context["unmatched_only"])
+        self.assertEqual(response.context["total_count"], 2)
+        self.assertEqual(response.context["unmatched_count"], 1)
+        # The recipient pickers are wired for the type-to-filter combobox, which
+        # enhances the <select> in place (the select still posts the person pk).
+        self.assertContains(response, "person-select")
+        self.assertContains(response, "tom-select")
+
+    def test_filter_shows_both_counts(self):
+        # Compare against the translated labels: the app renders in the visitor's
+        # language (French by default), not in the English source strings.
+        response = self._review()
+        self.assertContains(response, gettext("All (%(count)s)") % {"count": 2})
+        self.assertContains(response, gettext("Not found (%(count)s)") % {"count": 1})
+
+    def test_unmatched_only_shows_just_the_unmatched_item(self):
+        response = self._review(unmatched_only="1")
+        items = list(response.context["items"])
+        self.assertEqual([item.pk for item in items], [self.unmatched.pk])
+        self.assertTrue(response.context["unmatched_only"])
+
+    def test_unmatched_only_survives_an_invalid_send(self):
+        response = self.client.post(
+            reverse("attestations:send", args=[self.campaign.pk]),
+            {"subject": "", "body": "", "unmatched_only": "1"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context["unmatched_only"])
+        self.assertEqual(len(response.context["items"]), 1)
+
+    def test_filtered_out_items_are_still_sent_with_their_stored_match(self):
+        # Hiding the matched rows must not drop them from the send.
+        self.client.post(
+            reverse("attestations:send", args=[self.campaign.pk]),
+            {"subject": "s", "body": "b", "unmatched_only": "1"},
+        )
+        self.matched.refresh_from_db()
+        self.assertEqual(self.matched.status, AttestationItem.Status.SENT)
+        self.unmatched.refresh_from_db()
+        self.assertEqual(self.unmatched.status, AttestationItem.Status.PENDING)

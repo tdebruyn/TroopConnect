@@ -4,10 +4,10 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-09-13 18:51+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect <noreply@troop.tomctl.be>\nLanguage-Team: fr <fr@li.org>\nLanguage: fr\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\n"
+msgstr "Project-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-09-13 21:23+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect <noreply@troop.tomctl.be>\nLanguage-Team: fr <fr@li.org>\nLanguage: fr\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nProject-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-09-13 21:23+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect <noreply@troop.tomctl.be>\nLanguage-Team: fr <fr@li.org>\nLanguage: fr\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\n"
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-13 18:51+0200\n"
+"POT-Creation-Date: 2026-09-13 21:23+0200\n"
 "PO-Revision-Date: 2026-07-24 00:00+0200\n"
 "Last-Translator: TroopConnect <noreply@troop.tomctl.be>\n"
 "Language-Team: fr <fr@li.org>\n"
@@ -15,6 +15,7 @@ msgstr "Project-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creatio
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: attestations/forms.py:49
@@ -190,56 +191,82 @@ msgstr "Vérifier les attestations"
 msgid "Check who each document goes to, then send."
 msgstr "Vérifiez à qui chaque document est destiné, puis envoyez."
 
-#: attestations/templates/attestations/review.html:8
+#: attestations/templates/attestations/review.html:9
 msgid ""
 "For each document, confirm the recipient or skip it. Recipients are re-"
 "resolved from the selected person when you send."
 msgstr "Pour chaque document, confirmez le destinataire ou ignorez-le. Les destinataires sont recalculés à partir de la personne sélectionnée au moment de l'envoi."
 
-#: attestations/templates/attestations/review.html:17
+#: attestations/templates/attestations/review.html:13
+msgid "Recipient filter"
+msgstr "Filtre des destinataires"
+
+#: attestations/templates/attestations/review.html:16
+#, python-format
+msgid "All (%(count)s)"
+msgstr "Tous (%(count)s)"
+
+#: attestations/templates/attestations/review.html:20
+#, python-format
+msgid "Not found (%(count)s)"
+msgstr "Non trouvés (%(count)s)"
+
+#: attestations/templates/attestations/review.html:24
+msgid "Documents whose recipient could not be found automatically."
+msgstr "Documents dont le destinataire n'a pas pu être trouvé automatiquement."
+
+#: attestations/templates/attestations/review.html:35
 msgid "Pages"
 msgstr "Pages"
 
-#: attestations/templates/attestations/review.html:18
+#: attestations/templates/attestations/review.html:36
 msgid "Extracted name"
 msgstr "Nom extrait"
 
-#: attestations/templates/attestations/review.html:19
+#: attestations/templates/attestations/review.html:37
 msgid "Recipient"
 msgstr "Destinataire"
 
-#: attestations/templates/attestations/review.html:20
+#: attestations/templates/attestations/review.html:38
 msgid "Will send to"
 msgstr "Enverra à"
 
-#: attestations/templates/attestations/review.html:21
+#: attestations/templates/attestations/review.html:39
 msgid "Skip"
 msgstr "Ignorer"
 
-#: attestations/templates/attestations/review.html:31
+#: attestations/templates/attestations/review.html:49
 msgid "— no match —"
 msgstr "— aucune correspondance —"
 
-#: attestations/templates/attestations/review.html:38
+#: attestations/templates/attestations/review.html:55
+msgid "Not found"
+msgstr "Non trouvé"
+
+#: attestations/templates/attestations/review.html:59
 msgid "No recipient"
 msgstr "Aucun destinataire"
 
-#: attestations/templates/attestations/review.html:45
+#: attestations/templates/attestations/review.html:69
+msgid "Every document has a recipient."
+msgstr "Tous les documents ont un destinataire."
+
+#: attestations/templates/attestations/review.html:71
 msgid "No documents found."
 msgstr "Aucun document trouvé."
 
-#: attestations/templates/attestations/review.html:52 members/constants.py:29
+#: attestations/templates/attestations/review.html:81 members/constants.py:29
 #: members/forms.py:28 members/forms.py:43 members/forms.py:377
 #: members/forms.py:404 messaging/templates/messaging/compose_all.html:54
 #: messaging/templates/messaging/message_detail.html:51
 msgid "Email"
 msgstr "E-mail"
 
-#: attestations/templates/attestations/review.html:68
+#: attestations/templates/attestations/review.html:97
 msgid "Send signed attestations"
 msgstr "Envoyer les attestations signées"
 
-#: attestations/templates/attestations/review.html:69
+#: attestations/templates/attestations/review.html:98
 #: attestations/templates/attestations/step1.html:22
 #: attestations/templates/attestations/step2.html:22
 #: attestations/templates/attestations/step3.html:21
@@ -313,7 +340,7 @@ msgstr "Aperçu"
 msgid "Could not find that name on page %(page)s."
 msgstr "Impossible de trouver ce nom à la page %(page)s."
 
-#: attestations/views.py:282
+#: attestations/views.py:303
 #, python-format
 msgid "%(sent)s sent, %(failed)s failed."
 msgstr "%(sent)s envoyé(s), %(failed)s échoué(s)."
@@ -2071,9 +2098,6 @@ msgstr "Gérer"
 
 #~ msgid "One page per document"
 #~ msgstr "Un document par page"
-
-#~ msgid "New document on a marker page"
-#~ msgstr "Nouveau document sur une page repère"
 
 #~ msgid "First page only"
 #~ msgstr "Première page uniquement"
