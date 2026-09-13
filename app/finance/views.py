@@ -41,24 +41,27 @@ def billing_overview(request):
     balances = calculate_balances(current_year)
 
     # Enrich with person data; select_related avoids a role query per household.
-    person_ids = [b["person_id"] for b in balances]
+    person_ids = [balance["person_id"] for balance in balances]
     persons = {
-        p.pk: p
-        for p in Person.objects.filter(pk__in=person_ids).select_related("primary_role")
+        person.pk: person
+        for person in Person.objects.filter(pk__in=person_ids).select_related(
+            "primary_role"
+        )
     }
-    for b in balances:
-        b["person"] = persons.get(b["person_id"])
+    for balance in balances:
+        balance["person"] = persons.get(balance["person_id"])
 
     # Split into children and animateurs, using the shared role short-codes.
     children_balances = [
-        b
-        for b in balances
-        if b["person"] and b["person"].primary_role.short == ANIME
+        balance
+        for balance in balances
+        if balance["person"] and balance["person"].primary_role.short == ANIME
     ]
     animateur_balances = [
-        b
-        for b in balances
-        if b["person"] and b["person"].primary_role.short in ANIMATEUR_ROLES
+        balance
+        for balance in balances
+        if balance["person"]
+        and balance["person"].primary_role.short in ANIMATEUR_ROLES
     ]
 
     # Build the price grid for display.
