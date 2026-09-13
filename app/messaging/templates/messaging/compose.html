@@ -72,7 +72,12 @@
                 {{ form.section }}
             </div>
             <div class="col-md-6">
-                <label for="id_school_year" class="form-label">{{ form.school_year.label }}</label>
+                <label for="id_school_year" class="form-label">
+                    {{ form.school_year.label }}
+                    <i class="bi bi-info-circle text-muted"
+                       data-bs-toggle="tooltip"
+                       title="{% trans 'Pick a past school year to reach the people who were in this section back then — for example the parents of children who have since moved to another section.' %}"></i>
+                </label>
                 {{ form.school_year }}
             </div>
         </div>
@@ -97,6 +102,10 @@
 
         groupField.addEventListener('change', toggleSection);
         toggleSection();
+
+        document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function(el) {
+            new bootstrap.Tooltip(el);
+        });
 
         function onAttachmentSelected(input) {
             var container = document.getElementById('attachments-container');

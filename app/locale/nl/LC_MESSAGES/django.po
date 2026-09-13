@@ -3116,6 +3116,10 @@ msgstr "Laden"
 msgid "Select a group and click \"Load\" to display recipients."
 msgstr "Selecteer een groep en klik op \"Laden\" om de ontvangers weer te geven."
 
+#: messaging/templates/messaging/compose.html:79
+msgid "Pick a past school year to reach the people who were in this section back then — for example the parents of children who have since moved to another section."
+msgstr "Kies een vorig schooljaar om de mensen te bereiken die toen in deze sectie zaten — bijvoorbeeld de ouders van kinderen die sindsdien naar een andere sectie zijn gegaan."
+
 #: messaging/templates/messaging/compose_all.html:71
 msgid "No member found."
 msgstr "Geen lid gevonden."

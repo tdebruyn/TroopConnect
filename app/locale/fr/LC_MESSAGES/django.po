@@ -3116,6 +3116,10 @@ msgstr "Charger"
 msgid "Select a group and click \"Load\" to display recipients."
 msgstr "Sélectionnez un groupe et cliquez sur « Charger » pour afficher les destinataires."
 
+#: messaging/templates/messaging/compose.html:79
+msgid "Pick a past school year to reach the people who were in this section back then — for example the parents of children who have since moved to another section."
+msgstr "Choisissez une année scolaire passée pour joindre les personnes qui étaient dans cette section à ce moment-là — par exemple les parents d'enfants qui ont depuis rejoint une autre section."
+
 #: messaging/templates/messaging/compose_all.html:71
 msgid "No member found."
 msgstr "Aucun membre trouvé."

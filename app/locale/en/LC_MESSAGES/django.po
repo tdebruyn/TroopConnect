@@ -1582,6 +1582,10 @@ msgstr ""
 msgid "Select a group and click \"Load\" to display recipients."
 msgstr ""
 
+#: messaging/templates/messaging/compose.html:79
+msgid "Pick a past school year to reach the people who were in this section back then — for example the parents of children who have since moved to another section."
+msgstr ""
+
 #: messaging/templates/messaging/compose_all.html:71
 msgid "No member found."
 msgstr ""

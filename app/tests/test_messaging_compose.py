@@ -293,6 +293,12 @@ class ComposeSchoolYearSelectionTest(MailTestCase):
         self.assertNotIn(f'name="recipient_{self.parent_person.pk}"', html)
         self.assertIn("Aucun destinataire trouvé.", html)
 
+    def test_school_year_field_has_explanatory_tooltip(self):
+        response = self.client.get("/messaging/compose/")
+        self.assertContains(response, 'data-bs-toggle="tooltip"')
+        # Default language is French, so the explanation must be translated.
+        self.assertContains(response, "Choisissez une année scolaire passée")
+
     def test_form_school_year_options_are_recent_years(self):
         # Plenty of past years: the dropdown must cap at last 5 + next year.
         for offset in range(2, 9):
