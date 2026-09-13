@@ -3,6 +3,7 @@ import hashlib
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db.models import Count, Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
@@ -18,42 +19,16 @@ from members.models import (
     SchoolYear,
     Section,
 )
+from members.permissions import (
+    ANIMATEUR,
+    can_access_messaging,
+    can_manage_unit,
+    get_person,
+    has_primary_role,
+)
 
 from .forms import RECIPIENT_GROUP_CHOICES, ComposeMessageForm
 from .models import MessageAttachment, SectionMessage, SectionMessageRecipient
-
-
-def _get_animateur_person(user):
-    """Return the Person for an animateur user, or None."""
-    if not hasattr(user, "person"):
-        return None
-    person = user.person
-    if person.primary_role.short != "a":
-        return None
-    return person
-
-
-def _can_send_all(user):
-    """Check if user can send messages to all members.
-
-    Staff or users with secondary role 'ar' or 'ad' can send to all.
-    Regular animateurs can only send to their section.
-    """
-    if user.is_staff:
-        return True
-    if not hasattr(user, "person"):
-        return False
-    person = user.person
-    if person.roles.filter(short__in=["ar", "ad"]).exists():
-        return True
-    return False
-
-
-def _is_authorized(user):
-    """Check if user can access the messaging system at all."""
-    if _can_send_all(user):
-        return True
-    return _get_animateur_person(user) is not None
 
 
 def _get_section_parents(section, school_year):
@@ -374,12 +349,12 @@ def _handle_attachment_and_docs(request, msg):
 @login_required
 def compose_message(request):
     """Unified compose message view with recipient group selection."""
-    if not _is_authorized(request.user):
+    if not can_access_messaging(request.user):
         raise Http404
 
-    person = request.user.person
-    can_send_all = _can_send_all(request.user)
-    is_animateur = _get_animateur_person(request.user) is not None
+    person = get_person(request.user)
+    can_send_all = can_manage_unit(request.user)
+    is_animateur = has_primary_role(request.user, (ANIMATEUR,))
     current_year = SchoolYear.current()
 
     # Determine the animateur's section (if applicable)
@@ -542,20 +517,29 @@ def compose_message(request):
 
 @login_required
 def animateur_history(request):
-    person = getattr(request.user, "person", None)
-    if person is None or not _is_authorized(request.user):
+    person = get_person(request.user)
+    if person is None or not can_access_messaging(request.user):
         raise Http404
 
     sent_messages = (
         SectionMessage.objects.filter(sender=person)
         .select_related("section", "school_year")
+        .annotate(
+            total_recipients=Count("recipients"),
+            sent_recipients=Count(
+                "recipients", filter=Q(recipients__sent_at__isnull=False)
+            ),
+        )
     )
 
-    messages_data = []
-    for msg in sent_messages:
-        total = msg.recipients.count()
-        sent = msg.recipients.filter(sent_at__isnull=False).count()
-        messages_data.append({"message": msg, "total": total, "sent": sent})
+    messages_data = [
+        {
+            "message": msg,
+            "total": msg.total_recipients,
+            "sent": msg.sent_recipients,
+        }
+        for msg in sent_messages
+    ]
 
     return render(
         request,
@@ -567,13 +551,13 @@ def animateur_history(request):
 @login_required
 def message_detail(request, message_id):
     """Show the full detail of a sent message (content, recipients, attachments)."""
-    if not _is_authorized(request.user):
+    if not can_access_messaging(request.user):
         raise Http404
 
     message = get_object_or_404(SectionMessage, pk=message_id)
 
     # Only the sender (or a staff member) may view a message's details.
-    person = getattr(request.user, "person", None)
+    person = get_person(request.user)
     is_owner = person is not None and message.sender_id == person.pk
     if not is_owner and not request.user.is_staff:
         raise Http404

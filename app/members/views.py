@@ -32,10 +32,10 @@ from .models import (
     Enrollment,
     ImportantDocument,
     Person,
-    Role,
     SchoolYear,
     get_registration_admins,
 )
+from .permissions import is_htmx
 
 
 class Login(TemplateView):
@@ -147,18 +147,29 @@ class AdminListView(UserPassesTestMixin, ListView):
         # Default ordering
         return "last_name"
 
+    def _get_selected_year(self):
+        """Resolve the `?year=` filter, tolerating a stale or malformed value.
+
+        The year is round-tripped through the session filter, so an id that no
+        longer exists (or was hand-edited) must not 500 the page.
+        """
+        year_id = self.request.GET.get("year")
+        if year_id:
+            try:
+                return SchoolYear.objects.get(pk=year_id)
+            except (SchoolYear.DoesNotExist, ValueError):
+                pass
+        return SchoolYear.current()
+
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        # Get the selected year from the request, default to current year if not specified
-        selected_year_id = self.request.GET.get("year", None)
-        if selected_year_id:
-            selected_year = SchoolYear.objects.get(pk=selected_year_id)
-        else:
-            selected_year = SchoolYear.current()
+        selected_year = self._get_selected_year()
 
-        # Create the filter with the current queryset
-        context["filter"] = PersonFilter(self.request.GET, queryset=self.get_queryset())
+        # The template only reads `filter.form.*`; `get_queryset()` has already
+        # applied the filters, so reuse that same FilterSet instead of running
+        # the whole filtering pass a second time.
+        context["filter"] = self._get_filterset()
 
         # For each person in the (paginated) object_list, add their section for the selected year
         for person in context["object_list"]:
@@ -188,11 +199,9 @@ class AdminListView(UserPassesTestMixin, ListView):
                 person.section_display = "-"
                 person.age_mismatch = False
 
-            # Get the primary role
-            person.role = Role.objects.get(id=person.primary_role_id)
-            #     person=person, role__is_primary=True
-            # ).first()
-            # person.role = primary_role.role.name if primary_role else "-"
+            # `primary_role` is select_related in get_queryset(), so this is
+            # no longer a query per row. It can legitimately be unset.
+            person.role = person.primary_role
 
         # Add sorting information to context
         context["current_sort"] = self.request.GET.get("sort", "last_name")
@@ -211,9 +220,16 @@ class AdminListView(UserPassesTestMixin, ListView):
 
         return context
 
+    def _get_filterset(self):
+        """Build the FilterSet once per request and reuse it for list + context."""
+        if not hasattr(self, "_filterset"):
+            self._filterset = PersonFilter(
+                self.request.GET, queryset=super().get_queryset()
+            )
+        return self._filterset
+
     def get_queryset(self):
-        queryset = super().get_queryset()
-        queryset = PersonFilter(self.request.GET, queryset=queryset).qs
+        queryset = self._get_filterset().qs.select_related("primary_role")
 
         # Apply ordering
         ordering = self.get_ordering()
@@ -414,7 +430,7 @@ def add_new_child_view(request):
 
 def child_list(request):
     # "children" is the list of Person which has request.user.person as one of the parent
-    if not request.META.get("HTTP_HX_REQUEST") == "true":
+    if not is_htmx(request):
         return HttpResponseBadRequest(_("Invalid request"))
     return render(
         request,
@@ -426,9 +442,10 @@ def child_list(request):
 
 
 def edit_child(request, pk):
-    if not request.META.get("HTTP_HX_REQUEST") == "true":
+    if not is_htmx(request):
         return HttpResponseBadRequest(_("Invalid request"))
-    parent_person_id = Account.objects.get(id=request.user.id).person.id
+    # `request.user` already is the Account, so no need to re-fetch it.
+    parent_person_id = request.user.person.id
     child = get_object_or_404(Person, id=pk, parents__id=parent_person_id)
 
     if request.method == "POST":

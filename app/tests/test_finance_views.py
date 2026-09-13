@@ -19,8 +19,8 @@ from post_office import mail as post_office_mail
 from post_office.models import Email
 
 from finance.models import Payment, get_adults_with_balance
-from finance.views import _is_tresorier
 from members.models import Account, Person, Role, SchoolYear
+from members.permissions import is_tresorier
 from tests.mail import MailTestCase
 from tests.test_finance import FinanceTestBase
 
@@ -353,6 +353,6 @@ class TresorierHelperTest(TestCase):
 
         ``Account.save()`` creates a Person whenever ``person_id`` is empty, so
         a persisted Account can never reach this branch; it exists only to keep
-        ``_is_tresorier`` safe for callers holding an unsaved instance.
+        ``is_tresorier`` safe for callers holding an unsaved instance.
         """
-        self.assertFalse(_is_tresorier(Account(email="orphan@test.com")))
+        self.assertFalse(is_tresorier(Account(email="orphan@test.com")))

@@ -1,16 +1,27 @@
+"""Template-wide role flags, used to decide which nav entries to show.
+
+These booleans gate navigation, so they must agree with the checks the views
+themselves enforce — both sides go through `members.permissions`.
+"""
+
+from members.permissions import (
+    ANIMATEUR_ROLES,
+    can_access_finance,
+    can_manage_unit,
+    has_primary_role,
+)
+
+
 def is_animateur(request):
-    if request.user.is_authenticated and hasattr(request.user, "person"):
-        try:
-            person = request.user.person
-            is_anim = person.primary_role.short in ["a", "ar"]
-            # Staff or users with secondary role 'ar' or 'ad' can send to all
-            has_send_all_role = request.user.is_staff or person.roles.filter(short__in=["ar", "ad"]).exists()
-            is_tresorier = person.roles.filter(short="t").exists()
-            return {
-                "user_is_animateur": is_anim,
-                "user_can_send_all": has_send_all_role,
-                "user_is_tresorier": is_tresorier or request.user.is_staff,
-            }
-        except Exception:
-            pass
-    return {"user_is_animateur": False, "user_can_send_all": False, "user_is_tresorier": False}
+    if not request.user.is_authenticated:
+        return {
+            "user_is_animateur": False,
+            "user_can_send_all": False,
+            "user_is_tresorier": False,
+        }
+
+    return {
+        "user_is_animateur": has_primary_role(request.user, ANIMATEUR_ROLES),
+        "user_can_send_all": can_manage_unit(request.user),
+        "user_is_tresorier": can_access_finance(request.user),
+    }

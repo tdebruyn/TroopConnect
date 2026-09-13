@@ -1,4 +1,3 @@
-
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -10,6 +9,12 @@ from django.utils.translation import gettext_lazy as _
 from post_office import mail
 
 from members.models import Branch, Person, SchoolYear
+from members.permissions import (
+    ANIMATEUR_ROLES,
+    ANIME,
+    can_access_finance,
+    is_htmx,
+)
 
 from .forms import PaymentForm, PriceGridForm, ReminderForm
 from .models import (
@@ -21,27 +26,10 @@ from .models import (
 )
 
 
-def _is_tresorier(user):
-    """Check if user has Trésorier role."""
-    if not hasattr(user, "person"):
-        return False
-    return user.person.roles.filter(short="t").exists()
-
-
-def _check_access(user):
-    """Return True if user can access finance views."""
-    return _is_tresorier(user) or user.is_staff
-
-
-def _is_htmx(request):
-    """Check if request comes from HTMX."""
-    return request.META.get("HTTP_HX_REQUEST") == "true"
-
-
 @login_required
 def billing_overview(request):
     """Overview of all household balances for the current year."""
-    if not _is_tresorier(request.user) and not request.user.is_staff:
+    if not can_access_finance(request.user):
         raise Http404
 
     current_year = SchoolYear.current()
@@ -52,15 +40,26 @@ def billing_overview(request):
     config = CotisationConfig.get_for_year(current_year)
     balances = calculate_balances(current_year)
 
-    # Enrich with person data
+    # Enrich with person data; select_related avoids a role query per household.
     person_ids = [b["person_id"] for b in balances]
-    persons = {p.pk: p for p in Person.objects.filter(pk__in=person_ids)}
+    persons = {
+        p.pk: p
+        for p in Person.objects.filter(pk__in=person_ids).select_related("primary_role")
+    }
     for b in balances:
         b["person"] = persons.get(b["person_id"])
 
-    # Split into children and animateurs
-    children_balances = [b for b in balances if b["person"] and b["person"].primary_role.short == "e"]
-    animateur_balances = [b for b in balances if b["person"] and b["person"].primary_role.short in ["a", "ar"]]
+    # Split into children and animateurs, using the shared role short-codes.
+    children_balances = [
+        b
+        for b in balances
+        if b["person"] and b["person"].primary_role.short == ANIME
+    ]
+    animateur_balances = [
+        b
+        for b in balances
+        if b["person"] and b["person"].primary_role.short in ANIMATEUR_ROLES
+    ]
 
     # Build the price grid for display.
     ranks = [FeeRule.Rank.FIRST, FeeRule.Rank.SECOND, FeeRule.Rank.THIRD]
@@ -115,7 +114,7 @@ def billing_overview(request):
 @login_required
 def edit_prices(request):
     """Editable price grid for the trésorier, per school year."""
-    if not _is_tresorier(request.user) and not request.user.is_staff:
+    if not can_access_finance(request.user):
         raise Http404
 
     years = SchoolYear.objects.order_by("-start_date")
@@ -156,12 +155,12 @@ def edit_prices(request):
 @login_required
 def record_payment(request):
     """Trésorier records a payment for a person."""
-    if not _check_access(request.user):
+    if not can_access_finance(request.user):
         raise Http404
 
     current_year = SchoolYear.current()
     if not current_year:
-        if _is_htmx(request):
+        if is_htmx(request):
             return HttpResponse("")
         messages.error(request, _("No current school year defined."))
         return redirect("homepage")
@@ -171,7 +170,7 @@ def record_payment(request):
         if form.is_valid():
             person = Person.objects.filter(pk=form.cleaned_data["person_id"]).first()
             if not person:
-                if _is_htmx(request):
+                if is_htmx(request):
                     return HttpResponse("")
                 messages.error(request, _("Person not found."))
                 return redirect("finance:billing")
@@ -184,7 +183,7 @@ def record_payment(request):
                 note=form.cleaned_data.get("note", ""),
                 recorded_by=request.user.person,
             )
-            if _is_htmx(request):
+            if is_htmx(request):
                 response = HttpResponse("")
                 response["HX-Redirect"] = reverse("finance:billing")
                 return response
@@ -201,7 +200,7 @@ def record_payment(request):
             initial["person_id"] = person_id
         form = PaymentForm(initial=initial)
 
-    if _is_htmx(request):
+    if is_htmx(request):
         return render(request, "finance/record_payment_modal.html", {"form": form})
     return render(request, "finance/record_payment.html", {"form": form})
 
@@ -209,7 +208,7 @@ def record_payment(request):
 @login_required
 def payment_history(request, person_id):
     """Show payment history for a person in an HTMX modal."""
-    if not _check_access(request.user):
+    if not can_access_finance(request.user):
         raise Http404
 
     current_year = SchoolYear.current()
@@ -233,7 +232,7 @@ def payment_history(request, person_id):
 @login_required
 def send_reminders(request):
     """Bulk send reminder emails to adults with unpaid balances."""
-    if not _is_tresorier(request.user) and not request.user.is_staff:
+    if not can_access_finance(request.user):
         raise Http404
 
     current_year = SchoolYear.current()

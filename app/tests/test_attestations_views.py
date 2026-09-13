@@ -19,8 +19,9 @@ from django.urls import reverse
 from post_office.models import Email
 
 from attestations.models import AttestationCampaign, AttestationItem
-from attestations.views import _can_manage, _resolve_placeholders
+from attestations.views import _resolve_placeholders
 from members.models import Account, Role
+from members.permissions import can_manage_unit
 from tests.test_attestations import AttestationDbTestBase, _blank_pdf
 
 
@@ -377,19 +378,19 @@ class PlaceholderResolutionTest(AttestationViewTestBase):
 class CanManageTest(AttestationDbTestBase):
     def test_unsaved_account_is_not_a_manager(self):
         """Defensive guard — Account.save() always attaches a Person."""
-        self.assertFalse(_can_manage(Account(email="orphan@test.com")))
+        self.assertFalse(can_manage_unit(Account(email="orphan@test.com")))
 
     def test_staff_is_a_manager(self):
         self.parent1_account.is_staff = True
-        self.assertTrue(_can_manage(self.parent1_account))
+        self.assertTrue(can_manage_unit(self.parent1_account))
 
     def test_plain_parent_is_not_a_manager(self):
-        self.assertFalse(_can_manage(self.parent1_account))
+        self.assertFalse(can_manage_unit(self.parent1_account))
 
     def test_admin_secondary_role_is_a_manager(self):
         self.animateur.roles.add(Role.objects.get(short="ad"))
         self.animateur_account.refresh_from_db()
-        self.assertTrue(_can_manage(self.animateur_account))
+        self.assertTrue(can_manage_unit(self.animateur_account))
 
     def test_animateur_without_secondary_role_is_not_a_manager(self):
-        self.assertFalse(_can_manage(self.animateur_account))
+        self.assertFalse(can_manage_unit(self.animateur_account))

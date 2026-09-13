@@ -12,19 +12,11 @@ from post_office import mail
 from pypdf import PdfReader
 
 from members.models import Person
+from members.permissions import can_manage_unit
 
 from . import services
 from .forms import DocumentsForm, NameAnchorForm, SendForm, SignatureForm, TitleForm
 from .models import AttestationCampaign, AttestationItem
-
-
-def _can_manage(user):
-    """Site admin or a person holding the 'ar'/'ad' secondary role."""
-    if user.is_staff:
-        return True
-    if not hasattr(user, "person"):
-        return False
-    return user.person.roles.filter(short__in=["ar", "ad"]).exists()
 
 
 def _resolve_placeholders(text, person, item):
@@ -47,7 +39,7 @@ def _resolve_placeholders(text, person, item):
 
 @login_required
 def index(request):
-    if not _can_manage(request.user):
+    if not can_manage_unit(request.user):
         raise Http404
 
     campaigns = (
@@ -65,7 +57,7 @@ def index(request):
 @login_required
 def create(request):
     """Step 1: name the campaign."""
-    if not _can_manage(request.user):
+    if not can_manage_unit(request.user):
         raise Http404
 
     if request.method == "POST":
@@ -85,7 +77,7 @@ def create(request):
 @login_required
 def step2(request, pk):
     """Step 2: upload the source PDF and describe the per-person page range."""
-    if not _can_manage(request.user):
+    if not can_manage_unit(request.user):
         raise Http404
 
     campaign = get_object_or_404(AttestationCampaign, pk=pk)
@@ -110,7 +102,7 @@ def step2(request, pk):
 @login_required
 def step3(request, pk):
     """Step 3: teach the app where the name lives on the indicated page."""
-    if not _can_manage(request.user):
+    if not can_manage_unit(request.user):
         raise Http404
 
     campaign = get_object_or_404(AttestationCampaign, pk=pk)
@@ -155,7 +147,7 @@ def step3(request, pk):
 @login_required
 def step4(request, pk):
     """Step 4: upload the signature, pick its page and preview the merge."""
-    if not _can_manage(request.user):
+    if not can_manage_unit(request.user):
         raise Http404
 
     campaign = get_object_or_404(AttestationCampaign, pk=pk)
@@ -187,7 +179,7 @@ def step4(request, pk):
 @login_required
 def review(request, pk):
     """Step 5: review the recipients, then send."""
-    if not _can_manage(request.user):
+    if not can_manage_unit(request.user):
         raise Http404
 
     campaign = get_object_or_404(AttestationCampaign, pk=pk)
@@ -214,7 +206,11 @@ def _render_review(request, campaign, form):
     if unmatched_only:
         items = unmatched_items
 
-    persons = Person.objects.filter(status="a").order_by("last_name", "first_name")
+    persons = (
+        Person.objects.filter(status="a")
+        .select_related("primary_role")
+        .order_by("last_name", "first_name")
+    )
     return render(
         request,
         "attestations/review.html",
@@ -232,7 +228,7 @@ def _render_review(request, campaign, form):
 
 @login_required
 def send(request, pk):
-    if not _can_manage(request.user):
+    if not can_manage_unit(request.user):
         raise Http404
 
     campaign = get_object_or_404(AttestationCampaign, pk=pk)
@@ -245,7 +241,7 @@ def send(request, pk):
 
     sent = 0
     failed = 0
-    for item in campaign.items.all():
+    for item in campaign.items.select_related("matched_person"):
         if f"skip_{item.pk}" in request.POST:
             item.status = AttestationItem.Status.SKIPPED
             item.save()
