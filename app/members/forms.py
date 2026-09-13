@@ -502,6 +502,18 @@ class ChildForm(forms.ModelForm):
 class ChildFromKey(forms.Form):
     secret_key = forms.CharField(max_length=6, label=_("Secret key (6 characters)"))
 
+    def clean_secret_key(self):
+        """Reject unknown keys here rather than letting the view raise.
+
+        ``add_child_key_view`` resolves the key with ``Person.objects.get()``,
+        so without this check a mistyped key returned a 500 instead of a form
+        error the parent could correct.
+        """
+        key = self.cleaned_data["secret_key"]
+        if not Person.objects.filter(secret_key=key).exists():
+            raise ValidationError(_("No child matches that key."))
+        return key
+
 
 class OnboardingForm(forms.Form):
     first_name = forms.CharField(max_length=150, label=_("First name"))

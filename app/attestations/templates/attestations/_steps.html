@@ -1,0 +1,9 @@
+{% load i18n %}
+<div class="mb-4">
+    <div class="text-muted small mb-1">
+        {% blocktranslate with current=current total=5 %}Step {{ current }} of {{ total }}{% endblocktranslate %}
+    </div>
+    <div class="progress" style="height: 6px;">
+        <div class="progress-bar" role="progressbar" style="width: {% widthratio current 5 100 %}%;" aria-valuenow="{{ current }}" aria-valuemin="1" aria-valuemax="5"></div>
+    </div>
+</div>

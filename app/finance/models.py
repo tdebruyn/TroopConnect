@@ -4,28 +4,14 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from members.models import ParentChild, Person, SchoolYear
+from members.models import Branch, Enrollment, ParentChild, Person, SchoolYear
 
 
 class CotisationConfig(models.Model):
-    """Fee configuration for a school year."""
+    """Year-level fee settings (late penalty only; prices live in FeeRule)."""
 
     school_year = models.OneToOneField(
         SchoolYear, on_delete=models.CASCADE, related_name="cotisation_config"
-    )
-    full_fee = models.DecimalField(
-        max_digits=8, decimal_places=2,
-        help_text=_("Full fee (eldest child)"),
-    )
-    sibling_discount = models.DecimalField(
-        max_digits=8, decimal_places=2,
-        default=Decimal("0.00"),
-        help_text=_("Sibling discount (amount deducted per additional brother/sister)"),
-    )
-    animateur_fee = models.DecimalField(
-        max_digits=8, decimal_places=2,
-        default=Decimal("0.00"),
-        help_text=_("Flat fee for animators/staff"),
     )
     late_penalty_percent = models.DecimalField(
         max_digits=5, decimal_places=2,
@@ -49,14 +35,78 @@ class CotisationConfig(models.Model):
         """Get or create config for a school year with zero defaults."""
         config, _ = CotisationConfig.objects.get_or_create(
             school_year=school_year,
-            defaults={
-                "full_fee": Decimal("0.00"),
-                "sibling_discount": Decimal("0.00"),
-                "animateur_fee": Decimal("0.00"),
-                "late_penalty_percent": Decimal("0.00"),
-            },
+            defaults={"late_penalty_percent": Decimal("0.00")},
         )
         return config
+
+
+class FeeRule(models.Model):
+    """A single price in the membership-fee grid.
+
+    Flexible enough to express both pricing methods:
+    - Flat method: rows with ``branch=None`` (applies to all branches), e.g.
+      rank 1 = full fee, rank 2/3 = discounted.
+    - Per-branch method: rows keyed by (branch, rank).
+    Animateurs are priced by ``member_type="animator"`` (branch=None).
+    """
+
+    class MemberType(models.TextChoices):
+        CHILD = "child", _("Child")
+        ANIMATOR = "animator", _("Animator")
+
+    class Rank(models.IntegerChoices):
+        FIRST = 1, _("1st member")
+        SECOND = 2, _("2nd member")
+        THIRD = 3, _("3rd member or more")
+
+    school_year = models.ForeignKey(
+        SchoolYear, on_delete=models.CASCADE, related_name="fee_rules"
+    )
+    branch = models.ForeignKey(
+        Branch,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        help_text=_("Leave blank to apply to all branches"),
+    )
+    rank = models.PositiveSmallIntegerField(choices=Rank.choices)
+    member_type = models.CharField(
+        max_length=10, choices=MemberType.choices, default=MemberType.CHILD
+    )
+    amount = models.DecimalField(
+        max_digits=8, decimal_places=2, default=Decimal("0.00")
+    )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["school_year", "branch", "rank", "member_type"],
+                name="uniq_fee_rule",
+            ),
+        ]
+        ordering = ["member_type", "rank", "branch__name"]
+        verbose_name = _("Fee rule")
+        verbose_name_plural = _("Fee rules")
+
+    def __str__(self):
+        branch = self.branch.name if self.branch else _("All branches")
+        return f"{self.school_year} — {self.get_member_type_display()} — {branch} — {self.get_rank_display()}: {self.amount}€"
+
+    @classmethod
+    def get_fee(cls, school_year, member_type, rank, branch=None):
+        """Resolve the amount for (member_type, rank, branch).
+
+        Falls back from the branch-specific rule to the generic (branch=None)
+        rule, then to zero.
+        """
+        rules = cls.objects.filter(school_year=school_year, member_type=member_type)
+        rule = rules.filter(branch=branch, rank=rank).first()
+        if rule is not None:
+            return rule.amount
+        rule = rules.filter(branch=None, rank=rank).first()
+        if rule is not None:
+            return rule.amount
+        return Decimal("0.00")
 
 
 class Payment(models.Model):
@@ -89,25 +139,26 @@ class Payment(models.Model):
 
 
 def _get_households(school_year):
-    """Group enrolled children by address.
+    """Group enrolled members (children + animateurs) by address.
 
     Returns a dict: {address: [Person, ...]} sorted by birthday ascending
     (eldest first) within each household.
     """
-    children = (
+    members = (
         Person.objects.filter(
-            primary_role__short="e",
+            primary_role__short__in=["e", "a", "ar"],
             status="a",
             enrollment__school_year=school_year,
         )
+        .select_related("primary_role")
         .distinct()
         .order_by("birthday")
     )
 
     households = {}
-    for child in children:
-        addr = child.address or "__no_address__"
-        households.setdefault(addr, []).append(child)
+    for member in members:
+        addr = member.address or "__no_address__"
+        households.setdefault(addr, []).append(member)
     return households
 
 
@@ -120,29 +171,27 @@ def calculate_balances(school_year):
     config = CotisationConfig.get_for_year(school_year)
     households = _get_households(school_year)
 
+    # Resolve each member's branch from their enrollment section (children only).
+    member_ids = [m.pk for h in households.values() for m in h]
+    branch_by_person = {}
+    for enr in (
+        Enrollment.objects.filter(school_year=school_year, user__in=member_ids)
+        .select_related("section__branch")
+    ):
+        if enr.user_id not in branch_by_person and enr.section_id:
+            branch_by_person[enr.user_id] = enr.section.branch
+
     dues = {}  # person_id -> Decimal amount due
 
-    # Children: eldest full fee, siblings discounted
-    for _addr, children in households.items():
-        for i, child in enumerate(children):
-            if i == 0:
-                dues[child.pk] = config.full_fee
-            else:
-                dues[child.pk] = max(
-                    config.full_fee - config.sibling_discount, Decimal("0.00")
-                )
-
-    # Animateurs / staff: flat rate (anyone with primary role "a" or "ar" who is enrolled)
-    animateurs = (
-        Person.objects.filter(
-            primary_role__short__in=["a", "ar"],
-            status="a",
-            enrollment__school_year=school_year,
-        )
-        .distinct()
-    )
-    for anim in animateurs:
-        dues[anim.pk] = config.animateur_fee
+    for _addr, members in households.items():
+        for i, member in enumerate(members):
+            rank = 1 if i == 0 else (2 if i == 1 else 3)
+            is_animator = member.primary_role.short in ["a", "ar"]
+            member_type = (
+                FeeRule.MemberType.ANIMATOR if is_animator else FeeRule.MemberType.CHILD
+            )
+            branch = None if is_animator else branch_by_person.get(member.pk)
+            dues[member.pk] = FeeRule.get_fee(school_year, member_type, rank, branch)
 
     # Apply late penalty
     now = timezone.now().date()

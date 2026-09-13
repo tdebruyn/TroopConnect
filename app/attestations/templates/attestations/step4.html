@@ -1,0 +1,158 @@
+{% extends "members/base.html" %}
+{% load i18n %}
+{% block hat_title %}{% trans "Add the signature" %}{% endblock hat_title %}
+{% block hat_text %}{% trans "Step 4: upload the signature, choose its page and position it on the preview." %}{% endblock hat_text %}
+{% block subcontent %}
+{% include "attestations/_steps.html" with current=4 %}
+<p class="text-muted">
+    {% trans "The signature PDF should be the same page size as the documents (e.g. A4), transparent except for the signature. Drag the signature over the preview to position it." %}
+</p>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-lg-7">
+            <div class="card mb-4">
+                <div class="card-header">{% trans "Preview" %}</div>
+                <div class="card-body">
+                    <div class="position-relative d-inline-block" style="max-width: 100%; overflow: auto;">
+                        <canvas id="pdf-canvas" style="display:block;"></canvas>
+                        <canvas id="signature-canvas"
+                                style="position:absolute; top:0; left:0; cursor:move; display:block;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="card mb-4">
+                <div class="card-body">
+                    {% for field in form %}
+                    <div class="mb-3 {% if field.name == 'signature_offset_x' or field.name == 'signature_offset_y' %}d-none{% endif %}">
+                        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+                        {% for error in field.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                    </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-primary">{% trans "Continue" %}</button>
+                    <a href="{% url 'attestations:step3' campaign.pk %}" class="btn btn-secondary">{% trans "Back" %}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+    const PAGE_RANGE_START = {{ page_range_start }};
+    const docsUrl = '{{ campaign.documents.url }}';
+    const existingSigUrl = '{{ signature_url }}';
+
+    const signaturePageInput = document.getElementById('{{ form.signature_page.id_for_label }}');
+    const signatureFileInput = document.getElementById('{{ form.signature.id_for_label }}');
+    const canvas = document.getElementById('pdf-canvas');
+    const sigCanvas = document.getElementById('signature-canvas');
+    const ctx = canvas.getContext('2d');
+    const sigCtx = sigCanvas.getContext('2d');
+
+    let scale = 1;
+    let baseViewport = null;
+    let docs = null;
+    let signaturePage = null;
+
+    function targetPage() {
+        const sp = parseInt(signaturePageInput.value, 10) || 1;
+        return PAGE_RANGE_START + sp - 1;
+    }
+
+    async function renderBase(pageNum) {
+        const page = await docs.getPage(pageNum);
+        const base = page.getViewport({ scale: 1 });
+        scale = Math.max(1, 720 / base.width);
+        baseViewport = page.getViewport({ scale: scale });
+        canvas.width = baseViewport.width;
+        canvas.height = baseViewport.height;
+        sigCanvas.width = baseViewport.width;
+        sigCanvas.height = baseViewport.height;
+        await page.render({ canvasContext: ctx, viewport: baseViewport }).promise;
+        await renderSignature();
+    }
+
+    async function renderSignature() {
+        if (!signaturePage || !baseViewport) return;
+        // pdf.js paints the whole canvas — #ffffff unless a background is given —
+        // which would hide the document page under the overlay. A fully transparent
+        // fill is a no-op under source-over, so the signature's own alpha and the
+        // document beneath it both survive.
+        sigCtx.clearRect(0, 0, sigCanvas.width, sigCanvas.height);
+        await signaturePage.render({
+            canvasContext: sigCtx,
+            viewport: baseViewport,
+            background: 'rgba(0,0,0,0)',
+        }).promise;
+        applyOffset();
+    }
+
+    async function loadSignature(src) {
+        const sig = await pdfjsLib.getDocument(src).promise;
+        signaturePage = await sig.getPage(1);
+        await renderSignature();
+    }
+
+    // Draggable signature overlay.
+    let offsetX = 0;
+    let offsetY = 0;
+    let dragging = false;
+    let startX = 0;
+    let startY = 0;
+    let startOffsetX = 0;
+    let startOffsetY = 0;
+
+    function applyOffset() {
+        sigCanvas.style.transform = 'translate(' + offsetX + 'px, ' + offsetY + 'px)';
+        document.getElementById('signature_offset_x').value = (offsetX / scale).toFixed(1);
+        document.getElementById('signature_offset_y').value = (-offsetY / scale).toFixed(1);
+    }
+
+    sigCanvas.addEventListener('pointerdown', function (e) {
+        dragging = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        startOffsetX = offsetX;
+        startOffsetY = offsetY;
+        sigCanvas.setPointerCapture(e.pointerId);
+    });
+
+    sigCanvas.addEventListener('pointermove', function (e) {
+        if (!dragging) return;
+        offsetX = startOffsetX + (e.clientX - startX);
+        offsetY = startOffsetY + (e.clientY - startY);
+        applyOffset();
+    });
+
+    sigCanvas.addEventListener('pointerup', function (e) {
+        dragging = false;
+        sigCanvas.releasePointerCapture(e.pointerId);
+    });
+
+    signaturePageInput.addEventListener('change', function () {
+        renderBase(targetPage());
+    });
+
+    signatureFileInput.addEventListener('change', function () {
+        if (signatureFileInput.files && signatureFileInput.files[0]) {
+            loadSignature(URL.createObjectURL(signatureFileInput.files[0]));
+        }
+    });
+
+    (async function init() {
+        docs = await pdfjsLib.getDocument(docsUrl).promise;
+        await renderBase(targetPage());
+        if (existingSigUrl) {
+            await loadSignature(existingSigUrl);
+        }
+    })();
+</script>
+{% endblock subcontent %}

@@ -175,6 +175,16 @@ class Person(models.Model):
     def has_account(self) -> bool:
         return hasattr(self, "account")
 
+    def birthday_to_int(self):
+        """Birthday as YYYYMMDD, so integer arithmetic can compare ages."""
+        if self.birthday:
+            return int(self.birthday.strftime("%Y%m%d"))
+        return None
+
+    def current_date_to_int(self):
+        """Today as YYYYMMDD, matching ``birthday_to_int``."""
+        return int(timezone.now().date().strftime("%Y%m%d"))
+
     def is_adult(self):
         if self.birthday:
             birthday_int = self.birthday_to_int()

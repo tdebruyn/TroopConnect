@@ -1,0 +1,118 @@
+{% extends "members/base.html" %}
+{% load i18n %}
+{% block hat_title %}{% trans "Review attestations" %}{% endblock hat_title %}
+{% block hat_text %}{% trans "Check who each document goes to, then send." %}{% endblock hat_text %}
+{% block subcontent %}
+{% include "attestations/_steps.html" with current=5 %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/css/tom-select.bootstrap5.min.css">
+<p class="text-muted">
+    {% trans "For each document, confirm the recipient or skip it. Recipients are re-resolved from the selected person when you send." %}
+</p>
+
+<div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+    <div class="btn-group btn-group-sm" role="group" aria-label="{% trans "Recipient filter" %}">
+        <a href="{% url 'attestations:review' campaign.pk %}"
+           class="btn {% if unmatched_only %}btn-outline-primary{% else %}btn-primary{% endif %}">
+            {% blocktranslate with count=total_count %}All ({{ count }}){% endblocktranslate %}
+        </a>
+        <a href="{% url 'attestations:review' campaign.pk %}?unmatched_only=1"
+           class="btn {% if unmatched_only %}btn-primary{% else %}btn-outline-primary{% endif %}">
+            {% blocktranslate with count=unmatched_count %}Not found ({{ count }}){% endblocktranslate %}
+        </a>
+    </div>
+    {% if unmatched_count %}
+        <span class="text-muted small">{% trans "Documents whose recipient could not be found automatically." %}</span>
+    {% endif %}
+</div>
+
+<form method="post" action="{% url 'attestations:send' campaign.pk %}">
+    {% csrf_token %}
+    {% if unmatched_only %}<input type="hidden" name="unmatched_only" value="1">{% endif %}
+    <div class="table-responsive mb-4">
+        <table class="table table-sm align-middle">
+            <thead>
+                <tr>
+                    <th>{% trans "Pages" %}</th>
+                    <th>{% trans "Extracted name" %}</th>
+                    <th>{% trans "Recipient" %}</th>
+                    <th>{% trans "Will send to" %}</th>
+                    <th>{% trans "Skip" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr class="{% if not item.matched_person %}table-warning{% endif %}">
+                    <td>{{ item.page_start|add:"1" }}–{{ item.page_end|add:"1" }}</td>
+                    <td>{{ item.extracted_name|default:"—" }}</td>
+                    <td style="min-width: 16rem;">
+                        <select name="person_{{ item.pk }}" class="form-select form-select-sm person-select">
+                            <option value="">{% trans "— no match —" %}</option>
+                            {% for person in persons %}
+                                <option value="{{ person.pk }}" {% if person.pk == item.matched_person_id %}selected{% endif %}>{{ person }} ({{ person.primary_role }})</option>
+                            {% endfor %}
+                        </select>
+                        {% if not item.matched_person %}
+                            <span class="badge text-bg-warning mt-1">{% trans "Not found" %}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% for email in item.recipients %}{{ email }}{% if not forloop.last %}, {% endif %}{% empty %}<span class="text-danger">{% trans "No recipient" %}</span>{% endfor %}
+                    </td>
+                    <td>
+                        <input type="checkbox" name="skip_{{ item.pk }}" class="form-check-input">
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5">
+                        {% if unmatched_only %}
+                            {% trans "Every document has a recipient." %}
+                        {% else %}
+                            {% trans "No documents found." %}
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">{% trans "Email" %}</div>
+        <div class="card-body">
+            <div class="mb-3">
+                <label for="{{ form.subject.id_for_label }}" class="form-label">{{ form.subject.label }}</label>
+                {{ form.subject }}
+                {% for error in form.subject.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+            </div>
+            <div class="mb-3">
+                <label for="{{ form.body.id_for_label }}" class="form-label">{{ form.body.label }}</label>
+                {{ form.body }}
+                {% if form.body.help_text %}<div class="form-text">{{ form.body.help_text }}</div>{% endif %}
+                {% for error in form.body.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">{% trans "Send signed attestations" %}</button>
+    <a href="{% url 'attestations:index' %}" class="btn btn-secondary">{% trans "Back" %}</a>
+</form>
+
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/js/tom-select.complete.min.js"></script>
+<script>
+    (function () {
+        // Turn every recipient <select> into a type-to-filter combobox. The
+        // original select is kept (hidden) and still carries the name/value, so
+        // the form posts exactly as before; if the CDN is unreachable the plain
+        // select remains fully usable.
+        if (typeof TomSelect === 'undefined') return;
+        document.querySelectorAll('select.person-select').forEach(function (el) {
+            new TomSelect(el, {
+                maxOptions: 200,
+                allowEmptyOption: true,
+                placeholder: '',
+            });
+        });
+    })();
+</script>
+{% endblock subcontent %}

@@ -1,4 +1,5 @@
 import json
+from urllib.parse import urlencode
 
 # from django.contrib.auth import get_user_model
 from django.conf import settings
@@ -7,7 +8,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.sites.models import Site
 from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
+from django.utils import timezone
 from django.utils.translation import gettext as _
 from django.views.generic import ListView, TemplateView, UpdateView
 from post_office import mail
@@ -27,6 +29,7 @@ from .forms import (
 )
 from .models import (
     Account,
+    Enrollment,
     ImportantDocument,
     Person,
     Role,
@@ -84,6 +87,11 @@ class AdminListView(UserPassesTestMixin, ListView):
     context_object_name = "members"
     paginate_by = 15
 
+    # Filter fields that are persisted in the session so a filter survives
+    # navigating away (e.g. to the edit page) and back until it is reset.
+    filter_param_keys = ("first_name", "last_name", "birth_year", "year", "section", "role")
+    filter_session_key = "admin_list_filter"
+
     # Define sortable fields and their corresponding model fields
     sortable_fields = {
         "first_name": "first_name",
@@ -92,6 +100,33 @@ class AdminListView(UserPassesTestMixin, ListView):
         "sex": "sex",
         # Note: section and role are computed fields, not directly sortable
     }
+
+    def get(self, request, *args, **kwargs):
+        params = request.GET
+
+        # The "Reset" button lands here with ?reset and clears the saved filter.
+        if "reset" in params:
+            request.session.pop(self.filter_session_key, None)
+            return redirect("members:admin_list")
+
+        if any(key in params for key in self.filter_param_keys):
+            # A filter form was submitted (or a filtered link followed): remember
+            # the non-empty filter values so they survive navigating away and back.
+            saved = urlencode(
+                {key: params[key] for key in self.filter_param_keys if params.get(key)}
+            )
+            if saved:
+                request.session[self.filter_session_key] = saved
+            else:
+                request.session.pop(self.filter_session_key, None)
+        else:
+            # No filter in the URL (e.g. returning from the edit page): restore the
+            # last saved filter if there is one.
+            saved = request.session.get(self.filter_session_key)
+            if saved:
+                return redirect(f"{reverse('members:admin_list')}?{saved}")
+
+        return super().get(request, *args, **kwargs)
 
     def get_ordering(self):
         """
@@ -449,6 +484,17 @@ def add_child_key_view(request):
     return render(request, "members/child_from_key_form.html", {"form": form})
 
 
+def _can_detach(child):
+    """Whether a parent may detach this child from their account.
+
+    A child must keep at least one parent — unless they are over 18 *and* hold
+    their own account, in which case they no longer need a parent attached.
+    This mirrors the rule stated on the detach confirmation page; it lives in
+    one place so the page and the confirm view cannot drift apart.
+    """
+    return child.parents.count() >= 2 or (child.is_adult() and child.has_account)
+
+
 def dettach_child(request, pk):
     context = {"allow_dettach": False}
     child = get_object_or_404(Person, id=pk)
@@ -458,7 +504,7 @@ def dettach_child(request, pk):
         context["message"] = _("%(first)s is not attached to your account.") % {
             "first": child.first_name
         }
-    elif child.parents.count() < 2 and not child.is_adult() and not child.has_account:
+    elif not _can_detach(child):
         context["message"] = _(
             "You cannot detach %(first)s.\n"
             "To detach a child, they must either be attached to other parents, "
@@ -484,13 +530,14 @@ def dettach_child(request, pk):
 def dettach_confirm(request, pk):
     child = get_object_or_404(Person, id=pk)
     parent = request.user.person
+    profile_url = reverse_lazy("members:profile", kwargs={"pk": request.user.pk})
     if not child.parents.filter(id=parent.id).exists():
-        return redirect(reverse_lazy("members:profile", kwargs={"pk": request.user.pk}))
-    # Enforce at least one parent remains after detach
-    if child.parents.count() <= 1:
-        return redirect(reverse_lazy("members:profile", kwargs={"pk": request.user.pk}))
+        return redirect(profile_url)
+    # Same rule as the confirmation page that links here.
+    if not _can_detach(child):
+        return redirect(profile_url)
     child.parents.remove(parent)
-    return redirect(reverse_lazy("members:profile", kwargs={"pk": request.user.pk}))
+    return redirect(profile_url)
 
 
 def deregister_child(request, pk):
@@ -509,17 +556,89 @@ def deregister_child(request, pk):
     )
 
 
-def deregister_confirm(request, pk, action):
-    child = get_object_or_404(Person, id=pk)
-    parent = request.user.person
-    if not child.parents.filter(id=parent.id).exists():
-        return redirect(reverse_lazy("members:profile", kwargs={"pk": request.user.pk}))
-    # Set status to archived
-    from django.utils import timezone
+def _archive_child(child):
+    """Archive a child, stamping the date that drives the 5-year retention clock."""
     child.status = "ar"
     child.archived_date = timezone.now().date()
-    child.save()
-    return redirect(reverse_lazy("members:profile", kwargs={"pk": request.user.pk}))
+    child.save(update_fields=["status", "archived_date"])
+
+
+def _notify_deregistration_admins(child, parent):
+    """Warn the registration admins that a current-year deregistration needs handling.
+
+    A child actively enrolled for the current year cannot be fully unwound
+    automatically (fees and attestations are already built on that enrolment),
+    so the admins are told to follow the internal-regulations procedure.
+    """
+    mail.send(
+        recipients=get_registration_admins(),
+        sender=settings.DEFAULT_FROM_EMAIL,
+        template="deregistration_admin",
+        # Staff notifications go out in the site default language.
+        language=settings.LANGUAGE_CODE,
+        context={
+            "first_name": child.first_name,
+            "last_name": child.last_name,
+            "parent": f"{parent.first_name} {parent.last_name}",
+            "url": f"{Site.objects.get_current()}/users/adminupdate/{child.id}",
+        },
+    )
+
+
+def deregister_confirm(request, pk, action):
+    """Process a deregistration request.
+
+    ``action`` comes from deregister_child.html and is either "next_year" or
+    "this_year". The two buttons must not behave alike:
+
+    * "next_year" — processed immediately: drop the upcoming school year's
+      enrolment and any manual passage override. The current year is untouched.
+    * "this_year" on a child still in the "request" state — there is no active
+      enrolment to unwind, so this is processed immediately as well.
+    * "this_year" on a child actively enrolled — the child is archived but the
+      enrolment is deliberately left in place, and the registration admins are
+      emailed, because unwinding the current year is a manual procedure.
+    """
+    child = get_object_or_404(Person, id=pk)
+    parent = request.user.person
+    profile_url = reverse_lazy("members:profile", kwargs={"pk": request.user.pk})
+
+    if not child.parents.filter(id=parent.id).exists():
+        return redirect(profile_url)
+
+    if action == "next_year":
+        next_year = SchoolYear.next_school_year()
+        if next_year:
+            Enrollment.objects.filter(user=child, school_year=next_year).delete()
+        if child.next_section_id:
+            child.next_section = None
+            child.save(update_fields=["next_section"])
+        messages.success(
+            request,
+            _("%(first)s will not be re-enrolled next year.")
+            % {"first": child.first_name},
+        )
+        return redirect(profile_url)
+
+    # Anything else is the "this_year" path.
+    was_confirmed = child.status != "r"
+    _archive_child(child)
+    if was_confirmed:
+        _notify_deregistration_admins(child, parent)
+        messages.success(
+            request,
+            _(
+                "%(first)s has been deregistered. The registration team has been "
+                "notified to complete the current-year procedure."
+            )
+            % {"first": child.first_name},
+        )
+    else:
+        messages.success(
+            request,
+            _("%(first)s has been deregistered.") % {"first": child.first_name},
+        )
+    return redirect(profile_url)
 
 
 def remove_child(request, pk):

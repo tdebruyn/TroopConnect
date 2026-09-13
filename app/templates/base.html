@@ -87,6 +87,7 @@
                                         {% if user_can_send_all %}
                                             <a class="dropdown-item" href="{% url 'messaging:compose' %}">{% trans "Send a message" %}</a>
                                             <a class="dropdown-item" href="{% url 'messaging:animateur_history' %}">{% trans "Message history" %}</a>
+                                            <a class="dropdown-item" href="{% url 'attestations:index' %}">{% trans "Attestations" %}</a>
                                         {% endif %}
                                     </div>
                                 </li>

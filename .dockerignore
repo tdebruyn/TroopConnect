@@ -1,6 +1,9 @@
 .git
+.claude
 .ruff_cache
-app/.ruff_cache
+**/.ruff_cache
 **/__pycache__
 *.pyc
 db.sqlite3
+app/media
+workspace
