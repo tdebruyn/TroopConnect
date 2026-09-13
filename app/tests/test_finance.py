@@ -2,11 +2,13 @@ from datetime import timedelta
 from decimal import Decimal
 
 from django.test import TestCase
+from django.urls import reverse
 from django.utils import timezone
 from post_office.models import EmailTemplate
 
 from finance.models import (
     CotisationConfig,
+    FeeRule,
     Payment,
     calculate_balances,
     get_adults_with_balance,
@@ -104,14 +106,19 @@ class FinanceTestBase(TestCase):
         Enrollment.objects.create(user=self.child_other, section=self.section, school_year=self.current_year)
         Enrollment.objects.create(user=self.animateur, section=self.section, school_year=self.current_year)
 
-        # Create cotisation config
+        # Create cotisation config (late penalty only)
         self.config = CotisationConfig.objects.create(
             school_year=self.current_year,
-            full_fee=Decimal("80.00"),
-            sibling_discount=Decimal("20.00"),
-            animateur_fee=Decimal("30.00"),
             late_penalty_percent=Decimal("10.00"),
         )
+
+        # Child prices: per-branch, per-rank (1st/2nd/3rd+).
+        for rank, amount in [("1", "80.00"), ("2", "60.00"), ("3", "50.00")]:
+            self._add_fee_rule(FeeRule.MemberType.CHILD, self.branch, rank, amount)
+
+        # Animator prices: rank-based, all branches.
+        for rank, amount in [("1", "30.00"), ("2", "20.00"), ("3", "15.00")]:
+            self._add_fee_rule(FeeRule.MemberType.ANIMATOR, None, rank, amount)
 
     def _login_tresorier(self):
         """Create and login a Trésorier user."""
@@ -125,6 +132,16 @@ class FinanceTestBase(TestCase):
             email="tres@test.com", password="testpass", person=self.tresorier,
         )
         self.client.login(email="tres@test.com", password="testpass")
+
+    def _add_fee_rule(self, member_type, branch, rank, amount):
+        """Create a FeeRule row for the current school year."""
+        FeeRule.objects.create(
+            school_year=self.current_year,
+            branch=branch,
+            rank=rank,
+            member_type=member_type,
+            amount=Decimal(amount),
+        )
 
 
 class HouseholdGroupingTest(FinanceTestBase):
@@ -172,14 +189,23 @@ class AnimateurFlatRateTest(FinanceTestBase):
         )
         self.assertEqual(anim_balance["amount_due"], Decimal("30.00"))
 
-    def test_animateur_no_sibling_discount(self):
-        """Animateur fee is independent of sibling discount logic."""
+    def test_animateur_fee_independent_of_child_pricing(self):
+        """Animateur fee comes from animator rules, not child branch pricing."""
         balances = calculate_balances(self.current_year)
         anim_balance = next(
             b for b in balances if b["person_id"] == self.animateur.pk
         )
         self.assertEqual(anim_balance["amount_due"], Decimal("30.00"))
-        self.assertNotEqual(anim_balance["amount_due"], self.config.full_fee - self.config.sibling_discount)
+        child_amounts = {
+            b["amount_due"]
+            for b in balances
+            if b["person_id"] in [
+                self.child_eldest.pk,
+                self.child_youngest.pk,
+                self.child_other.pk,
+            ]
+        }
+        self.assertNotIn(anim_balance["amount_due"], child_amounts)
 
 
 class LatePenaltyTest(FinanceTestBase):
@@ -214,6 +240,80 @@ class LatePenaltyTest(FinanceTestBase):
             b for b in balances if b["person_id"] == self.child_eldest.pk
         )
         self.assertFalse(child_balance["is_late"])
+
+
+class FeeRulePricingTest(FinanceTestBase):
+    """Tests for per-branch, per-rank pricing and fallbacks."""
+
+    def test_per_branch_pricing(self):
+        """A child's price depends on their branch."""
+        other_branch = Branch.objects.create(
+            name="Louveteaux", min_age_dec_31=10, max_age_dec_31=12
+        )
+        other_section = Section.objects.create(name="Louveteaux B", branch=other_branch)
+        for rank, amount in [("1", "100.00"), ("2", "90.00"), ("3", "80.00")]:
+            self._add_fee_rule(FeeRule.MemberType.CHILD, other_branch, rank, amount)
+
+        # Move the lone child (Eve) into the new branch's section.
+        Enrollment.objects.filter(
+            user=self.child_other, school_year=self.current_year
+        ).delete()
+        Enrollment.objects.create(
+            user=self.child_other, section=other_section, school_year=self.current_year
+        )
+
+        balances = calculate_balances(self.current_year)
+        eve = next(b for b in balances if b["person_id"] == self.child_other.pk)
+        self.assertEqual(eve["amount_due"], Decimal("100.00"))
+
+    def test_fourth_child_pays_third_child_price(self):
+        """A 4th child caps at the 3rd-child price."""
+        child_third = Person.objects.create(
+            first_name="Frankie", last_name="Dupont",
+            primary_role=self.role_anime, status="a",
+            birthday=timezone.now().date() - timedelta(days=365 * 5),
+            address="Rue des Fleurs 10, 1300 Limal",
+        )
+        child_fourth = Person.objects.create(
+            first_name="Georgie", last_name="Dupont",
+            primary_role=self.role_anime, status="a",
+            birthday=timezone.now().date() - timedelta(days=365 * 4),
+            address="Rue des Fleurs 10, 1300 Limal",
+        )
+        for child in [child_third, child_fourth]:
+            ParentChild.objects.create(parent=self.parent1, child=child)
+            Enrollment.objects.create(
+                user=child, section=self.section, school_year=self.current_year
+            )
+
+        balances = calculate_balances(self.current_year)
+        third = next(b for b in balances if b["person_id"] == child_third.pk)
+        fourth = next(b for b in balances if b["person_id"] == child_fourth.pk)
+        self.assertEqual(third["amount_due"], Decimal("50.00"))
+        self.assertEqual(fourth["amount_due"], Decimal("50.00"))
+
+    def test_generic_rule_fallback_for_children(self):
+        """Without branch rules, generic (branch=None) child rules apply."""
+        FeeRule.objects.filter(
+            school_year=self.current_year, member_type=FeeRule.MemberType.CHILD
+        ).delete()
+        self._add_fee_rule(FeeRule.MemberType.CHILD, None, "1", "70.00")
+        self._add_fee_rule(FeeRule.MemberType.CHILD, None, "2", "55.00")
+        self._add_fee_rule(FeeRule.MemberType.CHILD, None, "3", "45.00")
+
+        balances = calculate_balances(self.current_year)
+        eldest = next(b for b in balances if b["person_id"] == self.child_eldest.pk)
+        youngest = next(b for b in balances if b["person_id"] == self.child_youngest.pk)
+        self.assertEqual(eldest["amount_due"], Decimal("70.00"))
+        self.assertEqual(youngest["amount_due"], Decimal("55.00"))
+
+    def test_branch_rule_prefers_specific_over_generic(self):
+        """A branch-specific rule wins over the generic fallback."""
+        self._add_fee_rule(FeeRule.MemberType.CHILD, None, "1", "70.00")
+
+        balances = calculate_balances(self.current_year)
+        eldest = next(b for b in balances if b["person_id"] == self.child_eldest.pk)
+        self.assertEqual(eldest["amount_due"], Decimal("80.00"))
 
 
 class PaymentTest(FinanceTestBase):
@@ -295,8 +395,9 @@ class FinanceAppImportTest(TestCase):
     """Tests that the finance app loads correctly."""
 
     def test_finance_models_import(self):
-        from finance.models import CotisationConfig, Payment
+        from finance.models import CotisationConfig, FeeRule, Payment
         self.assertTrue(CotisationConfig)
+        self.assertTrue(FeeRule)
         self.assertTrue(Payment)
 
     def test_finance_forms_instantiate(self):
@@ -308,8 +409,8 @@ class FinanceAppImportTest(TestCase):
         self.assertIn("body", form2.fields)
 
     def test_finance_urls_resolve(self):
-        from django.urls import reverse
         self.assertEqual(reverse("finance:billing"), "/finance/")
+        self.assertEqual(reverse("finance:prices"), "/finance/prices/")
         self.assertEqual(reverse("finance:record_payment"), "/finance/payment/")
         self.assertEqual(reverse("finance:reminders"), "/finance/reminders/")
 
@@ -358,3 +459,88 @@ class BillingViewAccessTest(FinanceTestBase):
         self.client.login(email="alice@test.com", password="testpass")
         response = self.client.get("/")
         self.assertNotContains(response, "Cotisations")
+
+
+class PriceEditViewTest(FinanceTestBase):
+    """Tests for the editable price grid."""
+
+    def _url(self, year=None):
+        url = reverse("finance:prices")
+        return f"{url}?year={year.pk}" if year else url
+
+    def _full_post(self, **overrides):
+        """A realistic full-grid POST with every cell submitted."""
+        post = {"year": str(self.current_year.pk)}
+        for rank in [1, 2, 3]:
+            post[f"child_all_{rank}"] = f"{rank}0.00"
+            post[f"child_{self.branch.pk}_{rank}"] = f"{rank}0.00"
+            post[f"animator_{rank}"] = f"{rank}0.00"
+        post.update(overrides)
+        return post
+
+    def test_tresorier_can_access(self):
+        self._login_tresorier()
+        response = self.client.get(self._url(self.current_year))
+        self.assertEqual(response.status_code, 200)
+
+    def test_staff_can_access(self):
+        self.parent1_account.is_staff = True
+        self.parent1_account.save()
+        self.client.login(email="alice@test.com", password="testpass")
+        response = self.client.get(self._url(self.current_year))
+        self.assertEqual(response.status_code, 200)
+
+    def test_plain_parent_cannot_access(self):
+        self.client.login(email="alice@test.com", password="testpass")
+        response = self.client.get(self._url(self.current_year))
+        self.assertEqual(response.status_code, 404)
+
+    def test_post_saves_prices(self):
+        self._login_tresorier()
+        response = self.client.post(
+            self._url(self.current_year),
+            self._full_post(**{f"child_{self.branch.pk}_1": "80.00"}),
+        )
+        self.assertRedirects(response, self._url(self.current_year))
+
+        rule = FeeRule.objects.get(
+            school_year=self.current_year,
+            branch=self.branch,
+            rank=1,
+            member_type=FeeRule.MemberType.CHILD,
+        )
+        self.assertEqual(rule.amount, Decimal("80.00"))
+
+        generic = FeeRule.objects.get(
+            school_year=self.current_year,
+            branch=None,
+            rank=1,
+            member_type=FeeRule.MemberType.CHILD,
+        )
+        self.assertEqual(generic.amount, Decimal("10.00"))
+
+    def test_blank_cell_deletes_rule(self):
+        self._login_tresorier()
+        response = self.client.post(
+            self._url(self.current_year),
+            self._full_post(**{f"child_{self.branch.pk}_1": ""}),
+        )
+        self.assertRedirects(response, self._url(self.current_year))
+
+        self.assertFalse(
+            FeeRule.objects.filter(
+                school_year=self.current_year,
+                branch=self.branch,
+                rank=1,
+                member_type=FeeRule.MemberType.CHILD,
+            ).exists()
+        )
+        # Other cells are still saved.
+        self.assertTrue(
+            FeeRule.objects.filter(
+                school_year=self.current_year,
+                branch=self.branch,
+                rank=2,
+                member_type=FeeRule.MemberType.CHILD,
+            ).exists()
+        )

@@ -1,0 +1,82 @@
+{% extends "members/base.html" %}
+{% load i18n %}
+{% block hat_title %}{% trans "Edit prices" %}{% endblock hat_title %}
+{% block hat_text %}{% trans "Treasurer" %}{% endblock hat_text %}
+{% block subcontent %}
+<div class="mb-3">
+    <form method="get" action="{% url 'finance:prices' %}" class="row g-2 align-items-center">
+        <div class="col-auto">
+            <label for="year-select" class="col-form-label">{% trans "School year" %}</label>
+        </div>
+        <div class="col-auto">
+            <select id="year-select" name="year" class="form-select" onchange="this.form.submit()">
+                {% for year in years %}
+                <option value="{{ year.pk }}" {% if year.pk == selected_year.pk %}selected{% endif %}>{{ year.range|default:year.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-auto">
+            <a href="{% url 'finance:billing' %}" class="btn btn-secondary">{% trans "Back" %}</a>
+        </div>
+    </form>
+</div>
+
+<form method="post" action="{% url 'finance:prices' %}?year={{ selected_year.pk }}">
+    {% csrf_token %}
+    <input type="hidden" name="year" value="{{ selected_year.pk }}">
+
+    <div class="card mb-4">
+        <div class="card-header">{% trans "Prices" %}</div>
+        <div class="card-body">
+            <table class="table table-sm align-middle">
+                <thead>
+                    <tr>
+                        <th>{% trans "Branch" %}</th>
+                        <th>{% trans "1st member" %}</th>
+                        <th>{% trans "2nd member" %}</th>
+                        <th>{% trans "3rd member or more" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in child_rows %}
+                    <tr>
+                        <th>{% if row.branch %}{{ row.branch }}{% else %}{% trans "All branches" %}{% endif %}</th>
+                        {% for cell in row.cells %}
+                        <td>
+                            {{ cell }}
+                            {% for error in cell.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <h6 class="mt-3">{% trans "Animators" %}</h6>
+            <table class="table table-sm align-middle">
+                <thead>
+                    <tr>
+                        <th>{% trans "1st member" %}</th>
+                        <th>{% trans "2nd member" %}</th>
+                        <th>{% trans "3rd member or more" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        {% for cell in animator_cells %}
+                        <td>
+                            {{ cell }}
+                            {% for error in cell.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                </tbody>
+            </table>
+
+            <p class="text-muted small mb-0">{% trans "Leave a field blank to remove the price." %}</p>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
+</form>
+{% endblock subcontent %}

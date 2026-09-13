@@ -1,4 +1,5 @@
 import json
+from urllib.parse import urlencode
 
 # from django.contrib.auth import get_user_model
 from django.conf import settings
@@ -7,7 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.sites.models import Site
 from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.utils.translation import gettext as _
 from django.views.generic import ListView, TemplateView, UpdateView
 from post_office import mail
@@ -84,6 +85,11 @@ class AdminListView(UserPassesTestMixin, ListView):
     context_object_name = "members"
     paginate_by = 15
 
+    # Filter fields that are persisted in the session so a filter survives
+    # navigating away (e.g. to the edit page) and back until it is reset.
+    filter_param_keys = ("first_name", "last_name", "birth_year", "year", "section", "role")
+    filter_session_key = "admin_list_filter"
+
     # Define sortable fields and their corresponding model fields
     sortable_fields = {
         "first_name": "first_name",
@@ -92,6 +98,33 @@ class AdminListView(UserPassesTestMixin, ListView):
         "sex": "sex",
         # Note: section and role are computed fields, not directly sortable
     }
+
+    def get(self, request, *args, **kwargs):
+        params = request.GET
+
+        # The "Reset" button lands here with ?reset and clears the saved filter.
+        if "reset" in params:
+            request.session.pop(self.filter_session_key, None)
+            return redirect("members:admin_list")
+
+        if any(key in params for key in self.filter_param_keys):
+            # A filter form was submitted (or a filtered link followed): remember
+            # the non-empty filter values so they survive navigating away and back.
+            saved = urlencode(
+                {key: params[key] for key in self.filter_param_keys if params.get(key)}
+            )
+            if saved:
+                request.session[self.filter_session_key] = saved
+            else:
+                request.session.pop(self.filter_session_key, None)
+        else:
+            # No filter in the URL (e.g. returning from the edit page): restore the
+            # last saved filter if there is one.
+            saved = request.session.get(self.filter_session_key)
+            if saved:
+                return redirect(f"{reverse('members:admin_list')}?{saved}")
+
+        return super().get(request, *args, **kwargs)
 
     def get_ordering(self):
         """

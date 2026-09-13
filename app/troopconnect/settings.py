@@ -40,6 +40,7 @@ else:
 
 INSTALLED_APPS = [
     "modeltranslation",
+    "attestations.apps.AttestationsConfig",
     "finance.apps.FinanceConfig",
     "messaging.apps.MessagingConfig",
     "members.apps.MembersConfig",

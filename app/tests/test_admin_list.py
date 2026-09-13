@@ -137,3 +137,29 @@ class AdminListFilterTest(TestCase):
         )
         self.assertEqual(response.context["current_sort"], "first_name")
         self.assertEqual(response.context["current_direction"], "asc")
+
+    def test_filter_persists_across_navigation(self):
+        """A filter survives navigating away (edit page) and back."""
+        self.client.force_login(self.staff_user)
+        response = self.client.get(
+            reverse("members:admin_list"), {"first_name": "Alice"}
+        )
+        self.assertContains(response, "Alice")
+
+        # Coming back with no filter params restores the saved filter.
+        response = self.client.get(reverse("members:admin_list"))
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("first_name=Alice", response.url)
+
+    def test_reset_clears_saved_filter(self):
+        """The Reset action clears the saved filter."""
+        self.client.force_login(self.staff_user)
+        self.client.get(reverse("members:admin_list"), {"first_name": "Alice"})
+
+        response = self.client.get(reverse("members:admin_list"), {"reset": "1"})
+        self.assertEqual(response.status_code, 302)
+
+        # After reset, a fresh visit shows the unfiltered list again.
+        response = self.client.get(reverse("members:admin_list"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Bob")

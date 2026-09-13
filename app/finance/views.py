@@ -9,11 +9,12 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from post_office import mail
 
-from members.models import Person, SchoolYear
+from members.models import Branch, Person, SchoolYear
 
-from .forms import PaymentForm, ReminderForm
+from .forms import PaymentForm, PriceGridForm, ReminderForm
 from .models import (
     CotisationConfig,
+    FeeRule,
     Payment,
     calculate_balances,
     get_adults_with_balance,
@@ -61,11 +62,94 @@ def billing_overview(request):
     children_balances = [b for b in balances if b["person"] and b["person"].primary_role.short == "e"]
     animateur_balances = [b for b in balances if b["person"] and b["person"].primary_role.short in ["a", "ar"]]
 
+    # Build the price grid for display.
+    ranks = [FeeRule.Rank.FIRST, FeeRule.Rank.SECOND, FeeRule.Rank.THIRD]
+    child_by_branch = {}
+    branch_order = []
+    for rule in (
+        FeeRule.objects.filter(
+            school_year=current_year, member_type=FeeRule.MemberType.CHILD
+        ).select_related("branch")
+    ):
+        if rule.branch_id not in child_by_branch:
+            child_by_branch[rule.branch_id] = {"branch": rule.branch, "amounts": {}}
+            branch_order.append(rule.branch_id)
+        child_by_branch[rule.branch_id]["amounts"][rule.rank] = rule.amount
+
+    # Sort branches: named branches first (alphabetical), "all branches" (None) last.
+    branch_order.sort(
+        key=lambda b_id: (
+            child_by_branch[b_id]["branch"] is None,
+            child_by_branch[b_id]["branch"].name if child_by_branch[b_id]["branch"] else "",
+        )
+    )
+    child_grid = [
+        {
+            "branch": child_by_branch[b_id]["branch"],
+            "amounts": [child_by_branch[b_id]["amounts"].get(rank) for rank in ranks],
+        }
+        for b_id in branch_order
+    ]
+
+    animator_by_rank = {
+        rule.rank: rule.amount
+        for rule in FeeRule.objects.filter(
+            school_year=current_year, member_type=FeeRule.MemberType.ANIMATOR
+        )
+    }
+    animator_amounts = [animator_by_rank.get(rank) for rank in ranks]
+    has_animator = any(amount is not None for amount in animator_amounts)
+
     return render(request, "finance/billing_overview.html", {
         "config": config,
         "school_year": current_year,
+        "ranks": ranks,
+        "child_grid": child_grid,
+        "animator_amounts": animator_amounts,
+        "has_animator": has_animator,
         "children_balances": children_balances,
         "animateur_balances": animateur_balances,
+    })
+
+
+@login_required
+def edit_prices(request):
+    """Editable price grid for the trésorier, per school year."""
+    if not _is_tresorier(request.user) and not request.user.is_staff:
+        raise Http404
+
+    years = SchoolYear.objects.order_by("-start_date")
+    if not years.exists():
+        messages.error(request, _("No current school year defined."))
+        return redirect("homepage")
+
+    selected_year_id = request.GET.get("year") or request.POST.get("year")
+    selected_year = years.filter(pk=selected_year_id).first() if selected_year_id else None
+    if selected_year is None:
+        selected_year = SchoolYear.current() or years.first()
+
+    branches = list(Branch.objects.order_by("min_age_dec_31", "name"))
+
+    if request.method == "POST":
+        form = PriceGridForm(request.POST, school_year=selected_year, branches=branches)
+        if form.is_valid():
+            form.save()
+            messages.success(
+                request,
+                _("Prices saved for %(range)s.")
+                % {"range": selected_year.range or selected_year.name},
+            )
+            return redirect(f"{reverse('finance:prices')}?year={selected_year.pk}")
+    else:
+        form = PriceGridForm(school_year=selected_year, branches=branches)
+
+    return render(request, "finance/price_edit.html", {
+        "form": form,
+        "selected_year": selected_year,
+        "years": years,
+        "child_rows": list(form.iter_child_rows()),
+        "animator_cells": form.animator_cells(),
+        "ranks": PriceGridForm.RANKS,
     })
 
 

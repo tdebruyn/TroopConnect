@@ -8,14 +8,57 @@
 </div>
 
 <div class="row mb-4">
-    <div class="col-md-6">
+    <div class="col-12">
         <div class="card">
-            <div class="card-header">{% trans "Configuration" %}</div>
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>{% trans "Prices" %}</span>
+                <a href="{% url 'finance:prices' %}" class="btn btn-sm btn-outline-primary">{% trans "Edit prices" %}</a>
+            </div>
             <div class="card-body">
                 <table class="table table-sm">
-                    <tr><th>{% trans "Full fee" %}</th><td>{{ config.full_fee }}€</td></tr>
-                    <tr><th>{% trans "Sibling discount" %}</th><td>{{ config.sibling_discount }}€</td></tr>
-                    <tr><th>{% trans "Animator flat fee" %}</th><td>{{ config.animateur_fee }}€</td></tr>
+                    <thead>
+                        <tr>
+                            <th>{% trans "Branch" %}</th>
+                            <th>{% trans "1st member" %}</th>
+                            <th>{% trans "2nd member" %}</th>
+                            <th>{% trans "3rd member or more" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in child_grid %}
+                        <tr>
+                            <th>{% if row.branch %}{{ row.branch }}{% else %}{% trans "All branches" %}{% endif %}</th>
+                            {% for amount in row.amounts %}
+                            <td>{% if amount is not None %}{{ amount }}€{% else %}—{% endif %}</td>
+                            {% endfor %}
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="4">{% trans "No price defined." %}</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                {% if has_animator %}
+                <h6 class="mt-3">{% trans "Animators" %}</h6>
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>{% trans "1st member" %}</th>
+                            <th>{% trans "2nd member" %}</th>
+                            <th>{% trans "3rd member or more" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            {% for amount in animator_amounts %}
+                            <td>{% if amount is not None %}{{ amount }}€{% else %}—{% endif %}</td>
+                            {% endfor %}
+                        </tr>
+                    </tbody>
+                </table>
+                {% endif %}
+
+                <table class="table table-sm mt-2">
                     <tr><th>{% trans "Late penalty" %}</th><td>{{ config.late_penalty_percent }}%</td></tr>
                     <tr><th>{% trans "Deadline" %}</th><td>{{ config.late_deadline|default:"—" }}</td></tr>
                 </table>

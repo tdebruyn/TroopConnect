@@ -28,6 +28,7 @@ urlpatterns = [
     path("users/", include("members.urls", namespace="members"), name="users"),
     path("messaging/", include("messaging.urls", namespace="messaging")),
     path("finance/", include("finance.urls", namespace="finance")),
+    path("attestations/", include("attestations.urls", namespace="attestations")),
     path("__debug__/", include("debug_toolbar.urls")),
     path(
         "ses/event-webhook/", SESEventWebhookView.as_view(), name="handle-event-webhook"
