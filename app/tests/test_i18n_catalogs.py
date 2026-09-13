@@ -24,6 +24,13 @@ NEW_STRINGS = [
         "inschrijvingsteam",
     ),
     ("No child matches that key.", "clé", "sleutel"),
+    (
+        "The signature PDF should be the same page size as the documents "
+        "(e.g. A4); a white background is fine, it is dropped when stamping. "
+        "Drag the signature over the preview to position it.",
+        "fond blanc",
+        "achtergrond",
+    ),
 ]
 
 

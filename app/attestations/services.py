@@ -3,7 +3,9 @@
 Pure functions so they can be unit-tested without a full request cycle. Text is
 extracted with bounding boxes (pdfminer.six) so that an anchor — a small region
 taught on one page — can be read back on the first page of every document of a
-template-generated PDF. Pages are split and merged with pypdf.
+template-generated PDF. Pages are split and merged with pypdf, and the signature
+is stamped through a soft mask that drops its white paper (see
+``build_signed_pdf``).
 """
 
 import re
@@ -11,7 +13,16 @@ from io import BytesIO
 
 from pdfminer.high_level import extract_pages
 from pdfminer.layout import LTTextContainer, LTTextLine
-from pypdf import PdfReader, PdfWriter, Transformation
+from pypdf import PageObject, PdfReader, PdfWriter, Transformation
+from pypdf.generic import (
+    ArrayObject,
+    BooleanObject,
+    DecodedStreamObject,
+    DictionaryObject,
+    FloatObject,
+    NameObject,
+    NumberObject,
+)
 from unidecode import unidecode
 
 from members.models import Account, Person
@@ -309,26 +320,161 @@ def item_ranges(page_count, page_range_start, page_range_end):
     return ranges
 
 
+def _pt(value):
+    """A PDF real, rounded so the content streams we emit stay readable."""
+    return FloatObject(round(float(value), 4))
+
+
+def _page_box(page):
+    """The page's media box as ``[x0, y0, x1, y1]``."""
+    box = page.mediabox
+    return [float(box.left), float(box.bottom), float(box.right), float(box.top)]
+
+
+def _white_paper_rect(box):
+    """Paint the whole page box white."""
+    x0, y0, x1, y1 = box
+    return f"{_pt(x0)} {_pt(y0)} {_pt(x1 - x0)} {_pt(y1 - y0)} re f\n".encode()
+
+
+def _inverted_luminosity_transfer():
+    """``y = 1 - x``, so white paper (luminance 1) becomes alpha 0.
+
+    A linear fall-off rather than a hard cut-off: paper that is only *nearly*
+    white — a scan, or a JPEG of one — then fades out in proportion instead of
+    leaving a contour wherever the threshold happens to fall.
+    """
+    return DictionaryObject(
+        {
+            NameObject("/FunctionType"): NumberObject(2),
+            NameObject("/Domain"): ArrayObject([_pt(0), _pt(1)]),
+            NameObject("/C0"): ArrayObject([_pt(1)]),
+            NameObject("/C1"): ArrayObject([_pt(0)]),
+            NameObject("/N"): NumberObject(1),
+        }
+    )
+
+
+def _form_xobject(writer, content, box, resources, group=None):
+    form = DecodedStreamObject()
+    form.set_data(content)
+    form[NameObject("/Type")] = NameObject("/XObject")
+    form[NameObject("/Subtype")] = NameObject("/Form")
+    form[NameObject("/FormType")] = NumberObject(1)
+    form[NameObject("/BBox")] = ArrayObject([_pt(v) for v in box])
+    if resources is not None:
+        form[NameObject("/Resources")] = resources
+    if group is not None:
+        form[NameObject("/Group")] = group
+    return writer._add_object(form)
+
+
+def _stamp_white_keyed(writer, target, signature_leaf, offset_x, offset_y):
+    """Stamp ``signature_leaf`` onto ``target``, treating its white as transparent.
+
+    The stamp is drawn through a soft mask derived from the signature's own
+    rendering: the mask paints white paper, draws the signature over it inside a
+    DeviceGray transparency group, and the group's luminance is then inverted.
+    Painted white paper and an absent (transparent) background both leave the
+    mask at luminance 1, so both come out transparent while the ink stays
+    opaque — one code path for either kind of signature. Only the mask is
+    derived this way; the stamp is still the signature's own vector content, so
+    nothing is rasterised and the ink keeps its colour.
+    """
+    contents = signature_leaf.get_contents()
+    if contents is None:
+        return
+    content = contents.get_data()
+    if not content.strip():
+        return
+
+    box = _page_box(signature_leaf)
+    resources = signature_leaf.get("/Resources")
+    if resources is not None:
+        # The stamp re-uses the signature's content stream verbatim, so the
+        # objects it refers to have to be carried into the output document.
+        resources = resources.get_object().clone(writer, force_duplicate=True)
+
+    mask = _form_xobject(
+        writer,
+        b"1 g\n" + _white_paper_rect(box) + content,
+        box,
+        resources,
+        group=DictionaryObject(
+            {
+                NameObject("/S"): NameObject("/Transparency"),
+                NameObject("/CS"): NameObject("/DeviceGray"),
+                NameObject("/I"): BooleanObject(True),
+                NameObject("/K"): BooleanObject(False),
+            }
+        ),
+    )
+    stamp = _form_xobject(writer, content, box, resources)
+    graphics_state = writer._add_object(
+        DictionaryObject(
+            {
+                NameObject("/Type"): NameObject("/ExtGState"),
+                NameObject("/SMask"): DictionaryObject(
+                    {
+                        NameObject("/S"): NameObject("/Luminosity"),
+                        NameObject("/G"): mask,
+                        NameObject("/TR"): _inverted_luminosity_transfer(),
+                    }
+                ),
+            }
+        )
+    )
+
+    # The stamp goes onto the target through a throwaway single-page document,
+    # so that pypdf does the resource merging and applies the offset. Building
+    # the target's content stream by hand instead loses whatever the page
+    # already carried.
+    carrier = PageObject.create_blank_page(
+        width=box[2] - box[0], height=box[3] - box[1]
+    )
+    carrier[NameObject("/Resources")] = DictionaryObject(
+        {
+            NameObject("/XObject"): DictionaryObject({NameObject("/Sg"): stamp}),
+            NameObject("/ExtGState"): DictionaryObject(
+                {NameObject("/SgGs"): graphics_state}
+            ),
+        }
+    )
+    carrier_content = DecodedStreamObject()
+    carrier_content.set_data(b"/SgGs gs\n/Sg Do")
+    carrier[NameObject("/Contents")] = writer._add_object(carrier_content)
+    writer._add_object(carrier)
+
+    target.merge_transformed_page(
+        carrier, Transformation().translate(offset_x, offset_y)
+    )
+
+
 def build_signed_pdf(
     signature, pages, offset_x=0.0, offset_y=0.0, signature_page=1
 ):
     """Overlay ``signature`` (a path or file-like) onto ``pages`` and return bytes.
 
     ``signature_page`` is the 1-based page (within ``pages``) that receives the
-    stamp; every other page is copied through untouched.
+    stamp; every other page is copied through untouched. White in the signature
+    is stamped as transparent, so a signature scanned or exported onto white
+    paper works as well as one that was already transparent.
     """
     signature_reader = PdfReader(signature)
     signature_leaf = signature_reader.pages[0]
 
     writer = PdfWriter()
-    for idx, page in enumerate(pages):
-        if idx + 1 != signature_page:
-            writer.add_page(page)
-            continue
-        page.merge_transformed_page(
-            signature_leaf, Transformation().translate(offset_x, offset_y)
-        )
+    for page in pages:
         writer.add_page(page)
+
+    if 1 <= signature_page <= len(writer.pages):
+        _stamp_white_keyed(
+            writer,
+            writer.pages[signature_page - 1],
+            signature_leaf,
+            offset_x,
+            offset_y,
+        )
 
     buf = BytesIO()
     writer.write(buf)

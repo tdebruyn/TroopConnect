@@ -325,9 +325,9 @@ msgstr ""
 
 #: attestations/templates/attestations/step4.html:8
 msgid ""
-"The signature PDF should be the same page size as the documents (e.g. A4), "
-"transparent except for the signature. Drag the signature over the preview to "
-"position it."
+"The signature PDF should be the same page size as the documents (e.g. A4); "
+"a white background is fine, it is dropped when stamping. Drag the signature "
+"over the preview to position it."
 msgstr ""
 
 #: attestations/templates/attestations/step4.html:16

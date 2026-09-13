@@ -680,9 +680,9 @@ TRANSLATIONS = {
         "Étape 4 : téléversez la signature, choisissez sa page et positionnez-la sur l'aperçu.",
         "Stap 4: upload de handtekening, kies de pagina en positioneer deze op de voorbeeldweergave.",
     ),
-    "The signature PDF should be the same page size as the documents (e.g. A4), transparent except for the signature. Drag the signature over the preview to position it.": (
-        "Le PDF de signature doit avoir le même format de page que les documents (ex. A4), être transparent sauf pour la signature. Faites glisser la signature sur l'aperçu pour la positionner.",
-        "De handtekening-PDF moet hetzelfde paginaformaat hebben als de documenten (bv. A4) en transparant zijn, behalve de handtekening. Sleep de handtekening over de voorbeeldweergave om deze te positioneren.",
+    "The signature PDF should be the same page size as the documents (e.g. A4); a white background is fine, it is dropped when stamping. Drag the signature over the preview to position it.": (
+        "Le PDF de signature doit avoir le même format de page que les documents (ex. A4) ; un fond blanc est accepté, il est supprimé lors de l'apposition. Faites glisser la signature sur l'aperçu pour la positionner.",
+        "De handtekening-PDF moet hetzelfde paginaformaat hebben als de documenten (bv. A4); een witte achtergrond is geen probleem, die wordt weggelaten bij het stempelen. Sleep de handtekening over de voorbeeldweergave om deze te positioneren.",
     ),
     "Preview": ("Aperçu", "Voorbeeld"),
     "Review attestations": ("Vérifier les attestations", "Attesten controleren"),

@@ -5,7 +5,7 @@
 {% block subcontent %}
 {% include "attestations/_steps.html" with current=4 %}
 <p class="text-muted">
-    {% trans "The signature PDF should be the same page size as the documents (e.g. A4), transparent except for the signature. Drag the signature over the preview to position it." %}
+    {% trans "The signature PDF should be the same page size as the documents (e.g. A4); a white background is fine, it is dropped when stamping. Drag the signature over the preview to position it." %}
 </p>
 
 <form method="post" enctype="multipart/form-data">

@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.utils.translation import gettext
 from post_office.models import Email
 from pypdf import PdfReader, PdfWriter
+from pypdf.generic import DecodedStreamObject, NameObject
 
 from attestations.models import AttestationCampaign, AttestationItem
 from attestations.services import (
@@ -27,6 +28,56 @@ def _blank_pdf(num_pages=1):
     buf = BytesIO()
     writer.write(buf)
     return buf.getvalue()
+
+
+def _signature_pdf(content):
+    """A one-page A4 signature whose only content stream is ``content``."""
+    writer = PdfWriter()
+    page = writer.add_blank_page(width=595, height=842)
+    stream = DecodedStreamObject()
+    stream.set_data(content)
+    page[NameObject("/Contents")] = writer._add_object(stream)
+    buf = BytesIO()
+    writer.write(buf)
+    return buf.getvalue()
+
+
+# A mark, and the same mark on paper: what an already-transparent signature
+# looks like versus one scanned or exported onto white.
+TRANSPARENT_SIGNATURE = b"0 g\n100 100 50 50 re f\n"
+WHITE_SIGNATURE = b"1 g\n0 0 595 842 re f\n" + TRANSPARENT_SIGNATURE
+
+
+def _resource(page, kind):
+    """``page``'s ``kind`` resource dictionary, empty when the page has none."""
+    resources = page.get("/Resources")
+    entries = resources.get_object().get(kind) if resources is not None else None
+    return entries.get_object() if entries is not None else {}
+
+
+def _stamp_soft_mask(page):
+    """The soft mask the stamp added to ``page``, or None."""
+    for ref in _resource(page, "/ExtGState").values():
+        smask = ref.get_object().get("/SMask")
+        if smask is not None:
+            return smask.get_object()
+    return None
+
+
+def _form_xobjects(page):
+    """Every form XObject on ``page``, by resource name."""
+    return {
+        str(name): ref.get_object()
+        for name, ref in _resource(page, "/XObject").items()
+        if ref.get_object().get("/Subtype") == "/Form"
+    }
+
+
+def _assert_mask_paints_paper(case, mask_data, signature):
+    """The mask must lay a white page box down first, then the signature."""
+    white_fill, _, stamped = mask_data.partition(b" re f\n")
+    case.assertRegex(white_fill, rb"^1 g\n[-\d. ]+$")
+    case.assertEqual(stamped, signature)
 
 
 def _lines(texts):
@@ -93,6 +144,17 @@ class ItemRangesTest(SimpleTestCase):
 
 
 class BuildSignedPdfTest(SimpleTestCase):
+    def _stamp(self, signature, num_pages=1, **kwargs):
+        """Stamp ``signature`` onto a blank document, return the output page."""
+        pages = list(PdfReader(BytesIO(_blank_pdf(num_pages))).pages)
+        out = build_signed_pdf(
+            BytesIO(signature), pages, signature_page=kwargs.pop("signature_page", 1),
+            **kwargs,
+        )
+        reader = PdfReader(BytesIO(out))
+        self.assertEqual(len(reader.pages), num_pages)
+        return reader.pages[0]
+
     def test_page_count(self):
         pages = list(PdfReader(BytesIO(_blank_pdf(3))).pages)
         out = build_signed_pdf(BytesIO(_blank_pdf(1)), pages, signature_page=1)
@@ -108,6 +170,60 @@ class BuildSignedPdfTest(SimpleTestCase):
             signature_page=3,
         )
         self.assertEqual(len(PdfReader(BytesIO(out)).pages), 3)
+
+    def test_page_without_the_signature_is_untouched(self):
+        page = self._stamp(_signature_pdf(WHITE_SIGNATURE), num_pages=3, signature_page=3)
+        self.assertIsNone(_stamp_soft_mask(page))
+        self.assertEqual(_form_xobjects(page), {})
+
+    def test_white_background_is_stamped_as_transparent(self):
+        """A scanned signature must not paint its paper over the attestation."""
+        page = self._stamp(_signature_pdf(WHITE_SIGNATURE))
+
+        smask = _stamp_soft_mask(page)
+        self.assertIsNotNone(smask, "the stamp must be drawn through a soft mask")
+        self.assertEqual(smask.get("/S"), "/Luminosity")
+
+        # The mask's luminance is inverted, so white paper lands on alpha 0...
+        transfer = smask.get("/TR")
+        self.assertEqual(list(transfer.get("/C0")), [1])
+        self.assertEqual(list(transfer.get("/C1")), [0])
+
+        # ...and it reads that luminance off the signature painted onto paper.
+        _assert_mask_paints_paper(
+            self, smask.get("/G").get_object().get_data(), WHITE_SIGNATURE
+        )
+
+        # The stamp itself is the signature alone, with no paper of its own.
+        self.assertIn(
+            WHITE_SIGNATURE, [f.get_data() for f in _form_xobjects(page).values()]
+        )
+
+    def test_already_transparent_signature_is_masked_the_same_way(self):
+        """The transparent case keeps working, through the same code path."""
+        page = self._stamp(_signature_pdf(TRANSPARENT_SIGNATURE))
+
+        smask = _stamp_soft_mask(page)
+        self.assertIsNotNone(smask)
+        self.assertEqual(smask.get("/S"), "/Luminosity")
+        self.assertEqual(list(smask.get("/TR").get("/C0")), [1])
+
+        # The paper is painted by the mask only, never by the stamp.
+        _assert_mask_paints_paper(
+            self, smask.get("/G").get_object().get_data(), TRANSPARENT_SIGNATURE
+        )
+        self.assertIn(
+            TRANSPARENT_SIGNATURE,
+            [f.get_data() for f in _form_xobjects(page).values()],
+        )
+
+    def test_blank_signature_leaves_the_document_alone(self):
+        page = self._stamp(_blank_pdf(1))
+        self.assertIsNone(_stamp_soft_mask(page))
+
+    def test_signature_page_beyond_the_document_is_ignored(self):
+        page = self._stamp(_signature_pdf(WHITE_SIGNATURE), signature_page=9)
+        self.assertIsNone(_stamp_soft_mask(page))
 
 
 class AttestationDbTestBase(MailTestCase):
