@@ -7,46 +7,43 @@ from members.models import Person
 class AttestationCampaign(models.Model):
     """A batch of attestation PDFs to split, sign and email."""
 
-    class SplitMode(models.TextChoices):
-        ONE_PAGE = "one_page", _("One page per document")
-        MARKER = "marker", _("New document on a marker page")
-
-    class SignaturePage(models.TextChoices):
-        FIRST = "first", _("First page only")
-        ALL = "all", _("Every page")
-
     class Status(models.TextChoices):
         DRAFT = "draft", _("Draft")
-        CONFIGURING = "configuring", _("Configuring")
         READY = "ready", _("Ready")
         SENT = "sent", _("Sent")
 
     title = models.CharField(max_length=200)
-    documents = models.FileField(upload_to="attestations/")
-    signature = models.FileField(upload_to="attestations/")
 
-    split_mode = models.CharField(
-        max_length=10, choices=SplitMode.choices, default=SplitMode.ONE_PAGE
+    # Step 2: the source PDF (all attestations) and how it is laid out.
+    documents = models.FileField(upload_to="attestations/", blank=True, null=True)
+    name_page = models.PositiveIntegerField(
+        default=1,
+        help_text=_("Page number (1-based) on which the first name appears."),
     )
-    split_marker = models.CharField(
-        max_length=200,
-        blank=True,
-        help_text=_(
-            "With marker mode, a new document starts on a page whose text begins "
-            "with this marker (e.g. \"Aux parents de\")."
-        ),
+    page_range_start = models.PositiveIntegerField(
+        default=1,
+        help_text=_("First page (1-based) of one person's document."),
+    )
+    page_range_end = models.PositiveIntegerField(
+        default=1,
+        help_text=_("Last page (1-based) of one person's document."),
     )
 
-    # Bounding box [x0, y0, x1, y1] in PDF points where the name/address sit.
+    # Step 3: bounding box [x0, y0, x1, y1] where the name sits.
     name_anchor = models.JSONField(null=True, blank=True)
     address_anchor = models.JSONField(null=True, blank=True)
 
-    # PDF-point translation applied to the signature before it is overlaid.
+    # Step 4: the signature PDF and where to stamp it.
+    signature = models.FileField(upload_to="attestations/", blank=True, null=True)
+    signature_page = models.PositiveIntegerField(
+        default=1,
+        help_text=_("Page (1-based, within each person's document) to sign."),
+    )
     signature_offset_x = models.FloatField(default=0)
     signature_offset_y = models.FloatField(default=0)
-    signature_page = models.CharField(
-        max_length=5, choices=SignaturePage.choices, default=SignaturePage.FIRST
-    )
+
+    # Wizard position (1..5) so a half-finished campaign can be resumed.
+    step = models.PositiveIntegerField(default=1)
 
     created_by = models.ForeignKey(
         Person,
@@ -67,6 +64,21 @@ class AttestationCampaign(models.Model):
 
     def __str__(self):
         return self.title
+
+    @property
+    def pages_per_item(self):
+        """Number of pages that make up a single person's document."""
+        return max(1, self.page_range_end - self.page_range_start + 1)
+
+    @property
+    def resume_url(self):
+        """URL name of the next wizard step to resume at."""
+        mapping = {
+            2: "attestations:step2",
+            3: "attestations:step3",
+            4: "attestations:step4",
+        }
+        return mapping.get(self.step, "attestations:review")
 
 
 class AttestationItem(models.Model):

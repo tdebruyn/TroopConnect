@@ -3,53 +3,64 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-26 23:42+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"POT-Creation-Date: 2026-09-13 09:39+0200\n"
+"PO-Revision-Date: 2026-07-24 00:00+0200\n"
+"Last-Translator: TroopConnect <noreply@troop.tomctl.be>\n"
+"Language-Team: en <en@li.org>\n"
+"Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgid "Name as shown on the first page"
+#: attestations/forms.py:49
+msgid "The last page must be greater than or equal to the first page."
 msgstr ""
 
+#: attestations/forms.py:67
+#, python-format
+msgid "Page %(page)s is beyond the %(count)s pages of this document."
+msgstr ""
+
+#: attestations/forms.py:77
+msgid "Name as shown on that page"
+msgstr ""
+
+#: attestations/forms.py:78
 msgid "Type exactly what you see (e.g. \"Dupont Jean\")."
 msgstr ""
 
-msgid "Address as shown on the first page (optional)"
+#: attestations/forms.py:122
+#, python-format
+msgid "Each document has %(pages)s pages; pick a page between 1 and that."
 msgstr ""
 
-msgid "Used to disambiguate people who share a name."
-msgstr ""
-
-msgid "Signature offset X (points)"
-msgstr ""
-
-msgid "Signature offset Y (points)"
-msgstr ""
-
+#: attestations/forms.py:132 finance/forms.py:119
+#: messaging/templates/messaging/animateur_history.html:14
+#: messaging/templates/messaging/message_detail.html:24
+#: messaging/templates/messaging/section_history.html:10
 msgid "Subject"
 msgstr ""
 
+#: attestations/forms.py:133
 #, python-brace-format
 msgid "Attestation for {prenom} {nom}"
 msgstr ""
 
+#: attestations/forms.py:137 finance/forms.py:124
 msgid "Message"
 msgstr ""
 
+#: attestations/forms.py:138
 #, python-brace-format
 msgid "Use {prenom} and {nom} as variables."
 msgstr ""
 
+#: attestations/forms.py:140
 #, python-brace-format
 msgid ""
 "Dear parent,\n"
@@ -60,189 +71,279 @@ msgid ""
 "The unit staff"
 msgstr ""
 
-msgid "One page per document"
-msgstr ""
-
-msgid "New document on a marker page"
-msgstr ""
-
-msgid "First page only"
-msgstr ""
-
-msgid "Every page"
-msgstr ""
-
+#: attestations/models.py:11
 msgid "Draft"
 msgstr ""
 
-msgid "Configuring"
-msgstr ""
-
+#: attestations/models.py:12 attestations/models.py:89
 msgid "Ready"
 msgstr ""
 
+#: attestations/models.py:13 attestations/models.py:90
+#: attestations/templates/attestations/index.html:16
+#: messaging/templates/messaging/animateur_history.html:15
 msgid "Sent"
 msgstr ""
 
-msgid ""
-"With marker mode, a new document starts on a page whose text begins with "
-"this marker (e.g. \"Aux parents de\")."
+#: attestations/models.py:21
+msgid "Page number (1-based) on which the first name appears."
 msgstr ""
 
+#: attestations/models.py:25
+msgid "First page (1-based) of one person's document."
+msgstr ""
+
+#: attestations/models.py:29
+msgid "Last page (1-based) of one person's document."
+msgstr ""
+
+#: attestations/models.py:40
+msgid "Page (1-based, within each person's document) to sign."
+msgstr ""
+
+#: attestations/models.py:62
 msgid "Attestation campaign"
 msgstr ""
 
+#: attestations/models.py:63
 msgid "Attestation campaigns"
 msgstr ""
 
+#: attestations/models.py:88 members/templates/members/admin_update.html:152
+#: members/templates/members/child_list.html:15
 msgid "Pending"
 msgstr ""
 
+#: attestations/models.py:91 members/templates/members/mail_queue.html:30
 msgid "Failed"
 msgstr ""
 
+#: attestations/models.py:92
 msgid "Skipped"
 msgstr ""
 
+#: attestations/models.py:117
 msgid "Attestation item"
 msgstr ""
 
+#: attestations/models.py:118
 msgid "Attestation items"
 msgstr ""
 
-msgid "Configure attestation"
+#: attestations/templates/attestations/_steps.html:4
+#, python-format
+msgid "Step %(current)s of %(total)s"
 msgstr ""
 
-msgid "Teach the app where the name lives and position the signature."
-msgstr ""
-
-msgid ""
-"The signature PDF should be the same page size as the documents (e.g. A4), "
-"transparent except for the signature. Drag the signature over the page to "
-"position it."
-msgstr ""
-
-msgid "First page"
-msgstr ""
-
-msgid "Data to extract"
-msgstr ""
-
-msgid "Preview recipients"
-msgstr ""
-
-msgid "Back"
-msgstr ""
-
-msgid "Extracted text of the first page"
-msgstr ""
-
-msgid "New attestation campaign"
-msgstr ""
-
-msgid "Upload the document PDF and the signature PDF."
-msgstr ""
-
-msgid "Continue"
-msgstr ""
-
+#: attestations/templates/attestations/index.html:3 templates/base.html:91
 msgid "Attestations"
 msgstr ""
 
+#: attestations/templates/attestations/index.html:4
 msgid "Upload, sign and email attestation PDFs."
 msgstr ""
 
+#: attestations/templates/attestations/index.html:7
 msgid "New campaign"
 msgstr ""
 
+#: attestations/templates/attestations/index.html:13 homepage/models.py:10
 msgid "Title"
 msgstr ""
 
+#: attestations/templates/attestations/index.html:14
+#: messaging/templates/messaging/message_detail.html:52
 msgid "Status"
 msgstr ""
 
+#: attestations/templates/attestations/index.html:15
 msgid "Items"
 msgstr ""
 
+#: attestations/templates/attestations/index.html:17
 msgid "Created"
 msgstr ""
 
-msgid "Configure"
+#: attestations/templates/attestations/index.html:31
+#: attestations/templates/attestations/step1.html:21
+#: attestations/templates/attestations/step2.html:21
+#: attestations/templates/attestations/step3.html:20
+#: attestations/templates/attestations/step4.html:37
+#: members/templates/members/onboarding.html:51
+#: members/templates/socialaccount/signup.html:35
+msgid "Continue"
 msgstr ""
 
+#: attestations/templates/attestations/index.html:33
 msgid "Review"
 msgstr ""
 
+#: attestations/templates/attestations/index.html:38
 msgid "No campaign yet."
 msgstr ""
 
+#: attestations/templates/attestations/review.html:3
 msgid "Review attestations"
 msgstr ""
 
+#: attestations/templates/attestations/review.html:4
 msgid "Check who each document goes to, then send."
 msgstr ""
 
+#: attestations/templates/attestations/review.html:8
 msgid ""
 "For each document, confirm the recipient or skip it. Recipients are re-"
 "resolved from the selected person when you send."
 msgstr ""
 
+#: attestations/templates/attestations/review.html:17
 msgid "Pages"
 msgstr ""
 
+#: attestations/templates/attestations/review.html:18
 msgid "Extracted name"
 msgstr ""
 
-msgid "Extracted address"
-msgstr ""
-
+#: attestations/templates/attestations/review.html:19
 msgid "Recipient"
 msgstr ""
 
+#: attestations/templates/attestations/review.html:20
 msgid "Will send to"
 msgstr ""
 
+#: attestations/templates/attestations/review.html:21
 msgid "Skip"
 msgstr ""
 
+#: attestations/templates/attestations/review.html:31
 msgid "— no match —"
 msgstr ""
 
+#: attestations/templates/attestations/review.html:38
 msgid "No recipient"
 msgstr ""
 
+#: attestations/templates/attestations/review.html:45
 msgid "No documents found."
 msgstr ""
 
+#: attestations/templates/attestations/review.html:52 members/constants.py:29
+#: members/forms.py:28 members/forms.py:43 members/forms.py:377
+#: members/forms.py:404 messaging/templates/messaging/compose_all.html:54
+#: messaging/templates/messaging/message_detail.html:51
 msgid "Email"
 msgstr ""
 
+#: attestations/templates/attestations/review.html:68
 msgid "Send signed attestations"
 msgstr ""
 
-msgid "Could not find that value on the first page."
+#: attestations/templates/attestations/review.html:69
+#: attestations/templates/attestations/step1.html:22
+#: attestations/templates/attestations/step2.html:22
+#: attestations/templates/attestations/step3.html:21
+#: attestations/templates/attestations/step4.html:38
+#: finance/templates/finance/price_edit.html:19
+#: members/templates/members/dettach_child.html:10
+#: members/templates/members/remove_child.html:10
+msgid "Back"
 msgstr ""
 
+#: attestations/templates/attestations/step1.html:3
+msgid "New attestation campaign"
+msgstr ""
+
+#: attestations/templates/attestations/step1.html:4
+msgid "Step 1: give this batch of attestations a name."
+msgstr ""
+
+#: attestations/templates/attestations/step2.html:3
+msgid "Upload the documents"
+msgstr ""
+
+#: attestations/templates/attestations/step2.html:4
+msgid ""
+"Step 2: upload the PDF with all the attestations and describe how each one "
+"is laid out."
+msgstr ""
+
+#: attestations/templates/attestations/step3.html:3
+msgid "Find the names"
+msgstr ""
+
+#: attestations/templates/attestations/step3.html:4
+msgid ""
+"Step 3: type the name you see on that page so the app can locate it on every "
+"other page."
+msgstr ""
+
+#: attestations/templates/attestations/step3.html:10
+#, python-format
+msgid "Name on page %(page)s"
+msgstr ""
+
+#: attestations/templates/attestations/step3.html:28
+#, python-format
+msgid "Extracted text of page %(page)s"
+msgstr ""
+
+#: attestations/templates/attestations/step4.html:3
+msgid "Add the signature"
+msgstr ""
+
+#: attestations/templates/attestations/step4.html:4
+msgid ""
+"Step 4: upload the signature, choose its page and position it on the preview."
+msgstr ""
+
+#: attestations/templates/attestations/step4.html:8
+msgid ""
+"The signature PDF should be the same page size as the documents (e.g. A4), "
+"transparent except for the signature. Drag the signature over the preview to "
+"position it."
+msgstr ""
+
+#: attestations/templates/attestations/step4.html:16
+msgid "Preview"
+msgstr ""
+
+#: attestations/views.py:130
+#, python-format
+msgid "Could not find that name on page %(page)s."
+msgstr ""
+
+#: attestations/views.py:282
 #, python-format
 msgid "%(sent)s sent, %(failed)s failed."
 msgstr ""
 
+#: finance/forms.py:102
 msgid "Amount (€)"
 msgstr ""
 
+#: finance/forms.py:105 finance/templates/finance/payment_history.html:15
+#: homepage/models.py:12
+#: messaging/templates/messaging/animateur_history.html:12
+#: messaging/templates/messaging/message_detail.html:9
+#: messaging/templates/messaging/section_history.html:9
 msgid "Date"
 msgstr ""
 
+#: finance/forms.py:110 finance/templates/finance/payment_history.html:17
 msgid "Note"
 msgstr ""
 
+#: finance/forms.py:120
 msgid "Membership fee reminder"
 msgstr ""
 
+#: finance/forms.py:125
 #, python-brace-format
 msgid "Use {prenom} and {solde} as variables."
 msgstr ""
 
+#: finance/forms.py:128
 #, python-brace-format
 msgid ""
 "Hello {prenom},\n"
@@ -254,269 +355,416 @@ msgid ""
 "The treasurer"
 msgstr ""
 
+#: finance/models.py:19
 msgid "Late penalty as a percentage (e.g. 10.00 for 10%)"
 msgstr ""
 
+#: finance/models.py:23
 msgid "Deadline before the late penalty applies"
 msgstr ""
 
+#: finance/models.py:27
 msgid "Fee configuration"
 msgstr ""
 
+#: finance/models.py:28
 msgid "Fee configurations"
 msgstr ""
 
+#: finance/models.py:31
 #, python-format
 msgid "Membership fees %(range)s"
 msgstr ""
 
+#: finance/models.py:54 members/templates/members/admin_update.html:11
 msgid "Child"
 msgstr ""
 
+#: finance/models.py:55 members/constants.py:22
+#: members/templates/members/admin_update.html:13
 msgid "Animator"
 msgstr ""
 
+#: finance/models.py:58 finance/templates/finance/billing_overview.html:22
+#: finance/templates/finance/billing_overview.html:46
+#: finance/templates/finance/price_edit.html:35
+#: finance/templates/finance/price_edit.html:59
 msgid "1st member"
 msgstr ""
 
+#: finance/models.py:59 finance/templates/finance/billing_overview.html:23
+#: finance/templates/finance/billing_overview.html:47
+#: finance/templates/finance/price_edit.html:36
+#: finance/templates/finance/price_edit.html:60
 msgid "2nd member"
 msgstr ""
 
+#: finance/models.py:60 finance/templates/finance/billing_overview.html:24
+#: finance/templates/finance/billing_overview.html:48
+#: finance/templates/finance/price_edit.html:37
+#: finance/templates/finance/price_edit.html:61
 msgid "3rd member or more"
 msgstr ""
 
+#: finance/models.py:70
 msgid "Leave blank to apply to all branches"
 msgstr ""
 
+#: finance/models.py:88
 msgid "Fee rule"
 msgstr ""
 
+#: finance/models.py:89
 msgid "Fee rules"
 msgstr ""
 
+#: finance/models.py:92 finance/templates/finance/billing_overview.html:30
+#: finance/templates/finance/price_edit.html:43
 msgid "All branches"
 msgstr ""
 
+#: finance/models.py:133
 msgid "Payment"
 msgstr ""
 
+#: finance/models.py:134
 msgid "Payments"
 msgstr ""
 
+#: finance/templates/finance/billing_overview.html:3 templates/base.html:86
 msgid "Membership fees"
 msgstr ""
 
+#: finance/templates/finance/billing_overview.html:4
 #, python-format
 msgid "Financial management — %(year_range)s"
 msgstr ""
 
+#: finance/templates/finance/billing_overview.html:7
+#: finance/templates/finance/send_reminders.html:3
 msgid "Send reminders"
 msgstr ""
 
+#: finance/templates/finance/billing_overview.html:14
+#: finance/templates/finance/price_edit.html:29
 msgid "Prices"
 msgstr ""
 
+#: finance/templates/finance/billing_overview.html:15
+#: finance/templates/finance/price_edit.html:3
 msgid "Edit prices"
 msgstr ""
 
+#: finance/templates/finance/billing_overview.html:21
+#: finance/templates/finance/price_edit.html:34
 msgid "Branch"
 msgstr ""
 
+#: finance/templates/finance/billing_overview.html:36
 msgid "No price defined."
 msgstr ""
 
+#: finance/templates/finance/billing_overview.html:42
+#: finance/templates/finance/price_edit.html:55
 msgid "Animators"
 msgstr ""
 
+#: finance/templates/finance/billing_overview.html:62
 msgid "Late penalty"
 msgstr ""
 
+#: finance/templates/finance/billing_overview.html:63
 msgid "Deadline"
 msgstr ""
 
+#: finance/templates/finance/billing_overview.html:70
 #, python-format
 msgid "Children (%(count)s)"
 msgstr ""
 
+#: finance/templates/finance/billing_overview.html:74
+#: finance/templates/finance/billing_overview.html:106 members/admin.py:97
+#: messaging/templates/messaging/_recipient_list.html:16
+#: messaging/templates/messaging/message_detail.html:50
 msgid "Name"
 msgstr ""
 
+#: finance/templates/finance/billing_overview.html:75
+#: finance/templates/finance/billing_overview.html:107
 msgid "Due"
 msgstr ""
 
+#: finance/templates/finance/billing_overview.html:76
+#: finance/templates/finance/billing_overview.html:108
 msgid "Paid"
 msgstr ""
 
+#: finance/templates/finance/billing_overview.html:77
+#: finance/templates/finance/billing_overview.html:109
+#: finance/templates/finance/send_reminders.html:30
 msgid "Balance"
 msgstr ""
 
+#: finance/templates/finance/billing_overview.html:78
 msgid "Late"
 msgstr ""
 
+#: finance/templates/finance/billing_overview.html:79
+#: finance/templates/finance/billing_overview.html:110
 msgid "Action"
 msgstr ""
 
+#: finance/templates/finance/billing_overview.html:89
 msgid "Yes"
 msgstr ""
 
+#: finance/templates/finance/billing_overview.html:91
+#: finance/templates/finance/billing_overview.html:121
 msgid "Pay"
 msgstr ""
 
+#: finance/templates/finance/billing_overview.html:92
+#: finance/templates/finance/billing_overview.html:122
 msgid "History"
 msgstr ""
 
+#: finance/templates/finance/billing_overview.html:96
 msgid "No child enrolled."
 msgstr ""
 
+#: finance/templates/finance/billing_overview.html:102
 #, python-format
 msgid "Animators (%(count)s)"
 msgstr ""
 
+#: finance/templates/finance/payment_history.html:4
 #, python-format
 msgid "Payment history — %(person)s"
 msgstr ""
 
+#: finance/templates/finance/payment_history.html:8
+#: finance/templates/finance/payment_history.html:37
+#: finance/templates/finance/record_payment_modal.html:8
+#: members/templates/members/child_form.html:12
+#: members/templates/members/child_from_key_form.html:12
+#: templates/base.html:223
 msgid "Close"
 msgstr ""
 
+#: finance/templates/finance/payment_history.html:16
 msgid "Amount"
 msgstr ""
 
+#: finance/templates/finance/payment_history.html:18
 msgid "Recorded by"
 msgstr ""
 
+#: finance/templates/finance/payment_history.html:33
 msgid "No payment recorded."
 msgstr ""
 
+#: finance/templates/finance/price_edit.html:4
+#: finance/templates/finance/record_payment.html:4
 msgid "Treasurer"
 msgstr ""
 
+#: finance/templates/finance/price_edit.html:9 members/filters.py:40
+#: members/filters.py:41 messaging/forms.py:69
 msgid "School year"
 msgstr ""
 
+#: finance/templates/finance/price_edit.html:76
 msgid "Leave a field blank to remove the price."
 msgstr ""
 
+#: finance/templates/finance/price_edit.html:80
+#: finance/templates/finance/record_payment.html:29
+#: finance/templates/finance/record_payment_modal.html:36
+#: homepage/templates/homepage/editor.html:61
+#: members/templates/members/child_form.html:100
+#: members/templates/members/child_from_key_form.html:29
+#: members/templates/members/profile.html:98
 msgid "Save"
 msgstr ""
 
+#: finance/templates/finance/record_payment.html:3
+#: finance/templates/finance/record_payment_modal.html:4
 msgid "Record a payment"
 msgstr ""
 
+#: finance/templates/finance/record_payment.html:30
+#: finance/templates/finance/record_payment_modal.html:35
+#: finance/templates/finance/send_reminders.html:22
+#: members/templates/members/child_form.html:99
+#: members/templates/members/child_from_key_form.html:28
+#: members/templates/members/dettach_child.html:17
+#: members/templates/members/remove_child.html:19
+#: messaging/templates/messaging/compose.html:85
+#: messaging/templates/messaging/compose_all.html:77
 msgid "Cancel"
 msgstr ""
 
+#: finance/templates/finance/send_reminders.html:4
 msgid "Membership fee reminders"
 msgstr ""
 
+#: finance/templates/finance/send_reminders.html:6
 #, python-format
 msgid "%(counter)s adult with an unpaid balance."
 msgid_plural "%(counter)s adults with an unpaid balance."
 msgstr[0] ""
 msgstr[1] ""
 
+#: finance/templates/finance/send_reminders.html:21
 msgid "Send the reminders"
 msgstr ""
 
+#: finance/templates/finance/send_reminders.html:28 messaging/forms.py:56
+#: messaging/templates/messaging/animateur_history.html:13
+#: messaging/templates/messaging/compose.html:52
+#: messaging/templates/messaging/compose_all.html:43
+#: messaging/templates/messaging/message_detail.html:15
+#: messaging/templates/messaging/message_detail.html:46
 msgid "Recipients"
 msgstr ""
 
+#: finance/templates/finance/send_reminders.html:30 members/constants.py:21
+#: members/templates/members/admin_update.html:9
 msgid "Parent"
 msgstr ""
 
+#: finance/templates/finance/send_reminders.html:30
+#: members/templates/members/admin_update.html:134
 msgid "Children"
 msgstr ""
 
+#: finance/views.py:49 finance/views.py:123 finance/views.py:166
+#: finance/views.py:241
 msgid "No current school year defined."
 msgstr ""
 
+#: finance/views.py:139
 #, python-format
 msgid "Prices saved for %(range)s."
 msgstr ""
 
+#: finance/views.py:176
 msgid "Person not found."
 msgstr ""
 
+#: finance/views.py:193
 #, python-format
 msgid "Payment of %(amount)s€ recorded for %(person)s."
 msgstr ""
 
+#: finance/views.py:265 messaging/views.py:509
 #, python-format
 msgid "Failed to send to %(email)s."
 msgstr ""
 
+#: finance/views.py:271
 #, python-format
 msgid "Reminders sent to %(count)s adult(s)."
 msgstr ""
 
+#: homepage/models.py:11
 msgid "Description"
 msgstr ""
 
+#: homepage/models.py:19 homepage/views.py:222 members/filters.py:47
+#: members/filters.py:48 members/forms.py:69
+#: members/templates/members/admin_update.html:144
+#: members/templates/members/profile.html:123 members/views.py:206
+#: messaging/forms.py:62
 msgid "Section"
 msgstr ""
 
+#: homepage/models.py:61
 #, python-format
 msgid "Unsupported image extension. Allowed: %(extensions)s."
 msgstr ""
 
+#: homepage/models.py:76 homepage/templates/homepage/editor.html:42
 msgid "Home"
 msgstr ""
 
+#: homepage/models.py:77 homepage/templates/homepage/editor.html:44
+#: homepage/templates/homepage/faq.html:8 templates/base.html:109
 msgid "FAQ"
 msgstr ""
 
+#: homepage/models.py:86
 msgid "Site content"
 msgstr ""
 
+#: homepage/models.py:87
 msgid "Site contents"
 msgstr ""
 
+#: homepage/models.py:109
 msgid "Image asset"
 msgstr ""
 
+#: homepage/models.py:110
 msgid "Image assets"
 msgstr ""
 
+#: homepage/templates/homepage/agenda.html:8 templates/base.html:73
 msgid "Agenda"
 msgstr ""
 
+#: homepage/templates/homepage/agenda.html:10
 msgid "Calendar of activities"
 msgstr ""
 
+#: homepage/templates/homepage/agenda.html:32
 #, python-format
 msgid "Section: %(section_name)s"
 msgstr ""
 
+#: homepage/templates/homepage/agenda.html:38
 msgid "No upcoming event."
 msgstr ""
 
+#: homepage/templates/homepage/editor.html:7
+#: homepage/templates/homepage/editor.html:39
 msgid "Homepage editor"
 msgstr ""
 
+#: homepage/templates/homepage/editor.html:56
 msgid "View site"
 msgstr ""
 
+#: homepage/templates/homepage/editor.html:58
 msgid "Site name and other settings are edited in the site settings."
 msgstr ""
 
+#: homepage/templates/homepage/editor.html:59
 msgid "Site settings"
 msgstr ""
 
+#: homepage/templates/homepage/editor.html:74
 msgid "Saved."
 msgstr ""
 
+#: homepage/templates/homepage/faq.html:10
 msgid "Frequently asked questions."
 msgstr ""
 
+#: homepage/templates/homepage/faq.html:27
+#: homepage/templates/homepage/home.html:17
 msgid "Edit this page"
 msgstr ""
 
+#: homepage/templates/homepage/snippets/faq_default.html:5
 msgid "No question yet."
 msgstr ""
 
+#: homepage/templates/homepage/snippets/home_default.html:5
 msgid "Main Description"
 msgstr ""
 
+#: homepage/templates/homepage/snippets/home_default.html:7
 msgid ""
 "Roll on the floor purring your whiskers off intrigued by the shower burrow "
 "under covers, and play time, rub face on everything, intently sniff hand, or "
@@ -525,286 +773,394 @@ msgid ""
 "for lick butt love to play with owner's hair tie. Swat at dog give attitude."
 msgstr ""
 
+#: homepage/views.py:218
 msgid "Image upload failed."
 msgstr ""
 
+#: homepage/views.py:219
 msgid "Save failed."
 msgstr ""
 
+#: homepage/views.py:220
 msgid "Structure"
 msgstr ""
 
+#: homepage/views.py:221
 msgid "Basic"
 msgstr ""
 
+#: homepage/views.py:223
 msgid "2 columns"
 msgstr ""
 
+#: homepage/views.py:224
 msgid "3 columns"
 msgstr ""
 
+#: homepage/views.py:225
 msgid "Heading"
 msgstr ""
 
+#: homepage/views.py:226
 msgid "Text"
 msgstr ""
 
+#: homepage/views.py:227
 msgid "Your text here."
 msgstr ""
 
+#: homepage/views.py:228
 msgid "Image"
 msgstr ""
 
+#: homepage/views.py:229
 msgid "Button"
 msgstr ""
 
+#: homepage/views.py:230
 msgid "Click here"
 msgstr ""
 
+#: homepage/views.py:231
 msgid "Divider"
 msgstr ""
 
+#: homepage/views.py:232
 msgid "Dimensions"
 msgstr ""
 
+#: homepage/views.py:233
 msgid "Typography"
 msgstr ""
 
+#: homepage/views.py:234
 msgid "Decorations"
 msgstr ""
 
+#: homepage/views.py:235
 msgid "Extra"
 msgstr ""
 
+#: members/admin.py:42
 msgid "Personal info"
 msgstr ""
 
+#: members/admin.py:57
 msgid "Preferences"
 msgstr ""
 
+#: members/admin.py:61
 msgid "Permissions"
 msgstr ""
 
+#: members/admin.py:147
 msgid "Available languages"
 msgstr ""
 
+#: members/admin.py:148 members/models.py:785
 msgid "Languages available to users in the site language selector."
 msgstr ""
 
+#: members/admin.py:154
 msgid "Default language"
 msgstr ""
 
+#: members/admin.py:155 members/models.py:795
 msgid "Default language for visitors. Must be one of the available languages."
 msgstr ""
 
+#: members/admin.py:192 members/models.py:828
 msgid "Select at least one available language."
 msgstr ""
 
+#: members/admin.py:197 members/models.py:833
 msgid "The default language must be one of the available languages."
 msgstr ""
 
+#: members/admin.py:209
 msgid "Languages"
 msgstr ""
 
+#: members/admin.py:211
 msgid "Site information"
 msgstr ""
 
+#: members/admin.py:215
 msgid "Contact information"
 msgstr ""
 
+#: members/admin.py:218
 msgid "Social media"
 msgstr ""
 
+#: members/admin.py:219
 msgid "Email settings"
 msgstr ""
 
+#: members/admin.py:221
 msgid "Registration settings"
 msgstr ""
 
+#: members/admin.py:225
 msgid "Customizable text"
 msgstr ""
 
+#: members/constants.py:23
 msgid "Participant"
 msgstr ""
 
+#: members/constants.py:30 members/filters.py:26 members/forms.py:232
+#: members/forms.py:245 members/forms.py:422 members/forms.py:507
+#: members/templates/members/admin_update.html:142
+#: members/templates/members/child_form.html:18
+#: members/templates/members/profile.html:119 members/views.py:202
 msgid "First name"
 msgstr ""
 
+#: members/constants.py:31 members/filters.py:29 members/forms.py:233
+#: members/forms.py:246 members/forms.py:423 members/forms.py:508
+#: members/templates/members/admin_update.html:143
+#: members/templates/members/child_form.html:24
+#: members/templates/members/profile.html:120 members/views.py:203
 msgid "Last name"
 msgstr ""
 
+#: members/constants.py:32 members/forms.py:234 members/forms.py:248
+#: members/forms.py:424 members/forms.py:509
+#: members/templates/members/profile.html:75
 msgid "Address"
 msgstr ""
 
+#: members/constants.py:33 members/forms.py:235 members/forms.py:249
+#: members/forms.py:376 members/forms.py:425 members/forms.py:510
 msgid "Phone"
 msgstr ""
 
+#: members/constants.py:34
 msgid "Adult type"
 msgstr ""
 
+#: members/constants.py:35
 msgid "Enable secondary role"
 msgstr ""
 
+#: members/constants.py:37
 msgid ""
 "I agree that photos or videos in which my child(ren) appear may be used by "
 "Les Scouts ASBL, of which my unit is part"
 msgstr ""
 
+#: members/constants.py:44
 msgid "Your profile has been updated successfully."
 msgstr ""
 
+#: members/constants.py:49
 msgid "No user found matching this ID."
 msgstr ""
 
+#: members/constants.py:50
 msgid "You do not have permission to view this profile."
 msgstr ""
 
+#: members/constants.py:52
 msgid "AdultUserChangeForm can only be used with existing accounts"
 msgstr ""
 
+#: members/constants.py:54
 msgid "Account instance is missing required Person relationship"
 msgstr ""
 
+#: members/filters.py:18
 msgid "Ascending"
 msgstr ""
 
+#: members/filters.py:19
 msgid "Descending"
 msgstr ""
 
+#: members/filters.py:23
 msgid "Ordering"
 msgstr ""
 
+#: members/filters.py:33 members/filters.py:34
 msgid "Birth year"
 msgstr ""
 
+#: members/filters.py:53 members/views.py:207
 msgid "Role"
 msgstr ""
 
+#: members/filters.py:54
 msgid "All roles"
 msgstr ""
 
+#: members/forms.py:45
 msgid ""
 "If an email is provided, an account will be created. Otherwise, the existing "
 "account will be used."
 msgstr ""
 
+#: members/forms.py:53 members/forms.py:116
+#: members/templates/members/admin_update.html:63
 msgid "Primary role"
 msgstr ""
 
+#: members/forms.py:60
 msgid "Secondary roles"
 msgstr ""
 
+#: members/forms.py:74
 msgid "Next section"
 msgstr ""
 
+#: members/forms.py:91 members/forms.py:95
 #, python-format
 msgid "Section %(range)s"
 msgstr ""
 
+#: members/forms.py:144
 msgid ""
 "Only the 'Participant' and 'Animator' roles can be enrolled in a section."
 msgstr ""
 
+#: members/forms.py:236
 msgid "Photos allowed"
 msgstr ""
 
+#: members/forms.py:237
 msgid "Date of birth (only for participants)"
 msgstr ""
 
+#: members/forms.py:238
 msgid "Sex (only for participants)"
 msgstr ""
 
+#: members/forms.py:239 members/forms.py:247 members/forms.py:375
+#: members/forms.py:428 members/templates/members/child_form.html:32
 msgid "Totem"
 msgstr ""
 
+#: members/forms.py:240 members/forms.py:426
 msgid "Notes"
 msgstr ""
 
+#: members/forms.py:261 members/forms.py:514
+#: members/templates/members/onboarding.html:17
+#: members/templates/members/profile.html:21
+#: members/templates/members/profile.html:28
 msgid "Account type"
 msgstr ""
 
+#: members/forms.py:268
 msgid "Active parent, I want to help the unit occasionally"
 msgstr ""
 
+#: members/forms.py:339 members/forms.py:544
 msgid "A person of branch age can only be a Participant."
 msgstr ""
 
+#: members/forms.py:405
 msgid "If an email is provided, an account will be created for the child."
 msgstr ""
 
+#: members/forms.py:421 members/views.py:205
 msgid "Sex"
 msgstr ""
 
+#: members/forms.py:427 members/views.py:204
 msgid "Date of birth"
 msgstr ""
 
+#: members/forms.py:462
 msgid "This email already exists for another user"
 msgstr ""
 
+#: members/forms.py:503
 msgid "Secret key (6 characters)"
 msgstr ""
 
+#: members/models.py:73
 msgid "Boy"
 msgstr ""
 
+#: members/models.py:74
 msgid "Girl"
 msgstr ""
 
+#: members/models.py:84
 msgid "First 6 characters of the UUID — key to link a parent to a child"
 msgstr ""
 
+#: members/models.py:114
 msgid "Date on which the member was archived"
 msgstr ""
 
+#: members/models.py:130
 msgid "Manual override for passage: section assigned the following year"
 msgstr ""
 
+#: members/models.py:162
 msgid "Date of birth is required for a participant."
 msgstr ""
 
+#: members/models.py:164
 msgid "Sex is required for a participant."
 msgstr ""
 
+#: members/models.py:228
 msgid "linked sections"
 msgstr ""
 
+#: members/models.py:230
 msgid "linked children"
 msgstr ""
 
+#: members/models.py:380
 msgid "Language used for outgoing emails to this user."
 msgstr ""
 
+#: members/models.py:609
 msgid "Calendar year from the start of the time period"
 msgstr ""
 
+#: members/models.py:617
 #, python-format
 msgid "%(name)s — from %(start)s to %(end)s"
 msgstr ""
 
+#: members/models.py:675
 msgid ""
 "Age of the youngest members of the section on December 31 of the school year"
 msgstr ""
 
+#: members/models.py:682
 msgid ""
 "Age of the oldest members of the section on December 31 of the school year"
 msgstr ""
 
+#: members/models.py:687
 #, python-format
 msgid "%(name)s (%(min)s-%(max)s years old)"
 msgstr ""
 
+#: members/models.py:803
 msgid ""
 "Last school year (the « name » field) for which the automatic passage was "
 "executed. Anti-replay: if Celery was stopped on the passage day, the task "
 "catches up at the next startup."
 msgstr ""
 
+#: members/models.py:850
 msgid "Important document"
 msgstr ""
 
+#: members/models.py:851 members/templates/members/documents.html:5
+#: messaging/templates/messaging/compose.html:41
+#: messaging/templates/messaging/compose_all.html:33
 msgid "Important documents"
 msgstr ""
 
+#: members/templates/account/email/account_already_exists_message.txt:4
 #, python-format
 msgid ""
 "Vous recevez ce mail parce que vous ou quelqu'un d'autre a tenté de créer un "
@@ -819,9 +1175,11 @@ msgid ""
 "%(password_reset_url)s"
 msgstr ""
 
+#: members/templates/account/email/account_already_exists_subject.txt:3
 msgid "Compte déjà existant"
 msgstr ""
 
+#: members/templates/account/email/child_password_reset_key_message.txt:4
 #, python-format
 msgid ""
 "Tu reçois ce message parce qu'un de tes parents à choisi de te créer un "
@@ -834,25 +1192,33 @@ msgid ""
 "passe. "
 msgstr ""
 
+#: members/templates/account/email/child_password_reset_key_subject.txt:3
+#: members/templates/account/email/password_reset_key_subject.txt:3
+#: members/templates/account/email/unknown_account_subject.txt:3
 msgid "Réinitialisation de mot de passe"
 msgstr ""
 
+#: members/templates/account/email/create_child_account_message.txt:4
 msgid ""
 "Tu a reçu ce message parce qu'un de tes parents à choisi de te créer un "
 "compte sur le site de l'unité.  Pour finaliser l'inscription et choisir un "
 "mot de passe, clique sur le lien ci-desous."
 msgstr ""
 
+#: members/templates/account/email/create_child_account_message.txt:8
 #, python-format
 msgid "Ton nom d'utilisateur est \"%(username)s\"."
 msgstr ""
 
+#: members/templates/account/email/create_child_account_subject.txt:3
 msgid "Création d'un compte sur le site de votre unité scoute"
 msgstr ""
 
+#: members/templates/account/email/email_confirmation_subject.txt:3
 msgid "Veuillez confirmer votre adresse e-mail"
 msgstr ""
 
+#: members/templates/account/email/password_reset_key_message.txt:4
 #, python-format
 msgid ""
 "Tu reçois ce message parce qu’un compte a été créé pour toi sur le site de "
@@ -867,6 +1233,7 @@ msgid ""
 "message."
 msgstr ""
 
+#: members/templates/account/email/unknown_account_message.txt:4
 #, python-format
 msgid ""
 "Vous recevez ce mail parce que vous ou quelqu'un d'autre a demandé un mot de "
@@ -881,77 +1248,112 @@ msgid ""
 "lien ci-dessous."
 msgstr ""
 
+#: members/templates/account/email_confirm.html:5
 msgid "Confirm email address"
 msgstr ""
 
+#: members/templates/account/email_confirm.html:12
 #, python-format
 msgid ""
 "Please confirm that <a href=\"mailto:%(email)s\">%(email_addr)s</a> is the "
 "email address of %(user_display)s."
 msgstr ""
 
+#: members/templates/account/email_confirm.html:17
+#: members/templates/members/admin_update.html:124
 msgid "Confirm"
 msgstr ""
 
+#: members/templates/account/email_confirm.html:23
 #, python-format
 msgid ""
 "This link is no longer valid. Please <a href=\"%(email_url)s\">submit a new "
 "email confirmation request</a>."
 msgstr ""
 
+#: members/templates/account/login.html:6 templates/base.html:160
 msgid "Log in"
 msgstr ""
 
+#: members/templates/account/login.html:38
+#: members/templates/account/signup.html:43
+#: messaging/templates/messaging/compose.html:84
+#: messaging/templates/messaging/compose_all.html:76
 msgid "Send"
 msgstr ""
 
+#: members/templates/account/login.html:39
 msgid "Remember me"
 msgstr ""
 
+#: members/templates/account/login.html:40
 msgid "Forgot password?"
 msgstr ""
 
+#: members/templates/account/login.html:41
 msgid "Incorrect username or password"
 msgstr ""
 
+#: members/templates/account/login.html:49
+#: members/templates/account/signup.html:50
 msgid "Or log in with"
 msgstr ""
 
+#: members/templates/account/logout.html:4
+#: members/templates/account/logout.html:7
+#: members/templates/account/logout.html:18
 msgid "Sign Out"
 msgstr ""
 
+#: members/templates/account/logout.html:10
 msgid "Are you sure you want to sign out?"
 msgstr ""
 
+#: members/templates/account/password_change.html:5
+#: members/templates/account/password_change.html:8
+#: members/templates/account/password_change.html:24
+#: members/templates/account/password_reset_from_key.html:5
+#: members/templates/account/password_reset_from_key.html:12
+#: members/templates/account/password_reset_from_key_done.html:4
+#: members/templates/account/password_reset_from_key_done.html:7
 msgid "Change Password"
 msgstr ""
 
+#: members/templates/account/password_change.html:25
 msgid "Forgot Password?"
 msgstr ""
 
+#: members/templates/account/password_reset.html:6
+#: members/templates/account/password_reset_done.html:5
 msgid "Password Reset"
 msgstr ""
 
+#: members/templates/account/password_reset.html:13
 msgid ""
 "Forgotten your password? Enter your e-mail address below, and we'll send you "
 "an e-mail allowing you to reset it."
 msgstr ""
 
+#: members/templates/account/password_reset.html:25
 msgid "Reset My Password"
 msgstr ""
 
+#: members/templates/account/password_reset.html:28
 msgid "Please contact us if you have any trouble resetting your password."
 msgstr ""
 
+#: members/templates/account/password_reset_done.html:12
 msgid ""
 "We have sent you an email. If you haven't received it, check your spam "
 "folder. Otherwise, contact us if you haven't received it within a few "
 "minutes."
 msgstr ""
 
+#: members/templates/account/password_reset_from_key.html:10
 msgid "Bad Token"
 msgstr ""
 
+#: members/templates/account/password_reset_from_key.html:20
 #, python-format
 msgid ""
 "The password reset link was invalid, possibly because it has already been "
@@ -959,30 +1361,38 @@ msgid ""
 "a>."
 msgstr ""
 
+#: members/templates/account/password_reset_from_key.html:35
 msgid "change password"
 msgstr ""
 
+#: members/templates/account/password_reset_from_key_done.html:10
 msgid "Your password is now changed."
 msgstr ""
 
+#: members/templates/account/signup.html:6
 msgid "Create your account"
 msgstr ""
 
+#: members/templates/account/signup.html:9
 msgid ""
 "To request enrollment for one or more children in our unit, a parent must "
 "first register on our site by following the procedure below. Then, the "
 "parent can add their children to submit an enrollment request."
 msgstr ""
 
+#: members/templates/account/signup.html:12
 msgid "Create your account (for parents and animators only)"
 msgstr ""
 
+#: members/templates/account/verification_sent.html:5
 msgid "Messages"
 msgstr ""
 
+#: members/templates/account/verification_sent.html:12
 msgid "Verify your email address"
 msgstr ""
 
+#: members/templates/account/verification_sent.html:16
 #, python-format
 msgid ""
 "A verification email has been sent. Follow the link provided to finalize the "
@@ -992,171 +1402,233 @@ msgid ""
 "a verification email in the next few minutes."
 msgstr ""
 
+#: members/templates/members/admin_list.html:4 templates/base.html:83
 msgid "Member management"
 msgstr ""
 
+#: members/templates/members/admin_list.html:5
 msgid "Find and manage unit members."
 msgstr ""
 
+#: members/templates/members/admin_list.html:52
 msgid "Filter"
 msgstr ""
 
+#: members/templates/members/admin_list.html:53
 msgid "Reset"
 msgstr ""
 
+#: members/templates/members/admin_list.html:80
 msgid "Actions"
 msgstr ""
 
+#: members/templates/members/admin_list.html:94
 #, python-format
 msgid "Incompatible age: %(detail)s"
 msgstr ""
 
+#: members/templates/members/admin_list.html:101
+#: members/templates/members/admin_update.html:155
+#: members/templates/members/admin_update.html:165
+#: members/templates/members/child_list.html:30
 msgid "Edit"
 msgstr ""
 
+#: members/templates/members/admin_list.html:106
 msgid "No results"
 msgstr ""
 
+#: members/templates/members/admin_list.html:114
 msgid "First"
 msgstr ""
 
+#: members/templates/members/admin_list.html:117
 msgid "Previous"
 msgstr ""
 
+#: members/templates/members/admin_list.html:121
 #, python-format
 msgid "Page %(page_num)s of %(page_count)s"
 msgstr ""
 
+#: members/templates/members/admin_list.html:125
 msgid "Next"
 msgstr ""
 
+#: members/templates/members/admin_list.html:128
 msgid "Last"
 msgstr ""
 
+#: members/templates/members/admin_update.html:15
+#: messaging/templates/messaging/compose_all.html:53
 msgid "Member"
 msgstr ""
 
+#: members/templates/members/admin_update.html:66
+#: members/templates/members/profile.html:24
 #, python-format
 msgid "Account type cannot be changed. Reason: %(reason)s."
 msgstr ""
 
+#: members/templates/members/admin_update.html:136
 msgid "Parents"
 msgstr ""
 
+#: members/templates/members/child_form.html:8
 msgid "Child information"
 msgstr ""
 
+#: members/templates/members/child_form.html:30
 msgid "(optional)"
 msgstr ""
 
+#: members/templates/members/child_form.html:54
+#: members/templates/members/child_form.html:85
 msgid "If different from parent's"
 msgstr ""
 
+#: members/templates/members/child_form.html:62
 msgid ""
 "The field below should only be filled in if you want to create an account "
 "for the child, which is recommended after age 12."
 msgstr ""
 
+#: members/templates/members/child_form.html:64
 msgid "They will receive an email to choose a password."
 msgstr ""
 
+#: members/templates/members/child_form.html:66
 msgid "Do not enter your own email address."
 msgstr ""
 
+#: members/templates/members/child_form.html:74
 msgid "To create an account"
 msgstr ""
 
+#: members/templates/members/child_from_key_form.html:8
 msgid "Child's secret key"
 msgstr ""
 
+#: members/templates/members/child_list.html:19
 msgid "Deregister"
 msgstr ""
 
+#: members/templates/members/child_list.html:22
+#: members/templates/members/remove_child.html:17
+#: messaging/templates/messaging/compose.html:35
+#: messaging/templates/messaging/compose.html:88
+#: messaging/templates/messaging/compose_all.html:27
+#: messaging/templates/messaging/compose_all.html:80
 msgid "Remove"
 msgstr ""
 
+#: members/templates/members/child_list.html:25
+#: members/templates/members/dettach_child.html:15
 msgid "Detach"
 msgstr ""
 
+#: members/templates/members/deregister_child.html:5
 #, python-format
 msgid "Confirm that you want to deregister %(first_name)s"
 msgstr ""
 
+#: members/templates/members/deregister_child.html:11
 msgid ""
 "A deregistration for the following year or for an enrollment in the "
 "'request' state will be processed immediately."
 msgstr ""
 
+#: members/templates/members/deregister_child.html:14
 msgid ""
 "If the deregistration is requested for the current year and the enrollment "
 "is active, it will require manual intervention. Make sure you have followed "
 "the procedure described in the internal regulations."
 msgstr ""
 
+#: members/templates/members/deregister_child.html:17
 msgid "The year starts on August 1st, right after camp."
 msgstr ""
 
+#: members/templates/members/deregister_child.html:21
 #, python-format
 msgid "Deregister %(first_name)s for the current year"
 msgstr ""
 
+#: members/templates/members/deregister_child.html:23
 #, python-format
 msgid "Deregister %(first_name)s for next year"
 msgstr ""
 
+#: members/templates/members/dettach_child.html:5
 #, python-format
 msgid "Confirm that you want to detach %(first_name)s"
 msgstr ""
 
+#: members/templates/members/documents.html:13
 msgid "Link"
 msgstr ""
 
+#: members/templates/members/documents.html:14
 msgid "Download"
 msgstr ""
 
+#: members/templates/members/documents.html:20
 msgid "No documents available."
 msgstr ""
 
+#: members/templates/members/mail_queue.html:4
 msgid "Email queue"
 msgstr ""
 
+#: members/templates/members/mail_queue.html:7
 msgid "Review outgoing emails that could not be delivered."
 msgstr ""
 
+#: members/templates/members/mail_queue.html:14
 msgid "Queued"
 msgstr ""
 
+#: members/templates/members/mail_queue.html:22
 msgid "Waiting for retry"
 msgstr ""
 
+#: members/templates/members/mail_queue.html:37
 msgid ""
 "Failed emails are no longer retried automatically. Requeue them to send "
 "again once the mail service is back, or purge them permanently."
 msgstr ""
 
+#: members/templates/members/mail_queue.html:46
 msgid "Requeue failed emails"
 msgstr ""
 
+#: members/templates/members/mail_queue.html:53
 msgid "Purge failed emails"
 msgstr ""
 
+#: members/templates/members/onboarding.html:5
 msgid "Welcome! Complete your profile"
 msgstr ""
 
+#: members/templates/members/onboarding.html:8
 msgid ""
 "To continue, please complete your profile by filling in the information "
 "below."
 msgstr ""
 
+#: members/templates/members/profile.html:6
 msgid "Your profile"
 msgstr ""
 
+#: members/templates/members/profile.html:83
 msgid "The address is managed by the responsible parent."
 msgstr ""
 
+#: members/templates/members/profile.html:100
 msgid "Change password"
 msgstr ""
 
+#: members/templates/members/profile.html:112
 msgid ""
 "To associate an already enrolled <span class=\"text-ls-bleu-clair\">child</"
 "span>, ask the parent who enrolled the child for the \"Secret key\" and "
@@ -1164,69 +1636,86 @@ msgid ""
 "span>."
 msgstr ""
 
+#: members/templates/members/profile.html:114
 msgid ""
 "If a parent no longer wishes to receive emails about an enrolled child, they "
 "can <span class=\"text-ls-orange\">detach</span> them, provided at least one "
 "other parent remains."
 msgstr ""
 
+#: members/templates/members/profile.html:121
 msgid "Copy key"
 msgstr ""
 
+#: members/templates/members/profile.html:122
 msgid "Secret key"
 msgstr ""
 
+#: members/templates/members/profile.html:131
 msgid "Loading..."
 msgstr ""
 
+#: members/templates/members/profile.html:139
 msgid "Add a new child"
 msgstr ""
 
+#: members/templates/members/profile.html:142
 msgid "Add an existing child with a key"
 msgstr ""
 
+#: members/templates/members/remove_child.html:5
 #, python-format
 msgid "Confirm that you want to remove %(first_name)s"
 msgstr ""
 
+#: members/templates/members/remove_child.html:13
 #, python-format
 msgid ""
 "This will permanently delete %(first_name)s and their account. This cannot "
 "be undone."
 msgstr ""
 
+#: members/templates/socialaccount/signup.html:5
 msgid "Complete your registration"
 msgstr ""
 
+#: members/templates/socialaccount/signup.html:8
 #, python-format
 msgid ""
 "You are about to log in with your %(provider_name)s account. Please complete "
 "the form below to finalize your registration."
 msgstr ""
 
+#: members/views.py:177
 #, python-format
 msgid "%(age)s years old — branch %(branch)s: %(min)s-%(max)s years old"
 msgstr ""
 
+#: members/views.py:353
 #, python-format
 msgid "%(first)s %(last)s is already attached to your account."
 msgstr ""
 
+#: members/views.py:404 members/views.py:474
 #, python-format
 msgid "%(first)s %(last)s added."
 msgstr ""
 
+#: members/views.py:416 members/views.py:428
 msgid "Invalid request"
 msgstr ""
 
+#: members/views.py:442
 #, python-format
 msgid "%(first)s modified."
 msgstr ""
 
+#: members/views.py:491
 #, python-format
 msgid "%(first)s is not attached to your account."
 msgstr ""
 
+#: members/views.py:496
 #, python-format
 msgid ""
 "You cannot detach %(first)s.\n"
@@ -1236,203 +1725,276 @@ msgid ""
 "%(first)s was born on %(birthday)s and %(has_account)s."
 msgstr ""
 
+#: members/views.py:505
 msgid "has an account"
 msgstr ""
 
+#: members/views.py:505
 msgid "does not have an account"
 msgstr ""
 
+#: members/views.py:509
 #, python-format
 msgid ""
 "To confirm that you want to detach %(first)s from your account, click "
 "\"Detach\"."
 msgstr ""
 
+#: members/views.py:572
 #, python-format
 msgid ""
 "%(first)s is assigned to a section and must be deregistered, not removed."
 msgstr ""
 
+#: members/views.py:630
 #, python-format
 msgid "%(count)s email(s) requeued."
 msgstr ""
 
+#: members/views.py:634
 #, python-format
 msgid "%(count)s email(s) purged."
 msgstr ""
 
+#: messaging/forms.py:7
 msgid "Parents of a section"
 msgstr ""
 
+#: messaging/forms.py:8
 msgid "Animators of a section"
 msgstr ""
 
+#: messaging/forms.py:9
 msgid "Participants of a section"
 msgstr ""
 
+#: messaging/forms.py:10
 msgid "Everyone of a section (parents, participants and animators)"
 msgstr ""
 
+#: messaging/forms.py:11
 msgid "All animators"
 msgstr ""
 
+#: messaging/forms.py:12
 msgid "Unit council"
 msgstr ""
 
+#: messaging/forms.py:13
 msgid "Unit staff"
 msgstr ""
 
+#: messaging/forms.py:14
 msgid "Active parents"
 msgstr ""
 
+#: messaging/forms.py:15
 msgid "Everyone"
 msgstr ""
 
+#: messaging/forms.py:74
 msgid "Message subject"
 msgstr ""
 
+#: messaging/forms.py:78
 msgid "Message content"
 msgstr ""
 
+#: messaging/forms.py:83
 msgid "Attachment (optional)"
 msgstr ""
 
+#: messaging/forms.py:88
 msgid "Date (agenda)"
 msgstr ""
 
+#: messaging/forms.py:90
 msgid "Optional. If provided, an event will be added to the agenda."
 msgstr ""
 
+#: messaging/models.py:46
 msgid "All users"
 msgstr ""
 
+#: messaging/models.py:63
 msgid "sent"
 msgstr ""
 
+#: messaging/models.py:63
 msgid "ignored"
 msgstr ""
 
+#: messaging/templates/messaging/_recipient_list.html:17
 msgid "Info"
 msgstr ""
 
+#: messaging/templates/messaging/_recipient_list.html:43
 msgid "No recipient found."
 msgstr ""
 
+#: messaging/templates/messaging/animateur_history.html:3
+#: messaging/templates/messaging/section_history.html:3 templates/base.html:90
+#: templates/base.html:104
 msgid "Message history"
 msgstr ""
 
+#: messaging/templates/messaging/animateur_history.html:4
 msgid "Sent messages"
 msgstr ""
 
+#: messaging/templates/messaging/animateur_history.html:7
+#: messaging/templates/messaging/compose.html:3
+#: messaging/templates/messaging/compose_all.html:3 templates/base.html:89
+#: templates/base.html:103
 msgid "Send a message"
 msgstr ""
 
+#: messaging/templates/messaging/animateur_history.html:16
+#: messaging/templates/messaging/message_detail.html:64
 msgid "Ignored"
 msgstr ""
 
+#: messaging/templates/messaging/animateur_history.html:27
+#: messaging/templates/messaging/compose_all.html:4
+#: messaging/templates/messaging/message_detail.html:20 messaging/views.py:500
 msgid "All members"
 msgstr ""
 
+#: messaging/templates/messaging/animateur_history.html:36
 msgid "No message sent."
 msgstr ""
 
+#: messaging/templates/messaging/compose.html:4
 msgid "Compose a message"
 msgstr ""
 
+#: messaging/templates/messaging/compose.html:31
+#: messaging/templates/messaging/compose_all.html:23
 msgid "Attachments (optional, max 10)"
 msgstr ""
 
+#: messaging/templates/messaging/compose.html:42
+#: messaging/templates/messaging/compose_all.html:34
 msgid "Check a document to add its link to the message."
 msgstr ""
 
+#: messaging/templates/messaging/compose.html:65
 msgid "Load"
 msgstr ""
 
+#: messaging/templates/messaging/compose.html:81
 msgid "Select a group and click \"Load\" to display recipients."
 msgstr ""
 
+#: messaging/templates/messaging/compose_all.html:71
 msgid "No member found."
 msgstr ""
 
+#: messaging/templates/messaging/message_detail.html:4
 msgid "Message detail"
 msgstr ""
 
+#: messaging/templates/messaging/message_detail.html:6
 msgid "Back to history"
 msgstr ""
 
+#: messaging/templates/messaging/message_detail.html:12
+#: messaging/templates/messaging/section_history.html:11
 msgid "Sender"
 msgstr ""
 
+#: messaging/templates/messaging/message_detail.html:28
 msgid "Content"
 msgstr ""
 
+#: messaging/templates/messaging/message_detail.html:36
 msgid "Attachments"
 msgstr ""
 
+#: messaging/templates/messaging/message_detail.html:62
 #, python-format
 msgid "Sent %(sent_at)s"
 msgstr ""
 
+#: messaging/templates/messaging/section_history.html:23
 msgid "No message."
 msgstr ""
 
+#: messaging/views.py:367
 msgid ""
 "\n"
 "\n"
 "Important documents:\n"
 msgstr ""
 
+#: messaging/views.py:392
 msgid "You are not enrolled in any section this year."
 msgstr ""
 
+#: messaging/views.py:519
 #, python-format
 msgid "Message sent to %(count)s recipient(s)."
 msgstr ""
 
+#: templates/base.html:55
 msgid "Toggle navigation"
 msgstr ""
 
+#: templates/base.html:63
 msgid "Sections"
 msgstr ""
 
+#: templates/base.html:68
 msgid "No section"
 msgstr ""
 
+#: templates/base.html:80
 msgid "Administration"
 msgstr ""
 
+#: templates/base.html:101
 msgid "Animator tools"
 msgstr ""
 
+#: templates/base.html:121
 msgid "Toggle dropdown"
 msgstr ""
 
+#: templates/base.html:125
 msgid "My profile"
 msgstr ""
 
+#: templates/base.html:128
 msgid "My documents"
 msgstr ""
 
+#: templates/base.html:132
 msgid "Site administration"
 msgstr ""
 
+#: templates/base.html:135
 msgid "Edit homepage"
 msgstr ""
 
+#: templates/base.html:154
 msgid "Log out"
 msgstr ""
 
+#: templates/base.html:159
 msgid "Sign up"
 msgstr ""
 
+#: templates/base.html:174
 msgid "Language"
 msgstr ""
 
+#: templates/base.html:199
 #, python-format
 msgid "%(counter)s email could not be sent."
 msgid_plural "%(counter)s emails could not be sent."
 msgstr[0] ""
 msgstr[1] ""
 
+#: templates/base.html:205
 msgid "Manage"
 msgstr ""

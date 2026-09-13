@@ -1,9 +1,10 @@
 {% extends "members/base.html" %}
 {% load i18n %}
 {% block hat_title %}{% trans "New attestation campaign" %}{% endblock hat_title %}
-{% block hat_text %}{% trans "Upload the document PDF and the signature PDF." %}{% endblock hat_text %}
+{% block hat_text %}{% trans "Step 1: give this batch of attestations a name." %}{% endblock hat_text %}
 {% block subcontent %}
-<form method="post" enctype="multipart/form-data">
+{% include "attestations/_steps.html" with current=1 %}
+<form method="post">
     {% csrf_token %}
     <div class="card mb-4">
         <div class="card-body">

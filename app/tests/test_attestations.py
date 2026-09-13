@@ -10,10 +10,10 @@ from attestations.models import AttestationCampaign, AttestationItem
 from attestations.services import (
     build_signed_pdf,
     extract_field,
+    item_ranges,
     locate_anchor,
     match_person,
     resolve_recipients,
-    split_pages,
 )
 from members.models import Account, ParentChild, Person, Role
 from tests.mail import MailTestCase
@@ -72,55 +72,41 @@ class AnchorTest(SimpleTestCase):
         self.assertEqual(extract_field(lines, anchor), "Dupont Jean")
 
 
-class SplitPagesTest(SimpleTestCase):
-    class _FakePage:
-        def __init__(self, text):
-            self._text = text
+class ItemRangesTest(SimpleTestCase):
+    def test_fixed_length_windows(self):
+        # 6 pages, each document spans pages 1..3 (3 pages) -> two items.
+        self.assertEqual(item_ranges(6, 1, 3), [(0, 2), (3, 5)])
 
-        def extract_text(self):
-            return self._text
+    def test_single_page_per_document(self):
+        self.assertEqual(item_ranges(3, 1, 1), [(0, 0), (1, 1), (2, 2)])
 
-    class _FakeReader:
-        def __init__(self, pages):
-            self.pages = pages
+    def test_offset_start(self):
+        # First document starts on page 2 (1-based) and spans two pages.
+        self.assertEqual(item_ranges(5, 2, 3), [(1, 2), (3, 4)])
 
-    def test_one_page_per_document(self):
-        reader = self._FakeReader([self._FakePage("a"), self._FakePage("b")])
-        ranges = split_pages(reader, AttestationCampaign.SplitMode.ONE_PAGE, "")
-        self.assertEqual(ranges, [(0, 0), (1, 1)])
+    def test_partial_last_window(self):
+        self.assertEqual(item_ranges(5, 1, 3), [(0, 2), (3, 4)])
 
-    def test_marker_split(self):
-        pages = [
-            self._FakePage("Aux parents de Jean"),
-            self._FakePage("suite du document"),
-            self._FakePage("Aux parents de Marie"),
-        ]
-        ranges = split_pages(
-            self._FakeReader(pages),
-            AttestationCampaign.SplitMode.MARKER,
-            "Aux parents de",
-        )
-        self.assertEqual(ranges, [(0, 1), (2, 2)])
+    def test_empty(self):
+        self.assertEqual(item_ranges(0, 1, 3), [])
 
 
 class BuildSignedPdfTest(SimpleTestCase):
-    def test_page_count_and_first_page_only(self):
+    def test_page_count(self):
         pages = list(PdfReader(BytesIO(_blank_pdf(3))).pages)
-        out = build_signed_pdf(
-            BytesIO(_blank_pdf(1)), pages, signature_page=AttestationCampaign.SignaturePage.FIRST
-        )
+        out = build_signed_pdf(BytesIO(_blank_pdf(1)), pages, signature_page=1)
         self.assertEqual(len(PdfReader(BytesIO(out)).pages), 3)
 
-    def test_signature_on_all_pages(self):
-        pages = list(PdfReader(BytesIO(_blank_pdf(2))).pages)
+    def test_signature_on_chosen_page(self):
+        pages = list(PdfReader(BytesIO(_blank_pdf(3))).pages)
         out = build_signed_pdf(
             BytesIO(_blank_pdf(1)),
             pages,
             offset_x=10,
             offset_y=-20,
-            signature_page=AttestationCampaign.SignaturePage.ALL,
+            signature_page=3,
         )
-        self.assertEqual(len(PdfReader(BytesIO(out)).pages), 2)
+        self.assertEqual(len(PdfReader(BytesIO(out)).pages), 3)
 
 
 class AttestationDbTestBase(MailTestCase):
@@ -211,6 +197,45 @@ class AccessControlTest(AttestationDbTestBase):
         self.animateur.roles.add(ar_role)
         self.client.login(email="frank@test.com", password="testpass")
         self.assertEqual(self.client.get(reverse("attestations:index")).status_code, 200)
+
+
+class WizardFlowTest(AttestationDbTestBase):
+    def setUp(self):
+        super().setUp()
+        ar_role = Role.objects.get(short="ar")
+        self.animateur.roles.add(ar_role)
+        self.client.login(email="frank@test.com", password="testpass")
+
+    def test_create_advances_to_step2(self):
+        response = self.client.post(
+            reverse("attestations:create"), {"title": "Attestations été"}
+        )
+        campaign = AttestationCampaign.objects.get()
+        self.assertEqual(campaign.title, "Attestations été")
+        self.assertEqual(campaign.step, 2)
+        self.assertRedirects(
+            response, reverse("attestations:step2", args=[campaign.pk])
+        )
+
+    def test_step2_upload_advances_to_step3(self):
+        campaign = AttestationCampaign.objects.create(
+            title="Test", step=2, created_by=self.animateur
+        )
+        response = self.client.post(
+            reverse("attestations:step2", args=[campaign.pk]),
+            {
+                "documents": ContentFile(_blank_pdf(2), name="docs.pdf"),
+                "name_page": 1,
+                "page_range_start": 1,
+                "page_range_end": 1,
+            },
+        )
+        campaign.refresh_from_db()
+        self.assertEqual(campaign.step, 3)
+        self.assertTrue(campaign.documents.name)
+        self.assertRedirects(
+            response, reverse("attestations:step3", args=[campaign.pk])
+        )
 
 
 class SendFlowTest(AttestationDbTestBase):

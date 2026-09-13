@@ -14,7 +14,7 @@ from pypdf import PdfReader
 from members.models import Person
 
 from . import services
-from .forms import CampaignCreateForm, ConfigureForm, SendForm
+from .forms import DocumentsForm, NameAnchorForm, SendForm, SignatureForm, TitleForm
 from .models import AttestationCampaign, AttestationItem
 
 
@@ -64,80 +64,129 @@ def index(request):
 
 @login_required
 def create(request):
+    """Step 1: name the campaign."""
     if not _can_manage(request.user):
         raise Http404
 
     if request.method == "POST":
-        form = CampaignCreateForm(request.POST, request.FILES)
+        form = TitleForm(request.POST)
         if form.is_valid():
             campaign = form.save(commit=False)
             campaign.created_by = getattr(request.user, "person", None)
+            campaign.step = 2
             campaign.save()
-            return redirect("attestations:configure", pk=campaign.pk)
+            return redirect("attestations:step2", pk=campaign.pk)
     else:
-        form = CampaignCreateForm()
+        form = TitleForm()
 
-    return render(request, "attestations/create.html", {"form": form})
+    return render(request, "attestations/step1.html", {"form": form})
 
 
 @login_required
-def configure(request, pk):
+def step2(request, pk):
+    """Step 2: upload the source PDF and describe the per-person page range."""
     if not _can_manage(request.user):
         raise Http404
 
     campaign = get_object_or_404(AttestationCampaign, pk=pk)
 
     if request.method == "POST":
-        form = ConfigureForm(request.POST)
+        form = DocumentsForm(request.POST, request.FILES, instance=campaign)
         if form.is_valid():
-            lines = services.page_lines(campaign.documents.path, 0)
-            name_anchor = services.locate_anchor(form.cleaned_data["name_value"], lines)
-            if name_anchor is None:
-                form.add_error(
-                    "name_value", _("Could not find that value on the first page.")
-                )
-            address_anchor = None
-            address_value = form.cleaned_data["address_value"]
-            if name_anchor is not None and address_value:
-                address_anchor = services.locate_anchor(address_value, lines)
-                if address_anchor is None:
-                    form.add_error(
-                        "address_value",
-                        _("Could not find that value on the first page."),
-                    )
-
-            if form.is_valid() and name_anchor is not None:
-                campaign.name_anchor = name_anchor
-                campaign.address_anchor = address_anchor
-                campaign.signature_offset_x = (
-                    form.cleaned_data["signature_offset_x"] or 0
-                )
-                campaign.signature_offset_y = (
-                    form.cleaned_data["signature_offset_y"] or 0
-                )
-                campaign.status = AttestationCampaign.Status.READY
-                campaign.save()
-                services.process_campaign(campaign)
-                return redirect("attestations:review", pk=campaign.pk)
+            campaign = form.save(commit=False)
+            campaign.step = 3
+            campaign.save()
+            return redirect("attestations:step3", pk=campaign.pk)
     else:
-        form = ConfigureForm()
-
-    lines = services.page_lines(campaign.documents.path, 0)
-    page_one_text = "\n".join(line["text"] for line in lines)
+        form = DocumentsForm(instance=campaign)
 
     return render(
         request,
-        "attestations/configure.html",
+        "attestations/step2.html",
+        {"form": form, "campaign": campaign},
+    )
+
+
+@login_required
+def step3(request, pk):
+    """Step 3: teach the app where the name lives on the indicated page."""
+    if not _can_manage(request.user):
+        raise Http404
+
+    campaign = get_object_or_404(AttestationCampaign, pk=pk)
+
+    if request.method == "POST":
+        form = NameAnchorForm(request.POST)
+        if form.is_valid():
+            lines = services.page_lines(
+                campaign.documents.path, campaign.name_page - 1
+            )
+            name_anchor = services.locate_anchor(
+                form.cleaned_data["name_value"], lines
+            )
+            if name_anchor is None:
+                form.add_error(
+                    "name_value",
+                    _("Could not find that name on page %(page)s.")
+                    % {"page": campaign.name_page},
+                )
+            else:
+                campaign.name_anchor = name_anchor
+                campaign.step = 4
+                campaign.save()
+                return redirect("attestations:step4", pk=campaign.pk)
+    else:
+        form = NameAnchorForm()
+
+    lines = services.page_lines(campaign.documents.path, campaign.name_page - 1)
+    page_text = "\n".join(line["text"] for line in lines)
+
+    return render(
+        request,
+        "attestations/step3.html",
         {
             "form": form,
             "campaign": campaign,
-            "page_one_text": page_one_text,
+            "page_text": page_text,
+        },
+    )
+
+
+@login_required
+def step4(request, pk):
+    """Step 4: upload the signature, pick its page and preview the merge."""
+    if not _can_manage(request.user):
+        raise Http404
+
+    campaign = get_object_or_404(AttestationCampaign, pk=pk)
+
+    if request.method == "POST":
+        form = SignatureForm(request.POST, request.FILES, instance=campaign)
+        if form.is_valid():
+            campaign = form.save(commit=False)
+            campaign.step = 5
+            campaign.status = AttestationCampaign.Status.READY
+            campaign.save()
+            services.process_campaign(campaign)
+            return redirect("attestations:review", pk=campaign.pk)
+    else:
+        form = SignatureForm(instance=campaign)
+
+    return render(
+        request,
+        "attestations/step4.html",
+        {
+            "form": form,
+            "campaign": campaign,
+            "page_range_start": campaign.page_range_start,
+            "signature_url": campaign.signature.url if campaign.signature else "",
         },
     )
 
 
 @login_required
 def review(request, pk):
+    """Step 5: review the recipients, then send."""
     if not _can_manage(request.user):
         raise Http404
 

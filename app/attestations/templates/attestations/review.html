@@ -3,6 +3,7 @@
 {% block hat_title %}{% trans "Review attestations" %}{% endblock hat_title %}
 {% block hat_text %}{% trans "Check who each document goes to, then send." %}{% endblock hat_text %}
 {% block subcontent %}
+{% include "attestations/_steps.html" with current=5 %}
 <p class="text-muted">
     {% trans "For each document, confirm the recipient or skip it. Recipients are re-resolved from the selected person when you send." %}
 </p>
@@ -15,7 +16,6 @@
                 <tr>
                     <th>{% trans "Pages" %}</th>
                     <th>{% trans "Extracted name" %}</th>
-                    <th>{% trans "Extracted address" %}</th>
                     <th>{% trans "Recipient" %}</th>
                     <th>{% trans "Will send to" %}</th>
                     <th>{% trans "Skip" %}</th>
@@ -26,7 +26,6 @@
                 <tr class="{% if not item.recipients %}table-warning{% endif %}">
                     <td>{{ item.page_start|add:"1" }}–{{ item.page_end|add:"1" }}</td>
                     <td>{{ item.extracted_name|default:"—" }}</td>
-                    <td>{{ item.extracted_address|default:"—" }}</td>
                     <td>
                         <select name="person_{{ item.pk }}" class="form-select form-select-sm">
                             <option value="">{% trans "— no match —" %}</option>
@@ -43,7 +42,7 @@
                     </td>
                 </tr>
                 {% empty %}
-                <tr><td colspan="6">{% trans "No documents found." %}</td></tr>
+                <tr><td colspan="5">{% trans "No documents found." %}</td></tr>
                 {% endfor %}
             </tbody>
         </table>

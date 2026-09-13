@@ -2,8 +2,8 @@
 
 Pure functions so they can be unit-tested without a full request cycle. Text is
 extracted with bounding boxes (pdfminer.six) so that an anchor — a small region
-taught on page 1 — can be read back on every page of a template-generated PDF.
-Pages are split and merged with pypdf.
+taught on one page — can be read back on the first page of every document of a
+template-generated PDF. Pages are split and merged with pypdf.
 """
 
 import re
@@ -17,7 +17,7 @@ from unidecode import unidecode
 
 from members.models import Account, Person
 
-from .models import AttestationCampaign, AttestationItem
+from .models import AttestationItem
 
 # ---------------------------------------------------------------------------
 # Text normalisation helpers
@@ -201,36 +201,39 @@ def resolve_recipients(person):
 # Page splitting and signing
 # ---------------------------------------------------------------------------
 
-def split_pages(reader, split_mode, split_marker):
-    """Return inclusive [start, end] page-index ranges for each document."""
-    count = len(reader.pages)
-    if count == 0:
-        return []
-    if split_mode == AttestationCampaign.SplitMode.ONE_PAGE:
-        return [(i, i) for i in range(count)]
+def item_ranges(page_count, page_range_start, page_range_end):
+    """Return inclusive [start, end] 0-indexed page ranges, one per document.
 
-    marker = (split_marker or "").strip()
+    ``page_range_start`` / ``page_range_end`` are 1-based and inclusive, and
+    describe the first document's span. Every following document spans the same
+    number of pages, so the whole PDF is split into fixed-length windows.
+    """
+    if page_count == 0:
+        return []
+    per_item = max(1, page_range_end - page_range_start + 1)
     ranges = []
-    start = 0
-    for i in range(1, count):
-        text = (reader.pages[i].extract_text() or "").strip()
-        if marker and text.startswith(marker):
-            ranges.append((start, i - 1))
-            start = i
-    ranges.append((start, count - 1))
+    start = page_range_start - 1
+    while start < page_count:
+        end = min(start + per_item - 1, page_count - 1)
+        ranges.append((start, end))
+        start += per_item
     return ranges
 
 
 def build_signed_pdf(
-    signature, pages, offset_x=0.0, offset_y=0.0, signature_page="first"
+    signature, pages, offset_x=0.0, offset_y=0.0, signature_page=1
 ):
-    """Overlay ``signature`` (a path or file-like) onto ``pages`` and return bytes."""
+    """Overlay ``signature`` (a path or file-like) onto ``pages`` and return bytes.
+
+    ``signature_page`` is the 1-based page (within ``pages``) that receives the
+    stamp; every other page is copied through untouched.
+    """
     signature_reader = PdfReader(signature)
     signature_leaf = signature_reader.pages[0]
 
     writer = PdfWriter()
     for idx, page in enumerate(pages):
-        if signature_page == AttestationCampaign.SignaturePage.FIRST and idx > 0:
+        if idx + 1 != signature_page:
             writer.add_page(page)
             continue
         page.merge_transformed_page(
@@ -251,7 +254,9 @@ def process_campaign(campaign):
     AttestationItem.objects.filter(campaign=campaign).delete()
 
     reader = PdfReader(campaign.documents.path)
-    ranges = split_pages(reader, campaign.split_mode, campaign.split_marker)
+    ranges = item_ranges(
+        len(reader.pages), campaign.page_range_start, campaign.page_range_end
+    )
     lines_by_page = page_lines_map(campaign.documents.path)
 
     items = []

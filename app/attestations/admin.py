@@ -5,8 +5,8 @@ from .models import AttestationCampaign, AttestationItem
 
 @admin.register(AttestationCampaign)
 class AttestationCampaignAdmin(admin.ModelAdmin):
-    list_display = ["title", "status", "split_mode", "created_by", "created_at"]
-    list_filter = ["status", "split_mode"]
+    list_display = ["title", "step", "status", "created_by", "created_at"]
+    list_filter = ["status"]
 
 
 @admin.register(AttestationItem)

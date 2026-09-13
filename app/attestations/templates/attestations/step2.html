@@ -1,0 +1,24 @@
+{% extends "members/base.html" %}
+{% load i18n %}
+{% block hat_title %}{% trans "Upload the documents" %}{% endblock hat_title %}
+{% block hat_text %}{% trans "Step 2: upload the PDF with all the attestations and describe how each one is laid out." %}{% endblock hat_text %}
+{% block subcontent %}
+{% include "attestations/_steps.html" with current=2 %}
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="card mb-4">
+        <div class="card-body">
+            {% for field in form %}
+            <div class="mb-3">
+                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+                {% for error in field.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">{% trans "Continue" %}</button>
+    <a href="{% url 'attestations:index' %}" class="btn btn-secondary">{% trans "Back" %}</a>
+</form>
+{% endblock subcontent %}
