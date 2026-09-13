@@ -82,7 +82,16 @@
 
     async function renderSignature() {
         if (!signaturePage || !baseViewport) return;
-        await signaturePage.render({ canvasContext: sigCtx, viewport: baseViewport }).promise;
+        // pdf.js paints the whole canvas — #ffffff unless a background is given —
+        // which would hide the document page under the overlay. A fully transparent
+        // fill is a no-op under source-over, so the signature's own alpha and the
+        // document beneath it both survive.
+        sigCtx.clearRect(0, 0, sigCanvas.width, sigCanvas.height);
+        await signaturePage.render({
+            canvasContext: sigCtx,
+            viewport: baseViewport,
+            background: 'rgba(0,0,0,0)',
+        }).promise;
         applyOffset();
     }
 
