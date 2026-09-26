@@ -2698,3 +2698,203 @@ msgstr "À examiner"
 #, python-format
 msgid "The section passage is waiting for a decision: %(reason)s"
 msgstr "Le passage de section attend une décision : %(reason)s"
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "Your unit's site is ready. You can sign in as <strong>%(admin_email)s</strong> from now on."
+msgstr "Le site de votre unité est prêt. Vous pouvez désormais vous connecter en tant que <strong>%(admin_email)s</strong>."
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "Where to go next"
+msgstr "La suite"
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "add members one by one, or send families to the registration page and they will fill in their own."
+msgstr "ajoutez les membres un par un, ou envoyez les familles à la page d'inscription : elles rempliront elles-mêmes leur dossier."
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "the unit's name, its contact details, the languages it offers and the shape of its scout year."
+msgstr "le nom de l'unité, ses coordonnées, les langues proposées et la forme de son année scoute."
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "where branches, sections and everything else the wizard did not ask about are edited."
+msgstr "où se modifient les branches, les sections et tout ce que l'assistant n'a pas demandé."
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "A unit that is moving from another system has a one-off importer for the old site's database; it is a script run on the server, described in the repository's niche-tools/README.md."
+msgstr "Une unité qui migre depuis un autre système dispose d'un importateur ponctuel pour la base de données de l'ancien site ; c'est un script exécuté sur le serveur, décrit dans niche-tools/README.md du dépôt."
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "This sends a test message to your administrator's address and waits for the mail server's answer. If it arrives, everything the site sends will arrive too."
+msgstr "Un message de test part vers l'adresse de votre administrateur, et l'assistant attend la réponse du serveur mail. S'il arrive, tout ce que le site enverra arrivera aussi."
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "To"
+msgstr "Destinataire"
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "From"
+msgstr "Expéditeur"
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "The addresses come from this instance's environment (DEFAULT_FROM_EMAIL, and the administrator you created a moment ago); they are not editable here."
+msgstr "Ces adresses viennent de l'environnement de cette instance (DEFAULT_FROM_EMAIL, et l'administrateur créé à l'instant) ; elles ne se modifient pas ici."
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "Saved when you go on."
+msgstr "Enregistré quand vous passez à la suite."
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "Each branch leads to the one below it, and members who outgrow the last one leave the unit. A branch's ages are the ages its members are on the day the unit reads them — 31 December unless you change it later."
+msgstr "Chaque branche mène à celle du dessous, et les membres qui dépassent la dernière quittent l'unité. Les âges d'une branche sont ceux de ses membres le jour où l'unité les mesure — le 31 décembre, sauf si vous le changez plus tard."
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "No branch yet. Add the first one."
+msgstr "Aucune branche pour l'instant. Ajoutez la première."
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "Youngest"
+msgstr "Le plus jeune"
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "Oldest"
+msgstr "Le plus âgé"
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "Remove this branch"
+msgstr "Supprimer cette branche"
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "Remove this section"
+msgstr "Supprimer cette section"
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "Who it takes"
+msgstr "Qui elle accueille"
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "Section name"
+msgstr "Nom de la section"
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "Set up"
+msgstr "Installation"
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "Set up this instance"
+msgstr "Installer cette instance"
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "A few questions, and your unit's site is ready. Everything here can be changed later."
+msgstr "Quelques questions, et le site de votre unité est prêt. Tout se modifie plus tard."
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "Both"
+msgstr "Mixte"
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "Boys"
+msgstr "Garçons"
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "Girls"
+msgstr "Filles"
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "Setup code"
+msgstr "Code d'installation"
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "That account already existed; kept it."
+msgstr "Ce compte existait déjà ; il a été conservé."
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "The unit"
+msgstr "L'unité"
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "Removed: %(rows)s."
+msgstr "Supprimé : %(rows)s."
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "The scout year"
+msgstr "L'année scoute"
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "Test email"
+msgstr "E-mail de test"
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "The administrator account is missing. Go back and create it."
+msgstr "Le compte administrateur manque. Revenez en arrière pour le créer."
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "Test message from %(site)s"
+msgstr "Message de test de %(site)s"
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "This is a test message from %(site)s.\\n\\nIf you are reading it, this instance can send mail: registration confirmations, section messages and reminders will all arrive."
+msgstr "Ceci est un message de test de %(site)s.\\n\\nSi vous le lisez, cette instance sait envoyer du courrier : confirmations d'inscription, messages de section et rappels arriveront tous."
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "The mail backend reported that it sent nothing."
+msgstr "Le service d'envoi indique n'avoir rien envoyé."
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "Check EMAIL_URL (or MAIL_SEND_MODE) and DEFAULT_FROM_EMAIL in this instance's environment."
+msgstr "Vérifiez EMAIL_URL (ou MAIL_SEND_MODE) et DEFAULT_FROM_EMAIL dans l'environnement de cette instance."
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "Send and finish"
+msgstr "Envoyer et terminer"
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "Done"
+msgstr "Terminé"
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "The code is in the web container's log, printed when the instance started. `docker compose logs web | grep -i \\\"setup code\\\"` shows it again, and `manage.py setup_code` prints it on demand."
+msgstr "Le code se trouve dans le journal du conteneur web, affiché au démarrage de l'instance. `docker compose logs web | grep -i \\\"setup code\\\"` le réaffiche, et `manage.py setup_code` l'imprime à la demande."
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "That is not this instance's setup code."
+msgstr "Ce n'est pas le code d'installation de cette instance."
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "The password for this account. Make it a long one."
+msgstr "Le mot de passe de ce compte. Choisissez-le long."
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "An account with this address already exists. Use a different address, or sign in with that one."
+msgstr "Un compte existe déjà avec cette adresse. Utilisez une autre adresse, ou connectez-vous avec celle-ci."
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "A unit needs at least one branch."
+msgstr "Une unité a besoin d'au moins une branche."
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "Branch %(number)s"
+msgstr "Branche %(number)s"
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "Branch %(number)s needs a name."
+msgstr "La branche %(number)s a besoin d'un nom."
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "%(branch)s: the youngest age is above the oldest."
+msgstr "%(branch)s : l'âge du plus jeune dépasse celui du plus âgé."
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "%(branch)s needs at least one section."
+msgstr "%(branch)s a besoin d'au moins une section."
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "%(branch)s: every section needs a name."
+msgstr "%(branch)s : chaque section a besoin d'un nom."
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "Too many wrong codes from this address. Try again in %(minutes)s minutes."
+msgstr "Trop de codes erronés depuis cette adresse. Réessayez dans %(minutes)s minutes."
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "Stable identifier from a branch preset, used to recognise this branch again when the preset is applied a second time."
+msgstr "Identifiant stable issu d'un préréglage de branches, qui permet de reconnaître cette branche quand le préréglage est appliqué une seconde fois."

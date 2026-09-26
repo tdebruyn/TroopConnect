@@ -1,0 +1,43 @@
+{% load i18n %}
+{% comment %}
+  The branch and section editor.
+
+  It opens on Les Scouts' own four branches, because that is what almost every
+  unit starts from, and everything in it is editable: a branch can be renamed,
+  its age range changed, its sections added to and taken away. The rows are
+  read back by position — no indices anywhere — which is why adding and
+  removing can be plain HTMX round trips with nothing tracking state in the
+  browser.
+
+  Once the instance is set up this page is gone, and branches and sections are
+  edited in the Django admin, which has carried the same fields all along.
+{% endcomment %}
+<form hx-post="{% url 'setup:step' current %}"
+      hx-target="#wizard-pane"
+      hx-swap="outerHTML">
+  {% csrf_token %}
+
+  {% for error in form.non_field_errors %}
+    <div class="alert alert-danger py-2" role="alert">{{ error }}</div>
+  {% endfor %}
+
+  <p class="text-muted small">
+    {% blocktranslate %}Each branch leads to the one below it, and members who outgrow the last one leave the unit. A branch's ages are the ages its members are on the day the unit reads them — 31 December unless you change it later.{% endblocktranslate %}
+  </p>
+
+  <div class="setup-branches">
+    {% for branch in branches %}
+      {% include "members/setup/_structure_branch.html" %}
+    {% empty %}
+      <p class="text-muted">{% trans "No branch yet. Add the first one." %}</p>
+    {% endfor %}
+  </div>
+
+  <button type="button"
+          class="btn btn-sm btn-outline-secondary mb-3"
+          hx-post="{% url 'setup:structure_row' 'add-branch' %}"
+          hx-target=".setup-branches"
+          hx-swap="beforeend">+ {% trans "Branch" %}</button>
+
+  {% include "members/setup/_step_nav.html" %}
+</form>

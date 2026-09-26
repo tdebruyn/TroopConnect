@@ -84,6 +84,14 @@ if [ -n "${RUN_MIGRATIONS:-}" ]; then
     # by hand, cannot race it.
     python manage.py migrate_locked
     python manage.py collectstatic --noinput
+
+    # The first-run wizard's gate. On an instance with no administrator this
+    # issues the one-time setup code (or reprints the one already issued) into
+    # this container's log, which is where whoever is installing reads it
+    # from; on a configured instance it says there is nothing to set up.
+    # Only the web service is armed by it, because only the web service
+    # serves the wizard.
+    python manage.py setup_code
 fi
 
 exec "$@"

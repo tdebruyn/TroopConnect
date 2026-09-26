@@ -1,0 +1,31 @@
+{% load i18n %}
+{% comment %}
+  The end of the wizard, which is the first page of the site rather than the
+  last page of an installer: it says what now exists and where to go next,
+  and every link on it is a page that works.
+{% endcomment %}
+<p class="lead">
+  {% blocktranslate %}Your unit's site is ready. You can sign in as <strong>{{ admin_email }}</strong> from now on.{% endblocktranslate %}
+</p>
+
+<div class="setup-next">
+  <h3 class="h6">{% trans "Where to go next" %}</h3>
+  <ul class="mb-0">
+    <li>
+      <a href="{% url 'members:admin_list' %}">{% trans "Members" %}</a> —
+      {% blocktranslate %}add members one by one, or send families to the registration page and they will fill in their own.{% endblocktranslate %}
+    </li>
+    <li>
+      <a href="{% url 'members:troop_settings' %}">{% trans "Settings" %}</a> —
+      {% blocktranslate %}the unit's name, its contact details, the languages it offers and the shape of its scout year.{% endblocktranslate %}
+    </li>
+    <li>
+      <a href="{% url 'admin:index' %}">{% trans "Site administration" %}</a> —
+      {% blocktranslate %}where branches, sections and everything else the wizard did not ask about are edited.{% endblocktranslate %}
+    </li>
+  </ul>
+</div>
+
+<p class="text-muted small mb-0">
+  {% blocktranslate %}A unit that is moving from another system has a one-off importer for the old site's database; it is a script run on the server, described in the repository's niche-tools/README.md.{% endblocktranslate %}
+</p>

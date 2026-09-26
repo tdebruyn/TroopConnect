@@ -42,6 +42,7 @@ run the app before wiring up mail.
 | --- | --- | --- |
 | `SECRET_KEY` | generated | An explicit value wins. |
 | `SECRET_KEY_FILE` | `/data/secrets/secret_key` | Where the key is read from, and generated into, when `SECRET_KEY` is unset. |
+| `SETUP_CODE_FILE` | `/data/secrets/setup_code` | Where the first-run wizard's one-time code is kept. Issued on the first boot of an instance that still has no administrator, and read back by the wizard; see §3b. An existing file is never overwritten, so recreating a container does not hand out a new code. |
 | `DJANGO_DEBUG` | off | `1`/`true`/`yes`/`on` turns debug on. Never set on a public domain; a system check warns if you do. |
 | `SITE_ID` | `1` | The `django.contrib.sites` row allauth reads. Only change it for an instance migrated from the old `.settings.json`. |
 | `TIME_ZONE` | `Europe/Brussels` | Used for dates and Celery schedules. |
@@ -264,10 +265,14 @@ registration, with nothing seeded by hand:
 
 What `migrate` does **not** leave behind is the rest of the list in §3a:
 the branches, the administrator, the Celery beat schedule. Those come from
-`manage.py setup`, which is what turns a migrated database into an instance a
-troop can use. It is deliberately not a migration: a preset is a choice, the
-first administrator's address and password cannot be, and both are things a
-host may want to answer in a browser rather than at a shell.
+`manage.py setup` at a shell (§3a) or from the first-run wizard at `/setup`
+(§3b) — both call the same functions. Neither is a migration: a preset is a
+choice, the first administrator's address and password cannot be, and both are
+things a host may want to answer in a browser rather than at a shell.
+
+An instance in that state serves the wizard and nothing else: see §3b for what
+that means for a visitor, for `/healthz`, and for a deployment that never
+issued a setup code.
 
 Nothing is uploaded, so the row's `logo` and `favicon` stay empty on a fresh
 install and the header falls back to the mark shipped with the application.
@@ -345,7 +350,8 @@ the migration invalidates anything.
 | --- | --- |
 | `wait_for_db` | Blocks until the database answers. Used by the entrypoint. |
 | `migrate_locked` | `migrate` under a Postgres advisory lock, so only one process migrates. Used by the entrypoint. |
-| `setup` | Brings an empty database to a usable state. See §3a. |
+| `setup` | Brings an empty database to a usable state, from the command line. See §3a. |
+| `setup_code` | Prints the first-run wizard's one-time code, issuing one if this instance has none. Used by the entrypoint; `--reset` replaces it. See §3b. |
 | `create_test_data` | Seeds the Playwright end-to-end users described in the README. Development only. |
 | `import_legacy` | One-off import of members from the pre-TroopConnect system. |
 
@@ -455,6 +461,92 @@ a troop's own section names belong in the database it edits.
 
 ---
 
+## 3b. The first-run wizard (`/setup`)
+
+`manage.py setup` is the command-line way to turn an empty database into a
+troop. `/setup` is the same thing in a browser, for a host who would rather
+answer questions than flags. Both call the functions in
+`app/members/setup.py`, so neither can leave an instance in a state the other
+would not.
+
+### When it exists
+
+| | |
+| --- | --- |
+| **Open** | This instance has **no superuser**, and its deployment **issued a setup code** (§3b, below). |
+| **Gone** | A superuser exists: `/setup` answers **404**, not 403 — past setup it is not a restricted page, it is not a page. |
+| **Off** | No code was ever issued: the wizard is not reachable at all, and nothing is redirected. |
+
+While it is open, **every other URL redirects to `/setup`**, so a self-hosted
+instance behind a new domain shows a first-run installer rather than a site
+with no sections, no members and nobody able to administer it. Four things are
+let through, each for a reason: `/setup` itself, `/static/` and `/media/` (or
+the wizard would have no stylesheet), `/healthz` (or a fresh instance would
+never be healthy, which is exactly when Caddy refuses to start and the wizard
+becomes unreachable), and `/i18n/setlang/`.
+
+The "no code was ever issued" half is what keeps the wizard out of everyone
+else's way: nothing on the request path issues a code, so a test run, or a
+deployment started without the entrypoint, is simply not a first run.
+
+### The setup code
+
+A one-time code — `K7QP-2M4T-9XWB-HR3F`, drawn from an alphabet with no
+`0/O/1/I/L` so it survives being read off a screen — gates the wizard. It is
+generated once into `SETUP_CODE_FILE`, on the first boot of an instance that
+has no administrator, and printed into the web container's log:
+
+```bash
+docker compose logs web | grep -i "setup code"
+docker compose exec web python manage.py setup_code     # prints it again
+docker compose exec web python manage.py setup_code --reset   # a new one
+```
+
+It is a gate, not a password: it says "whoever can read this container's log
+is the person setting the instance up". It is compared in constant time and
+the comparison is rate-limited per `REMOTE_ADDR` — ten wrong codes, then a
+fifteen-minute wait — because a code in front of a superuser-creating wizard
+is worth guessing at only if guessing is free. Behind Caddy every request
+shares the proxy's address, so in production the limit is effectively one for
+the whole instance, which is the safe direction for it to be wrong in.
+
+### The steps
+
+HTMX, one form at a time, with Back and Next; each step is saved as it is
+answered, so a reload (or a lost session, after the code is entered again)
+picks up where the last save left off, and Back shows the step as it now
+stands. The progress list counts the seven steps between the gate and the end.
+
+| Step | What it does | How |
+| --- | --- | --- |
+| Setup code | The gate. | `members/wizard/` |
+| Administrator | Email, name and password for the first administrator, **created as staff and not yet a superuser** — see below. | `setup.ensure_admin_account(superuser=False)` |
+| The unit | Name, short name, federation, contact details, logo and favicon. | `OrganisationSettingsForm`, the settings page's own |
+| Languages and country | Enabled languages, default language, phone region, currency. | `LocaleSettingsForm` |
+| Sections | The branch and section editor, opening on the Les Scouts preset: rename a branch in every language the site offers, change its ages, add and remove sections. | `StructureForm` |
+| The scout year | Year start, age reference, passage day and mode, retention. | `CalendarSettingsForm` |
+| Modules | Membership fees, signing, public agenda. | `ModuleSettingsForm` |
+| Test email | One real message, sent synchronously through the instance's own backend. It must arrive: a wrong port or a rejected sender is shown with the mail server's own words, and the step can be retried. | `django.core.mail` |
+| Done | Where to go next. | — |
+
+The last step also runs the parts `manage.py setup` does that have no question
+worth asking — the school years, the email templates, the starter pages and
+the Celery beat schedule — and only then makes the administrator a superuser.
+**That is why the wizard creates it as staff first**: "a superuser exists" is
+what says the instance is set up, so granting it at the administrator step
+would close the wizard behind itself halfway through.
+
+### Afterwards
+
+Branches and sections are edited in the **Django admin**, which has carried the
+same fields all along; the wizard's structure step is a first-run editor, not
+a second admin. The unit's own details stay on `/users/settings`.
+
+`manage.py setup` remains the way to finish an instance that was abandoned
+mid-wizard, or to set one up without a browser at all.
+
+---
+
 ## 4. Services
 
 `compose.yml`:
@@ -528,7 +620,14 @@ Dockerfile `ENTRYPOINT` with the service's `command` as arguments.
    web service does. `manage.py migrate_locked` takes a Postgres advisory lock
    and gives up with a plain-language message if another process is still
    migrating; then `collectstatic`.
-4. `exec "$@"` — the service's command, usually Gunicorn or Celery.
+4. **The setup code**, also only on the web service, because only the web
+   service serves the wizard. `manage.py setup_code` issues the one-time code
+   on an instance that still has no administrator and prints it to this
+   container's log — which is where whoever is installing reads it from — and
+   says there is nothing to set up on one that has an administrator already.
+   An existing code is never replaced, so recreating the container does not
+   invalidate a code somebody has already noted down.
+5. `exec "$@"` — the service's command, usually Gunicorn or Celery.
 
 ---
 
@@ -600,7 +699,7 @@ that directory's README before relying on it.
 | --- | --- |
 | `test` | The Django suite against Postgres 17 and Redis 8 services, plus `ruff`. The environment it sets is the same set of variables a troop puts in `.env`. |
 | `image` | Builds `ghcr.io/tdebruyn/troopconnect` for amd64 and arm64, and publishes it on tags and `main`. Pull requests build amd64 only and do not push. |
-| `smoke` | Builds the image locally, writes `.env` from `.env.example`, brings the stack up on empty volumes, waits for `/healthz`, checks the homepage and login page answer, then restarts on the same volumes and checks nothing was regenerated. |
+| `smoke` | Builds the image locally, writes `.env` from `.env.example`, brings the stack up on empty volumes, waits for `/healthz`, checks that a fresh instance serves the wizard — the homepage and login page lead to `/setup/`, which answers 200, and the setup code is in the web container's log and in the secrets volume — then restarts on the same volumes and checks that neither the secret key nor the setup code was regenerated. |
 | `security` | `pip-audit` against `requirements.txt`, and Trivy over the built image failing on fixable criticals. Also runs weekly. |
 
 Dependabot (`.github/dependabot.yml`) watches pip, both Docker contexts and

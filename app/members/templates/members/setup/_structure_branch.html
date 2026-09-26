@@ -1,0 +1,62 @@
+{% load i18n %}
+{% comment %}
+  One branch: its name in each language the site offers, the ages it takes,
+  and the sections inside it.
+{% endcomment %}
+<div class="setup-branch">
+  <input type="hidden" name="branch-id" value="{{ branch.id }}" />
+  <input type="hidden" name="branch-key" value="{{ branch.key }}" />
+
+  <div class="row g-2 align-items-end">
+    {% for field in branch.name_fields %}
+      <div class="col-md">
+        <label class="form-label small mb-1">
+          {% if languages|length > 1 %}{% trans "Name" %} ({{ field.language|upper }}){% else %}{% trans "Name" %}{% endif %}
+        </label>
+        <input type="text"
+               class="form-control"
+               name="branch-name-{{ field.language }}"
+               value="{{ field.value }}"
+               maxlength="30" />
+      </div>
+    {% endfor %}
+    <div class="col-6 col-md-2">
+      <label class="form-label small mb-1">{% trans "Youngest" %}</label>
+      <input type="number"
+             class="form-control"
+             name="branch-min"
+             value="{{ branch.min_age|default_if_none:'' }}"
+             min="0"
+             max="99" />
+    </div>
+    <div class="col-6 col-md-2">
+      <label class="form-label small mb-1">{% trans "Oldest" %}</label>
+      <input type="number"
+             class="form-control"
+             name="branch-max"
+             value="{{ branch.max_age|default_if_none:'' }}"
+             min="0"
+             max="99" />
+    </div>
+  </div>
+
+  <div class="setup-sections mt-2" id="sections-{{ branch.id }}">
+    {% for section in branch.sections %}
+      {% include "members/setup/_structure_section.html" %}
+    {% endfor %}
+  </div>
+
+  <div class="d-flex gap-2 mt-2">
+    <button type="button"
+            class="btn btn-sm btn-outline-secondary"
+            hx-post="{% url 'setup:structure_row' 'add-section' %}"
+            hx-include="closest .setup-branch"
+            hx-target="#sections-{{ branch.id }}"
+            hx-swap="beforeend">+ {% trans "Section" %}</button>
+    <button type="button"
+            class="btn btn-sm btn-outline-danger ms-auto"
+            hx-post="{% url 'setup:structure_row' 'remove' %}"
+            hx-target="closest .setup-branch"
+            hx-swap="outerHTML">{% trans "Remove this branch" %}</button>
+  </div>
+</div>

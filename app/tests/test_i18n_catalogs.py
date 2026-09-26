@@ -198,6 +198,158 @@ NEW_STRINGS = [
         "icône",
         "pictogram",
     ),
+    # The first-run wizard (members/wizard/): its own chrome, the structure
+    # editor and the steps, which a host reads before the site exists.
+    ("Set up this instance", "Installer cette instance", "Deze instantie instellen"),
+    (
+        "A few questions, and your unit's site is ready. Everything here can "
+        "be changed later.",
+        "Quelques questions",
+        "Een paar vragen",
+    ),
+    ("Setup code", "Code d'installation", "Installatiecode"),
+    (
+        "That is not this instance's setup code.",
+        "Ce n'est pas le code d'installation",
+        "niet de installatiecode",
+    ),
+    (
+        "Too many wrong codes from this address. Try again in %(minutes)s minutes.",
+        "Trop de codes erronés",
+        "Te veel foute codes",
+    ),
+    ("Done", "Terminé", "Klaar"),
+    ("Where to go next", "La suite", "Wat nu"),
+    ("Send and finish", "Envoyer et terminer", "Verzenden en afronden"),
+    ("Test email", "E-mail de test", "Test-e-mail"),
+    (
+        "Your unit's site is ready. You can sign in as <strong>%(admin_email)s</strong> "
+        "from now on.",
+        "Le site de votre unité est prêt",
+        "De site van je eenheid is klaar",
+    ),
+    (
+        "Each branch leads to the one below it, and members who outgrow the "
+        "last one leave the unit. A branch's ages are the ages its members "
+        "are on the day the unit reads them — 31 December unless you change "
+        "it later.",
+        "Chaque branche mène",
+        "Elke afdeling leidt",
+    ),
+    ("Both", "Mixte", "Gemengd"),
+    ("Boys", "Garçons", "Jongens"),
+    ("Girls", "Filles", "Meisjes"),
+    ("Youngest", "Le plus jeune", "Jongste"),
+    ("Oldest", "Le plus âgé", "Oudste"),
+    ("Who it takes", "Qui elle accueille", "Wie erin kan"),
+    ("Remove this branch", "Supprimer cette branche", "Deze afdeling verwijderen"),
+    ("Remove this section", "Supprimer cette section", "Deze sectie verwijderen"),
+    (
+        "No branch yet. Add the first one.",
+        "Aucune branche",
+        "Nog geen afdeling",
+    ),
+    (
+        "%(branch)s needs at least one section.",
+        "a besoin d'au moins une section",
+        "heeft minstens één sectie nodig",
+    ),
+    (
+        "%(branch)s: every section needs a name.",
+        "chaque section a besoin d'un nom",
+        "elke sectie heeft een naam nodig",
+    ),
+    (
+        "%(branch)s: the youngest age is above the oldest.",
+        "l'âge du plus jeune dépasse",
+        "jongste leeftijd is hoger",
+    ),
+    (
+        "Branch %(number)s needs a name.",
+        "La branche %(number)s a besoin d'un nom",
+        "Afdeling %(number)s heeft een naam nodig",
+    ),
+    ("A unit needs at least one branch.", "au moins une branche", "minstens één afdeling"),
+    (
+        "The password for this account. Make it a long one.",
+        "Choisissez-le long",
+        "Kies er een lang",
+    ),
+    (
+        "An account with this address already exists. Use a different "
+        "address, or sign in with that one.",
+        "Un compte existe déjà",
+        "Er bestaat al een account",
+    ),
+    (
+        "That account already existed; kept it.",
+        "Ce compte existait déjà",
+        "Dat account bestond al",
+    ),
+    (
+        "The administrator account is missing. Go back and create it.",
+        "Revenez en arrière",
+        "Ga terug om het aan te maken",
+    ),
+    (
+        "The mail backend reported that it sent nothing.",
+        "n'avoir rien envoyé",
+        "niets verzonden te hebben",
+    ),
+    (
+        "Check EMAIL_URL (or MAIL_SEND_MODE) and DEFAULT_FROM_EMAIL in this "
+        "instance's environment.",
+        "Vérifiez EMAIL_URL",
+        "Controleer EMAIL_URL",
+    ),
+    ("Test message from %(site)s", "Message de test de", "Testbericht van"),
+    (
+        "The addresses come from this instance's environment "
+        "(DEFAULT_FROM_EMAIL, and the administrator you created a moment "
+        "ago); they are not editable here.",
+        "Ces adresses viennent",
+        "Deze adressen komen",
+    ),
+    (
+        "This sends a test message to your administrator's address and waits "
+        "for the mail server's answer. If it arrives, everything the site "
+        "sends will arrive too.",
+        "Un message de test part",
+        "Er gaat een testbericht",
+    ),
+    ("Saved when you go on.", "Enregistré quand vous", "Opgeslagen wanneer je"),
+    (
+        "add members one by one, or send families to the registration page "
+        "and they will fill in their own.",
+        "ajoutez les membres",
+        "voeg leden één voor één toe",
+    ),
+    (
+        "the unit's name, its contact details, the languages it offers and "
+        "the shape of its scout year.",
+        "le nom de l'unité, ses coordonnées",
+        "de naam van de eenheid, haar contactgegevens",
+    ),
+    (
+        "where branches, sections and everything else the wizard did not ask "
+        "about are edited.",
+        "où se modifient les branches",
+        "waar afdelingen, secties",
+    ),
+    (
+        "A unit that is moving from another system has a one-off importer "
+        "for the old site's database; it is a script run on the server, "
+        "described in the repository's niche-tools/README.md.",
+        "importateur ponctuel",
+        "eenmalige importeur",
+    ),
+    ("Removed: %(rows)s.", "Supprimé :", "Verwijderd:"),
+    (
+        "Stable identifier from a branch preset, used to recognise this "
+        "branch again when the preset is applied a second time.",
+        "Identifiant stable",
+        "Stabiele identificatie",
+    ),
 ]
 
 

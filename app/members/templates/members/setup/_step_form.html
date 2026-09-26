@@ -1,0 +1,50 @@
+{% load i18n widget_tweaks %}
+{% comment %}
+  A step that is a form. The field markup follows the settings page's own
+  partial — the wizard binds the very same forms there, and they have to look
+  and behave the same or the reuse buys nothing.
+
+  enctype and hx-encoding are both set: the unit step carries the logo
+  upload, and HTMX has to be told to post multipart rather than urlencoded or
+  the file arrives empty.
+{% endcomment %}
+<form hx-post="{% url 'setup:step' current %}"
+      hx-target="#wizard-pane"
+      hx-swap="outerHTML"
+      enctype="multipart/form-data"
+      hx-encoding="multipart/form-data">
+  {% csrf_token %}
+
+  {% for error in form.non_field_errors %}
+    <div class="alert alert-danger py-2" role="alert">{{ error }}</div>
+  {% endfor %}
+
+  {% for field in form %}
+    <div class="mb-3">
+      {% if field.field.widget.allow_multiple_selected %}
+        <div class="form-label">{{ field.label }}</div>
+        {{ field }}
+        {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+      {% elif field.field.widget.input_type == 'checkbox' %}
+        <div class="form-check">
+          {% render_field field class="form-check-input" %}
+          <label class="form-check-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+        </div>
+        {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+      {% else %}
+        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {% if field.field.choices %}
+          {% render_field field class="form-select" %}
+        {% else %}
+          {% render_field field class="form-control" %}
+        {% endif %}
+        {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+      {% endif %}
+      {% for error in field.errors %}
+        <div class="alert-danger small mt-1" role="alert">{{ error }}</div>
+      {% endfor %}
+    </div>
+  {% endfor %}
+
+  {% include "members/setup/_step_nav.html" %}
+</form>

@@ -1,0 +1,42 @@
+{% load i18n %}
+{% comment %}
+  One section inside a branch. It names the branch it belongs to, so the two
+  lists can be rebuilt from the posted form without any indices: a section
+  sits under whichever branch id it carries.
+{% endcomment %}
+<div class="setup-section">
+  <input type="hidden" name="section-id" value="{{ section.id }}" />
+  <input type="hidden" name="section-branch" value="{{ section.branch }}" />
+
+  <div class="row g-2 align-items-center">
+    {% for field in section.name_fields %}
+      <div class="col-md">
+        <input type="text"
+               class="form-control form-control-sm"
+               name="section-name-{{ field.language }}"
+               value="{{ field.value }}"
+               placeholder="{% if languages|length > 1 %}{% trans "Name" %} ({{ field.language|upper }}){% else %}{% trans "Section name" %}{% endif %}"
+               aria-label="{% trans "Section name" %}"
+               maxlength="30" />
+      </div>
+    {% endfor %}
+    <div class="col-7 col-md-3">
+      <select class="form-select form-select-sm" name="section-sex" aria-label="{% trans "Who it takes" %}">
+        {% for value, label in sexes %}
+          <option value="{{ value }}" {% if value == section.sex %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-5 col-md-auto">
+      <button type="button"
+              class="btn btn-sm btn-outline-danger w-100"
+              hx-post="{% url 'setup:structure_row' 'remove' %}"
+              hx-target="closest .setup-section"
+              hx-swap="outerHTML"
+              aria-label="{% trans "Remove this section" %}">
+        <i class="bi bi-x-lg" aria-hidden="true"></i>
+        {% trans "Remove" %}
+      </button>
+    </div>
+  </div>
+</div>

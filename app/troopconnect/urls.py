@@ -30,6 +30,10 @@ urlpatterns = [
     path("admin/ses/", include("django_ses.urls")),
     path("admin/", admin.site.urls),
     path("", include("homepage.urls"), name="homepage"),
+    # The first-run wizard. Served only while this instance has no
+    # administrator; every other URL is redirected here until it has one, and
+    # this one 404s from then on. See members/wizard/.
+    path("setup/", include("members.wizard.urls", namespace="setup")),
     path("users/", include("members.urls", namespace="members"), name="users"),
     path("messaging/", include("messaging.urls", namespace="messaging")),
     path("finance/", include("finance.urls", namespace="finance")),

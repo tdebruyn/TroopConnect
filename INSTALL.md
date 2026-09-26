@@ -36,28 +36,35 @@ build step — the images come from `ghcr.io/tdebruyn/troopconnect`.
 
    On first start a one-shot `init` service generates the database password and
    the Django secret key into a volume, then the web service waits for the
-   database, migrates and collects static files. Nothing else to do.
+   database, migrates, collects static files and issues a one-time setup code.
 
-4. Set the instance up:
+4. Read the setup code out of the web container's log:
 
    ```bash
-   docker compose exec web python manage.py setup
+   docker compose logs web | grep -i "setup code"
    ```
 
-   It asks for the unit's name, its contact address, the languages the site
-   offers and the first administrator's details. From that it creates the
-   branches and sections, the current and next school year, the email
-   templates, the starter pages, the Celery beat schedule, and an
-   administrator account that can log in and reach the Django admin.
+   It looks like `K7QP-2M4T-9XWB-HR3F`. `docker compose exec web python
+   manage.py setup_code` prints it again if it has scrolled away.
 
-   Answer without a terminal with `--answers answers.json` or flags, and see
-   what it would write first with `--dry-run`. Both are described in
-   `docs/dev/CONTRACT.md`. The command is safe to run again: it fills in what
-   is missing and changes nothing a troop has since edited. (`manage.py
-   createsuperuser` still works if that is all you want.)
+5. Open `https://your-domain/setup` and answer the wizard. Until you do, the
+   whole site leads there: an instance with no administrator has nothing worth
+   showing yet, so it shows the installer instead. The wizard asks for the
+   administrator's details, the unit's name and contact address, the languages
+   the site offers, the branches and sections (starting from Les Scouts' own),
+   the shape of the scout year, and whether you use the fees, signing and
+   agenda modules. It ends by sending a real test email, and does not finish
+   until one arrives — a mail server that refuses is worth finding out about
+   now rather than through parents who never heard anything.
 
-5. Log in with that account, then fill in the rest of the unit's details under
-   Site settings. They live in the database, not in `.env`.
+   Prefer a terminal, or want to script it? `docker compose exec web python
+   manage.py setup` does the same work from flags or an `answers.json`, and
+   `--dry-run` shows what it would write. Both are described in
+   `docs/dev/CONTRACT.md`.
+
+6. Once the wizard finishes, the site is live. Log in with the account you
+   created and fill in the rest under Site settings; branches and sections are
+   edited in the Django admin. All of it lives in the database, not in `.env`.
 
 If something is wrong, `manage.py check` names the variable and what to do
 about it:

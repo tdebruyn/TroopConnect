@@ -1,0 +1,26 @@
+{% load i18n %}
+{% comment %}
+  Back and Next, inside whatever form the step rendered.
+
+  Back is a GET of the previous step, and needs no "are you sure": every step
+  has already been saved, so going back shows it as it stands and changing it
+  changes it again. Next submits.
+{% endcomment %}
+<div class="d-flex justify-content-between align-items-center mt-4">
+  <div>
+    {% if previous %}
+      <a class="btn btn-outline-secondary"
+         href="{% url 'setup:step' previous %}"
+         hx-get="{% url 'setup:step' previous %}"
+         hx-target="#wizard-pane"
+         hx-swap="outerHTML"
+         hx-push-url="true">← {% trans "Back" %}</a>
+    {% endif %}
+  </div>
+  <div class="d-flex align-items-center gap-2">
+    <span class="text-muted small setup-autosave">{% trans "Saved when you go on." %}</span>
+    <button type="submit" class="btn btn-primary">
+      {% if next_label %}{{ next_label }}{% else %}{% trans "Next" %}{% endif %} →
+    </button>
+  </div>
+</div>

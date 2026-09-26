@@ -4,6 +4,53 @@ from django.urls import reverse
 from django.utils import translation
 
 
+class SetupRequiredMiddleware:
+    """Send every request to the wizard until this instance has an admin.
+
+    A self-hosted instance starts as an empty database behind a domain: the
+    first thing anybody sees should be the wizard that makes it a troop, not a
+    site with no sections, no members and nobody able to administer it. So
+    while ``members.wizard.setup_required()`` — an instance with no superuser
+    that its deployment armed for setup — this redirects everything to
+    ``/setup``.
+
+    Four things are let through, each for a reason of its own:
+
+    * the wizard itself, or it could never be used;
+    * ``/static/`` and ``/media/``, or it would have no stylesheet — Caddy
+      serves those in production, but the dev server and a bare ``runserver``
+      do not;
+    * ``/healthz``, because the container's own healthcheck asks for it and a
+      redirect would leave a fresh instance permanently unhealthy, which is
+      precisely when Caddy refuses to start and nobody can reach the wizard;
+    * ``/i18n/setlang/``, which only writes the visitor's language choice.
+
+    Being off is as important as being on: an unarmed deployment — a test run,
+    or an instance started without the entrypoint — is left entirely alone,
+    rather than being redirected by a wizard it has no code for.
+    """
+
+    EXEMPT_PREFIXES = ("/setup", "/static/", "/media/", "/__debug__/")
+    EXEMPT_PATHS = ("/healthz", "/i18n/setlang/")
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        if self._exempt(request.path) or not self._required():
+            return self.get_response(request)
+        return redirect("setup:index")
+
+    def _exempt(self, path):
+        return path.startswith(self.EXEMPT_PREFIXES) or path in self.EXEMPT_PATHS
+
+    def _required(self):
+        """Ask the wizard, not the database directly, so the two cannot disagree."""
+        from members.wizard import setup_required
+
+        return setup_required()
+
+
 class OnboardingMiddleware:
     """
     Redirects authenticated users who haven't completed their profile

@@ -1,0 +1,30 @@
+{% load i18n %}
+{% comment %}
+  The last thing that can go wrong, and the only one a troop would not notice
+  for weeks: mail. This sends one real message through the backend the
+  application itself uses — synchronously, not through the queue — so a wrong
+  port or a rejected sender is reported here, in the mail server's own words,
+  rather than by a parent who never received anything.
+{% endcomment %}
+<form hx-post="{% url 'setup:step' current %}"
+      hx-target="#wizard-pane"
+      hx-swap="outerHTML">
+  {% csrf_token %}
+
+  <p>
+    {% blocktranslate %}This sends a test message to your administrator's address and waits for the mail server's answer. If it arrives, everything the site sends will arrive too.{% endblocktranslate %}
+  </p>
+
+  <dl class="setup-summary">
+    <dt>{% trans "To" %}</dt>
+    <dd>{{ admin_email|default:"—" }}</dd>
+    <dt>{% trans "From" %}</dt>
+    <dd>{{ from_email|default:"—" }}</dd>
+  </dl>
+
+  <p class="text-muted small mb-0">
+    {% blocktranslate %}The addresses come from this instance's environment (DEFAULT_FROM_EMAIL, and the administrator you created a moment ago); they are not editable here.{% endblocktranslate %}
+  </p>
+
+  {% include "members/setup/_step_nav.html" %}
+</form>

@@ -75,6 +75,13 @@ if not SECRET_KEY:
     if _secret_key_problem:
         record_problem("SECRET_KEY", _secret_key_problem)
 
+# The first-run wizard's one-time setup code. Written on the first boot of a
+# fresh instance (the entrypoint runs `manage.py setup_code`, which prints it
+# to the web container's log) and read back by the wizard, which asks for it
+# before it will create an administrator. It lives beside the secret key in
+# the secrets volume, so replacing the database issues a new one.
+SETUP_CODE_FILE = env("SETUP_CODE_FILE", "/data/secrets/setup_code")
+
 # django.contrib.sites: the row allauth and get_current() read. Fresh installs
 # get row 1 from migrate; instances migrated from the old .settings.json may
 # still be on row 2 and can keep it by setting SITE_ID=2.
@@ -139,6 +146,9 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "simple_history.middleware.HistoryRequestMiddleware",
     "allauth.account.middleware.AccountMiddleware",
+    # Last: anything that wants to redirect an authenticated visitor to finish
+    # their profile is moot while the instance itself has no administrator.
+    "members.middleware.SetupRequiredMiddleware",
     "members.middleware.OnboardingMiddleware",
 ]
 

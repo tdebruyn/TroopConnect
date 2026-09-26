@@ -61,13 +61,36 @@ jobs:
           docker compose logs >&2
           exit 1
 
-      - name: The pages answer
+      # A brand-new instance has no administrator, so the wizard *is* the
+      # site until one exists: everything else leads to /setup/, which is
+      # what a first-run installer should look like from the outside.
+      - name: A fresh instance serves the wizard
         run: |
-          for path in / /accounts/login/; do
+          for path in / /accounts/login/ /faq/; do
             code=$(curl --silent --output /dev/null --write-out '%{http_code}' --insecure "https://localhost${path}")
             echo "${path} -> ${code}"
-            [ "$code" = "200" ] || exit 1
+            [ "$code" = "302" ] || exit 1
+
+            location=$(curl --silent --output /dev/null --write-out '%{redirect_url}' --insecure "https://localhost${path}")
+            case "$location" in
+              */setup/) ;;
+              *) echo "${path} did not lead to the wizard: ${location}" >&2; exit 1 ;;
+            esac
           done
+
+          code=$(curl --silent --output /dev/null --write-out '%{http_code}' --insecure https://localhost/setup/)
+          echo "/setup/ -> ${code}"
+          [ "$code" = "200" ] || exit 1
+
+      - name: The setup code is in the web container's log
+        run: |
+          docker compose logs web | grep -q "Setup code:" || {
+            echo "no setup code in the web container's log" >&2
+            docker compose logs web >&2
+            exit 1
+          }
+          docker compose exec -T web cat /data/secrets/setup_code > /dev/null
+          echo "the setup code was issued into the secrets volume"
 
       - name: The secrets are where they belong
         run: |
@@ -93,6 +116,7 @@ jobs:
       - name: Restart on the existing volumes
         run: |
           before=$(docker compose exec -T web cat /data/secrets/secret_key)
+          code_before=$(docker compose exec -T web cat /data/secrets/setup_code)
 
           docker compose down
           docker compose up --detach
@@ -107,6 +131,12 @@ jobs:
 
           after=$(docker compose exec -T web cat /data/secrets/secret_key)
           [ "$before" = "$after" ] || { echo "the secret key was regenerated" >&2; exit 1; }
+
+          # The setup code lives beside it for the same reason: an instance
+          # that is still being set up must not hand out a new one because its
+          # container was recreated.
+          code_after=$(docker compose exec -T web cat /data/secrets/setup_code)
+          [ "$code_before" = "$code_after" ] || { echo "the setup code was regenerated" >&2; exit 1; }
 
           curl --silent --fail --insecure --output /dev/null https://localhost/
           echo "Restarted on the same volumes, with the same secrets."

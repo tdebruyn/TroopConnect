@@ -1,0 +1,34 @@
+{% load i18n %}
+{% comment %}
+  The part of the wizard that changes: the progress list, the step in hand and
+  whatever the last save had to say. Every HTMX request swaps this element for
+  the next one, so the list and the form always agree about where we are.
+{% endcomment %}
+<div id="wizard-pane">
+  <ol class="setup-progress" aria-label="{% trans "Steps" %}">
+    {% for entry in progress %}
+      <li class="setup-progress-item setup-progress-{{ entry.state }}">
+        <span class="setup-progress-marker" aria-hidden="true">{% if entry.state == "done" %}✓{% else %}{{ forloop.counter }}{% endif %}</span>
+        <span class="setup-progress-label">{{ entry.title }}</span>
+      </li>
+    {% endfor %}
+  </ol>
+
+  <div class="card setup-card">
+    <div class="card-body p-4">
+      <h2 class="h5 card-title mb-3">{{ step.title }}</h2>
+
+      {% if note %}
+        <div class="alert alert-success py-2" role="status">{{ note }}</div>
+      {% endif %}
+      {% if error %}
+        <div class="alert alert-danger" role="alert">
+          <p class="mb-1">{{ error }}</p>
+          {% if error_detail %}<pre class="setup-detail mb-0">{{ error_detail }}</pre>{% endif %}
+        </div>
+      {% endif %}
+
+      {% include step.template %}
+    </div>
+  </div>
+</div>
