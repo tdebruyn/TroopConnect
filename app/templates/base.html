@@ -94,6 +94,7 @@
                                         {% if user.is_staff %}
                                             <a class="dropdown-item" href="{% url 'members:admin_list' %}">{% trans "Member management" %}</a>
                                             <a class="dropdown-item" href="{% url 'members:passage' %}">{% trans "Section passage" %}</a>
+                                            <a class="dropdown-item" href="{% url 'members:member_import' %}">{% trans "Import and export" %}</a>
                                             <a class="dropdown-item" href="{% url 'members:troop_settings' %}">{% trans "Settings" %}</a>
                                         {% endif %}
                                         {% module_enabled "fees" as fees_on %}

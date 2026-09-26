@@ -304,6 +304,7 @@ scripts/dev-zen-test-users.sh      # four logged-in browser windows
 `docker compose run --rm`). Set `COMPOSE_FILE` to target a different dev
 overlay; `compose.yml` is always included.
 
+<<<<<<< HEAD
 ### Layout
 
 - `app/` — the Django project. `members/` is the core app (accounts, persons,
@@ -321,3 +322,12 @@ overlay; `compose.yml` is always included.
 
 Licensed under the [AGPL-3.0](LICENSE). To report a vulnerability, see
 [SECURITY.md](SECURITY.md).
+=======
+## One-off tools
+
+`contrib/` holds the run-by-hand extras that no installation needs: the
+Ansible playbooks, and the one-off importer for the old site's database. They
+sit outside `app/` on purpose, so they are never built into the Docker image —
+you run them by hand, mounted into a throwaway container. The importer is
+documented in [`contrib/legacy-import/README.md`](contrib/legacy-import/README.md).
+>>>>>>> worktree-member-import-export

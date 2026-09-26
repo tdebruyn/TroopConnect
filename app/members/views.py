@@ -1,3 +1,4 @@
+import base64
 import calendar
 import json
 from collections import defaultdict
@@ -16,7 +17,7 @@ from django.urls import reverse, reverse_lazy
 from django.utils import formats, timezone
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
-from django.views.generic import ListView, TemplateView, UpdateView
+from django.views.generic import ListView, TemplateView, UpdateView, View
 from post_office.models import STATUS, Email
 
 from .absences import notify_section
@@ -38,6 +39,10 @@ from .forms import (
     ProfileEditForm,
     SectionEventForm,
 )
+from .importexport import columns as cols
+from .importexport import exporter
+from .importexport.files import FileError, read_table, write_table
+from .importexport.importer import apply_plan, build_plan
 from .mail import absolute_url, send_templated
 from .models import (
     PASSAGE_MODE_MANUAL,
@@ -1438,3 +1443,279 @@ def absence_cancel(request, pk):
     absence.delete()
     messages.success(request, _("The absence has been withdrawn."))
     return redirect(_agenda_url(event.section, event.start_date))
+
+
+# --- Member import and export ------------------------------------------------
+#
+# The page, its preview and its downloads. All of the reading, writing and rule
+# checking lives in `members.importexport`; this is the HTTP around it.
+
+
+#: Where an uploaded file waits between the preview and the confirmation.
+#: Sessions are database-backed, so the two POSTs may be served by different
+#: workers and still agree about what was uploaded.
+IMPORT_SESSION_KEY = "member_import"
+
+#: The largest upload worth carrying in a session row. Two megabytes of CSV is
+#: some twenty thousand members, which is far past any troop's roster.
+IMPORT_MAX_BYTES = 2 * 1024 * 1024
+
+#: How many problem rows the preview spells out. Past this it says how many
+#: more there are rather than rendering a page nobody can read.
+PREVIEW_ROW_LIMIT = 200
+
+EXPORT_CONTENT_TYPES = {
+    "csv": "text/csv; charset=utf-8",
+    "xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+}
+
+
+def _import_file_error(error):
+    """The reader's own words for a file it could not make sense of.
+
+    ``FileError`` carries either one of the short codes the readers raise or,
+    when it comes from the planner, a finished sentence about a missing column.
+    """
+    return {
+        "empty": _("The file is empty."),
+        "unreadable": _("The file could not be read. Upload a CSV or an XLSX file."),
+        "no-headers": _("No column in the file matches the format."),
+    }.get(str(error), str(error))
+
+
+def _column_hints():
+    """What each kind of column accepts, in the reader's language.
+
+    Built per request rather than declared at module level: a translated string
+    evaluated at import time is frozen in whatever language the process started
+    in.
+    """
+    return {
+        "date": _("A date, e.g. 2020-05-04 or 04/05/2020."),
+        "sex": _("M for a boy, F for a girl."),
+        "bool": _("yes or no."),
+        "role": _("A role's short code, or its name."),
+        "roles": _("Role short codes or names, separated by semicolons."),
+        "list": _("Separate several values with a semicolon."),
+        "section": _("A section name, or branch:name when two sections share one."),
+        "status": _("a (active), ar (archived) or r (requested)."),
+        "amount": _("An amount, e.g. 12.50."),
+        "year": _("The year the school year starts in, e.g. 2025."),
+        "text": "",
+    }
+
+
+def _legend(column_set):
+    hints = _column_hints()
+    return [
+        {"heading": column.heading(), "hint": hints.get(column.kind, "")}
+        for column in column_set
+    ]
+
+
+def _stash_uploads(request, member_upload, payment_upload):
+    """Keep the uploaded files for the confirmation that follows the preview.
+
+    In the session rather than on disk: a file left behind by a preview nobody
+    confirmed is a copy of the troop's member list sitting in the media folder,
+    and a session row expires itself.
+    """
+    stash = {}
+    for key, upload in (("members", member_upload), ("payments", payment_upload)):
+        if upload is None:
+            continue
+        if upload.size > IMPORT_MAX_BYTES:
+            raise ValueError(
+                _("“%(name)s” is larger than %(limit)s MB.")
+                % {"name": upload.name, "limit": IMPORT_MAX_BYTES // (1024 * 1024)}
+            )
+        stash[key] = {
+            "name": upload.name,
+            "data": base64.b64encode(upload.read()).decode("ascii"),
+        }
+    request.session[IMPORT_SESSION_KEY] = stash
+    return stash
+
+
+def _stashed_uploads(request):
+    """``{which: (filename, bytes)}`` for the files a preview left behind."""
+    stash = request.session.get(IMPORT_SESSION_KEY) or {}
+    return {
+        key: (entry["name"], base64.b64decode(entry["data"]))
+        for key, entry in stash.items()
+    }
+
+
+def _plan_from_uploads(uploads):
+    """Build the plan the preview shows and the confirmation applies."""
+    member_name, member_data = uploads["members"]
+    # Read against the widest member format — the export's balances included —
+    # so a file exported from here imports without the import complaining about
+    # three columns the export itself wrote. They are read and dropped.
+    member_table = read_table(
+        member_name, member_data, column_set=cols.member_columns(include_balances=True)
+    )
+    payment_table = None
+    if "payments" in uploads:
+        payment_name, payment_data = uploads["payments"]
+        payment_table = read_table(
+            payment_name, payment_data, column_set=cols.PAYMENT_COLUMNS
+        )
+    return build_plan(member_table, payment_table)
+
+
+def _import_context(request):
+    """What the page needs whichever step of the flow it is rendering."""
+    troop = TroopSettings.get_settings()
+    return {
+        "fees_enabled": troop.fees_enabled,
+        "member_legend": _legend(cols.MEMBER_COLUMNS),
+        "payment_legend": _legend(cols.PAYMENT_COLUMNS) if troop.fees_enabled else [],
+        "balance_headings": (
+            [column.heading() for column in cols.BALANCE_COLUMNS]
+            if troop.fees_enabled
+            else []
+        ),
+        "max_megabytes": IMPORT_MAX_BYTES // (1024 * 1024),
+    }
+
+
+def _preview_context(plan):
+    """The problem rows, which are the ones worth reading."""
+    problems = [
+        row
+        for row in plan.members + plan.payments
+        if row.errors or row.warnings
+    ]
+    return {
+        "plan": plan,
+        "counts": plan.counts(),
+        "problems": problems[:PREVIEW_ROW_LIMIT],
+        "problem_total": len(problems),
+    }
+
+
+class MemberImportView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
+    """Staff page: import a member file, export one, or download a template.
+
+    ``LoginRequiredMixin`` first, so an anonymous visitor is sent to the login
+    page rather than shown a bare 403.
+    """
+
+    template_name = "members/import.html"
+
+    def test_func(self):
+        return self.request.user.is_staff
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(_import_context(self.request))
+        context.setdefault("plan", None)
+        return context
+
+    def post(self, request, *args, **kwargs):
+        action = request.POST.get("action", "")
+        if action == "preview":
+            return self._preview(request)
+        if action == "apply":
+            return self._apply(request)
+        if action == "cancel":
+            request.session.pop(IMPORT_SESSION_KEY, None)
+            messages.success(request, _("Nothing was imported."))
+            return redirect(reverse("members:member_import"))
+        return redirect(reverse("members:member_import"))
+
+    def _preview(self, request):
+        if request.FILES.get("members") is None:
+            messages.error(request, _("Choose a file to import."))
+            return redirect(reverse("members:member_import"))
+        try:
+            _stash_uploads(
+                request, request.FILES.get("members"), request.FILES.get("payments")
+            )
+        except ValueError as error:
+            messages.error(request, str(error))
+            return redirect(reverse("members:member_import"))
+        return self._render(request)
+
+    def _apply(self, request):
+        uploads = _stashed_uploads(request)
+        if "members" not in uploads:
+            messages.error(request, _("The upload has expired; choose the file again."))
+            return redirect(reverse("members:member_import"))
+        plan = self._build(request, uploads)
+        if plan is None:
+            return redirect(reverse("members:member_import"))
+        if plan.has_errors:
+            messages.error(request, _("Nothing was imported: the file has errors."))
+            return self._render_preview(request, plan)
+        counts = apply_plan(plan, actor=get_person(request.user))
+        request.session.pop(IMPORT_SESSION_KEY, None)
+        messages.success(
+            request,
+            _(
+                "%(created)s members created, %(updated)s updated, "
+                "%(payments)s payments recorded."
+            )
+            % {
+                "created": counts["members_created"],
+                "updated": counts["members_updated"],
+                "payments": counts["payments_created"],
+            },
+        )
+        return redirect(reverse("members:member_import"))
+
+    def _build(self, request, uploads):
+        try:
+            return _plan_from_uploads(uploads)
+        except FileError as error:
+            messages.error(request, _import_file_error(error))
+            return None
+
+    def _render(self, request, uploads=None):
+        """Show the preview, or go back to the page when the file is unreadable."""
+        plan = self._build(request, uploads or _stashed_uploads(request))
+        if plan is None:
+            return redirect(reverse("members:member_import"))
+        return self._render_preview(request, plan)
+
+    def _render_preview(self, request, plan):
+        context = self.get_context_data()
+        context.update(_preview_context(plan))
+        return render(request, self.template_name, context)
+
+
+class ExportDownloadView(LoginRequiredMixin, UserPassesTestMixin, View):
+    """Staff-only download: the member table, the payment table or a template."""
+
+    def test_func(self):
+        return self.request.user.is_staff
+
+    def get(self, request, kind, extension):
+        if extension not in EXPORT_CONTENT_TYPES:
+            raise Http404
+        fees = TroopSettings.get_settings().fees_enabled
+        if kind == "template":
+            column_set, records, title = cols.MEMBER_COLUMNS, [], _("Members")
+        elif kind == "members":
+            column_set = cols.member_columns(include_balances=fees)
+            records = exporter.member_records(include_balances=fees)
+            title = _("Members")
+        elif kind == "payments" and fees:
+            column_set, records, title = (
+                cols.PAYMENT_COLUMNS,
+                exporter.payment_records(),
+                _("Payments"),
+            )
+        else:
+            raise Http404
+
+        payload = write_table(column_set, records, extension, title=title)
+        response = HttpResponse(payload, content_type=EXPORT_CONTENT_TYPES[extension])
+        stamp = timezone.localdate().isoformat()
+        name = f"{kind}-{stamp}.{extension}" if kind != "template" else f"members-template.{extension}"
+        response["Content-Disposition"] = f'attachment; filename="{name}"'
+        # A download of the troop's own member list has no business being kept
+        # by anything between here and the browser.
+        response["Cache-Control"] = "no-store"
+        return response

@@ -11,4 +11,4 @@ workspace
 # One-off tools, run by hand from a mount — never baked into the image.
 # (They are already outside app/, which is all the Dockerfiles copy; this keeps
 # it true even if the build context changes.)
-niche-tools
+contrib

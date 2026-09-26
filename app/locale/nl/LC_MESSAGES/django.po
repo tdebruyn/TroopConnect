@@ -2964,7 +2964,7 @@ msgid "where branches, sections and everything else the wizard did not ask about
 msgstr "waar afdelingen, secties en al de rest wat de wizard niet vroeg beheerd wordt."
 
 #: members/wizard (hand-added; see docs/dev/CONTRACT.md)
-msgid "A unit that is moving from another system has a one-off importer for the old site's database; it is a script run on the server, described in the repository's niche-tools/README.md."
+msgid "A unit that is moving from another system has a one-off importer for the old site's database; it is a script run on the server, described in the repository's contrib/legacy-import/README.md."
 msgstr "Een eenheid die van een ander systeem komt, heeft een eenmalige importeur voor de database van de oude site; dat is een script op de server, beschreven in niche-tools/README.md van de repository."
 
 #: members/wizard (hand-added; see docs/dev/CONTRACT.md)
@@ -3286,3 +3286,257 @@ msgstr "Gemeld door"
 #: members/absences.py
 msgid "A parent"
 msgstr "Een ouder"
+
+msgid "Import and export"
+msgstr "Importeren en exporteren"
+
+msgid "Bring members in from a spreadsheet, or take the whole troop out as one. Both directions use the same columns."
+msgstr "Haal leden binnen uit een spreadsheet, of exporteer de hele eenheid in één keer. Beide richtingen gebruiken dezelfde kolommen."
+
+msgid "The format is documented in the configuration contract, under “Member import and export”. A file exported here can be imported back as it stands."
+msgstr "Het formaat staat beschreven in het configuratiecontract, onder “Import en export van leden”. Een bestand dat hier wordt geëxporteerd, kan ongewijzigd opnieuw worden geïmporteerd."
+
+msgid "What this file would do"
+msgstr "Wat dit bestand zou doen"
+
+msgid "Showing the first %(shown)s of %(total)s rows with a remark."
+msgstr "De eerste %(shown)s van %(total)s rijen met een opmerking worden weergegeven."
+
+msgid "No row has anything to report."
+msgstr "Geen enkele rij heeft iets te melden."
+
+msgid "A row with an error is not imported, and nothing is written while one is left. Fix the file and upload it again."
+msgstr "Een rij met een fout wordt niet geïmporteerd, en er wordt niets weggeschreven zolang er nog een is. Verbeter het bestand en upload het opnieuw."
+
+msgid "Import this file"
+msgstr "Dit bestand importeren"
+
+msgid "Export"
+msgstr "Exporteren"
+
+msgid "Every member, one row each, with the year's balances and the payments recorded for them."
+msgstr "Alle leden, één rij per persoon, met de saldi van het jaar en de geregistreerde betalingen."
+
+msgid "Every member, one row each."
+msgstr "Alle leden, één rij per persoon."
+
+msgid "Download the template, fill it in, then upload it here. Nothing is written until you have read the preview. No email is sent to the members it creates."
+msgstr "Download de sjabloon, vul ze in en upload ze hier. Er wordt niets weggeschreven voordat je het voorbeeld hebt gelezen. Er wordt geen e-mail verstuurd naar de aangemaakte leden."
+
+msgid "Template:"
+msgstr "Sjabloon:"
+
+msgid "Members file"
+msgstr "Bestand met leden"
+
+msgid "Payments file (optional)"
+msgstr "Bestand met betalingen (optioneel)"
+
+msgid "CSV or XLSX, up to %(max_megabytes)s MB each."
+msgstr "CSV of XLSX, maximaal %(max_megabytes)s MB per bestand."
+
+msgid "Preview the import"
+msgstr "Voorbeeld van de import"
+
+msgid "Columns"
+msgstr "Kolommen"
+
+msgid "Column"
+msgstr "Kolom"
+
+msgid "What it takes"
+msgstr "Wat erin hoort"
+
+msgid "Read-only: the export writes it, the import ignores it."
+msgstr "Alleen-lezen: de export schrijft het, de import negeert het."
+
+msgid "Payments file:"
+msgstr "Bestand met betalingen:"
+
+msgid "Line"
+msgstr "Regel"
+
+msgid "Remark"
+msgstr "Opmerking"
+
+msgid "Nothing was imported."
+msgstr "Er is niets geïmporteerd."
+
+msgid "Choose a file to import."
+msgstr "Kies een bestand om te importeren."
+
+msgid "The upload has expired; choose the file again."
+msgstr "De upload is verlopen; kies het bestand opnieuw."
+
+msgid "Nothing was imported: the file has errors."
+msgstr "Er is niets geïmporteerd: het bestand bevat fouten."
+
+msgid "%(created)s members created, %(updated)s updated, %(payments)s payments recorded."
+msgstr "%(created)s leden aangemaakt, %(updated)s bijgewerkt, %(payments)s betalingen geregistreerd."
+
+msgid "The file is empty."
+msgstr "Het bestand is leeg."
+
+msgid "The file could not be read. Upload a CSV or an XLSX file."
+msgstr "Het bestand kon niet worden gelezen. Upload een CSV- of XLSX-bestand."
+
+msgid "No column in the file matches the format."
+msgstr "Geen enkele kolom in het bestand komt overeen met het formaat."
+
+msgid "“%(name)s” is larger than %(limit)s MB."
+msgstr "“%(name)s” is groter dan %(limit)s MB."
+
+msgid "External ID"
+msgstr "Externe id"
+
+msgid "Parent external IDs"
+msgstr "Externe ids van de ouders"
+
+msgid "Section this year"
+msgstr "Sectie dit jaar"
+
+msgid "Section next year"
+msgstr "Sectie volgend jaar"
+
+msgid "A date, e.g. 2020-05-04 or 04/05/2020."
+msgstr "Een datum, bv. 2020-05-04 of 04/05/2020."
+
+msgid "M for a boy, F for a girl."
+msgstr "M voor een jongen, F voor een meisje."
+
+msgid "yes or no."
+msgstr "ja of nee."
+
+msgid "A role's short code, or its name."
+msgstr "De korte code van een rol, of de naam ervan."
+
+msgid "Role short codes or names, separated by semicolons."
+msgstr "Korte codes of namen van rollen, gescheiden door puntkomma's."
+
+msgid "Separate several values with a semicolon."
+msgstr "Scheid meerdere waarden met een puntkomma."
+
+msgid "A section name, or branch:name when two sections share one."
+msgstr "Een sectienaam, of tak:naam wanneer twee secties dezelfde naam hebben."
+
+msgid "a (active), ar (archived) or r (requested)."
+msgstr "a (actief), ar (gearchiveerd) of r (aangevraagd)."
+
+msgid "An amount, e.g. 12.50."
+msgstr "Een bedrag, bv. 12.50."
+
+msgid "The year the school year starts in, e.g. 2025."
+msgstr "Het jaar waarin het schooljaar begint, bv. 2025."
+
+msgid "Expected a date, e.g. 2020-05-04 or 04/05/2020."
+msgstr "Een datum wordt verwacht, bv. 2020-05-04 of 04/05/2020."
+
+msgid "Expected M or F."
+msgstr "M of F wordt verwacht."
+
+msgid "Expected yes or no."
+msgstr "Ja of nee wordt verwacht."
+
+msgid "Expected one of: a, ar, r."
+msgstr "Een waarde uit a, ar, r wordt verwacht."
+
+msgid "Expected a number, e.g. 12.50."
+msgstr "Een getal wordt verwacht, bv. 12.50."
+
+msgid "The file has no %(column)s column."
+msgstr "Het bestand heeft geen kolom “%(column)s”."
+
+msgid "The payments file has no %(column)s column."
+msgstr "Het betalingsbestand heeft geen kolom “%(column)s”."
+
+msgid "Column “%(name)s” is not part of the format and is ignored."
+msgstr "De kolom “%(name)s” maakt geen deel uit van het formaat en wordt genegeerd."
+
+msgid "Two rows name “%(name)s”. Check whether they are the same person."
+msgstr "Twee rijen hebben de naam “%(name)s”. Controleer of het om dezelfde persoon gaat."
+
+msgid "%(column)s is required."
+msgstr "“%(column)s” is verplicht."
+
+msgid "%(column)s is longer than %(limit)s characters."
+msgstr "“%(column)s” is langer dan %(limit)s tekens."
+
+msgid "%(column)s: “%(value)s” is not an email address."
+msgstr "%(column)s: “%(value)s” is geen e-mailadres."
+
+msgid "%(column)s: “%(value)s” is not a phone number."
+msgstr "%(column)s: “%(value)s” is geen telefoonnummer."
+
+msgid "%(column)s: no role named “%(value)s”."
+msgstr "%(column)s: geen rol met de naam “%(value)s”."
+
+msgid "External ID “%(value)s” appears on more than one row."
+msgstr "Externe id “%(value)s” komt op meer dan één rij voor."
+
+msgid "Another member is already called “%(name)s”."
+msgstr "Een ander lid heet al “%(name)s”."
+
+msgid "%(column)s: a member cannot be their own parent."
+msgstr "%(column)s: een lid kan niet zijn eigen ouder zijn."
+
+msgid "%(column)s: no member with external ID “%(value)s”."
+msgstr "%(column)s: geen lid met externe id “%(value)s”."
+
+msgid "%(column)s is required for a participant."
+msgstr "“%(column)s” is verplicht voor een deelnemer."
+
+msgid "%(column)s: this instance has no such school year, so the section cannot be recorded."
+msgstr "%(column)s: dit schooljaar bestaat nog niet op deze site, de sectie kan niet worden geregistreerd."
+
+msgid "%(section)s is a section for %(wanted)s, and this member is %(given)s."
+msgstr "%(section)s is een sectie voor %(wanted)s, en dit lid is %(given)s."
+
+msgid "%(column)s: “%(value)s” is not a school year."
+msgstr "%(column)s: “%(value)s” is geen schooljaar."
+
+msgid "No section named “%(name)s”."
+msgstr "Geen enkele sectie heet “%(name)s”."
+
+msgid "No section named “%(name)s” in the “%(branch)s” branch."
+msgstr "Geen sectie met de naam “%(name)s” in de tak “%(branch)s”."
+
+msgid "“%(name)s” is the name of %(count)s sections; write it as branch:name to say which one."
+msgstr "“%(name)s” is de naam van %(count)s secties; schrijf tak:naam om aan te geven welke."
+
+msgid "External ID “%(external)s” and email “%(email)s” belong to two different members."
+msgstr "Externe id “%(external)s” en e-mailadres “%(email)s” horen bij twee verschillende leden."
+
+msgid "%(counter)s member created"
+msgid_plural "%(counter)s members created"
+msgstr[0] "%(counter)s lid aangemaakt"
+msgstr[1] "%(counter)s leden aangemaakt"
+
+msgid "%(counter)s member updated"
+msgid_plural "%(counter)s members updated"
+msgstr[0] "%(counter)s lid bijgewerkt"
+msgstr[1] "%(counter)s leden bijgewerkt"
+
+msgid "%(counter)s household created"
+msgid_plural "%(counter)s households created"
+msgstr[0] "%(counter)s huishouden aangemaakt"
+msgstr[1] "%(counter)s huishoudens aangemaakt"
+
+msgid "%(counter)s school year created"
+msgid_plural "%(counter)s school years created"
+msgstr[0] "%(counter)s schooljaar aangemaakt"
+msgstr[1] "%(counter)s schooljaren aangemaakt"
+
+msgid "%(counter)s payment recorded"
+msgid_plural "%(counter)s payments recorded"
+msgstr[0] "%(counter)s betaling geregistreerd"
+msgstr[1] "%(counter)s betalingen geregistreerd"
+
+msgid "%(counter)s warning"
+msgid_plural "%(counter)s warnings"
+msgstr[0] "%(counter)s waarschuwing"
+msgstr[1] "%(counter)s waarschuwingen"
+
+msgid "%(counter)s row rejected"
+msgid_plural "%(counter)s rows rejected"
+msgstr[0] "%(counter)s rij geweigerd"
+msgstr[1] "%(counter)s rijen geweigerd"

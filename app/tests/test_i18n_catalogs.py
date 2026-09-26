@@ -338,7 +338,7 @@ NEW_STRINGS = [
     (
         "A unit that is moving from another system has a one-off importer "
         "for the old site's database; it is a script run on the server, "
-        "described in the repository's niche-tools/README.md.",
+        "described in the repository's contrib/legacy-import/README.md.",
         "importateur ponctuel",
         "eenmalige importeur",
     ),
@@ -450,6 +450,150 @@ NEW_STRINGS = [
         "gemeld aan de sectie",
     ),
     ("The absence has been withdrawn.", "retirée", "ingetrokken"),
+    # Member import and export, added with the shared column format.
+    ("Import and export", "Importer et exporter", "Importeren en exporteren"),
+    ("Export", "Exporter", "Exporteren"),
+    ("Members", "Membres", "Leden"),
+    ("Columns", "Colonnes", "Kolommen"),
+    ("Column", "Colonne", "Kolom"),
+    ("Line", "Ligne", "Regel"),
+    ("Remark", "Remarque", "Opmerking"),
+    ("What this file would do", "Ce que ce fichier ferait", "Wat dit bestand zou doen"),
+    ("Import this file", "Importer ce fichier", "Dit bestand importeren"),
+    ("Preview the import", "Aperçu de l'import", "Voorbeeld van de import"),
+    ("Members file", "Fichier des membres", "Bestand met leden"),
+    (
+        "Payments file (optional)",
+        "Fichier des paiements (facultatif)",
+        "Bestand met betalingen (optioneel)",
+    ),
+    ("Template:", "Modèle :", "Sjabloon:"),
+    (
+        "Bring members in from a spreadsheet, or take the whole troop out as "
+        "one. Both directions use the same columns.",
+        "Faites entrer des membres",
+        "Haal leden binnen",
+    ),
+    (
+        "Every member, one row each, with the year's balances and the payments "
+        "recorded for them.",
+        "Tous les membres",
+        "Alle leden",
+    ),
+    (
+        "Read-only: the export writes it, the import ignores it.",
+        "Lecture seule",
+        "Alleen-lezen",
+    ),
+    # The columns the format adds beyond the ones the member form already had.
+    ("External ID", "Identifiant externe", "Externe id"),
+    (
+        "Parent external IDs",
+        "Identifiants externes des parents",
+        "Externe ids van de ouders",
+    ),
+    ("Section this year", "Section cette année", "Sectie dit jaar"),
+    ("Section next year", "Section l'année suivante", "Sectie volgend jaar"),
+    # What each column accepts, the legend beside the upload form.
+    ("A date, e.g. 2020-05-04 or 04/05/2020.", "Une date, par ex.", "Een datum, bv."),
+    ("M for a boy, F for a girl.", "pour un garçon", "voor een jongen"),
+    ("yes or no.", "oui ou non", "ja of nee"),
+    ("An amount, e.g. 12.50.", "Un montant", "Een bedrag"),
+    (
+        "A role's short code, or its name.",
+        "Le code court d'un rôle",
+        "De korte code van een rol",
+    ),
+    (
+        "A section name, or branch:name when two sections share one.",
+        "branche:nom",
+        "tak:naam",
+    ),
+    ("Separate several values with a semicolon.", "point-virgule", "puntkomma"),
+    ("a (active), ar (archived) or r (requested).", "archivé", "gearchiveerd"),
+    (
+        "The year the school year starts in, e.g. 2025.",
+        "L'année de début",
+        "Het jaar waarin het schooljaar begint",
+    ),
+    # What the preview and the import report.
+    (
+        "No row has anything to report.",
+        "Aucune ligne n'a de remarque",
+        "Geen enkele rij heeft iets te melden",
+    ),
+    (
+        "A row with an error is not imported, and nothing is written while "
+        "one is left. Fix the file and upload it again.",
+        "Corrigez le fichier",
+        "Verbeter het bestand",
+    ),
+    (
+        "Download the template, fill it in, then upload it here. Nothing is "
+        "written until you have read the preview. No email is sent to the "
+        "members it creates.",
+        "Aucun e-mail n'est envoyé",
+        "geen e-mail verstuurd",
+    ),
+    ("The file is empty.", "fichier est vide", "bestand is leeg"),
+    (
+        "The file could not be read. Upload a CSV or an XLSX file.",
+        "n'a pas pu être lu",
+        "kon niet worden gelezen",
+    ),
+    ("Nothing was imported.", "Rien n'a été importé", "Er is niets geïmporteerd"),
+    (
+        "Nothing was imported: the file has errors.",
+        "le fichier contient des erreurs",
+        "het bestand bevat fouten",
+    ),
+    ("Choose a file to import.", "Choisissez un fichier", "Kies een bestand"),
+    (
+        "The upload has expired; choose the file again.",
+        "téléversement a expiré",
+        "upload is verlopen",
+    ),
+    (
+        "%(created)s members created, %(updated)s updated, %(payments)s "
+        "payments recorded.",
+        "paiements enregistrés",
+        "betalingen geregistreerd",
+    ),
+    # What a row is told when a cell will not do.
+    ("%(column)s is required.", "est obligatoire", "is verplicht"),
+    (
+        "%(column)s is required for a participant.",
+        "obligatoire pour un animé",
+        "verplicht voor een deelnemer",
+    ),
+    ("Expected M or F.", "M ou F est attendu", "M of F wordt verwacht"),
+    (
+        "Expected a date, e.g. 2020-05-04 or 04/05/2020.",
+        "Une date est attendue",
+        "Een datum wordt verwacht",
+    ),
+    (
+        "Column “%(name)s” is not part of the format and is ignored.",
+        "ne fait pas partie du format",
+        "maakt geen deel uit",
+    ),
+    (
+        "Two rows name “%(name)s”. Check whether they are the same person.",
+        "Vérifiez s'il s'agit",
+        "Controleer of het om dezelfde persoon",
+    ),
+    ("Another member is already called “%(name)s”.", "porte déjà le nom", "heet al"),
+    ("No section named “%(name)s”.", "Aucune section ne porte", "Geen enkele sectie heet"),
+    (
+        "External ID “%(value)s” appears on more than one row.",
+        "apparaît sur plusieurs lignes",
+        "komt op meer dan één rij",
+    ),
+    (
+        "%(column)s: no member with external ID “%(value)s”.",
+        "aucun membre avec l'identifiant externe",
+        "geen lid met externe id",
+    ),
 ]
 
 

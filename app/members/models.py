@@ -102,6 +102,21 @@ class Person(models.Model):
         blank=True,
         help_text=_("First 6 characters of the UUID — key to link a parent to a child"),
     )
+    # This person's identifier in whatever system the troop kept its members in
+    # before. It is the first thing an import matches on and the value an
+    # export writes, which is what makes a file round-trip: matched by email
+    # instead, a member who changes address would be created a second time.
+    # Empty until a troop gives one, so the uniqueness constraint below skips
+    # it — the many members nobody has an external id for are not duplicates.
+    external_id = models.CharField(
+        max_length=100,
+        blank=True,
+        default="",
+        help_text=_(
+            "Identifier this member has in another system, used to match them "
+            "when importing."
+        ),
+    )
     first_name = models.CharField(max_length=150)
     last_name = models.CharField(max_length=150)
     birthday = models.DateField(null=True, blank=True)
@@ -175,6 +190,18 @@ class Person(models.Model):
         related_name="children",
         blank=True,
     )
+
+    class Meta:
+        constraints = [
+            # Only where it is set: a partial index, so the members nobody has
+            # an external identifier for are all the empty string and none of
+            # them is a duplicate of another.
+            models.UniqueConstraint(
+                fields=["external_id"],
+                condition=~models.Q(external_id=""),
+                name="uniq_person_external_id",
+            ),
+        ]
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
