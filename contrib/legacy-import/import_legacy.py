@@ -6,10 +6,10 @@ One-off migration tool: it seeds TroopConnect from a dump of the previous site
 command and never ends up inside the Docker image.  Run it as a plain script,
 mounted into the web container:
 
-    docker compose -f docker-compose-local.yml run --rm \
-      -v "$PWD/niche-tools:/app/niche_tools" \
+    docker compose -f compose.yml -f compose.dev.yml run --rm \
+      -v "$PWD/contrib/legacy-import:/app/legacy_import" \
       -v "$PWD/workspace/db21sv_20240520.sqlite:/data/legacy.sqlite:ro" \
-      web uv run python /app/niche_tools/import_legacy.py /data/legacy.sqlite
+      web uv run python /app/legacy_import/import_legacy.py /data/legacy.sqlite
 
 Add ``--dry-run`` to report what would change and roll everything back.
 
@@ -52,7 +52,7 @@ from django.utils import timezone
 # sys.path — not the project root.  Both have to be fixed before the project
 # imports below resolve.
 _PROJECT_ROOTS = (
-    Path(__file__).resolve().parent.parent,  # this folder mounted at /app/niche_tools
+    Path(__file__).resolve().parent.parent,  # this folder, mounted at /app/legacy_import
     Path(__file__).resolve().parent.parent / "app",  # normal checkout layout
 )
 for _root in _PROJECT_ROOTS:
@@ -63,7 +63,7 @@ else:
     raise SystemExit(
         "Cannot find the Django project (a directory holding manage.py) in "
         + " or ".join(str(root) for root in _PROJECT_ROOTS)
-        + '.  Mount this folder next to it, e.g. -v "$PWD/niche-tools:/app/niche_tools".'
+        + '.  Mount this folder next to it, e.g. -v "$PWD/contrib/legacy-import:/app/legacy_import".'
     )
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "troopconnect.settings")
 import django  # noqa: E402

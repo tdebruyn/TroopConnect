@@ -85,4 +85,19 @@ urlpatterns = [
     path("settings", views.TroopSettingsView.as_view(), name="troop_settings"),
     # The yearly section passage: when it runs, and the button to run it now.
     path("passage", views.PassageView.as_view(), name="passage"),
+    # Member import and export: one column format, read and written by both
+    # directions. Staff only, and the one page that hands out the troop's whole
+    # member list, so it stays behind the same gate as the settings page.
+    path("import", views.MemberImportView.as_view(), name="member_import"),
+    path(
+        "import/template/<str:extension>",
+        views.ExportDownloadView.as_view(),
+        {"kind": "template"},
+        name="import_template",
+    ),
+    path(
+        "export/<str:kind>/<str:extension>",
+        views.ExportDownloadView.as_view(),
+        name="export_download",
+    ),
 ]

@@ -95,10 +95,10 @@ scripts/dev-migrate.sh --check     # exit 1 if anything is unapplied
 `docker compose run --rm`). Set `COMPOSE_FILE` to target a different dev overlay;
 `compose.yml` is always included.
 
-## Niche tools
+## One-off tools
 
-`niche-tools/` holds scripts for very specific, one-off occasions (importing the
-old site's data, repairing a table) that 99% of the time you can ignore. They
+`contrib/` holds the run-by-hand extras that no installation needs: the
+Ansible playbooks, and the one-off importer for the old site's database. They
 sit outside `app/` on purpose, so they are never built into the Docker image —
-you run them by hand, mounted into a throwaway container. Each tool is
-documented in [`niche-tools/README.md`](niche-tools/README.md).
+you run them by hand, mounted into a throwaway container. The importer is
+documented in [`contrib/legacy-import/README.md`](contrib/legacy-import/README.md).

@@ -2553,7 +2553,7 @@ msgid "where branches, sections and everything else the wizard did not ask about
 msgstr ""
 
 #: members/wizard (hand-added; see docs/dev/CONTRACT.md)
-msgid "A unit that is moving from another system has a one-off importer for the old site's database; it is a script run on the server, described in the repository's niche-tools/README.md."
+msgid "A unit that is moving from another system has a one-off importer for the old site's database; it is a script run on the server, described in the repository's contrib/legacy-import/README.md."
 msgstr ""
 
 #: members/wizard (hand-added; see docs/dev/CONTRACT.md)

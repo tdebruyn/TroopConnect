@@ -9,9 +9,9 @@ The importer is not a Django management command any more (it lives outside
 this folder instead of via ``call_command``.  Run it with the tool's folder
 mounted into the web container — see README.md:
 
-    docker compose -f docker-compose-local.yml run --rm \\
-      -v "$PWD/niche-tools:/app/niche_tools" \\
-      web uv run /app/manage.py test niche_tools.test_import_legacy
+    docker compose -f compose.yml -f compose.dev.yml run --rm \\
+      -v "$PWD/contrib/legacy-import:/app/legacy_import" \\
+      web uv run /app/manage.py test legacy_import.test_import_legacy
 """
 
 import importlib.util
@@ -39,7 +39,7 @@ from members.models import (
 def _load_importer():
     """Import ``import_legacy.py`` from this folder (it is not on sys.path)."""
     path = Path(__file__).resolve().with_name("import_legacy.py")
-    spec = importlib.util.spec_from_file_location("niche_tools_import_legacy", path)
+    spec = importlib.util.spec_from_file_location("legacy_import_legacy", path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module

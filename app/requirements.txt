@@ -31,6 +31,7 @@ django-timezone-field==7.2.2
 django-widget-tweaks==1.5.1
 djlint==1.46.2
 editorconfig==0.17.1
+et-xmlfile==2.0.0
 executing==2.2.1
 fontawesomefree==6.6.0
 idna==3.20
@@ -44,6 +45,7 @@ kombu==5.6.2
 matplotlib-inline==0.2.2
 nh3==0.3.7
 oauthlib==3.3.1
+openpyxl==3.1.5
 packaging==26.3
 parso==0.8.7
 pathspec==1.1.1

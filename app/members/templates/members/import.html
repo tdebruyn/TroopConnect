@@ -1,0 +1,176 @@
+{% extends "members/base.html" %}
+{% load i18n %}
+{% block hat_title %}
+  {% trans "Import and export" %}
+{% endblock hat_title %}
+{% block hat_text %}
+  {% trans "Bring members in from a spreadsheet, or take the whole troop out as one. Both directions use the same columns." %}
+{% endblock hat_text %}
+{% block subcontent %}
+  <div class="alert alert-info py-2" role="status">
+    {% blocktrans %}The format is documented in the configuration contract, under “Member import and export”. A file exported here can be imported back as it stands.{% endblocktrans %}
+  </div>
+
+  {% if plan %}
+    <div class="card border-0 shadow-sm mb-4" id="preview">
+      <div class="card-body">
+        <h2 class="h5">{% trans "What this file would do" %}</h2>
+        <ul class="list-unstyled mb-3">
+          <li>{% blocktrans count counter=counts.members_created %}{{ counter }} member created{% plural %}{{ counter }} members created{% endblocktrans %}</li>
+          <li>{% blocktrans count counter=counts.members_updated %}{{ counter }} member updated{% plural %}{{ counter }} members updated{% endblocktrans %}</li>
+          {% if counts.households_created %}
+            <li>{% blocktrans count counter=counts.households_created %}{{ counter }} household created{% plural %}{{ counter }} households created{% endblocktrans %}</li>
+          {% endif %}
+          {% if counts.school_years_created %}
+            <li>{% blocktrans count counter=counts.school_years_created %}{{ counter }} school year created{% plural %}{{ counter }} school years created{% endblocktrans %}</li>
+          {% endif %}
+          <li>{% blocktrans count counter=counts.payments_created %}{{ counter }} payment recorded{% plural %}{{ counter }} payments recorded{% endblocktrans %}</li>
+          <li>{% blocktrans count counter=counts.warnings %}{{ counter }} warning{% plural %}{{ counter }} warnings{% endblocktrans %}</li>
+          <li class="{% if plan.has_errors %}text-danger fw-bold{% endif %}">{% blocktrans count counter=counts.members_rejected|add:counts.payments_rejected %}{{ counter }} row rejected{% plural %}{{ counter }} rows rejected{% endblocktrans %}</li>
+        </ul>
+
+        {% if plan.file_warnings %}
+          <div class="alert alert-warning py-2" role="alert">
+            <ul class="mb-0">
+              {% for warning in plan.file_warnings %}<li>{{ warning }}</li>{% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+
+        {% if problems %}
+          <table class="table table-sm align-middle">
+            <thead>
+              <tr>
+                <th scope="col">{% trans "Line" %}</th>
+                <th scope="col">{% trans "Member" %}</th>
+                <th scope="col">{% trans "Remark" %}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in problems %}
+                <tr>
+                  <td>{{ row.line }}</td>
+                  <td>{{ row.name }}</td>
+                  <td>
+                    {% for error in row.errors %}
+                      <div class="text-danger"><i class="bi bi-x-circle"></i> {{ error }}</div>
+                    {% endfor %}
+                    {% for warning in row.warnings %}
+                      <div class="text-warning-emphasis"><i class="bi bi-exclamation-triangle"></i> {{ warning }}</div>
+                    {% endfor %}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% if problem_total > problems|length %}
+            <p class="text-muted small">
+              {% blocktrans with shown=problems|length total=problem_total %}Showing the first {{ shown }} of {{ total }} rows with a remark.{% endblocktrans %}
+            </p>
+          {% endif %}
+        {% else %}
+          <p class="text-muted">{% trans "No row has anything to report." %}</p>
+        {% endif %}
+
+        {% if plan.has_errors %}
+          <div class="alert alert-danger py-2" role="alert">
+            {% trans "A row with an error is not imported, and nothing is written while one is left. Fix the file and upload it again." %}
+          </div>
+        {% else %}
+          <form method="post" action="{% url 'members:member_import' %}" class="d-inline">
+            {% csrf_token %}
+            <button type="submit" name="action" value="apply" class="btn btn-primary">{% trans "Import this file" %}</button>
+          </form>
+        {% endif %}
+        <form method="post" action="{% url 'members:member_import' %}" class="d-inline">
+          {% csrf_token %}
+          <button type="submit" name="action" value="cancel" class="btn btn-outline-secondary">{% trans "Cancel" %}</button>
+        </form>
+      </div>
+    </div>
+  {% else %}
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-body">
+        <h2 class="h5">{% trans "Export" %}</h2>
+        <p class="text-muted">
+          {% if fees_enabled %}
+            {% trans "Every member, one row each, with the year's balances and the payments recorded for them." %}
+          {% else %}
+            {% trans "Every member, one row each." %}
+          {% endif %}
+        </p>
+        <a class="btn btn-outline-primary" href="{% url 'members:export_download' 'members' 'csv' %}">{% trans "Members" %} — CSV</a>
+        <a class="btn btn-outline-primary" href="{% url 'members:export_download' 'members' 'xlsx' %}">{% trans "Members" %} — XLSX</a>
+        {% if fees_enabled %}
+          <a class="btn btn-outline-primary" href="{% url 'members:export_download' 'payments' 'csv' %}">{% trans "Payments" %} — CSV</a>
+          <a class="btn btn-outline-primary" href="{% url 'members:export_download' 'payments' 'xlsx' %}">{% trans "Payments" %} — XLSX</a>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-body">
+        <h2 class="h5">{% trans "Import" %}</h2>
+        <p class="text-muted">
+          {% blocktrans %}Download the template, fill it in, then upload it here. Nothing is written until you have read the preview. No email is sent to the members it creates.{% endblocktrans %}
+        </p>
+        <p>
+          {% trans "Template:" %}
+          <a href="{% url 'members:import_template' 'csv' %}">CSV</a> ·
+          <a href="{% url 'members:import_template' 'xlsx' %}">XLSX</a>
+        </p>
+        <form method="post" action="{% url 'members:member_import' %}" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label class="form-label" for="members-file">{% trans "Members file" %}</label>
+            <input class="form-control" type="file" id="members-file" name="members" accept=".csv,.xlsx,.xlsm,.txt" required>
+          </div>
+          {% if fees_enabled %}
+            <div class="mb-3">
+              <label class="form-label" for="payments-file">{% trans "Payments file (optional)" %}</label>
+              <input class="form-control" type="file" id="payments-file" name="payments" accept=".csv,.xlsx,.xlsm,.txt">
+            </div>
+          {% endif %}
+          <p class="form-text">
+            {% blocktrans %}CSV or XLSX, up to {{ max_megabytes }} MB each.{% endblocktrans %}
+          </p>
+          <button type="submit" name="action" value="preview" class="btn btn-primary">{% trans "Preview the import" %}</button>
+        </form>
+      </div>
+    </div>
+  {% endif %}
+
+  <div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+      <h2 class="h5">{% trans "Columns" %}</h2>
+      <table class="table table-sm">
+        <thead>
+          <tr>
+            <th scope="col">{% trans "Column" %}</th>
+            <th scope="col">{% trans "What it takes" %}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for column in member_legend %}
+            <tr>
+              <td>{{ column.heading }}</td>
+              <td class="text-muted">{{ column.hint }}</td>
+            </tr>
+          {% endfor %}
+          {% for column in balance_headings %}
+            <tr>
+              <td>{{ column }}</td>
+              <td class="text-muted">{% trans "Read-only: the export writes it, the import ignores it." %}</td>
+            </tr>
+          {% endfor %}
+          {% for column in payment_legend %}
+            <tr>
+              <td>{% trans "Payments file:" %} {{ column.heading }}</td>
+              <td class="text-muted">{{ column.hint }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endblock subcontent %}

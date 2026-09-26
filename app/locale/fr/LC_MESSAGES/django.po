@@ -2967,7 +2967,7 @@ msgid "where branches, sections and everything else the wizard did not ask about
 msgstr "où se modifient les branches, les sections et tout ce que l'assistant n'a pas demandé."
 
 #: members/wizard (hand-added; see docs/dev/CONTRACT.md)
-msgid "A unit that is moving from another system has a one-off importer for the old site's database; it is a script run on the server, described in the repository's niche-tools/README.md."
+msgid "A unit that is moving from another system has a one-off importer for the old site's database; it is a script run on the server, described in the repository's contrib/legacy-import/README.md."
 msgstr "Une unité qui migre depuis un autre système dispose d'un importateur ponctuel pour la base de données de l'ancien site ; c'est un script exécuté sur le serveur, décrit dans niche-tools/README.md du dépôt."
 
 #: members/wizard (hand-added; see docs/dev/CONTRACT.md)
@@ -3289,3 +3289,257 @@ msgstr "Signalée par"
 #: members/absences.py
 msgid "A parent"
 msgstr "Un parent"
+
+msgid "Import and export"
+msgstr "Importer et exporter"
+
+msgid "Bring members in from a spreadsheet, or take the whole troop out as one. Both directions use the same columns."
+msgstr "Faites entrer des membres depuis un tableur, ou sortez toute l'unité d'un coup. Les deux sens utilisent les mêmes colonnes."
+
+msgid "The format is documented in the configuration contract, under “Member import and export”. A file exported here can be imported back as it stands."
+msgstr "Le format est décrit dans le contrat de configuration, à la section « Import et export des membres ». Un fichier exporté ici peut être réimporté tel quel."
+
+msgid "What this file would do"
+msgstr "Ce que ce fichier ferait"
+
+msgid "Showing the first %(shown)s of %(total)s rows with a remark."
+msgstr "Affichage des %(shown)s premières lignes sur %(total)s comportant une remarque."
+
+msgid "No row has anything to report."
+msgstr "Aucune ligne n'a de remarque à signaler."
+
+msgid "A row with an error is not imported, and nothing is written while one is left. Fix the file and upload it again."
+msgstr "Une ligne comportant une erreur n'est pas importée, et rien n'est écrit tant qu'il en reste une. Corrigez le fichier et téléversez-le à nouveau."
+
+msgid "Import this file"
+msgstr "Importer ce fichier"
+
+msgid "Export"
+msgstr "Exporter"
+
+msgid "Every member, one row each, with the year's balances and the payments recorded for them."
+msgstr "Tous les membres, une ligne par personne, avec les soldes de l'année et les paiements enregistrés."
+
+msgid "Every member, one row each."
+msgstr "Tous les membres, une ligne par personne."
+
+msgid "Download the template, fill it in, then upload it here. Nothing is written until you have read the preview. No email is sent to the members it creates."
+msgstr "Téléchargez le modèle, complétez-le, puis téléversez-le ici. Rien n'est écrit avant que vous ayez lu l'aperçu. Aucun e-mail n'est envoyé aux membres créés."
+
+msgid "Template:"
+msgstr "Modèle :"
+
+msgid "Members file"
+msgstr "Fichier des membres"
+
+msgid "Payments file (optional)"
+msgstr "Fichier des paiements (facultatif)"
+
+msgid "CSV or XLSX, up to %(max_megabytes)s MB each."
+msgstr "CSV ou XLSX, jusqu'à %(max_megabytes)s Mo chacun."
+
+msgid "Preview the import"
+msgstr "Aperçu de l'import"
+
+msgid "Columns"
+msgstr "Colonnes"
+
+msgid "Column"
+msgstr "Colonne"
+
+msgid "What it takes"
+msgstr "Ce qu'elle attend"
+
+msgid "Read-only: the export writes it, the import ignores it."
+msgstr "Lecture seule : l'export l'écrit, l'import l'ignore."
+
+msgid "Payments file:"
+msgstr "Fichier des paiements :"
+
+msgid "Line"
+msgstr "Ligne"
+
+msgid "Remark"
+msgstr "Remarque"
+
+msgid "Nothing was imported."
+msgstr "Rien n'a été importé."
+
+msgid "Choose a file to import."
+msgstr "Choisissez un fichier à importer."
+
+msgid "The upload has expired; choose the file again."
+msgstr "Le téléversement a expiré ; choisissez à nouveau le fichier."
+
+msgid "Nothing was imported: the file has errors."
+msgstr "Rien n'a été importé : le fichier contient des erreurs."
+
+msgid "%(created)s members created, %(updated)s updated, %(payments)s payments recorded."
+msgstr "%(created)s membres créés, %(updated)s mis à jour, %(payments)s paiements enregistrés."
+
+msgid "The file is empty."
+msgstr "Le fichier est vide."
+
+msgid "The file could not be read. Upload a CSV or an XLSX file."
+msgstr "Le fichier n'a pas pu être lu. Téléversez un fichier CSV ou XLSX."
+
+msgid "No column in the file matches the format."
+msgstr "Aucune colonne du fichier ne correspond au format."
+
+msgid "“%(name)s” is larger than %(limit)s MB."
+msgstr "« %(name)s » dépasse %(limit)s Mo."
+
+msgid "External ID"
+msgstr "Identifiant externe"
+
+msgid "Parent external IDs"
+msgstr "Identifiants externes des parents"
+
+msgid "Section this year"
+msgstr "Section cette année"
+
+msgid "Section next year"
+msgstr "Section l'année suivante"
+
+msgid "A date, e.g. 2020-05-04 or 04/05/2020."
+msgstr "Une date, par ex. 2020-05-04 ou 04/05/2020."
+
+msgid "M for a boy, F for a girl."
+msgstr "M pour un garçon, F pour une fille."
+
+msgid "yes or no."
+msgstr "oui ou non."
+
+msgid "A role's short code, or its name."
+msgstr "Le code court d'un rôle, ou son nom."
+
+msgid "Role short codes or names, separated by semicolons."
+msgstr "Codes courts ou noms de rôles, séparés par des points-virgules."
+
+msgid "Separate several values with a semicolon."
+msgstr "Séparez plusieurs valeurs par un point-virgule."
+
+msgid "A section name, or branch:name when two sections share one."
+msgstr "Un nom de section, ou branche:nom lorsque deux sections portent le même."
+
+msgid "a (active), ar (archived) or r (requested)."
+msgstr "a (actif), ar (archivé) ou r (demandé)."
+
+msgid "An amount, e.g. 12.50."
+msgstr "Un montant, par ex. 12.50."
+
+msgid "The year the school year starts in, e.g. 2025."
+msgstr "L'année de début de l'année scolaire, par ex. 2025."
+
+msgid "Expected a date, e.g. 2020-05-04 or 04/05/2020."
+msgstr "Une date est attendue, par ex. 2020-05-04 ou 04/05/2020."
+
+msgid "Expected M or F."
+msgstr "M ou F est attendu."
+
+msgid "Expected yes or no."
+msgstr "Oui ou non est attendu."
+
+msgid "Expected one of: a, ar, r."
+msgstr "Une valeur parmi a, ar, r est attendue."
+
+msgid "Expected a number, e.g. 12.50."
+msgstr "Un nombre est attendu, par ex. 12.50."
+
+msgid "The file has no %(column)s column."
+msgstr "Le fichier n'a pas de colonne « %(column)s »."
+
+msgid "The payments file has no %(column)s column."
+msgstr "Le fichier des paiements n'a pas de colonne « %(column)s »."
+
+msgid "Column “%(name)s” is not part of the format and is ignored."
+msgstr "La colonne « %(name)s » ne fait pas partie du format et est ignorée."
+
+msgid "Two rows name “%(name)s”. Check whether they are the same person."
+msgstr "Deux lignes portent le nom « %(name)s ». Vérifiez s'il s'agit de la même personne."
+
+msgid "%(column)s is required."
+msgstr "« %(column)s » est obligatoire."
+
+msgid "%(column)s is longer than %(limit)s characters."
+msgstr "« %(column)s » dépasse %(limit)s caractères."
+
+msgid "%(column)s: “%(value)s” is not an email address."
+msgstr "%(column)s : « %(value)s » n'est pas une adresse e-mail."
+
+msgid "%(column)s: “%(value)s” is not a phone number."
+msgstr "%(column)s : « %(value)s » n'est pas un numéro de téléphone."
+
+msgid "%(column)s: no role named “%(value)s”."
+msgstr "%(column)s : aucun rôle nommé « %(value)s »."
+
+msgid "External ID “%(value)s” appears on more than one row."
+msgstr "L'identifiant externe « %(value)s » apparaît sur plusieurs lignes."
+
+msgid "Another member is already called “%(name)s”."
+msgstr "Un autre membre porte déjà le nom « %(name)s »."
+
+msgid "%(column)s: a member cannot be their own parent."
+msgstr "%(column)s : un membre ne peut pas être son propre parent."
+
+msgid "%(column)s: no member with external ID “%(value)s”."
+msgstr "%(column)s : aucun membre avec l'identifiant externe « %(value)s »."
+
+msgid "%(column)s is required for a participant."
+msgstr "« %(column)s » est obligatoire pour un animé."
+
+msgid "%(column)s: this instance has no such school year, so the section cannot be recorded."
+msgstr "%(column)s : cette année scolaire n'existe pas encore sur ce site, la section ne peut pas être enregistrée."
+
+msgid "%(section)s is a section for %(wanted)s, and this member is %(given)s."
+msgstr "%(section)s est une section pour %(wanted)s, et ce membre est %(given)s."
+
+msgid "%(column)s: “%(value)s” is not a school year."
+msgstr "%(column)s : « %(value)s » n'est pas une année scolaire."
+
+msgid "No section named “%(name)s”."
+msgstr "Aucune section ne porte le nom « %(name)s »."
+
+msgid "No section named “%(name)s” in the “%(branch)s” branch."
+msgstr "Aucune section nommée « %(name)s » dans la branche « %(branch)s »."
+
+msgid "“%(name)s” is the name of %(count)s sections; write it as branch:name to say which one."
+msgstr "« %(name)s » est le nom de %(count)s sections ; écrivez branche:nom pour préciser laquelle."
+
+msgid "External ID “%(external)s” and email “%(email)s” belong to two different members."
+msgstr "L'identifiant externe « %(external)s » et l'adresse e-mail « %(email)s » appartiennent à deux membres différents."
+
+msgid "%(counter)s member created"
+msgid_plural "%(counter)s members created"
+msgstr[0] "%(counter)s membre créé"
+msgstr[1] "%(counter)s membres créés"
+
+msgid "%(counter)s member updated"
+msgid_plural "%(counter)s members updated"
+msgstr[0] "%(counter)s membre mis à jour"
+msgstr[1] "%(counter)s membres mis à jour"
+
+msgid "%(counter)s household created"
+msgid_plural "%(counter)s households created"
+msgstr[0] "%(counter)s foyer créé"
+msgstr[1] "%(counter)s foyers créés"
+
+msgid "%(counter)s school year created"
+msgid_plural "%(counter)s school years created"
+msgstr[0] "%(counter)s année scolaire créée"
+msgstr[1] "%(counter)s années scolaires créées"
+
+msgid "%(counter)s payment recorded"
+msgid_plural "%(counter)s payments recorded"
+msgstr[0] "%(counter)s paiement enregistré"
+msgstr[1] "%(counter)s paiements enregistrés"
+
+msgid "%(counter)s warning"
+msgid_plural "%(counter)s warnings"
+msgstr[0] "%(counter)s avertissement"
+msgstr[1] "%(counter)s avertissements"
+
+msgid "%(counter)s row rejected"
+msgid_plural "%(counter)s rows rejected"
+msgstr[0] "%(counter)s ligne rejetée"
+msgstr[1] "%(counter)s lignes rejetées"
