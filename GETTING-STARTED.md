@@ -248,13 +248,25 @@ again and read the last few lines it printed.
 
 ## Step 6 — Install TroopConnect
 
-Still on the server. First fetch the project files:
+Still on the server. You need **three files**, and nothing else: the recipe for
+the containers, the web server's configuration, and a template for your
+settings. Nothing is built or compiled on your server — the application itself
+is downloaded ready-made — so you do not need its source code here.
 
 ```bash
-apt-get update && apt-get install -y git
-git clone https://github.com/tdebruyn/TroopConnect.git
-cd TroopConnect
+mkdir troopconnect && cd troopconnect
+
+curl -O https://raw.githubusercontent.com/tdebruyn/TroopConnect/main/compose.yml
+curl --create-dirs -o caddy/Caddyfile \
+  https://raw.githubusercontent.com/tdebruyn/TroopConnect/main/caddy/Caddyfile
+curl -O https://raw.githubusercontent.com/tdebruyn/TroopConnect/main/.env.example
 ```
+
+You should end up with `compose.yml`, `caddy/Caddyfile` and `.env.example`, and
+nothing else. (If you would rather have the whole project on the server — its
+documentation included — `git clone
+https://github.com/tdebruyn/TroopConnect.git` gets you these three files plus
+everything else. It is not needed to run TroopConnect.)
 
 Then create your settings file from the template:
 
@@ -478,7 +490,8 @@ you change them later. Branches and sections are edited in the Django admin
 
 Your data lives in two Docker volumes: **`db_data`** (the database) and
 **`media`** (uploaded files — logos, attachments, signed documents). To back
-them up, from the `TroopConnect` directory on the server:
+them up, from the directory you made in step 6 — the one holding
+`compose.yml`:
 
 ```bash
 docker compose exec -T db pg_dump -U troopconnect troopconnect > backup-$(date +%F).sql
@@ -514,6 +527,10 @@ docker compose up -d
 Migrations run by themselves, under a lock, so a restart is safe. **Back up
 first.** TroopConnect is pre-1.0, and a release can change the database in ways
 that cannot be undone.
+
+Occasionally a release changes `compose.yml` itself — a new setting, a new
+container. When that happens, fetch it again the way you did in step 6 before
+pulling, or the new version will start with the old set of instructions.
 
 ### The four volumes you must not delete
 

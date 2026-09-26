@@ -55,11 +55,15 @@ a `.env`**. There is no build step: the images come from
 
 ### Install
 
-1. Get the repository onto the server — or at least `compose.yml`, the
-   `caddy/` directory it mounts, and `.env.example` — and create the
-   environment file:
+1. Get those three files onto the server — fetch them, or clone the repository
+   if you would rather have it there — and create the environment file:
 
    ```bash
+   curl -O https://raw.githubusercontent.com/tdebruyn/TroopConnect/main/compose.yml
+   curl --create-dirs -o caddy/Caddyfile \
+     https://raw.githubusercontent.com/tdebruyn/TroopConnect/main/caddy/Caddyfile
+   curl -O https://raw.githubusercontent.com/tdebruyn/TroopConnect/main/.env.example
+
    cp .env.example .env
    ```
 
