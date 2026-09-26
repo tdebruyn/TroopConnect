@@ -8,16 +8,22 @@
 # migrates and collects static files.
 set -e
 
-SECRETS_DIR="${SECRETS_DIR:-/data/secrets}"
+SECRET_KEY_FILE="${SECRET_KEY_FILE:-/data/secrets/secret_key}"
+POSTGRES_PASSWORD_FILE="${POSTGRES_PASSWORD_FILE:-/data/db-secrets/postgres_password}"
 
 # ---------------------------------------------------------------------------
 # Secrets
 #
-# Both are generated once and kept in the app_data volume. Losing the secret
-# key logs every user out; losing the database password locks the application
-# out of PostgreSQL. An existing file is never overwritten, so an operator can
-# take control of either value by setting SECRET_KEY or POSTGRES_PASSWORD in
-# .env before the first start.
+# Each is generated once, into its own volume. Losing the secret key logs every
+# user out; losing the database password locks the application out of
+# PostgreSQL. An existing file is never overwritten, so an operator can take
+# control of either value by setting SECRET_KEY or POSTGRES_PASSWORD in .env
+# before the first start.
+#
+# They are kept apart on purpose: the database password lives in a volume that
+# is mounted read-only into the database container, and the secret key does
+# not. A database container that can read the key that signs every session is
+# a privilege it has no use for.
 # ---------------------------------------------------------------------------
 
 generate_secret() {
@@ -30,9 +36,15 @@ ensure_secret_file() {
     file="$1"
     mode="$2"
     supplied="$3"
+    directory="$(dirname "$file")"
 
     if [ -s "$file" ]; then
         return 0
+    fi
+
+    if ! mkdir -p "$directory"; then
+        echo "Cannot create $directory -- is its volume mounted and writable?" >&2
+        exit 1
     fi
 
     if [ -n "$supplied" ]; then
@@ -45,16 +57,11 @@ ensure_secret_file() {
     chmod "$mode" "$file"
 }
 
-if ! mkdir -p "$SECRETS_DIR"; then
-    echo "Cannot create $SECRETS_DIR -- is the app_data volume mounted and writable?" >&2
-    exit 1
-fi
-
-ensure_secret_file "$SECRETS_DIR/secret_key" 600 "${SECRET_KEY:-}"
+ensure_secret_file "$SECRET_KEY_FILE" 600 "${SECRET_KEY:-}"
 
 # PostgreSQL reads this one itself, as its own user, through
 # POSTGRES_PASSWORD_FILE, so it cannot be root-only.
-ensure_secret_file "$SECRETS_DIR/postgres_password" 644 "${POSTGRES_PASSWORD:-}"
+ensure_secret_file "$POSTGRES_PASSWORD_FILE" 644 "${POSTGRES_PASSWORD:-}"
 
 # The init service exists only to create these files before PostgreSQL and the
 # application start, so it has nothing left to do.

@@ -1,0 +1,44 @@
+version: 2
+
+updates:
+  # requirements.txt, fully pinned, so every bump is a Dependabot pull request.
+  - package-ecosystem: pip
+    directory: /app
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      # Patch and minor bumps arrive as one pull request rather than fifteen;
+      # majors stay separate because they need reading.
+      python-minor:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
+
+  # The base images in Dockerfile.prod and Dockerfile.dev.
+  - package-ecosystem: docker
+    directory: /app
+    schedule:
+      interval: weekly
+    groups:
+      docker-minor:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
+
+  # postgres, redis and caddy in compose.yml.
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      docker-compose-minor:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions-minor:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]

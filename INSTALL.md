@@ -67,12 +67,15 @@ Migrations run automatically, under a lock, so a rolling restart is safe.
 
 ## Backups
 
-Two volumes matter: `db_data` (the database) and `media` (uploads). The
-`app_data` volume holds the generated secrets — keep it, or every user is
-logged out and the application can no longer authenticate to the database it
-already initialised.
+Two volumes matter: `db_data` (the database) and `media` (uploads). Two more
+hold generated secrets: `app_secrets` (the Django secret key) and `db_secrets`
+(the database password). Keep them, or every user is logged out and the
+application can no longer authenticate to the database it already initialised.
 
-Deleting `db_data` without deleting `app_data` leaves the stored password
+They are separate so that the database container can read the password it was
+initialised with and nothing else — it never gets the key that signs sessions.
+
+Deleting `db_data` without deleting `db_secrets` leaves the stored password
 pointing at a database that no longer has it. Delete both, or neither.
 
 ## Community-maintained deployment

@@ -61,6 +61,11 @@ TROOP_NAME = env("TROOP_NAME", "TroopConnect")
 # than serving Django's debug pages (source code, settings, SQL) to the world.
 DEBUG = env_bool("DJANGO_DEBUG")
 
+# Which build this is. Baked into the image by the release workflow so a
+# running container can be asked what it is; "dev" for a local build, which
+# never goes through that workflow.
+TC_APP_VERSION = env("TC_APP_VERSION", "dev")
+
 # SECRET_KEY: an explicit environment variable wins; otherwise a key is read
 # from (or created in) the secrets volume so it survives container recreation.
 SECRET_KEY = env("SECRET_KEY")

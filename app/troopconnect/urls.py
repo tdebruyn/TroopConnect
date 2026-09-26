@@ -20,7 +20,12 @@ from django.urls import include, path
 from django.views.i18n import set_language
 from django_ses.views import SESEventWebhookView
 
+from troopconnect.health import healthz
+
 urlpatterns = [
+    # No trailing slash: this is aimed at machines, and a redirect would only
+    # give the healthcheck one more thing to follow.
+    path("healthz", healthz, name="healthz"),
     path("i18n/setlang/", set_language, name="set_language"),
     path("admin/ses/", include("django_ses.urls")),
     path("admin/", admin.site.urls),

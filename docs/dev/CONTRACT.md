@@ -49,7 +49,7 @@ run the app before wiring up mail.
 | `POSTGRES_USER` | `troopconnect` | |
 | `POSTGRES_DB` | `troopconnect` | |
 | `POSTGRES_PASSWORD` | generated | Set it only to choose the password yourself, and only before the first start: the database is initialised with whatever the first run generated. |
-| `POSTGRES_PASSWORD_FILE` | unset | Read when `POSTGRES_PASSWORD` is unset. The compose file points it at `/data/secrets/postgres_password`; the same convention on the Postgres side. |
+| `POSTGRES_PASSWORD_FILE` | unset | Read when `POSTGRES_PASSWORD` is unset. The compose file points it at `/data/db-secrets/postgres_password`; the Postgres image uses the same convention. |
 | `POSTGRES_HOST` | `db` | The compose service name. |
 | `POSTGRES_PORT` | `5432` | |
 | `POSTGRES_CONN_MAX_AGE` | `0` | Seconds to keep connections open. |
@@ -73,8 +73,10 @@ run the app before wiring up mail.
 
 | Variable | Default | Read by |
 | --- | --- | --- |
-| `TC_VERSION` | `1` | `compose.yml`, to choose the image tag: `ghcr.io/tdebruyn/troopconnect:$TC_VERSION`. |
-| `SECRETS_DIR` | `/data/secrets` | `app/entrypoint.sh`, where the generated secrets are written. |
+| `TC_VERSION` | `0` | `compose.yml`, to choose the image tag: `ghcr.io/tdebruyn/troopconnect:$TC_VERSION`. Versions are `0.Y.Z` until 1.0, so `0` tracks the 0.x line; **this default becomes `1` at the 1.0 release**. See `RELEASING.md`. |
+| `TC_APP_VERSION` | `dev` | Baked into the image by the release workflow, so a running container can be asked which build it is. Readable as the `TC_APP_VERSION` Django setting. |
+| `SECRET_KEY_FILE` | `/data/secrets/secret_key` | `app/entrypoint.sh`, which generates it when absent, and `troopconnect.env`. |
+| `POSTGRES_PASSWORD_FILE` | `/data/db-secrets/postgres_password` | The same, for the database password, plus the Postgres image itself. |
 | `RUN_MIGRATIONS` | unset | `app/entrypoint.sh`. Set on the web service only: it makes the entrypoint migrate and collect static files. |
 | `SITE_DOMAIN`, `ACME_EMAIL` | required | Also read by Caddy, which substitutes `{$SITE_DOMAIN}` and `{$ACME_EMAIL}` into `caddy/Caddyfile` and refuses to serve an empty site address. |
 
@@ -177,7 +179,7 @@ point at the right host on a fresh install.
 | `caddy` | `caddy:2-alpine` | TLS termination and reverse proxy; serves `/static/` and `/media/` from volumes. |
 
 The four application services run the same image,
-`ghcr.io/tdebruyn/troopconnect:${TC_VERSION:-1}`. Only `caddy` publishes ports
+`ghcr.io/tdebruyn/troopconnect:${TC_VERSION:-0}`. Only `caddy` publishes ports
 (80 and 443); the rest are reachable only from the compose network, by service
 name. There are no `container_name` overrides, so the project name keeps two
 instances on one host from colliding.
@@ -187,16 +189,23 @@ Volumes:
 | Volume | Mounted at | Holds |
 | --- | --- | --- |
 | `db_data` | `db:/var/lib/postgresql/data` | Database files. |
-| `app_data` | `init`, `web`, `worker`, `beat`, `db` (ro) | Generated secrets: `secret_key` and `postgres_password`. |
+| `app_secrets` | `init`, `web`, `worker`, `beat` | The generated `secret_key`. **Not** mounted into `db`. |
+| `db_secrets` | `init` (rw), `db`, `web`, `worker`, `beat` (ro) | The generated `postgres_password`. |
 | `media` | `web`, `worker`, `beat`, `caddy` (ro) | User uploads. |
 | `static` | `web`, `caddy` (ro) | `collectstatic` output. |
 | `caddy_data`, `caddy_config` | caddy | Certificates and Caddy's autosaved config. |
 
-`app_data` is shared deliberately: `db` reads its password from the same file
-the entrypoint generated, so the two can never disagree. The consequence is
-that deleting `db_data` without deleting `app_data` leaves the generated
-password pointing at a database that no longer has it — delete both, or
-neither.
+The two secrets are separate volumes so that the database container can read
+the password it was initialised with and nothing else. A database process that
+can also read the key signing every session has a privilege it has no use for;
+`init` and the application services mount both, `db` mounts only `db_secrets`,
+read-only, and the smoke workflow asserts it.
+
+Both are shared between `init` and the application on purpose: the database
+reads the password the entrypoint generated, so the two can never disagree. The
+consequence is that deleting `db_data` without deleting `db_secrets` leaves the
+generated password pointing at a database that no longer has it — delete both,
+or neither.
 
 `compose.dev.yml` overlays the same file for development: it builds the image
 locally as `troopconnect-dev:local` (so it never shadows a release tag), mounts
@@ -216,12 +225,12 @@ service and `depends_on: condition: service_completed_successfully`.
 `app/entrypoint.sh` runs for every service built from the app image, as the
 Dockerfile `ENTRYPOINT` with the service's `command` as arguments.
 
-1. **Secrets.** Creates `/data/secrets/secret_key` (mode 600) and
-   `/data/secrets/postgres_password` (mode 644, because Postgres reads it as a
-   different user). An existing file is never overwritten, so `SECRET_KEY` or
-   `POSTGRES_PASSWORD` in the environment wins on the first start and is
-   ignored afterwards. With the argument `init-secrets` it stops here — that is
-   all the `init` service does.
+1. **Secrets.** Creates `SECRET_KEY_FILE` (mode 600) and
+   `POSTGRES_PASSWORD_FILE` (mode 644, because Postgres reads it as a different
+   user), each in its own volume. An existing file is never overwritten, so
+   `SECRET_KEY` or `POSTGRES_PASSWORD` in the environment wins on the first
+   start and is ignored afterwards. With the argument `init-secrets` it stops
+   here — that is all the `init` service does.
 2. **Wait for the database.** `manage.py wait_for_db`, which fails with a
    clear message after `--timeout` (60s) rather than a connection traceback.
 3. **Once-per-deploy work**, only when `RUN_MIGRATIONS` is set, which only the
@@ -229,6 +238,32 @@ Dockerfile `ENTRYPOINT` with the service's `command` as arguments.
    and gives up with a plain-language message if another process is still
    migrating; then `collectstatic`.
 4. `exec "$@"` — the service's command, usually Gunicorn or Celery.
+
+---
+
+## 4b. Health
+
+`GET /healthz` answers `200` while the database and the cache both respond, and
+`503` the moment either does not:
+
+```
+{"database": "ok", "cache": "error"}
+```
+
+It reports *whether* each dependency answered and never the error itself,
+because the endpoint is public. Nothing else is checked: an unreachable SMTP
+server degrades a feature, and taking a working instance out of rotation for it
+would be worse than the degradation.
+
+The web service's Docker healthcheck runs `app/healthcheck.py`, which requests
+`/healthz` over HTTP from inside the container — the same path a request takes,
+rather than importing the app. It addresses `127.0.0.1` with `SITE_DOMAIN` as
+the Host header, because Django would reject that address as a host name in
+production. Caddy waits for the web service to be healthy before starting, so
+a first boot never serves a certificate before the application can answer.
+
+`worker` and `beat` have no healthcheck: `/healthz` describes the web
+application, and there is no equivalent HTTP surface for a Celery process.
 
 ---
 
@@ -263,3 +298,22 @@ values go in `config.yml` (from `config.yml-example`), secrets in `vault.yml`
 (edited with `create-config.py`). The playbook writes them to
 `{{ project_dir }}/.env` as uppercase variables and starts `compose.yml`. See
 that directory's README before relying on it.
+
+---
+
+## 7. Continuous integration
+
+`.github/workflows/`, all triggered on `main` pushes and pull requests:
+
+| Workflow | Does |
+| --- | --- |
+| `test` | The Django suite against Postgres 17 and Redis 7 services, plus `ruff`. The environment it sets is the same set of variables a troop puts in `.env`. |
+| `image` | Builds `ghcr.io/tdebruyn/troopconnect` for amd64 and arm64, and publishes it on tags and `main`. Pull requests build amd64 only and do not push. |
+| `smoke` | Builds the image locally, writes `.env` from `.env.example`, brings the stack up on empty volumes, waits for `/healthz`, checks the homepage and login page answer, then restarts on the same volumes and checks nothing was regenerated. |
+| `security` | `pip-audit` against `requirements.txt`, and Trivy over the built image failing on fixable criticals. Also runs weekly. |
+
+Dependabot (`.github/dependabot.yml`) watches pip, both Docker contexts and
+GitHub Actions; minor and patch bumps arrive as one grouped pull request.
+
+Versioning, the tag-to-image-tag mapping, and the one-time step that makes the
+GHCR package public are in `RELEASING.md`.

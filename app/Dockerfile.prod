@@ -1,5 +1,11 @@
 FROM python:3.13-alpine
 
+# Which release this is, supplied by the image workflow and baked in so a
+# running container can be asked. "dev" for a local build. Read by
+# troopconnect.settings as TC_APP_VERSION.
+ARG TC_APP_VERSION=dev
+ENV TC_APP_VERSION=$TC_APP_VERSION
+
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1

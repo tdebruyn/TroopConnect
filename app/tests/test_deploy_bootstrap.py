@@ -26,10 +26,25 @@ ENTRYPOINT = APP_ROOT / "entrypoint.sh"
 class EntrypointSecretTest(SimpleTestCase):
     """`entrypoint.sh init-secrets` is what the init service runs."""
 
-    def run_entrypoint(self, secrets_dir, **env_overrides):
+    # Mirrors the two volumes compose mounts: the key the application signs
+    # sessions with, and the database password, which lives on its own so the
+    # database container can see one but not the other.
+    KEY_DIR = "secrets"
+    PASSWORD_DIR = "db-secrets"
+
+    def paths(self, root):
+        root = Path(root)
+        return {
+            "secret_key": root / self.KEY_DIR / "secret_key",
+            "postgres_password": root / self.PASSWORD_DIR / "postgres_password",
+        }
+
+    def run_entrypoint(self, root, **env_overrides):
+        paths = self.paths(root)
         env = {
             "PATH": os.environ.get("PATH", "/usr/bin:/bin"),
-            "SECRETS_DIR": str(secrets_dir),
+            "SECRET_KEY_FILE": str(paths["secret_key"]),
+            "POSTGRES_PASSWORD_FILE": str(paths["postgres_password"]),
         }
         # The host environment must not leak in, or a SECRET_KEY exported for
         # another purpose would silently satisfy the test.
@@ -49,22 +64,29 @@ class EntrypointSecretTest(SimpleTestCase):
             result = self.run_entrypoint(tmp)
             self.assertEqual(result.returncode, 0, result.stderr)
 
-            key = Path(tmp) / "secret_key"
-            password = Path(tmp) / "postgres_password"
+            for name, path in self.paths(tmp).items():
+                self.assertTrue(path.is_file(), name)
+                # Long enough to be worth calling a secret.
+                self.assertGreaterEqual(len(path.read_text()), 32)
 
-            self.assertTrue(key.is_file())
-            self.assertTrue(password.is_file())
-            # Long enough to be worth calling a secret.
-            self.assertGreaterEqual(len(key.read_text()), 32)
-            self.assertGreaterEqual(len(password.read_text()), 32)
+    def test_the_secrets_are_written_to_separate_directories(self):
+        """So that the database volume can hold one without the other."""
+        with tempfile.TemporaryDirectory() as tmp:
+            self.run_entrypoint(tmp)
+
+            self.assertNotEqual(
+                self.paths(tmp)["secret_key"].parent,
+                self.paths(tmp)["postgres_password"].parent,
+            )
 
     def test_secret_key_is_private_and_the_database_password_is_readable(self):
         """Postgres reads its own password as a different user, mid-flight."""
         with tempfile.TemporaryDirectory() as tmp:
             self.run_entrypoint(tmp)
+            paths = self.paths(tmp)
 
-            key_mode = (Path(tmp) / "secret_key").stat().st_mode & 0o777
-            password_mode = (Path(tmp) / "postgres_password").stat().st_mode & 0o777
+            key_mode = paths["secret_key"].stat().st_mode & 0o777
+            password_mode = paths["postgres_password"].stat().st_mode & 0o777
 
             self.assertEqual(oct(key_mode), oct(0o600))
             self.assertEqual(oct(password_mode), oct(0o644))
@@ -73,25 +95,21 @@ class EntrypointSecretTest(SimpleTestCase):
         with tempfile.TemporaryDirectory() as tmp:
             self.run_entrypoint(tmp)
 
-            for name in ("secret_key", "postgres_password"):
-                value = (Path(tmp) / name).read_text().strip()
-                self.assertRegex(value, r"^[A-Za-z0-9_-]+$")
+            for path in self.paths(tmp).values():
+                self.assertRegex(path.read_text().strip(), r"^[A-Za-z0-9_-]+$")
 
     def test_secrets_survive_a_second_start(self):
         """Regenerating either would log everyone out, or lock the app out of
         the database it already initialised."""
         with tempfile.TemporaryDirectory() as tmp:
             self.run_entrypoint(tmp)
-            first = {
-                name: (Path(tmp) / name).read_text()
-                for name in ("secret_key", "postgres_password")
-            }
+            first = {name: path.read_text() for name, path in self.paths(tmp).items()}
 
             second_run = self.run_entrypoint(tmp)
             self.assertEqual(second_run.returncode, 0, second_run.stderr)
 
-            for name, value in first.items():
-                self.assertEqual((Path(tmp) / name).read_text(), value)
+            for name, path in self.paths(tmp).items():
+                self.assertEqual(path.read_text(), first[name], name)
 
     def test_operator_supplied_values_are_used_instead(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -100,20 +118,20 @@ class EntrypointSecretTest(SimpleTestCase):
             )
             self.assertEqual(result.returncode, 0, result.stderr)
 
-            self.assertEqual((Path(tmp) / "secret_key").read_text(), "chosen-key")
-            self.assertEqual(
-                (Path(tmp) / "postgres_password").read_text(), "chosen-password"
-            )
+            paths = self.paths(tmp)
+            self.assertEqual(paths["secret_key"].read_text(), "chosen-key")
+            self.assertEqual(paths["postgres_password"].read_text(), "chosen-password")
 
-    def test_reports_a_clear_error_when_the_secrets_dir_cannot_be_created(self):
+    def test_reports_a_clear_error_when_a_secrets_dir_cannot_be_created(self):
         with tempfile.TemporaryDirectory() as tmp:
             blocker = Path(tmp) / "blocker"
             blocker.write_text("not a directory")
 
-            result = self.run_entrypoint(blocker / "secrets")
+            result = self.run_entrypoint(blocker)
 
             self.assertNotEqual(result.returncode, 0)
-            self.assertIn("app_data", result.stderr)
+            self.assertIn("Cannot create", result.stderr)
+            self.assertIn("volume", result.stderr)
 
 
 class WaitForDbTest(TransactionTestCase):

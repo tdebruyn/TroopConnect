@@ -1,0 +1,56 @@
+name: security
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    # Mondays, early. An advisory published mid-week is picked up here without
+    # waiting for the next push.
+    - cron: "17 6 * * 1"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dependencies:
+    name: Known vulnerabilities in the Python dependencies
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+
+      - name: Install pip-audit
+        run: pip install pip-audit
+
+      # Exits non-zero when it finds anything, which is the point: a pinned
+      # dependency with a known advisory should be bumped, not ignored.
+      - name: Audit
+        run: pip-audit --requirement app/requirements.txt
+
+  image:
+    name: Trivy on the built image
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Build the image
+        run: docker build --file app/Dockerfile.prod --tag troopconnect:scan .
+
+      # ignore-unfixed: a critical with no released fix cannot be acted on, and
+      # failing on it would only make the check something to ignore. Anything
+      # that does have a fix fails the run.
+      - name: Scan
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: troopconnect:scan
+          format: table
+          severity: CRITICAL
+          exit-code: "1"
+          ignore-unfixed: true
