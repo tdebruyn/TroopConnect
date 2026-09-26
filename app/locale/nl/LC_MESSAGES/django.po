@@ -131,6 +131,18 @@ msgstr "Attestitem"
 msgid "Attestation items"
 msgstr "Attestitems"
 
+#: attestations/models.py:149
+msgid "The name as the PDF spells it."
+msgstr "De naam zoals hij in de PDF staat."
+
+#: attestations/models.py:168
+msgid "Name correspondence"
+msgstr "Naamkoppeling"
+
+#: attestations/models.py:169
+msgid "Name correspondences"
+msgstr "Naamkoppelingen"
+
 #: attestations/templates/attestations/_steps.html:4
 #, python-format
 msgid "Step %(current)s of %(total)s"
@@ -234,6 +246,14 @@ msgstr "Wordt verstuurd naar"
 #: attestations/templates/attestations/review.html:39
 msgid "Skip"
 msgstr "Overslaan"
+
+#: attestations/templates/attestations/review.html:65
+msgid "Matched by a name correspondence saved in an earlier campaign."
+msgstr "Gekoppeld via een overeenkomst die in een eerdere campagne werd opgeslagen."
+
+#: attestations/templates/attestations/review.html:66
+msgid "Remembered"
+msgstr "Onthouden"
 
 #: attestations/templates/attestations/review.html:49
 msgid "— no match —"

@@ -110,6 +110,12 @@ NEW_STRINGS = [
         "Ne purgez",
         "alleen als",
     ),
+    ("Remembered", "Mémorisé", "Onthouden"),
+    (
+        "Matched by a name correspondence saved in an earlier campaign.",
+        "campagne",
+        "campagne",
+    ),
 ]
 
 

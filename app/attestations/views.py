@@ -405,6 +405,13 @@ def send(request, pk):
         if person_id and (person is None or str(person.pk) != person_id):
             person = Person.objects.filter(pk=person_id).first()
             item.matched_person = person
+            # The operator just paired this spelling with a person by hand;
+            # keep the correspondence so the next campaign reads it back.
+            services.remember_alias(
+                item.extracted_name,
+                person,
+                created_by=getattr(request.user, "person", None),
+            )
 
         recipients = services.resolve_recipients(person)
         item.recipients = recipients

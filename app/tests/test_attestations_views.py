@@ -19,7 +19,8 @@ from django.urls import reverse
 from django.utils.translation import gettext
 from post_office.models import Email
 
-from attestations.models import AttestationCampaign, AttestationItem
+from attestations.models import AttestationCampaign, AttestationItem, NameAlias
+from attestations.services import match_person
 from attestations.views import _anchor_text, _resolve_placeholders
 from members.models import Account, Person, Role
 from members.permissions import can_manage_unit
@@ -535,6 +536,75 @@ class SendBranchingTest(AttestationViewTestBase):
         self.campaign.refresh_from_db()
         self.assertEqual(self.campaign.status, AttestationCampaign.Status.SENT)
         self.assertFalse(Email.objects.exists())
+
+
+class RememberedNameTest(AttestationViewTestBase):
+    """Step 5 keeps a manual recipient choice for the campaigns that follow."""
+
+    def setUp(self):
+        super().setUp()
+        self.campaign = self.make_campaign(
+            step=5, status=AttestationCampaign.Status.READY
+        )
+        self.campaign.signature.save("sig.pdf", ContentFile(_blank_pdf(1)))
+        self.url = reverse("attestations:send", args=[self.campaign.pk])
+
+    def _post(self, **extra):
+        data = {"subject": "Attestation {prenom} {nom}", "body": "Bonjour {prenom}"}
+        data.update(extra)
+        return self.client.post(self.url, data)
+
+    def test_choosing_a_recipient_by_hand_is_remembered(self):
+        item = self.make_item(
+            self.campaign,
+            extracted_name="Zoe Inconnue",
+            matched_person=None,
+            recipients=[],
+        )
+        self._post(**{f"person_{item.pk}": str(self.animateur.pk)})
+
+        alias = NameAlias.objects.get()
+        self.assertEqual(alias.person, self.animateur)
+        self.assertEqual(alias.name, "Zoe Inconnue")
+        self.assertEqual(alias.match_key, "inconnue zoe")
+        self.assertEqual(alias.created_by, self.animateur)
+        # The promise of the feature: the next campaign finds it on its own.
+        self.assertEqual(match_person("Zoe Inconnue"), self.animateur)
+
+    def test_a_match_left_as_it_was_is_not_remembered(self):
+        item = self.make_item(self.campaign)
+        self._post(**{f"person_{item.pk}": str(self.child.pk)})
+
+        self.assertFalse(NameAlias.objects.exists())
+
+    def test_a_skipped_row_is_not_remembered(self):
+        item = self.make_item(
+            self.campaign,
+            extracted_name="Zoe Inconnue",
+            matched_person=None,
+            recipients=[],
+        )
+        self._post(**{f"skip_{item.pk}": "on", f"person_{item.pk}": str(self.animateur.pk)})
+
+        self.assertFalse(NameAlias.objects.exists())
+
+    def test_the_review_flags_a_remembered_match(self):
+        self.make_item(self.campaign, matched_by_alias=True)
+
+        response = self.client.get(
+            reverse("attestations:review", args=[self.campaign.pk])
+        )
+
+        self.assertContains(response, gettext("Remembered"))
+
+    def test_the_review_leaves_an_ordinary_match_unflagged(self):
+        self.make_item(self.campaign)
+
+        response = self.client.get(
+            reverse("attestations:review", args=[self.campaign.pk])
+        )
+
+        self.assertNotContains(response, gettext("Remembered"))
 
 
 class PlaceholderResolutionTest(AttestationViewTestBase):

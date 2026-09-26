@@ -9,7 +9,7 @@ is stamped through a soft mask that drops its white paper (see
 """
 
 import difflib
-import re
+from collections import Counter
 from io import BytesIO
 
 from pdfminer.high_level import extract_pages
@@ -24,25 +24,11 @@ from pypdf.generic import (
     NameObject,
     NumberObject,
 )
-from unidecode import unidecode
 
 from members.models import Account, Person
 
-from .models import AttestationItem
-
-# ---------------------------------------------------------------------------
-# Text normalisation helpers
-# ---------------------------------------------------------------------------
-
-def _normalize(text):
-    """Lowercase, strip accents, collapse whitespace."""
-    return re.sub(r"\s+", " ", unidecode(text or "").lower()).strip()
-
-
-def _name_tokens(text):
-    """Split a name into its significant word tokens (accent- and case-free)."""
-    return [t for t in re.findall(r"[a-z]+", _normalize(text)) if len(t) > 1]
-
+from .models import AttestationItem, NameAlias
+from .normalization import name_key, name_tokens, normalize, token_key
 
 # ---------------------------------------------------------------------------
 # PDF text extraction (with bounding boxes)
@@ -102,13 +88,13 @@ def locate_anchor(value, lines):
     (normalised) value wins, so a single-line name resolves to that line rather
     than a larger block that happens to also contain the name.
     """
-    needle = _normalize(value)
+    needle = normalize(value)
     if not needle:
         return None
     for window_size in range(1, 7):
         for start in range(len(lines) - window_size + 1):
             window = lines[start : start + window_size]
-            combined = _normalize(" ".join(line["text"] for line in window))
+            combined = normalize(" ".join(line["text"] for line in window))
             if needle in combined:
                 return _union_bbox(window)
     return None
@@ -263,18 +249,18 @@ def _fuzzy_score(name_tokens, person_tokens):
     return score if score >= _FUZZY_MIN_SCORE else None
 
 
-def _names_match(name_tokens, person_tokens):
+def _names_match(document_tokens, person_tokens):
     """Whether an extracted name and a person's name refer to the same name.
 
     Order-insensitive and tolerant of case, accents (both handled upstream by
-    ``_name_tokens``) and a single typo. Either name may carry extra tokens —
+    ``name_tokens``) and a single typo. Either name may carry extra tokens —
     a document often spells out a middle name the database does not hold, and
     the reverse happens too — so a match in either direction counts.
     """
-    if not name_tokens or not person_tokens:
+    if not document_tokens or not person_tokens:
         return False
-    return _all_tokens_found(name_tokens, person_tokens) or _all_tokens_found(
-        person_tokens, name_tokens
+    return _all_tokens_found(document_tokens, person_tokens) or _all_tokens_found(
+        person_tokens, document_tokens
     )
 
 
@@ -291,13 +277,22 @@ class PersonMatcher:
         if persons is None:
             persons = Person.objects.filter(status="a")
         self._entries = [
-            (person, _name_tokens(f"{person.first_name} {person.last_name}"))
+            (person, name_tokens(f"{person.first_name} {person.last_name}"))
             for person in persons
         ]
+        # How many members answer to each full name, to tell a name that
+        # identifies one person from one that identifies several.
+        self._namesakes = Counter(token_key(tokens) for _, tokens in self._entries)
+        self._aliases = {
+            alias.match_key: alias.person
+            for alias in NameAlias.objects.filter(person__status="a").select_related(
+                "person"
+            )
+        }
 
     def candidates(self, name):
         """Every person whose name matches the extracted one."""
-        tokens = _name_tokens(name)
+        tokens = name_tokens(name)
         if not tokens:
             return []
         return [
@@ -306,8 +301,38 @@ class PersonMatcher:
             if _names_match(tokens, person_tokens)
         ]
 
+    def alias_match(self, name):
+        """The person remembered for this exact spelling, when it is safe to use.
+
+        A stored correspondence is only reused while the name identifies a
+        single member: with two members sharing a full name, honouring it would
+        quietly send every document spelled that way to whoever was picked last
+        time. So an ambiguous name falls through to the fuzzy matcher, which
+        returns None and leaves the row to the operator.
+        """
+        key = name_key(name)
+        if not key or self._namesakes.get(key, 0) > 1:
+            return None
+        return self._aliases.get(key)
+
     def match(self, name, address=None):
-        """The unique matching Person, else None.
+        """The unique matching Person, else None."""
+        return self.lookup(name, address)[0]
+
+    def lookup(self, name, address=None):
+        """The matching Person plus whether a remembered correspondence found it.
+
+        A stored alias is consulted first: it records what an operator decided
+        for this very spelling, whereas the typo tolerance below is exactly what
+        would otherwise pull the name back to the person they rejected.
+        """
+        alias = self.alias_match(name)
+        if alias is not None:
+            return alias, True
+        return self._fuzzy_match(name, address), False
+
+    def _fuzzy_match(self, name, address=None):
+        """A match on the names themselves, tolerant of one typo.
 
         When several people share a name, the (normalised) address breaks the
         tie. If it still cannot be disambiguated, None is returned and the
@@ -319,11 +344,11 @@ class PersonMatcher:
         if len(candidates) == 1:
             return candidates[0]
         if address:
-            norm_address = _normalize(address)
+            norm_address = normalize(address)
             address_matches = [
                 person
                 for person in candidates
-                if person.address and _normalize(person.address) == norm_address
+                if person.address and normalize(person.address) == norm_address
             ]
             if len(address_matches) == 1:
                 return address_matches[0]
@@ -338,7 +363,7 @@ class PersonMatcher:
         suggestion is only ever a proposal: nothing is sent on its strength
         until someone confirms it during review.
         """
-        tokens = _name_tokens(name)
+        tokens = name_tokens(name)
         scored = [
             (person, score)
             for person, person_tokens in self._entries
@@ -351,6 +376,29 @@ class PersonMatcher:
         if len(scored) > 1 and best_score - scored[1][1] < _FUZZY_MIN_MARGIN:
             return None
         return best_person, best_score
+
+
+def remember_alias(name, person, created_by=None):
+    """Store the operator's manual name → person correspondence.
+
+    Keyed on the normalised name, so a later campaign whose PDF spells the name
+    the same way (any case, order or accents) resolves it without asking. The
+    latest decision wins: pointing the same spelling at somebody else replaces
+    the correspondence instead of piling up a second one.
+    """
+    key = name_key(name)
+    if not key or person is None:
+        return None
+    alias, _created = NameAlias.objects.update_or_create(
+        match_key=key,
+        defaults={
+            # Kept as spelled, so the admin shows what the PDF actually said.
+            "name": " ".join(name.split())[:300],
+            "person": person,
+            "created_by": created_by,
+        },
+    )
+    return alias
 
 
 def candidate_persons(name):
@@ -613,10 +661,11 @@ def process_campaign(campaign):
             suggested_person = carried.suggested_person
             match_score = carried.match_score
             suggestion_dismissed = carried.suggestion_dismissed
+            matched_by_alias = carried.matched_by_alias
             recipients = carried.recipients
             status = carried.status
         else:
-            matched_person = matcher.match(name, address)
+            matched_person, matched_by_alias = matcher.lookup(name, address)
             suggestion = matcher.suggest(name) if matched_person is None else None
             suggested_person = suggestion[0] if suggestion else None
             match_score = suggestion[1] if suggestion else None
@@ -638,6 +687,7 @@ def process_campaign(campaign):
                 suggested_person=suggested_person,
                 match_score=match_score,
                 suggestion_dismissed=suggestion_dismissed,
+                matched_by_alias=matched_by_alias,
                 recipients=recipients,
                 status=status,
             )

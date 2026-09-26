@@ -131,6 +131,18 @@ msgstr "Élément d'attestation"
 msgid "Attestation items"
 msgstr "Éléments d'attestation"
 
+#: attestations/models.py:149
+msgid "The name as the PDF spells it."
+msgstr "Le nom tel qu'il figure dans le PDF."
+
+#: attestations/models.py:168
+msgid "Name correspondence"
+msgstr "Correspondance de nom"
+
+#: attestations/models.py:169
+msgid "Name correspondences"
+msgstr "Correspondances de nom"
+
 #: attestations/templates/attestations/_steps.html:4
 #, python-format
 msgid "Step %(current)s of %(total)s"
@@ -234,6 +246,14 @@ msgstr "Enverra à"
 #: attestations/templates/attestations/review.html:39
 msgid "Skip"
 msgstr "Ignorer"
+
+#: attestations/templates/attestations/review.html:65
+msgid "Matched by a name correspondence saved in an earlier campaign."
+msgstr "Correspondance enregistrée lors d'une campagne précédente."
+
+#: attestations/templates/attestations/review.html:66
+msgid "Remembered"
+msgstr "Mémorisé"
 
 #: attestations/templates/attestations/review.html:49
 msgid "— no match —"

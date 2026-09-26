@@ -27,6 +27,10 @@ as the response to accepting or rejecting a suggestion — hence ``campaign``,
                         hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
                         hx-target="closest tr" hx-swap="outerHTML">{% trans "Not this person" %}</button>
             </div>
+        {% elif item.matched_by_alias %}
+            <span class="badge text-bg-info mt-1"
+                  title="{% trans 'Matched by a name correspondence saved in an earlier campaign.' %}"
+                  data-bs-toggle="tooltip">{% trans "Remembered" %}</span>
         {% elif not item.matched_person %}
             <span class="badge text-bg-warning mt-1">{% trans "Not found" %}</span>
         {% endif %}

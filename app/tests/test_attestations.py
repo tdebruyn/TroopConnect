@@ -1,22 +1,27 @@
+import tempfile
 from io import BytesIO
 from unittest.mock import patch
 
 from django.core.files.base import ContentFile
-from django.test import SimpleTestCase
+from django.test import SimpleTestCase, override_settings
 from django.urls import reverse
 from django.utils.translation import gettext
 from post_office.models import Email
 from pypdf import PdfReader, PdfWriter
-from pypdf.generic import DecodedStreamObject, NameObject
+from pypdf.generic import DecodedStreamObject, DictionaryObject, NameObject
 
 from attestations import services
-from attestations.models import AttestationCampaign, AttestationItem
+from attestations.models import AttestationCampaign, AttestationItem, NameAlias
 from attestations.services import (
+    PersonMatcher,
     build_signed_pdf,
     extract_field,
     item_ranges,
     locate_anchor,
     match_person,
+    page_lines,
+    process_campaign,
+    remember_alias,
     resolve_recipients,
     suggest_person,
 )
@@ -28,6 +33,37 @@ def _blank_pdf(num_pages=1):
     writer = PdfWriter()
     for _ in range(num_pages):
         writer.add_blank_page(width=595, height=842)
+    buf = BytesIO()
+    writer.write(buf)
+    return buf.getvalue()
+
+
+def _text_pdf(text, num_pages=1):
+    """A PDF whose first page draws ``text`` in Helvetica, so it reads back.
+
+    The attestation documents are template-generated with real text, so the
+    extraction path is only exercised by a PDF that carries some.
+    """
+    writer = PdfWriter()
+    font = writer._add_object(
+        DictionaryObject(
+            {
+                NameObject("/Type"): NameObject("/Font"),
+                NameObject("/Subtype"): NameObject("/Type1"),
+                NameObject("/BaseFont"): NameObject("/Helvetica"),
+            }
+        )
+    )
+    for index in range(num_pages):
+        page = writer.add_blank_page(width=595, height=842)
+        page[NameObject("/Resources")] = DictionaryObject(
+            {NameObject("/Font"): DictionaryObject({NameObject("/F1"): font})}
+        )
+        stream = DecodedStreamObject()
+        stream.set_data(
+            f"BT /F1 12 Tf 40 800 Td ({text}) Tj ET".encode() if index == 0 else b""
+        )
+        page[NameObject("/Contents")] = writer._add_object(stream)
     buf = BytesIO()
     writer.write(buf)
     return buf.getvalue()
@@ -435,6 +471,134 @@ class ProcessCampaignSuggestionTest(AttestationDbTestBase):
         item = self._process("Charlie Dupont")
         self.assertEqual(item.matched_person, self.child)
         self.assertIsNone(item.suggested_person)
+
+
+class NameAliasTest(AttestationDbTestBase):
+    """Correspondences an operator saved by hand, and when they are honoured."""
+
+    def make_vandenberghe(self):
+        return Person.objects.create(
+            first_name="Jan",
+            last_name="Vandenberghe",
+            primary_role=self.role_child,
+            status="a",
+        )
+
+    def test_a_remembered_name_resolves_a_spelling_the_matcher_cannot(self):
+        # Split in two, so no amount of typo tolerance bridges it.
+        person = self.make_vandenberghe()
+        remember_alias("Van den Berg Jan", person)
+
+        self.assertEqual(match_person("Van den Berg Jan"), person)
+
+    def test_a_remembered_name_ignores_case_accents_and_word_order(self):
+        person = self.make_vandenberghe()
+        remember_alias("Van den Berg Jan", person)
+
+        self.assertEqual(match_person("JAN VAN DEN BERG"), person)
+
+    def test_a_remembered_name_wins_over_the_fuzzy_match(self):
+        # "Charlle Dupont" is one letter off the child, so the fuzzy matcher
+        # claims it (see test_matches_single_letter_substitution); the
+        # operator's decision has to override that.
+        remember_alias("Charlle Dupont", self.animateur)
+
+        self.assertEqual(match_person("Charlle Dupont"), self.animateur)
+
+    def test_a_remembered_name_is_left_alone_when_two_members_share_it(self):
+        # Otherwise every document spelled that way would go to whoever was
+        # picked last time, namesake or not.
+        Person.objects.create(
+            first_name="Charlie",
+            last_name="Dupont",
+            primary_role=self.role_child,
+            status="a",
+        )
+        remember_alias("Charlie Dupont", self.child)
+
+        self.assertIsNone(match_person("Charlie Dupont"))
+
+    def test_a_remembered_name_for_an_archived_member_is_ignored(self):
+        person = self.make_vandenberghe()
+        remember_alias("Van den Berg Jan", person)
+        person.status = "ar"
+        person.save()
+
+        self.assertIsNone(match_person("Van den Berg Jan"))
+
+    def test_remembering_the_same_spelling_again_moves_it(self):
+        person = self.make_vandenberghe()
+        remember_alias("Van den Berg Jan", self.child)
+        remember_alias("van den  berg  jan", person)
+
+        alias = NameAlias.objects.get()
+        self.assertEqual(alias.person, person)
+        self.assertEqual(alias.name, "van den berg jan")
+        self.assertEqual(alias.match_key, "berg den jan van")
+        self.assertEqual(match_person("Van den Berg Jan"), person)
+
+    def test_remembering_needs_a_name_and_a_person(self):
+        self.assertIsNone(remember_alias("   ", self.child))
+        self.assertIsNone(remember_alias("Zoe Inconnue", None))
+        self.assertFalse(NameAlias.objects.exists())
+
+    def test_lookup_reports_whether_a_remembered_name_decided(self):
+        person = self.make_vandenberghe()
+        remember_alias("Van den Berg Jan", person)
+        matcher = PersonMatcher()
+
+        self.assertEqual(matcher.lookup("Van den Berg Jan"), (person, True))
+        self.assertEqual(matcher.lookup("Charlie Dupont"), (self.child, False))
+
+
+class ProcessCampaignTest(AttestationDbTestBase):
+    """Splitting a campaign's PDF into items, including remembered names."""
+
+    def setUp(self):
+        super().setUp()
+        media = override_settings(MEDIA_ROOT=tempfile.mkdtemp())
+        media.enable()
+        self.addCleanup(media.disable)
+
+    def make_campaign_for(self, name):
+        campaign = AttestationCampaign.objects.create(
+            title="Attestations",
+            created_by=self.animateur,
+            name_page=1,
+            page_range_start=1,
+            page_range_end=2,
+        )
+        campaign.documents.save("docs.pdf", ContentFile(_text_pdf(name, num_pages=2)))
+        campaign.name_anchor = locate_anchor(
+            name, page_lines(campaign.documents.path, 0)
+        )
+        campaign.save()
+        return campaign
+
+    def test_an_item_resolved_by_a_remembered_name_is_flagged(self):
+        person = Person.objects.create(
+            first_name="Jan",
+            last_name="Vandenberghe",
+            primary_role=self.role_child,
+            status="a",
+        )
+        remember_alias("Van den Berg Jan", person)
+
+        campaign = self.make_campaign_for("Van den Berg Jan")
+        process_campaign(campaign)
+
+        item = campaign.items.get()
+        self.assertEqual(item.extracted_name, "Van den Berg Jan")
+        self.assertEqual(item.matched_person, person)
+        self.assertTrue(item.matched_by_alias)
+
+    def test_an_item_resolved_by_its_own_name_is_not_flagged(self):
+        campaign = self.make_campaign_for("Charlie Dupont")
+        process_campaign(campaign)
+
+        item = campaign.items.get()
+        self.assertEqual(item.matched_person, self.child)
+        self.assertFalse(item.matched_by_alias)
 
 
 class ResolveRecipientsTest(AttestationDbTestBase):
