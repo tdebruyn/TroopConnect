@@ -1,11 +1,15 @@
+from decimal import Decimal
+
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.http import require_POST
 from post_office import mail
 
 from members.models import Branch, Person, SchoolYear
@@ -15,16 +19,28 @@ from members.permissions import (
     ANIMATEUR_ROLES,
     ANIME,
     can_access_finance,
+    get_person,
     is_htmx,
 )
 
-from .forms import PaymentForm, PriceGridForm, ReminderForm
+from .forms import (
+    HouseholdAdjustmentForm,
+    HouseholdAssignmentForm,
+    HouseholdForm,
+    HouseholdMemberForm,
+    PaymentForm,
+    PriceGridForm,
+    ReminderForm,
+)
 from .models import (
     CotisationConfig,
     FeeRule,
+    Household,
+    HouseholdMember,
     Payment,
     calculate_balances,
     get_adults_with_balance,
+    household_summaries,
 )
 
 
@@ -112,6 +128,13 @@ def billing_overview(request):
         "has_animator": has_animator,
         "children_balances": children_balances,
         "animateur_balances": animateur_balances,
+        # Passed the balances already computed above rather than letting the
+        # summary recompute the whole year.
+        "household_rows": [
+            s
+            for s in household_summaries(current_year, balances)
+            if s["household"]
+        ],
     })
 
 
@@ -233,9 +256,22 @@ def payment_history(request, person_id):
         person=person, school_year=current_year
     ).order_by("-date")
 
+    # Manual adjustments are part of what this person owes, so they belong in
+    # the history next to the payments rather than only on the billing page.
+    household = person.households.first()
+    adjustments = (
+        household.adjustments.filter(school_year=current_year)
+        .select_related("school_year", "author")
+        .order_by("-created_at")
+        if household
+        else []
+    )
+
     return render(request, "finance/payment_history.html", {
         "person": person,
         "payments": payments,
+        "household": household,
+        "adjustments": adjustments,
     })
 
 
@@ -300,3 +336,256 @@ def send_reminders(request):
         "form": form,
         "adults": adults,
     })
+
+
+def _back_after_assignment(request, fallback="members:admin_list"):
+    """Where to land after a household change: the page that asked for it.
+
+    The member page and the household page both post to the same endpoint, so
+    the caller passes its own URL in ``next``. An off-site target is refused.
+    """
+    target = request.POST.get("next") or request.GET.get("next")
+    if target and url_has_allowed_host_and_scheme(
+        target,
+        allowed_hosts={request.get_host()},
+        require_https=request.is_secure(),
+    ):
+        return redirect(target)
+    return redirect(fallback)
+
+
+@login_required
+@requires_module(FEES)
+def household_list(request):
+    """The troop's explicit households, and the form that adds one."""
+    if not can_access_finance(request.user):
+        raise Http404
+
+    if request.method == "POST":
+        form = HouseholdForm(request.POST)
+        if form.is_valid():
+            household = form.save()
+            messages.success(
+                request,
+                _("Household “%(name)s” created.") % {"name": household.name},
+            )
+            return redirect("finance:household_detail", pk=household.pk)
+    else:
+        form = HouseholdForm()
+
+    current_year = SchoolYear.current()
+    summaries = (
+        # Inference-only groups have no household and no row here.
+        {s["household"].pk: s for s in household_summaries(current_year) if s["household"]}
+        if current_year
+        else {}
+    )
+    rows = [
+        {
+            "household": household,
+            # None when no member of the household is enrolled this year, or
+            # when there is no current school year at all.
+            "summary": summaries.get(household.pk),
+            "members": household.members.all(),
+        }
+        for household in Household.objects.prefetch_related("members").order_by("name")
+    ]
+
+    return render(request, "finance/household_list.html", {
+        "form": form,
+        "rows": rows,
+        "school_year": current_year,
+    })
+
+
+@login_required
+@requires_module(FEES)
+def household_detail(request, pk):
+    """One household: its members, their fee lines, its adjustments."""
+    if not can_access_finance(request.user):
+        raise Http404
+
+    household = get_object_or_404(Household, pk=pk)
+    current_year = SchoolYear.current()
+
+    # Three forms share this page, told apart by the submit that sent them.
+    # A bound form that failed validation is re-rendered; an unbound one is
+    # only re-rendered after a different action was handled, which is why each
+    # branch falls through to the same render rather than returning early.
+    rename_form = HouseholdForm(instance=household)
+    member_form = HouseholdMemberForm(household=household)
+    adjustment_form = HouseholdAdjustmentForm(household=household)
+
+    action = request.POST.get("action") if request.method == "POST" else None
+
+    if action == "rename":
+        rename_form = HouseholdForm(request.POST, instance=household)
+        if rename_form.is_valid():
+            rename_form.save()
+            messages.success(
+                request,
+                _("Household renamed to “%(name)s”.") % {"name": household.name},
+            )
+            return redirect("finance:household_detail", pk=household.pk)
+    elif action == "add_member":
+        member_form = HouseholdMemberForm(request.POST, household=household)
+        if member_form.is_valid():
+            person = member_form.cleaned_data["person"]
+            HouseholdMember.objects.update_or_create(
+                person=person, defaults={"household": household}
+            )
+            messages.success(
+                request,
+                _("%(person)s is now billed with “%(household)s”.")
+                % {"person": person, "household": household},
+            )
+            return redirect("finance:household_detail", pk=household.pk)
+    elif action == "add_adjustment":
+        adjustment_form = HouseholdAdjustmentForm(request.POST, household=household)
+        if adjustment_form.is_valid():
+            adjustment = adjustment_form.save(commit=False)
+            adjustment.author = get_person(request.user)
+            adjustment.save()
+            messages.success(
+                request,
+                _("Adjustment of %(amount)s recorded for “%(household)s”.")
+                % {
+                    "amount": format_money(adjustment.amount),
+                    "household": household,
+                },
+            )
+            return redirect("finance:household_detail", pk=household.pk)
+
+    # The fee lines exactly as the rest of the module computes them, so this
+    # page shows the same ranks and amounts as the billing overview.
+    billed = (
+        [
+            b
+            for b in calculate_balances(current_year)
+            if b["household"] and b["household"].pk == household.pk
+        ]
+        if current_year
+        else []
+    )
+    balance_by_person = {b["person_id"]: b for b in billed}
+    rank_by_person = {b["person_id"]: i + 1 for i, b in enumerate(billed)}
+
+    # Every explicit member, enrolled or not: a member who is not billed this
+    # year still has to be visible here, or there would be no way to take them
+    # out of the household.
+    member_rows = [
+        {
+            "person": member,
+            "rank": rank_by_person.get(member.pk),
+            "balance": balance_by_person.get(member.pk),
+        }
+        for member in household.members.select_related("primary_role").order_by(
+            "birthday"
+        )
+    ]
+
+    adjustments = household.adjustments.select_related(
+        "school_year", "author"
+    ).order_by("-school_year__start_date", "-created_at")
+
+    # An adjustment on a household with nobody enrolled is never applied to
+    # anyone's balance. Say so rather than let the line sit there looking
+    # effective.
+    unapplied = None
+    if current_year and not billed:
+        year_total = sum(
+            (a.amount for a in adjustments if a.school_year_id == current_year.pk),
+            start=Decimal("0"),
+        )
+        if year_total:
+            unapplied = year_total
+
+    return render(request, "finance/household_detail.html", {
+        "household": household,
+        "school_year": current_year,
+        "rename_form": rename_form,
+        "member_form": member_form,
+        "adjustment_form": adjustment_form,
+        "member_rows": member_rows,
+        "adjustments": adjustments,
+        "unapplied": unapplied,
+    })
+
+
+@login_required
+@requires_module(FEES)
+@require_POST
+def assign_household(request):
+    """Set — or clear — a member's explicit household override.
+
+    Shared by the member page and the household page. Clearing the field is how
+    a member goes back to being billed by address, so there is no separate
+    "split" action to keep in step with this one.
+    """
+    if not can_access_finance(request.user):
+        raise Http404
+
+    form = HouseholdAssignmentForm(request.POST)
+    if not form.is_valid():
+        messages.error(request, _("Could not change the household."))
+        return _back_after_assignment(request)
+
+    person = Person.objects.filter(pk=form.cleaned_data["person_id"]).first()
+    if person is None:
+        messages.error(request, _("Person not found."))
+        return _back_after_assignment(request)
+
+    household = form.cleaned_data["household"]
+    if household is None:
+        if HouseholdMember.objects.filter(person=person).delete()[0]:
+            messages.success(
+                request,
+                _("%(person)s is billed by address again.") % {"person": person},
+            )
+    else:
+        HouseholdMember.objects.update_or_create(
+            person=person, defaults={"household": household}
+        )
+        messages.success(
+            request,
+            _("%(person)s is now billed with “%(household)s”.")
+            % {"person": person, "household": household},
+        )
+
+    return _back_after_assignment(request)
+
+
+@login_required
+@requires_module(FEES)
+@require_POST
+def household_delete(request, pk):
+    """Delete a household; its members fall back to address inference."""
+    if not can_access_finance(request.user):
+        raise Http404
+
+    household = get_object_or_404(Household, pk=pk)
+    name = household.name
+    household.delete()
+    messages.success(
+        request,
+        _("Household “%(name)s” deleted. Its members are billed by address again.")
+        % {"name": name},
+    )
+    return redirect("finance:households")
+
+
+@login_required
+@requires_module(FEES)
+@require_POST
+def adjustment_delete(request, pk, adjustment_pk):
+    """Delete one manual adjustment line."""
+    if not can_access_finance(request.user):
+        raise Http404
+
+    household = get_object_or_404(Household, pk=pk)
+    adjustment = get_object_or_404(
+        household.adjustments, pk=adjustment_pk
+    )
+    adjustment.delete()
+    messages.success(request, _("Adjustment deleted."))
+    return redirect("finance:household_detail", pk=household.pk)

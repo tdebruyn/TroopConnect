@@ -105,6 +105,20 @@
                                 {% endif %}
                             </td>
                             <td>{{ member.role }}</td>
+                            {% if fees_enabled %}
+                                <td class="household-cell text-truncate">
+                                    {% with household=member.households.all.0 %}
+                                        {% if household %}
+                                            <a href="{% url 'finance:household_detail' pk=household.pk %}">{{ household.name }}</a>
+                                        {% elif member.address %}
+                                            <span class="text-muted"
+                                                  title="{% trans 'Inferred from the address' %}">{{ member.address }}</span>
+                                        {% else %}
+                                            <span class="text-muted">—</span>
+                                        {% endif %}
+                                    {% endwith %}
+                                </td>
+                            {% endif %}
                             <td>
                                 <a class="btn btn-primary btn-sm"
                                    href="{% url 'members:admin_update' pk=member.pk %}">{% trans "Edit" %}</a>
@@ -112,7 +126,7 @@
                         </tr>
                     {% empty %}
                         <tr>
-                            <td colspan="7">{% trans "No results" %}</td>
+                            <td colspan="8">{% trans "No results" %}</td>
                         </tr>
                     {% endfor %}
                 </tbody>

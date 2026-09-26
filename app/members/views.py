@@ -41,7 +41,8 @@ from .models import (
     TroopSettings,
     get_registration_admins,
 )
-from .permissions import can_delete_member, get_person, is_htmx
+from .modules import FEES, module_enabled
+from .permissions import can_access_finance, can_delete_member, get_person, is_htmx
 from .tasks import run_passage
 
 
@@ -226,6 +227,11 @@ class AdminListView(UserPassesTestMixin, ListView):
             ("section", _("Section")),
             ("primary_role", _("Role")),
         ]
+        if module_enabled(FEES):
+            # Not a model field and so not sortable. `fields_map` drives the
+            # header row and the cell after the role below, and a household is
+            # only ever a billing group, so the column follows the module.
+            context["fields_map"].append(("household", _("Household")))
 
         return context
 
@@ -238,7 +244,9 @@ class AdminListView(UserPassesTestMixin, ListView):
         return self._filterset
 
     def get_queryset(self):
-        queryset = self._get_filterset().qs.select_related("primary_role")
+        queryset = self._get_filterset().qs.select_related(
+            "primary_role"
+        ).prefetch_related("households")
 
         ordering = self.get_ordering()
         if ordering:
@@ -266,7 +274,45 @@ class AdminUpdateView(UserPassesTestMixin, UpdateView):
         context["is_self"] = self.object.pk == getattr(
             get_person(self.request.user), "pk", None
         )
+        context.update(self._household_context())
         return context
+
+    def _household_context(self):
+        """Data for the household panel on the member page.
+
+        The `finance` imports are inside the method rather than at module
+        level: `finance` already depends on `members`, and importing it back
+        would make the two apps import each other for one panel.
+
+        The panel is hidden when the troop does not use the fees module — a
+        household exists only to say who is billed with whom.
+        """
+        if not module_enabled(FEES) or not can_access_finance(self.request.user):
+            return {"household_enabled": False}
+
+        from finance.forms import HouseholdAssignmentForm
+        from finance.models import household_index
+
+        current_year = SchoolYear.current()
+        group = (
+            household_index(current_year).get(self.object.pk) if current_year else None
+        )
+        explicit = self.object.households.first()
+
+        return {
+            "household_enabled": True,
+            "household_explicit": explicit,
+            "household_group": group,
+            "household_school_year": current_year,
+            "household_others": (
+                [m for m in group["members"] if m.pk != self.object.pk]
+                if group
+                else []
+            ),
+            "household_form": HouseholdAssignmentForm(
+                initial={"person_id": self.object.pk, "household": explicit}
+            ),
+        }
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()

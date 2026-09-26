@@ -2429,6 +2429,261 @@ msgstr ""
 "Het kleine pictogram dat browsers voor de site tonen. Laat leeg voor geen "
 "pictogram."
 
+#: finance/forms.py:145 finance/models.py:150
+#: finance/templates/finance/billing_overview.html:79
+#: finance/templates/finance/household_list.html:30
+#: members/templates/members/admin_update.html:139 members/views.py:230
+msgid "Household"
+msgstr "Huishouden"
+
+#: finance/models.py:151 finance/templates/finance/billing_overview.html:8
+#: finance/templates/finance/billing_overview.html:72
+#: finance/templates/finance/household_list.html:3
+msgid "Households"
+msgstr "Huishoudens"
+
+#: finance/forms.py:146
+msgid "Inferred from address"
+msgstr "Afgeleid uit het adres"
+
+#: members/templates/members/admin_list.html:118
+msgid "Inferred from the address"
+msgstr "Afgeleid uit het adres"
+
+#: finance/models.py:178
+msgid "Household member"
+msgstr "Lid van het huishouden"
+
+#: finance/models.py:179
+msgid "Household members"
+msgstr "Leden van het huishouden"
+
+#: finance/models.py:217
+msgid "Household adjustment"
+msgstr "Aanpassing van het huishouden"
+
+#: finance/models.py:218
+msgid "Household adjustments"
+msgstr "Aanpassingen van het huishouden"
+
+#: finance/models.py:137
+msgid "A name the treasurer recognises, e.g. “Famille Dupont”"
+msgstr "Een naam die de penningmeester herkent, bv. “Famille Dupont”"
+
+#: finance/models.py:203
+msgid "Negative writes off, positive adds to what is owed"
+msgstr "Negatief is kwijtschelding, positief voegt toe aan wat verschuldigd is"
+
+#: finance/forms.py:195
+msgid "Negative writes off, positive adds to what the household owes"
+msgstr "Negatief is kwijtschelding, positief voegt toe aan wat het huishouden verschuldigd is"
+
+#: finance/forms.py:201
+msgid "An adjustment of zero changes nothing."
+msgstr "Een aanpassing van nul verandert niets."
+
+#: finance/templates/finance/billing_overview.html:80
+#: finance/templates/finance/household_detail.html:44
+#: finance/templates/finance/household_list.html:31
+#: members/templates/members/setup/_step_done.html:15
+msgid "Members"
+msgstr "Leden"
+
+#: finance/templates/finance/billing_overview.html:81
+msgid "Fees"
+msgstr "Bijdragen"
+
+#: finance/templates/finance/billing_overview.html:82
+#: finance/templates/finance/billing_overview.html:127
+#: finance/templates/finance/billing_overview.html:167
+#: finance/templates/finance/household_detail.html:52
+msgid "Adjustment"
+msgstr "Aanpassing"
+
+#: finance/templates/finance/household_detail.html:126
+msgid "Adjustments"
+msgstr "Aanpassingen"
+
+#: finance/templates/finance/household_detail.html:138
+#: finance/templates/finance/payment_history.html:45
+msgid "Author"
+msgstr "Auteur"
+
+#: finance/templates/finance/household_detail.html:50
+msgid "Rank"
+msgstr "Rang"
+
+#: finance/templates/finance/household_detail.html:71
+msgid "Not billed"
+msgstr "Niet gefactureerd"
+
+#: finance/templates/finance/household_detail.html:4
+msgid "Treasurer — household"
+msgstr "Penningmeester — huishouden"
+
+#: finance/templates/finance/household_list.html:4
+msgid "Treasurer — billing groups"
+msgstr "Penningmeester — facturatiegroepen"
+
+#: finance/templates/finance/household_list.html:12
+msgid "Add a household"
+msgstr "Een huishouden toevoegen"
+
+#: finance/templates/finance/household_detail.html:25
+msgid "Add a member"
+msgstr "Een lid toevoegen"
+
+#: finance/templates/finance/household_detail.html:166
+msgid "Add an adjustment"
+msgstr "Een aanpassing toevoegen"
+
+#: finance/templates/finance/household_detail.html:32
+#: finance/templates/finance/household_detail.html:194
+msgid "Add"
+msgstr "Toevoegen"
+
+#: finance/templates/finance/household_list.html:18
+msgid "Create"
+msgstr "Aanmaken"
+
+#: finance/templates/finance/household_detail.html:16
+msgid "Rename"
+msgstr "Hernoemen"
+
+#: finance/templates/finance/household_detail.html:153
+msgid "Delete"
+msgstr "Verwijderen"
+
+#: finance/templates/finance/household_detail.html:206
+msgid "Delete this household"
+msgstr "Dit huishouden verwijderen"
+
+#: finance/templates/finance/household_detail.html:208
+msgid "Back to households"
+msgstr "Terug naar huishoudens"
+
+#: finance/templates/finance/household_list.html:74
+msgid "Back to fees"
+msgstr "Terug naar bijdragen"
+
+#: members/templates/members/admin_update.html:174
+msgid "Manage households"
+msgstr "Huishoudens beheren"
+
+#: finance/templates/finance/household_detail.html:104
+msgid "Billed by address again"
+msgstr "Opnieuw gefactureerd per adres"
+
+#: finance/templates/finance/household_list.html:50
+msgid "No member"
+msgstr "Geen leden"
+
+#: finance/templates/finance/household_detail.html:112
+msgid "No member in this household yet."
+msgstr "Nog geen leden in dit huishouden."
+
+#: finance/templates/finance/household_detail.html:159
+msgid "No adjustment."
+msgstr "Geen aanpassing."
+
+#: finance/templates/finance/household_list.html:59
+msgid "Nobody enrolled this year."
+msgstr "Niemand ingeschreven dit jaar."
+
+#: finance/templates/finance/household_list.html:69
+msgid "No household defined — every member is billed by address."
+msgstr "Geen huishouden gedefinieerd — elk lid wordt per adres gefactureerd."
+
+#: members/templates/members/admin_update.html:147
+msgid "No household set, so one is inferred from the address."
+msgstr "Geen huishouden ingesteld, dus het wordt afgeleid uit het adres."
+
+#: finance/templates/finance/household_detail.html:35
+msgid "A member can only be in one household: adding them here takes them out of any other."
+msgstr "Een lid kan maar in één huishouden zitten: het hier toevoegen haalt het uit elk ander."
+
+#: finance/templates/finance/household_list.html:7
+msgid "Fees are billed per household: members sharing an address are billed together, eldest first. Create a household here only when that guess is wrong — to bill members at different addresses together, or to split one out of their family."
+msgstr "De bijdragen worden per huishouden gefactureerd: leden die een adres delen, worden samen gefactureerd, van oud naar jong. Maak hier alleen een huishouden aan als die afleiding fout is — om leden op verschillende adressen samen te factureren, of om er een uit zijn gezin te halen."
+
+#: finance/templates/finance/billing_overview.html:74
+msgid "Members sharing an address are billed together, unless a household below says otherwise. The adjustment column is the manual correction added to that household's fees."
+msgstr "Leden die een adres delen, worden samen gefactureerd, tenzij een huishouden hieronder anders bepaalt. De kolom aanpassingen toont de handmatige correctie op de bijdragen van dat huishouden."
+
+#: finance/templates/finance/household_detail.html:122
+msgid "Only the members enrolled this school year are billed, ranked by age within this household. A member enrolled under a different address is not billed here."
+msgstr "Alleen leden die dit schooljaar ingeschreven zijn, worden gefactureerd, gerangschikt op leeftijd binnen dit huishouden. Een lid dat onder een ander adres ingeschreven is, wordt hier niet gefactureerd."
+
+#: finance/templates/finance/household_detail.html:204
+msgid "Deleting the household does not touch its members: they go back to being billed by address. Its adjustment lines are deleted with it."
+msgstr "Het huishouden verwijderen raakt zijn leden niet: ze worden opnieuw per adres gefactureerd. De aanpassingen ervan worden verwijderd."
+
+#: members/templates/members/admin_update.html:159
+msgid "Nobody with this member is billed this year — a household only counts members enrolled in the current school year."
+msgstr "Niemand wordt dit jaar samen met dit lid gefactureerd — een huishouden telt alleen leden die voor het huidige schooljaar ingeschreven zijn."
+
+#: members/templates/members/admin_update.html:145
+msgid "No household set, so one is inferred from the address: the members below share it and are billed together, eldest first."
+msgstr "Geen huishouden ingesteld, dus het wordt afgeleid uit het adres: de leden hieronder delen het en worden samen gefactureerd, van oud naar jong."
+
+#: members/templates/members/admin_update.html:142
+#, python-format
+msgid "Billed in the household “%(name)s”. Fees are split with the members below, eldest first."
+msgstr "Gefactureerd in het huishouden “%(name)s”. De bijdragen worden verdeeld met de leden hieronder, van oud naar jong."
+
+#: finance/templates/finance/household_detail.html:120
+#, python-format
+msgid "How %(year)s is billed"
+msgstr "Hoe %(year)s wordt gefactureerd"
+
+#: finance/templates/finance/household_detail.html:129
+#, python-format
+msgid "This household owes %(amount)s in adjustments for %(year)s, but nobody from it is enrolled that year, so the amount is not being applied to anyone's balance."
+msgstr "Dit huishouden is %(amount)s aan aanpassingen verschuldigd voor %(year)s, maar niemand van het huishouden is dat jaar ingeschreven, dus het bedrag wordt op geen enkel saldo toegepast."
+
+#: finance/templates/finance/payment_history.html:38
+#, python-format
+msgid "Household adjustments — %(name)s"
+msgstr "Aanpassingen van het huishouden — %(name)s"
+
+#: finance/views.py:370
+#, python-format
+msgid "Household “%(name)s” created."
+msgstr "Huishouden “%(name)s” aangemaakt."
+
+#: finance/views.py:427
+#, python-format
+msgid "Household renamed to “%(name)s”."
+msgstr "Huishouden hernoemd naar “%(name)s”."
+
+#: finance/views.py:439 finance/views.py:551
+#, python-format
+msgid "%(person)s is now billed with “%(household)s”."
+msgstr "%(person)s wordt nu gefactureerd met “%(household)s”."
+
+#: finance/views.py:451
+#, python-format
+msgid "Adjustment of %(amount)s recorded for “%(household)s”."
+msgstr "Aanpassing van %(amount)s geregistreerd voor “%(household)s”."
+
+#: finance/views.py:530
+msgid "Could not change the household."
+msgstr "Het huishouden kon niet worden gewijzigd."
+
+#: finance/views.py:543
+#, python-format
+msgid "%(person)s is billed by address again."
+msgstr "%(person)s wordt opnieuw per adres gefactureerd."
+
+#: finance/views.py:571
+#, python-format
+msgid "Household “%(name)s” deleted. Its members are billed by address again."
+msgstr "Huishouden “%(name)s” verwijderd. De leden worden opnieuw per adres gefactureerd."
+
+#: finance/views.py:590
+msgid "Adjustment deleted."
+msgstr "Aanpassing verwijderd."
+
 #~ msgid "Configure attestation"
 #~ msgstr "Attestatie configureren"
 

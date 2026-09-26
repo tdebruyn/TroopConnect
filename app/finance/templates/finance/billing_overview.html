@@ -5,6 +5,7 @@
 {% block subcontent %}
 <div class="mb-3">
     <a href="{% url 'finance:reminders' %}" class="btn btn-warning">{% trans "Send reminders" %}</a>
+    <a href="{% url 'finance:households' %}" class="btn btn-outline-primary">{% trans "Households" %}</a>
 </div>
 
 <div class="row mb-4">
@@ -67,12 +68,63 @@
     </div>
 </div>
 
+{% if household_rows %}
+<h5>{% trans "Households" %}</h5>
+<p class="text-muted">
+    {% trans "Members sharing an address are billed together, unless a household below says otherwise. The adjustment column is the manual correction added to that household's fees." %}
+</p>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>{% trans "Household" %}</th>
+            <th>{% trans "Members" %}</th>
+            <th>{% trans "Fees" %}</th>
+            <th>{% trans "Adjustment" %}</th>
+            <th>{% trans "Due" %}</th>
+            <th>{% trans "Paid" %}</th>
+            <th>{% trans "Balance" %}</th>
+            <th>{% trans "Action" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in household_rows %}
+        <tr>
+            <td>
+                <a href="{% url 'finance:household_detail' pk=row.household.pk %}">{{ row.household.name }}</a>
+            </td>
+            <td>
+                {% for member in row.members %}
+                    {{ member }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </td>
+            <td>{{ row.base_due |money }}</td>
+            <td>
+                {% if row.adjustment %}
+                    {{ row.adjustment |money }}
+                {% else %}
+                    <span class="text-muted">—</span>
+                {% endif %}
+            </td>
+            <td>{{ row.due |money }}</td>
+            <td>{{ row.paid |money }}</td>
+            <td>{{ row.balance |money }}</td>
+            <td>
+                <a href="{% url 'finance:household_detail' pk=row.household.pk %}"
+                   class="btn btn-sm btn-outline-primary">{% trans "Manage" %}</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+
 <h5>{% blocktranslate with count=children_balances|length %}Children ({{ count }}){% endblocktranslate %}</h5>
 <table class="table table-striped">
     <thead>
         <tr>
             <th>{% trans "Name" %}</th>
             <th>{% trans "Due" %}</th>
+            <th>{% trans "Adjustment" %}</th>
             <th>{% trans "Paid" %}</th>
             <th>{% trans "Balance" %}</th>
             <th>{% trans "Late" %}</th>
@@ -84,6 +136,13 @@
         <tr class="{% if b.is_late %}table-danger{% endif %}">
             <td>{{ b.person }}</td>
             <td>{{ b.amount_due |money }}</td>
+            <td>
+                {% if b.adjustment %}
+                    {{ b.adjustment |money }}
+                {% else %}
+                    <span class="text-muted">—</span>
+                {% endif %}
+            </td>
             <td>{{ b.amount_paid |money }}</td>
             <td>{{ b.balance |money }}</td>
             <td>{% if b.is_late %}<span class="badge bg-danger">{% trans "Yes" %}</span>{% endif %}</td>
@@ -93,7 +152,7 @@
             </td>
         </tr>
         {% empty %}
-        <tr><td colspan="6">{% trans "No child enrolled." %}</td></tr>
+        <tr><td colspan="7">{% trans "No child enrolled." %}</td></tr>
         {% endfor %}
     </tbody>
 </table>
@@ -105,6 +164,7 @@
         <tr>
             <th>{% trans "Name" %}</th>
             <th>{% trans "Due" %}</th>
+            <th>{% trans "Adjustment" %}</th>
             <th>{% trans "Paid" %}</th>
             <th>{% trans "Balance" %}</th>
             <th>{% trans "Action" %}</th>
@@ -115,6 +175,13 @@
         <tr>
             <td>{{ b.person }}</td>
             <td>{{ b.amount_due |money }}</td>
+            <td>
+                {% if b.adjustment %}
+                    {{ b.adjustment |money }}
+                {% else %}
+                    <span class="text-muted">—</span>
+                {% endif %}
+            </td>
             <td>{{ b.amount_paid |money }}</td>
             <td>{{ b.balance |money }}</td>
             <td>

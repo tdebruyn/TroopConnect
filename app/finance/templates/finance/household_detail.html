@@ -1,0 +1,209 @@
+{% extends "members/base.html" %}
+{% load i18n money %}
+{% block hat_title %}{{ household.name }}{% endblock hat_title %}
+{% block hat_text %}{% trans "Treasurer — household" %}{% endblock hat_text %}
+{% block subcontent %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">{% trans "Name" %}</div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="rename" />
+                        <div class="input-group">
+                            {{ rename_form.name }}
+                            <button type="submit" class="btn btn-primary">{% trans "Rename" %}</button>
+                        </div>
+                        {% for error in rename_form.name.errors %}<div class="text-danger">{{ error }}</div>{% endfor %}
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">{% trans "Add a member" %}</div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="add_member" />
+                        <div class="input-group">
+                            {{ member_form.person }}
+                            <button type="submit" class="btn btn-primary">{% trans "Add" %}</button>
+                        </div>
+                        <small class="text-muted d-block mt-1">
+                            {% trans "A member can only be in one household: adding them here takes them out of any other." %}
+                        </small>
+                        {% for error in member_form.person.errors %}<div class="text-danger">{{ error }}</div>{% endfor %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h5>{% trans "Members" %}</h5>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>{% trans "Member" %}</th>
+                {% if school_year %}
+                    <th>{% trans "Rank" %}</th>
+                    <th>{% trans "Due" %}</th>
+                    <th>{% trans "Adjustment" %}</th>
+                    <th>{% trans "Balance" %}</th>
+                {% endif %}
+                <th>{% trans "Action" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in member_rows %}
+                <tr>
+                    <td>{{ row.person }}</td>
+                    {% if school_year %}
+                        <td>
+                            {% if row.rank == 1 %}
+                                {% trans "1st member" %}
+                            {% elif row.rank == 2 %}
+                                {% trans "2nd member" %}
+                            {% elif row.rank %}
+                                {% trans "3rd member or more" %}
+                            {% else %}
+                                <span class="text-muted">{% trans "Not billed" %}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if row.balance %}
+                                {{ row.balance.amount_due |money }}
+                            {% else %}
+                                <span class="text-muted">—</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if row.balance.adjustment %}
+                                {{ row.balance.adjustment |money }}
+                            {% else %}
+                                <span class="text-muted">—</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if row.balance %}
+                                {{ row.balance.balance |money }}
+                            {% else %}
+                                <span class="text-muted">—</span>
+                            {% endif %}
+                        </td>
+                    {% endif %}
+                    <td>
+                        <form method="post" action="{% url 'finance:assign_household' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="person_id" value="{{ row.person.pk }}" />
+                            <input type="hidden" name="household" value="" />
+                            <input type="hidden" name="next"
+                                   value="{% url 'finance:household_detail' pk=household.pk %}" />
+                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                {% trans "Billed by address again" %}
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="6">
+                        <span class="text-muted">{% trans "No member in this household yet." %}</span>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if school_year %}
+        <h5 class="mt-4">{% blocktranslate with year=school_year.range %}How {{ year }} is billed{% endblocktranslate %}</h5>
+        <p class="text-muted">
+            {% trans "Only the members enrolled this school year are billed, ranked by age within this household. A member enrolled under a different address is not billed here." %}
+        </p>
+    {% endif %}
+
+    <h5 class="mt-4">{% trans "Adjustments" %}</h5>
+    {% if unapplied %}
+        <div class="alert alert-warning" role="alert">
+            {% blocktranslate with amount=unapplied|money year=school_year.range %}This household owes {{ amount }} in adjustments for {{ year }}, but nobody from it is enrolled that year, so the amount is not being applied to anyone's balance.{% endblocktranslate %}
+        </div>
+    {% endif %}
+    <table class="table table-sm">
+        <thead>
+            <tr>
+                <th>{% trans "School year" %}</th>
+                <th>{% trans "Amount" %}</th>
+                <th>{% trans "Reason" %}</th>
+                <th>{% trans "Author" %}</th>
+                <th>{% trans "Action" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for adjustment in adjustments %}
+                <tr>
+                    <td>{{ adjustment.school_year.range }}</td>
+                    <td>{{ adjustment.amount |money }}</td>
+                    <td>{{ adjustment.reason }}</td>
+                    <td>{{ adjustment.author|default:"—" }}</td>
+                    <td>
+                        <form method="post"
+                              action="{% url 'finance:adjustment_delete' pk=household.pk adjustment_pk=adjustment.pk %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-outline-danger">{% trans "Delete" %}</button>
+                        </form>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="5" class="text-muted">{% trans "No adjustment." %}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="card mb-4">
+        <div class="card-header">{% trans "Add an adjustment" %}</div>
+        <div class="card-body">
+            <form method="post" class="row g-3 align-items-end">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="add_adjustment" />
+                <div class="col-md-3">
+                    <label for="{{ adjustment_form.school_year.id_for_label }}" class="form-label">
+                        {{ adjustment_form.school_year.label }}
+                    </label>
+                    {{ adjustment_form.school_year }}
+                    {% for error in adjustment_form.school_year.errors %}<div class="text-danger">{{ error }}</div>{% endfor %}
+                </div>
+                <div class="col-md-3">
+                    <label for="{{ adjustment_form.amount.id_for_label }}" class="form-label">
+                        {{ adjustment_form.amount.label }}
+                    </label>
+                    {{ adjustment_form.amount }}
+                    <small class="text-muted d-block">{{ adjustment_form.amount.help_text }}</small>
+                    {% for error in adjustment_form.amount.errors %}<div class="text-danger">{{ error }}</div>{% endfor %}
+                </div>
+                <div class="col-md-4">
+                    <label for="{{ adjustment_form.reason.id_for_label }}" class="form-label">
+                        {{ adjustment_form.reason.label }}
+                    </label>
+                    {{ adjustment_form.reason }}
+                    {% for error in adjustment_form.reason.errors %}<div class="text-danger">{{ error }}</div>{% endfor %}
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary">{% trans "Add" %}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <hr class="hr" />
+    <form method="post" action="{% url 'finance:household_delete' pk=household.pk %}">
+        {% csrf_token %}
+        <p class="text-muted">
+            {% trans "Deleting the household does not touch its members: they go back to being billed by address. Its adjustment lines are deleted with it." %}
+        </p>
+        <button type="submit" class="btn btn-outline-danger">{% trans "Delete this household" %}</button>
+    </form>
+    <a href="{% url 'finance:households' %}" class="btn btn-secondary mt-3">{% trans "Back to households" %}</a>
+{% endblock subcontent %}
