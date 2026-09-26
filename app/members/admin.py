@@ -138,8 +138,8 @@ class SectionEventAdmin(admin.ModelAdmin):
 
 @admin.register(Section)
 class SectionAdmin(TranslationAdmin):
-    list_display = ("name", "branch")
-    search_fields = ("name",)
+    list_display = ("name", "branch", "email")
+    search_fields = ("name", "email")
 
 
 @admin.register(Branch)

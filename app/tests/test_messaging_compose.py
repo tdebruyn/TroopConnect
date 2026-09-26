@@ -1,6 +1,7 @@
 from datetime import date
 
 from django.test import Client
+from post_office.models import Email
 
 from members.models import (
     Account,
@@ -11,6 +12,7 @@ from members.models import (
     SchoolYear,
     Section,
     SectionEvent,
+    TroopSettings,
 )
 from messaging.forms import ComposeMessageForm
 from messaging.models import SectionMessage
@@ -421,3 +423,99 @@ class ComposeAgendaEntryTest(TroopSettingsTestCase, MailTestCase):
         self.send("all_animateurs", event_date="2026-10-17")
 
         self.assertFalse(SectionEvent.objects.exists())
+
+
+class ComposeReplyToTest(TroopSettingsTestCase, MailTestCase):
+    """A section's own address answers for it; the troop's answers when it has none.
+
+    The address is set on the section in the Django admin — see
+    ``tests.test_section_email`` — so these cover only where it reaches: the
+    ``Reply-To`` header of the section's own messages.
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.client = Client()
+        self.current_year = SchoolYear.current()
+
+        self.section = Section.objects.create(name="Louveteaux")
+
+        # Staff sender (secondary role "ar"): may send to any group or section
+        self.staff_person = Person.objects.create(
+            first_name="Marie", last_name="Staff",
+            primary_role=Role.objects.get(short="p"), status="a",
+        )
+        self.staff_person.roles.add(Role.objects.get(short="ar"))
+        Account.objects.create_user(
+            email="staff@test.com", password="testpass", person=self.staff_person,
+        )
+
+        # The one recipient, so exactly one email is sent per test
+        self.anim_person = Person.objects.create(
+            first_name="Jean", last_name="Anim",
+            primary_role=Role.objects.get(short="a"), status="a",
+        )
+        Account.objects.create_user(
+            email="anim@test.com", password="testpass", person=self.anim_person,
+        )
+        Enrollment.objects.create(
+            user=self.anim_person, section=self.section,
+            school_year=self.current_year,
+        )
+
+        self.client.login(email="staff@test.com", password="testpass")
+
+    def send(self, group, **extra):
+        post = {
+            "recipient_group": group,
+            "section": str(self.section.pk),
+            "subject": "Grand jeu",
+            "body": "Rendez-vous au local",
+            f"recipient_{self.anim_person.pk}": "on",
+        }
+        post.update(extra)
+        return self.client.post("/messaging/compose/", post)
+
+    def reply_to(self):
+        return (Email.objects.latest("created").headers or {}).get("Reply-To")
+
+    def give_the_section(self, address):
+        self.section.email = address
+        self.section.save()
+
+    def give_the_troop(self, address):
+        troop = TroopSettings.get_settings()
+        troop.reply_to_email = address
+        troop.save()
+
+    def test_the_sections_own_address_answers_for_it(self):
+        self.give_the_section("meute@limal.be")
+        self.give_the_troop("secretariat@limal.be")
+
+        self.send("section_animateurs")
+
+        self.assertEqual(self.reply_to(), "meute@limal.be")
+
+    def test_a_section_without_an_address_uses_the_troops(self):
+        self.give_the_troop("secretariat@limal.be")
+
+        self.send("section_animateurs")
+
+        self.assertEqual(self.reply_to(), "secretariat@limal.be")
+
+    def test_a_troop_wide_message_uses_the_troops(self):
+        # This group spans the unit, so there is no section whose address could
+        # answer for it even though the form still carries a section.
+        self.give_the_section("meute@limal.be")
+        self.give_the_troop("secretariat@limal.be")
+
+        self.send("all_animateurs")
+
+        self.assertEqual(self.reply_to(), "secretariat@limal.be")
+
+    def test_no_address_anywhere_leaves_the_header_off(self):
+        self.give_the_section("")
+
+        self.send("section_animateurs")
+
+        self.assertIsNone(self.reply_to())

@@ -847,6 +847,11 @@ TRANSLATIONS = {
         'Le passage de section attend une décision : %(reason)s',
         'De overgang wacht op een beslissing: %(reason)s',
     ),
+    # Section emails, added with members.Section.email.
+    "Where answers to this section's messages should go. Empty uses the unit's reply-to address.": (
+        "Où arrivent les réponses aux messages de cette section. Laisser vide pour utiliser l'adresse de réponse de l'unité.",
+        "Waar antwoorden op de berichten van deze sectie toekomen. Laat leeg om het antwoordadres van de eenheid te gebruiken.",
+    ),
 }
 
 

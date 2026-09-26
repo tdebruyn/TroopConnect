@@ -435,6 +435,13 @@ NEW_STRINGS = [
         "supprimé",
         "verwijderd",
     ),
+    # A section's own address, edited in the Django admin.
+    (
+        "Where answers to this section's messages should go. Empty uses the "
+        "unit's reply-to address.",
+        "Laisser vide",
+        "Laat leeg",
+    ),
 ]
 
 

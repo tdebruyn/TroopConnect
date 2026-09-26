@@ -3245,3 +3245,7 @@ msgstr "Nouvelle activité"
 #: section agenda (hand-added; see docs/dev/CONTRACT.md)
 msgid "Optional, for a message sent to a section: the activity is added to that section's agenda."
 msgstr "Facultatif, pour un message envoyé à une section : l'activité est ajoutée à l'agenda de cette section."
+
+#: section emails (hand-added; see docs/dev/CONTRACT.md)
+msgid "Where answers to this section's messages should go. Empty uses the unit's reply-to address."
+msgstr "Où arrivent les réponses aux messages de cette section. Laisser vide pour utiliser l'adresse de réponse de l'unité."

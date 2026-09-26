@@ -331,8 +331,10 @@ The templates name no troop. They say `{{ troop_name }}`, which
 `members.mail.send_templated` fills in from `TroopSettings.name` — read in the
 language the message is being written in, not whichever one the sender has on
 screen. That helper also builds absolute URLs from the Site row, sets
-`Reply-To` from `reply_to_email` when the troop has one, and resolves the
-language to one templates actually exist in, so a parent whose
+`Reply-To` from `reply_to_email` when the troop has one — a message sent to a
+section uses that section's own address instead, and falls back to the troop's
+when the section has none (`Section.email`, edited in the Django admin) — and
+resolves the language to one templates actually exist in, so a parent whose
 `preferred_language` is `nl` or `en` gets an email rather than a lookup failure.
 
 Each HTML body opens with the troop's logo. `send_templated` supplies

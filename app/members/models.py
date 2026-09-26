@@ -566,6 +566,19 @@ class Section(models.Model):
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE, null=True, blank=True)
     sex = models.CharField(max_length=1, choices=Sex.choices, null=True, blank=True)
 
+    # The section's own address: answers to the messages a leader sends to the
+    # section go here (see ``messaging.views.compose_message``). Empty is the
+    # ordinary case and leaves the unit's own reply-to address in charge —
+    # ``TroopSettings.reply_to_email``.
+    email = models.EmailField(
+        blank=True,
+        default="",
+        help_text=_(
+            "Where answers to this section's messages should go. "
+            "Empty uses the unit's reply-to address."
+        ),
+    )
+
     def __str__(self):
         return f"{self.name} ({self.branch})"
 

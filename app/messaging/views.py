@@ -426,6 +426,15 @@ def compose_message(request):
 
             msg_section = section if group in SECTION_GROUPS else None
 
+            # Answers come back to the section when it has an address of its
+            # own. `send_templated` fills in the troop's reply-to address when
+            # this header is absent, which is what a section without one gets.
+            headers = (
+                {"Reply-To": msg_section.email}
+                if msg_section is not None and msg_section.email
+                else {}
+            )
+
             msg = SectionMessage.objects.create(
                 sender=person,
                 section=msg_section,
@@ -472,6 +481,7 @@ def compose_message(request):
                                     "body": msg.body,
                                 },
                                 attachments=email_attachments or None,
+                                headers=headers,
                             )
                         except Exception:
                             messages.error(
