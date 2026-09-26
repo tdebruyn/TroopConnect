@@ -1,4 +1,4 @@
-FROM python:3.13-alpine
+FROM python:3.14-alpine
 
 # Which release this is, supplied by the image workflow and baked in so a
 # running container can be asked. "dev" for a local build. Read by
