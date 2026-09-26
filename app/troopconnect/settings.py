@@ -75,16 +75,13 @@ if not SECRET_KEY:
     if _secret_key_problem:
         record_problem("SECRET_KEY", _secret_key_problem)
 
-# The first-run wizard's one-time setup code. Written on the first boot of a
-# fresh instance (the entrypoint runs `manage.py setup_code`, which prints it
-# to the web container's log) and read back by the wizard, which asks for it
-# before it will create an administrator. It lives beside the secret key in
-# the secrets volume, so replacing the database issues a new one.
+# The first-run wizard's one-time setup code. The entrypoint issues it on the
+# first boot of an instance with no administrator and prints it into the web
+# container's log; it sits beside the secret key so a redeploy keeps it.
 SETUP_CODE_FILE = env("SETUP_CODE_FILE", "/data/secrets/setup_code")
 
-# django.contrib.sites: the row allauth and get_current() read. Fresh installs
-# get row 1 from migrate; instances migrated from the old .settings.json may
-# still be on row 2 and can keep it by setting SITE_ID=2.
+# django.contrib.sites: the row allauth and get_current() read. Migrate creates
+# row 1; an instance whose Site row has a different id sets SITE_ID to match it.
 SITE_ID = env_int("SITE_ID", 1)
 
 ALLOWED_HOSTS = []
@@ -268,10 +265,9 @@ MEDIA_URL = "/media/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_ROOT = BASE_DIR / "mediafiles"
 
-# The project-level static dir (site CSS, JS, fonts). Previously this was only
-# listed while DEBUG was on, which went unnoticed because the production branch
-# forced DEBUG = True; now that DEBUG really is off in production, leaving it
-# out would silently stop `collectstatic` from publishing the site's own CSS.
+# The project-level static dir (site CSS, JS, fonts). It has to be listed in
+# every environment: `collectstatic` reads STATICFILES_DIRS only, so omitting it
+# silently drops the site's own CSS from the published files.
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
@@ -322,9 +318,8 @@ MAILERSEND_API_KEY = env("MAILERSEND_API_KEY", "")
 
 MAIL_SEND_MODE = env("MAIL_SEND_MODE")
 if not MAIL_SEND_MODE:
-    # Keeping an API key in the environment is the opt-in: unchanged behaviour
-    # for the instance that has been using MailerSend, and a working SMTP or
-    # console setup for everybody else.
+    # An API key in the environment is the opt-in for MailerSend; without one,
+    # mail follows EMAIL_URL (SMTP or console).
     MAIL_SEND_MODE = "mailersend" if MAILERSEND_API_KEY else "email_url"
 
 if MAIL_SEND_MODE in ("mailersend", "real"):

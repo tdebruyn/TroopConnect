@@ -1,7 +1,5 @@
 from django import forms
 from django.contrib import admin
-
-# from django.contrib.auth.admin import UserAdmin, GroupAdmin
 from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import gettext_lazy as _
 from modeltranslation.admin import TranslationAdmin
@@ -11,8 +9,6 @@ from .forms import (
     AdminAccountChangeForm,
     LanguageSelectionMixin,
 )
-
-# from .models import CustomUser, CustomGroup, SchoolYear, Age
 from .models import (
     Account,
     Branch,

@@ -172,7 +172,6 @@ def calculate_balances(school_year):
     config = CotisationConfig.get_for_year(school_year)
     households = _get_households(school_year)
 
-    # Resolve each member's branch from their enrollment section (children only).
     member_ids = [m.pk for h in households.values() for m in h]
     branch_by_person = {}
     for enr in (
@@ -194,7 +193,6 @@ def calculate_balances(school_year):
             branch = None if is_animator else branch_by_person.get(member.pk)
             dues[member.pk] = FeeRule.get_fee(school_year, member_type, rank, branch)
 
-    # Apply late penalty
     now = timezone.now().date()
     is_late = config.late_deadline and now > config.late_deadline
     if is_late:
@@ -202,7 +200,6 @@ def calculate_balances(school_year):
         for pk in dues:
             dues[pk] = (dues[pk] * factor).quantize(Decimal("0.01"))
 
-    # Calculate payments
     payments_by_person = {}
     for payment in Payment.objects.filter(school_year=school_year).values(
         "person_id", "amount"
@@ -238,7 +235,6 @@ def get_adults_with_balance(school_year):
 
     person_ids = list(balance_by_person.keys())
 
-    # Find parents of these children
     children_with_balance = Person.objects.filter(pk__in=person_ids, primary_role__short="e")
     child_ids = list(children_with_balance.values_list("pk", flat=True))
 
@@ -256,7 +252,6 @@ def get_adults_with_balance(school_year):
             continue
         seen_parents.add(parent.pk)
 
-        # Find this parent's children who have balance
         parent_children = Person.objects.filter(
             as_child__parent=parent,
             pk__in=child_ids,

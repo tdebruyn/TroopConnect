@@ -278,7 +278,7 @@ class StayingTest(LadderTestBase):
 
     def test_a_branch_with_no_max_age_keeps_them(self):
         # Nothing has said they outgrew it, so a link is not followed on a
-        # guess. (The old code aged everyone out of such a branch instead.)
+        # guess.
         open_branch = self.branch("Open", min_age=6)
         open_branch.promotes_to = self.branch("Older", min_age=9, max_age=12)
         open_branch.save(update_fields=["promotes_to"])

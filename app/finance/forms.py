@@ -26,17 +26,14 @@ class PriceGridForm(forms.Form):
             for rule in FeeRule.objects.filter(school_year=school_year)
         }
 
-        # Generic (all branches) child row.
         for rank in self.RANKS:
             self._field(f"child_all_{rank}", existing.get((None, rank, "child")))
-        # Per-branch child rows.
         for branch in branches:
             for rank in self.RANKS:
                 self._field(
                     f"child_{branch.pk}_{rank}",
                     existing.get((branch.pk, rank, "child")),
                 )
-        # Animator row (all branches).
         for rank in self.RANKS:
             self._field(f"animator_{rank}", existing.get((None, rank, "animator")))
 

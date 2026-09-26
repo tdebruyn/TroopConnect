@@ -58,8 +58,6 @@ class AccountCreationForm(UserCreationForm):
 class AccountChangeForm(UserChangeForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # if "groups" in self.fields.keys():
-        #     self.fields["groups"].queryset = CustomGroup.get_all_leaf_nodes()
         for visible in self.visible_fields():
             visible.field.widget.attrs["class"] = "form-control"
 
@@ -73,7 +71,6 @@ class AdminUserUpdateForm(forms.ModelForm):
         ),
     )
 
-    # Primary role selection
     primary_role = forms.ModelChoiceField(
         queryset=Role.objects.filter(is_primary=True),
         required=True,
@@ -91,7 +88,6 @@ class AdminUserUpdateForm(forms.ModelForm):
         widget=forms.CheckboxSelectMultiple,
     )
 
-    # Section enrollments
     current_section = SectionModelChoiceField(
         queryset=Section.objects.all(),
         required=False,
@@ -107,7 +103,6 @@ class AdminUserUpdateForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields["birthday"].widget.format = "%Y-%m-%d"
 
-        # Get current and next school years
         current_year = SchoolYear.current()
         self.current_year = current_year
 
@@ -116,7 +111,6 @@ class AdminUserUpdateForm(forms.ModelForm):
         except SchoolYear.DoesNotExist:
             self.next_year = None
 
-        # Set section labels with year ranges
         self.fields["current_section"].label = _("Section %(range)s") % {
             "range": current_year.range
         }
@@ -125,7 +119,6 @@ class AdminUserUpdateForm(forms.ModelForm):
                 "range": self.next_year.range
             }
 
-        # Set initial values for roles if instance exists
         if self.instance and self.instance.pk:
             locked, reason = self.instance.has_role_dependencies()
             self.role_locked = locked
@@ -163,7 +156,6 @@ class AdminUserUpdateForm(forms.ModelForm):
         current_section = cleaned_data.get("current_section")
         next_section = cleaned_data.get("next_section")
 
-        # Validate section enrollment based on role
         if (
             primary_role
             and primary_role.short not in ["e", "a"]
@@ -186,7 +178,6 @@ class AdminUserUpdateForm(forms.ModelForm):
     def save(self, commit=True):
         person = super().save(commit=False)
 
-        # Get form data
         primary_role = self.cleaned_data.get("primary_role")
         secondary_roles = self.cleaned_data.get("secondary_roles")
         email = self.cleaned_data.get("email")
@@ -208,11 +199,9 @@ class AdminUserUpdateForm(forms.ModelForm):
             for role in (secondary_roles or []):
                 PersonRole.objects.create(person=person, role=role)
 
-            # Handle section enrollments
             current_section = self.cleaned_data.get("current_section")
             next_section = self.cleaned_data.get("next_section")
 
-            # Current year enrollment
             if current_section:
                 enrollment, created = Enrollment.objects.update_or_create(
                     user=person,
@@ -220,12 +209,10 @@ class AdminUserUpdateForm(forms.ModelForm):
                     defaults={"section": current_section},
                 )
             else:
-                # Remove enrollment if section is cleared
                 Enrollment.objects.filter(
                     user=person, school_year=self.current_year
                 ).delete()
 
-            # Next year enrollment
             if next_section and self.next_year:
                 enrollment, created = Enrollment.objects.update_or_create(
                     user=person,
@@ -238,19 +225,15 @@ class AdminUserUpdateForm(forms.ModelForm):
                     person.passage_review = ""
                     person.save(update_fields=["passage_review"])
             elif self.next_year:
-                # Remove enrollment if section is cleared
                 Enrollment.objects.filter(
                     user=person, school_year=self.next_year
                 ).delete()
 
-            # Handle Account creation/update
             if email:
                 if hasattr(person, "account"):
-                    # Update existing account
                     person.account.email = email
                     person.account.save()
                 else:
-                    # Create new account
                     Account.objects.create(person=person, email=email)
                     reset_password_form = ResetPasswordForm({"email": email})
                     if reset_password_form.is_valid():
@@ -295,7 +278,6 @@ class ProfileEditForm(UserChangeForm):
         label="",
     )
 
-    # Account fields
     email = forms.EmailField()
 
     primary_role = forms.ChoiceField(
@@ -327,11 +309,9 @@ class ProfileEditForm(UserChangeForm):
         person = self.instance.person
         parent_active_role = Role.objects.get(short="pa")
 
-        # An Account must have a Person
         if not hasattr(self.instance, "person"):
             raise ValueError("Account instance is missing required Person relationship")
 
-        # Populate form fields from Person
         self.fields["first_name"].initial = self.instance.person.first_name
         self.fields["last_name"].initial = self.instance.person.last_name
         self.fields["totem"].initial = self.instance.person.totem
@@ -340,7 +320,6 @@ class ProfileEditForm(UserChangeForm):
         self.fields["photo_consent"].initial = self.instance.person.photo_consent
         self.fields["email"].initial = self.instance.email
 
-        # Set primary role
         locked, reason = person.has_role_dependencies()
         self.role_locked = locked
         self.lock_reason = reason
@@ -387,7 +366,6 @@ class ProfileEditForm(UserChangeForm):
         person = self.instance.person
         parent_active_role = Role.objects.get(short="pa")
 
-        # Update Person fields
         person.first_name = self.cleaned_data["first_name"]
         person.last_name = self.cleaned_data["last_name"]
         person.totem = self.cleaned_data.get("totem")
@@ -484,7 +462,6 @@ class ChildForm(forms.ModelForm):
             ),
             required=True,
         )
-        # self.fields["birthday"].widget.format = "%Y-%m-%d"
         self.fields["first_name"].required = True
         self.fields["last_name"].required = True
         self.fields["sex"].required = True
@@ -528,13 +505,11 @@ class ChildForm(forms.ModelForm):
             return
 
         if Account.objects.filter(person=person).exists():
-            # Update the existing Account's email
             account = Account.objects.get(person=person)
             if account.email != email:
                 account.email = email
                 account.save()
         else:
-            # Create a new Account for this Person
             account = Account(person=person, email=email)
             account.save()
             reset_password_form = ResetPasswordForm({"email": email})
@@ -632,7 +607,6 @@ class AdminAccountChangeForm(UserChangeForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.instance and self.instance.pk:
-            # Populate Person fields
             person = self.instance.person
             self.fields["person_first_name"].initial = person.first_name
             self.fields["person_last_name"].initial = person.last_name

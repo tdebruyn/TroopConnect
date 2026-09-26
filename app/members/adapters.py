@@ -20,11 +20,9 @@ class SocialAccountAdapter(DefaultSocialAccountAdapter):
         login is processed. If a local account with the same email
         exists, connect the social login to it.
         """
-        # If the social login is already connected to a user, nothing to do
         if sociallogin.is_existing:
             return
 
-        # Check if a local account exists with this email
         email = sociallogin.account.extra_data.get("email")
         if not email:
             email_addresses = sociallogin.email_addresses
@@ -34,7 +32,6 @@ class SocialAccountAdapter(DefaultSocialAccountAdapter):
         if email:
             users = list(filter_users_by_email(email))
             if len(users) == 1:
-                # Connect the social login to the existing user
                 sociallogin.connect(request, users[0])
 
     def get_connect_redirect_url(self, request, socialaccount):

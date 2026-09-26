@@ -432,7 +432,7 @@ class AgeReferenceConsistencyTest(PassageTestBase):
 
     def test_the_age_is_the_one_inside_the_target_school_year(self):
         # 9 on 31 Dec of the target school year → Baladins (6-9): the child
-        # stays. The old end-of-next-year reference made them 10 → Louveteaux.
+        # stays.
         child = Person.objects.create(
             first_name="Test", last_name="Child",
             primary_role=self.role_anime, status="a",

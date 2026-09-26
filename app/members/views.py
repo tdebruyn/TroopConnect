@@ -1,7 +1,6 @@
 import json
 from urllib.parse import urlencode
 
-# from django.contrib.auth import get_user_model
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -54,7 +53,6 @@ class OnboardingView(LoginRequiredMixin, TemplateView):
     template_name = "members/onboarding.html"
 
     def dispatch(self, request, *args, **kwargs):
-        # If profile is already completed, redirect to homepage
         if (
             hasattr(request.user, "person")
             and request.user.person.status == "a"
@@ -100,7 +98,6 @@ class AdminListView(UserPassesTestMixin, ListView):
     filter_param_keys = ("first_name", "last_name", "birth_year", "year", "section", "role")
     filter_session_key = "admin_list_filter"
 
-    # Define sortable fields and their corresponding model fields
     sortable_fields = {
         "first_name": "first_name",
         "last_name": "last_name",
@@ -140,10 +137,8 @@ class AdminListView(UserPassesTestMixin, ListView):
         """
         Get the ordering based on the request parameters
         """
-        ordering = self.request.GET.get(
-            "sort", "last_name"
-        )  # Default sort by last_name
-        direction = self.request.GET.get("direction", "asc")  # Default ascending
+        ordering = self.request.GET.get("sort", "last_name")
+        direction = self.request.GET.get("direction", "asc")
 
         # Check if the requested field is sortable
         if ordering in self.sortable_fields:
@@ -152,7 +147,6 @@ class AdminListView(UserPassesTestMixin, ListView):
                 return f"-{field}"
             return field
 
-        # Default ordering
         return "last_name"
 
     def _get_selected_year(self):
@@ -179,7 +173,6 @@ class AdminListView(UserPassesTestMixin, ListView):
         # the whole filtering pass a second time.
         context["filter"] = self._get_filterset()
 
-        # For each person in the (paginated) object_list, add their section for the selected year
         troop = TroopSettings.get_settings()
         for person in context["object_list"]:
             try:
@@ -217,16 +210,14 @@ class AdminListView(UserPassesTestMixin, ListView):
                 person.section_display = "-"
                 person.age_mismatch = False
 
-            # `primary_role` is select_related in get_queryset(), so this is
-            # no longer a query per row. It can legitimately be unset.
+            # `primary_role` is select_related in get_queryset(), so this costs
+            # no query per row. It can legitimately be unset.
             person.role = person.primary_role
 
-        # Add sorting information to context
         context["current_sort"] = self.request.GET.get("sort", "last_name")
         context["current_direction"] = self.request.GET.get("direction", "asc")
         context["sortable_fields"] = self.sortable_fields.keys()
 
-        # Define field names and their display names
         context["fields_map"] = [
             ("first_name", _("First name")),
             ("last_name", _("Last name")),
@@ -249,7 +240,6 @@ class AdminListView(UserPassesTestMixin, ListView):
     def get_queryset(self):
         queryset = self._get_filterset().qs.select_related("primary_role")
 
-        # Apply ordering
         ordering = self.get_ordering()
         if ordering:
             queryset = queryset.order_by(ordering)
@@ -283,11 +273,9 @@ class AdminUpdateView(UserPassesTestMixin, UpdateView):
         form_class = self.get_form_class()
         form = form_class(instance=self.object)
 
-        # Set initial values for the form fields
         if hasattr(self.object, "account"):
             form.fields["email"].initial = self.object.account.email
 
-        # Get current section enrollment
         try:
             current_year = SchoolYear.current()
             enrollment = self.object.enrollment_set.filter(
@@ -298,7 +286,6 @@ class AdminUpdateView(UserPassesTestMixin, UpdateView):
         except (AttributeError, KeyError):
             pass
 
-        # Get next section enrollment if it exists
         try:
             next_year_name = current_year.name + 1
             try:
@@ -371,10 +358,6 @@ class ProfileView(LoginRequiredMixin, UpdateView):
             form.save()
             return redirect(self.get_success_url())
         return self.render_to_response(self.get_context_data(form=form))
-
-    # def form_valid(self, form):
-    #     messages.success(self.request, SUCCESS_MESSAGES["profile_updated"])
-    #     return super().form_valid(form)
 
 
 def add_new_child_view(request):
@@ -665,7 +648,6 @@ def deregister_confirm(request, pk, action):
         )
         return redirect(profile_url)
 
-    # Anything else is the "this_year" path.
     was_confirmed = child.status != "r"
     _archive_child(child)
     if was_confirmed:
@@ -840,13 +822,6 @@ def member_purge(request, pk):
 
     return render(request, "members/member_purge.html", _member_record_context(person))
 
-
-# class ProfileView(LoginRequiredMixin, ListView):
-#     model = CustomUser
-#     template_name = "members/profile.html"
-
-#     def get_queryset(self):
-#         return CustomUser.objects.filter(username=self.request.user)
 
 
 class DocumentListView(LoginRequiredMixin, ListView):

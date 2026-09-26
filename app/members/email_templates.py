@@ -27,13 +27,12 @@ import re
 LANGUAGES = ("fr", "nl", "en")
 DEFAULT_LANGUAGE = "fr"
 
-# Copy this project seeded before the troop name became a variable, and before
-# the site-wide templates stopped naming the product. Used by seed() to tell
-# seeded rows apart from rows an administrator has rewritten.
+# Strings identifying a row that still holds copy this project seeded, i.e. one
+# no administrator has rewritten. seed() overwrites those and leaves edited rows
+# alone.
 LEGACY_MARKERS = ("Scouts de Limal", "TroopConnect")
 
-# The style the call-to-action button has used since the templates were first
-# seeded; kept so the emails look unchanged.
+# Shared call-to-action button style, so every seeded email looks the same.
 _BUTTON = (
     "background-color: #0d6efd; color: #ffffff; padding: 10px 15px; "
     "text-decoration: none; border-radius: 5px;"
@@ -458,11 +457,10 @@ def _canonical_pairs():
 def _looks_seeded(text):
     """Whether ``text`` is copy this project seeded rather than an edit.
 
-    The seeded copy used to name one troop outright, and the site-wide
-    templates used to name the product. A row still containing one of those is
-    one nobody has rewritten in the admin, so a migration may replace it. The
-    check is deliberately conservative: rewriting an administrator's own
-    wording would be a silent edit of their content, which is worse than
+    A row still containing one of these markers holds copy this project
+    seeded, so nobody has rewritten it in the admin and a migration may replace
+    it. The check is deliberately conservative: rewriting an administrator's
+    own wording would be a silent edit of their content, which is worse than
     leaving an old template in place.
     """
     return any(marker in (text or "") for marker in LEGACY_MARKERS)
@@ -495,9 +493,9 @@ def seed(EmailTemplate, force=False):
                 setattr(existing, field, value)
             existing.save()
 
-    # Rows seeded under a language that is no longer used -- post_office's
-    # default "" row, historically -- would otherwise linger and stay reachable
-    # by name. Anything rewritten by hand is left where it is.
+    # A row whose (name, language) is not one this module seeds -- post_office's
+    # default "" row, say -- would otherwise linger and stay reachable by name.
+    # Anything rewritten by hand is left where it is.
     canonical = _canonical_pairs()
     for row in EmailTemplate.objects.filter(name__in=TEMPLATES):
         if (row.name, row.language) in canonical:

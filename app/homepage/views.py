@@ -40,11 +40,11 @@ _WRAPPER_CLOSE_RE = re.compile(r"</body>\s*(?:</html>\s*)?$", re.IGNORECASE)
 _WRAPPER_SELECTORS = {"", "html", "body", "*"}
 
 
-# The FAQ page renders a fixed hat banner above edited content (like the
-# other pages). Content saved before the banner existed still embeds the
-# masthead card the old default snippet seeded, duplicating the title.
-# Stripped at both render and save; the Home page keeps its card (it is
-# real content there, and "masthead" carries no styling of its own).
+# The FAQ page renders a fixed hat banner above the edited content (like the
+# other pages), so a `<header class="masthead">` card inside saved content
+# duplicates the title. Stripped at both render and save; the Home page keeps
+# its card (it is real content there, and "masthead" carries no styling of its
+# own).
 _FAQ_MASTHEAD_RE = re.compile(r"<header class=\"masthead\">.*?</header>", re.DOTALL)
 _FAQ_EMPTIED_CONTAINER_RE = re.compile(r"<div class=\"container row\">\s*</div>")
 
@@ -129,8 +129,8 @@ def _edited_context(page):
     if content is None:
         return {"page_html": None, "page_css": None}
     # modeltranslation resolves the active language, falling back to French
-    # when the current language was never edited. Sanitizing at render (not
-    # only at save) also fixes content saved before the wrapper was stripped.
+    # when the current language was never edited. Sanitizing at render as well
+    # as at save, so already-stored content is corrected at display time too.
     html = _sanitize_html(content.html)
     if page == SiteContent.Page.FAQ:
         html = _strip_legacy_faq_header(html)

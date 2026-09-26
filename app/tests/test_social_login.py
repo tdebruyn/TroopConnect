@@ -178,8 +178,8 @@ class SocialLoginMiddlewareExemptTest(TestCase):
         )
         self.client.force_login(account)
         # /accounts/social/signup/ should not redirect to onboarding. Asserted
-        # unconditionally: the previous `if response.status_code == 302:` guard
-        # meant any other status — including a 500 — asserted nothing at all.
+        # unconditionally, so an unexpected status such as a 500 fails here
+        # rather than slipping past a status-code guard.
         response = self.client.get(reverse("socialaccount_signup"), follow=False)
         self.assertIn(response.status_code, (200, 302))
         self.assertNotEqual(
