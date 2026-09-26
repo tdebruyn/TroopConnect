@@ -241,9 +241,11 @@ shows the household name and falls back to the address inference.
 a school year and its author. It applies **after** the late penalty — it
 corrects the total, it is not another price to be surcharged — and it lands on
 the household's first enrolled *child*, since a balance is per person while an
-adjustment is per household. A household with no child enrolled that year (or
-none at all) applies to nobody, and the household page says so rather than
-leaving the line looking effective. A parent's reminder amount is the **net** of
+adjustment is per household. A household with no child enrolled that year has
+it carried by its eldest member instead — an animators-only household is still
+a household that owes something. Only a household with *nobody* billed that
+year applies to nobody, and the household page says so rather than leaving the
+line looking effective. A parent's reminder amount is the **net** of
 their children's balances, credits included, so a household written off in full
 stops being chased for the share that was waived.
 

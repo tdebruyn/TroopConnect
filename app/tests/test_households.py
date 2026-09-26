@@ -294,6 +294,30 @@ class HouseholdAdjustmentTest(FinanceTestBase):
         self.assertEqual(due_of(balances, self.child_eldest), Decimal("80.00"))
         self.assertEqual(due_of(balances, self.child_youngest), Decimal("60.00"))
 
+    def test_adjustment_on_an_animator_only_household_lands_on_the_animator(self):
+        """No child to anchor it: the eldest member carries the correction.
+
+        An animators-only household still owes something, so the line is
+        applied to the member who is billed rather than left looking effective.
+        """
+        household = Household.objects.create(name="Équipe animateurs")
+        HouseholdMember.objects.create(household=household, person=self.animateur)
+        HouseholdAdjustment.objects.create(
+            household=household,
+            school_year=self.current_year,
+            amount=Decimal("-30.00"),
+            reason="Remboursement",
+        )
+
+        balances = calculate_balances(self.current_year)
+
+        # The animateur is alone, so rank 1 at 30.00 — which the line clears.
+        self.assertEqual(row_of(balances, self.animateur)["adjustment"], Decimal("-30.00"))
+        self.assertEqual(due_of(balances, self.animateur), Decimal("0.00"))
+        # And it stays inside that household.
+        self.assertEqual(due_of(balances, self.child_eldest), Decimal("80.00"))
+        self.assertEqual(due_of(balances, self.child_youngest), Decimal("60.00"))
+
     def test_summary_separates_fees_from_the_adjustment(self):
         self._adjust("-20.00")
 
@@ -400,6 +424,28 @@ class HouseholdViewTest(HouseholdStaffTest):
         )
 
         self.assertIsNone(response.context["unapplied"])
+
+    def test_detail_does_not_warn_for_an_animator_only_household(self):
+        """The line lands on the eldest member, so nothing is left unapplied."""
+        household = Household.objects.create(name="Équipe animateurs")
+        HouseholdMember.objects.create(household=household, person=self.animateur)
+        HouseholdAdjustment.objects.create(
+            household=household,
+            school_year=self.current_year,
+            amount=Decimal("-30.00"),
+            reason="Remboursement",
+        )
+
+        response = self.client.get(
+            reverse("finance:household_detail", kwargs={"pk": household.pk})
+        )
+
+        self.assertIsNone(response.context["unapplied"])
+        # The page shows the member billed at rank 1, carrying the correction.
+        row = response.context["member_rows"][0]
+        self.assertEqual(row["rank"], 1)
+        self.assertEqual(row["balance"]["adjustment"], Decimal("-30.00"))
+        self.assertEqual(row["balance"]["amount_due"], Decimal("0.00"))
 
     def test_adding_a_member_reassigns_them(self):
         self.client.post(
