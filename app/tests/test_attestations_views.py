@@ -16,11 +16,12 @@ from unittest.mock import patch
 from django.core.files.base import ContentFile
 from django.test import override_settings
 from django.urls import reverse
+from django.utils.translation import gettext
 from post_office.models import Email
 
 from attestations.models import AttestationCampaign, AttestationItem
 from attestations.views import _anchor_text, _resolve_placeholders
-from members.models import Account, Role
+from members.models import Account, Person, Role
 from members.permissions import can_manage_unit
 from tests.test_attestations import AttestationDbTestBase, _blank_pdf
 
@@ -330,6 +331,103 @@ class ReopenStepTest(AttestationViewTestBase):
         campaign = self.make_campaign(step=3)
 
         self.assertEqual(_anchor_text(campaign, []), {})
+class SuggestionDecisionTest(AttestationViewTestBase):
+    """Accepting or rejecting a probable match from the review table.
+
+    Both actions answer with the re-rendered row, so the test asserts on the
+    response body as well as on what was stored.
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.campaign = self.make_campaign(
+            step=5, status=AttestationCampaign.Status.READY
+        )
+        self.item = self.make_item(
+            self.campaign,
+            extracted_name="Charlle Dupnot",
+            matched_person=None,
+            recipients=[],
+            status=AttestationItem.Status.PENDING,
+            suggested_person=self.child,
+            match_score=0.85,
+        )
+        self.accept_url = reverse(
+            "attestations:accept_suggestion", args=[self.campaign.pk, self.item.pk]
+        )
+        self.dismiss_url = reverse(
+            "attestations:dismiss_suggestion", args=[self.campaign.pk, self.item.pk]
+        )
+
+    def test_accepting_makes_the_probable_match_the_recipient(self):
+        response = self.client.post(self.accept_url)
+
+        self.assertEqual(response.status_code, 200)
+        self.item.refresh_from_db()
+        self.assertEqual(self.item.matched_person, self.child)
+        self.assertEqual(self.item.recipients, ["alice@test.com", "bob@test.com"])
+        self.assertEqual(self.item.status, AttestationItem.Status.READY)
+        # The row comes back resolved: the picker holds the person, the addresses
+        # are filled in, and the proposal is gone.
+        self.assertContains(response, f'value="{self.child.pk}" selected')
+        self.assertContains(response, "alice@test.com")
+        self.assertNotContains(response, gettext("Probable match"))
+
+    def test_accepting_without_any_recipients_leaves_the_item_pending(self):
+        loner = Person.objects.create(
+            first_name="Solo", last_name="Enfant", primary_role=self.role_child, status="a"
+        )
+        self.item.suggested_person = loner
+        self.item.save(update_fields=["suggested_person"])
+
+        response = self.client.post(self.accept_url)
+
+        self.item.refresh_from_db()
+        self.assertEqual(self.item.matched_person, loner)
+        self.assertEqual(self.item.recipients, [])
+        self.assertEqual(self.item.status, AttestationItem.Status.PENDING)
+        self.assertContains(response, gettext("No recipient"))
+
+    def test_dismissing_falls_back_to_the_plain_not_found_row(self):
+        response = self.client.post(self.dismiss_url)
+
+        self.assertEqual(response.status_code, 200)
+        self.item.refresh_from_db()
+        self.assertTrue(self.item.suggestion_dismissed)
+        self.assertIsNone(self.item.matched_person)
+        self.assertNotContains(response, gettext("Probable match"))
+        self.assertContains(response, gettext("Not found"))
+        self.assertContains(response, "table-warning")
+
+    def test_dismissing_keeps_the_suggestion_for_the_record(self):
+        self.client.post(self.dismiss_url)
+        self.item.refresh_from_db()
+        self.assertEqual(self.item.suggested_person, self.child)
+        self.assertEqual(self.item.match_score, 0.85)
+        self.assertFalse(self.item.has_suggestion)
+
+    def test_a_dismissed_suggestion_is_not_offered_again(self):
+        self.client.post(self.dismiss_url)
+        response = self.client.get(
+            reverse("attestations:review", args=[self.campaign.pk]),
+            {"filter": "suggested"},
+        )
+        self.assertEqual(len(response.context["items"]), 0)
+
+    def test_the_decision_has_to_be_posted(self):
+        self.assertEqual(self.client.get(self.accept_url).status_code, 405)
+        self.assertEqual(self.client.get(self.dismiss_url).status_code, 405)
+
+    def test_an_item_of_another_campaign_is_not_reachable(self):
+        other = self.make_campaign(step=5)
+        url = reverse("attestations:accept_suggestion", args=[other.pk, self.item.pk])
+        self.assertEqual(self.client.post(url).status_code, 404)
+
+    def test_a_parent_cannot_decide(self):
+        self.client.logout()
+        self.client.login(email="alice@test.com", password="testpass")
+        self.assertEqual(self.client.post(self.accept_url).status_code, 404)
+        self.assertEqual(self.client.post(self.dismiss_url).status_code, 404)
 
 
 class SendBranchingTest(AttestationViewTestBase):

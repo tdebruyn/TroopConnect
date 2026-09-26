@@ -1,0 +1,47 @@
+{% load i18n %}
+{% comment %}
+One row of the review table. Rendered inside the review page and, on its own,
+as the response to accepting or rejecting a suggestion — hence ``campaign``,
+``item`` and ``persons`` rather than any page-level context.
+{% endcomment %}
+<tr class="{% if item.matched_person %}{% elif item.has_suggestion %}table-info{% else %}table-warning{% endif %}">
+    <td>{{ item.page_start|add:"1" }}–{{ item.page_end|add:"1" }}</td>
+    <td>{{ item.extracted_name|default:"—" }}</td>
+    <td style="min-width: 16rem;">
+        <select name="person_{{ item.pk }}" class="form-select form-select-sm person-select">
+            <option value="">{% trans "— no match —" %}</option>
+            {% for person in persons %}
+                <option value="{{ person.pk }}" {% if person.pk == item.matched_person_id %}selected{% endif %}>{{ person }} ({{ person.primary_role }})</option>
+            {% endfor %}
+        </select>
+        {% if item.has_suggestion %}
+            <div class="d-flex flex-wrap align-items-center gap-1 mt-1">
+                <span class="badge text-bg-info">{% trans "Probable match" %}</span>
+                <span class="small">{{ item.suggested_person }} ({{ item.suggested_person.primary_role }}) — {% widthratio item.match_score 1 100 %} %</span>
+                <button type="button" class="btn btn-sm btn-outline-primary"
+                        hx-post="{% url 'attestations:accept_suggestion' campaign.pk item.pk %}"
+                        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                        hx-target="closest tr" hx-swap="outerHTML">{% trans "Confirm" %}</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary"
+                        hx-post="{% url 'attestations:dismiss_suggestion' campaign.pk item.pk %}"
+                        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                        hx-target="closest tr" hx-swap="outerHTML">{% trans "Not this person" %}</button>
+            </div>
+        {% elif not item.matched_person %}
+            <span class="badge text-bg-warning mt-1">{% trans "Not found" %}</span>
+        {% endif %}
+    </td>
+    <td>
+        {% if item.has_suggestion %}
+            <span class="text-muted">
+                {% for email in item.suggested_emails %}{{ email }}{% if not forloop.last %}, {% endif %}{% empty %}<span class="text-danger">{% trans "No recipient" %}</span>{% endfor %}
+                {% if item.suggested_emails %}<span class="fst-italic">— {% trans "if confirmed" %}</span>{% endif %}
+            </span>
+        {% else %}
+            {% for email in item.recipients %}{{ email }}{% if not forloop.last %}, {% endif %}{% empty %}<span class="text-danger">{% trans "No recipient" %}</span>{% endfor %}
+        {% endif %}
+    </td>
+    <td>
+        <input type="checkbox" name="skip_{{ item.pk }}" class="form-check-input">
+    </td>
+</tr>

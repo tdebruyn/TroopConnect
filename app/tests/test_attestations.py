@@ -1,4 +1,5 @@
 from io import BytesIO
+from unittest.mock import patch
 
 from django.core.files.base import ContentFile
 from django.test import SimpleTestCase
@@ -17,6 +18,7 @@ from attestations.services import (
     locate_anchor,
     match_person,
     resolve_recipients,
+    suggest_person,
 )
 from members.models import Account, ParentChild, Person, Role
 from tests.mail import MailTestCase
@@ -337,6 +339,104 @@ class MatchPersonTest(AttestationDbTestBase):
         self.assertIsNone(match_person("Charlie Dupont"))
 
 
+class SuggestPersonTest(AttestationDbTestBase):
+    """The third outcome: close enough to propose, not close enough to match."""
+
+    def test_suggests_the_person_behind_two_typos(self):
+        # Two mistakes is one too many for a match, but the name is still
+        # obviously "Charlie Dupont".
+        person, score = suggest_person("Charlle Dupnot")
+        self.assertEqual(person, self.child)
+        self.assertGreaterEqual(score, 0.8)
+        self.assertLessEqual(score, 1.0)
+
+    def test_suggests_the_person_behind_a_single_letter_miss(self):
+        person, _ = suggest_person("Charlie Dupondt")
+        self.assertEqual(person, self.child)
+
+    def test_no_suggestion_for_an_unrelated_name(self):
+        self.assertIsNone(suggest_person("Zoe Inconnue"))
+
+    def test_no_suggestion_when_one_name_only_is_shared(self):
+        # "Charlie Durand" shares a first name with the child and nothing else;
+        # a shared first name is not a probable match.
+        self.assertIsNone(suggest_person("Charlie Durand"))
+
+    def test_no_suggestion_between_similar_first_names(self):
+        Person.objects.create(
+            first_name="Marc", last_name="Dupont", primary_role=self.role_child, status="a"
+        )
+        self.assertIsNone(suggest_person("Marie Dupont"))
+
+    def test_no_suggestion_for_a_single_token_name(self):
+        # "Dupont" alone would point at every Dupont in the unit.
+        self.assertIsNone(suggest_person("Dupont"))
+
+    def test_no_suggestion_when_the_two_candidates_are_too_close(self):
+        # Two people the name fits almost equally well: picking either would be
+        # a coin flip, so the operator searches instead.
+        Person.objects.create(
+            first_name="Charlle", last_name="Dupont", primary_role=self.role_child, status="a"
+        )
+        self.assertIsNone(suggest_person("Charlie Dupont"))
+
+    def test_a_clear_winner_is_still_suggested(self):
+        # ...but a close runner-up that is clearly worse does not block one.
+        Person.objects.create(
+            first_name="Charlotte", last_name="Dupont", primary_role=self.role_child, status="a"
+        )
+        person, _ = suggest_person("Chalrie Dupnot")
+        self.assertEqual(person, self.child)
+
+    def test_archived_people_are_not_candidates(self):
+        # Were they active, this name would score a perfect 1.0 — archived
+        # members are never proposed (nor matched), only current ones.
+        Person.objects.create(
+            first_name="Zoe",
+            last_name="Inconnue",
+            primary_role=self.role_child,
+            status="ar",
+        )
+        self.assertIsNone(suggest_person("Zoe Inconnue"))
+
+
+class ProcessCampaignSuggestionTest(AttestationDbTestBase):
+    """Splitting a campaign keeps a near-miss as a proposal, not a match."""
+
+    def _process(self, extracted_name):
+        campaign = AttestationCampaign.objects.create(
+            title="Test",
+            name_anchor=[0.0, 0.0, 1.0, 1.0],
+            page_range_start=1,
+            page_range_end=1,
+        )
+        campaign.documents.save("docs.pdf", ContentFile(_blank_pdf(1)))
+        with patch("attestations.services.extract_field", return_value=extracted_name):
+            services.process_campaign(campaign)
+        return campaign.items.get()
+
+    def test_a_near_miss_is_stored_as_a_suggestion(self):
+        item = self._process("Charlle Dupnot")
+        self.assertIsNone(item.matched_person)
+        self.assertEqual(item.suggested_person, self.child)
+        self.assertGreaterEqual(item.match_score, 0.8)
+        # Nothing is sent on the strength of a suggestion, so the item is left
+        # with no recipients and stays pending.
+        self.assertEqual(item.recipients, [])
+        self.assertEqual(item.status, AttestationItem.Status.PENDING)
+
+    def test_a_name_nobody_resembles_is_left_alone(self):
+        item = self._process("Zoe Inconnue")
+        self.assertIsNone(item.matched_person)
+        self.assertIsNone(item.suggested_person)
+        self.assertIsNone(item.match_score)
+
+    def test_an_exact_match_is_not_also_offered_as_a_suggestion(self):
+        item = self._process("Charlie Dupont")
+        self.assertEqual(item.matched_person, self.child)
+        self.assertIsNone(item.suggested_person)
+
+
 class ResolveRecipientsTest(AttestationDbTestBase):
     def test_child_resolves_to_parents(self):
         self.assertEqual(
@@ -446,6 +546,24 @@ class ProcessCampaignCarryOverTest(AttestationDbTestBase):
         self.assertEqual(item.recipients, ["alice@test.com"])
         self.assertEqual(item.status, AttestationItem.Status.READY)
 
+    def test_unchanged_document_keeps_what_was_decided_about_a_suggestion(self):
+        campaign = self._campaign()
+        services.process_campaign(campaign)
+        item = campaign.items.get()
+        item.suggested_person = self.child
+        item.match_score = 0.85
+        item.suggestion_dismissed = True
+        item.save()
+
+        services.process_campaign(campaign)
+
+        item = campaign.items.get()
+        self.assertEqual(item.suggested_person, self.child)
+        self.assertEqual(item.match_score, 0.85)
+        # A rejection the operator already made must not come back to life.
+        self.assertTrue(item.suggestion_dismissed)
+        self.assertFalse(item.has_suggestion)
+
     def test_resplit_document_is_matched_afresh(self):
         campaign = self._campaign(num_pages=2)
         services.process_campaign(campaign)
@@ -513,7 +631,7 @@ class SendFlowTest(AttestationDbTestBase):
 
 
 class ReviewFilterTest(AttestationDbTestBase):
-    """The step-5 'recipient not found' filter."""
+    """The step-5 filters: everything, to confirm, or recipient not found."""
 
     def setUp(self):
         super().setUp()
@@ -542,6 +660,17 @@ class ReviewFilterTest(AttestationDbTestBase):
             extracted_name="Zoe Inconnue",
             status=AttestationItem.Status.PENDING,
         )
+        # A third document whose name is close to a person's but not close
+        # enough to be called a match — the suggestion tier.
+        self.suggested = AttestationItem.objects.create(
+            campaign=self.campaign,
+            page_start=2,
+            page_end=2,
+            extracted_name="Charlle Dupnot",
+            suggested_person=self.child,
+            match_score=0.85,
+            status=AttestationItem.Status.PENDING,
+        )
 
     def _review(self, **params):
         return self.client.get(
@@ -551,44 +680,108 @@ class ReviewFilterTest(AttestationDbTestBase):
     def test_review_lists_every_item_by_default(self):
         response = self._review()
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.context["items"]), 2)
-        self.assertFalse(response.context["unmatched_only"])
-        self.assertEqual(response.context["total_count"], 2)
+        self.assertEqual(len(response.context["items"]), 3)
+        self.assertEqual(response.context["filter_name"], "all")
+        self.assertEqual(response.context["total_count"], 3)
+        self.assertEqual(response.context["suggested_count"], 1)
         self.assertEqual(response.context["unmatched_count"], 1)
         # The recipient pickers are wired for the type-to-filter combobox, which
         # enhances the <select> in place (the select still posts the person pk).
         self.assertContains(response, "person-select")
         self.assertContains(response, "tom-select")
 
-    def test_filter_shows_both_counts(self):
+    def test_filter_shows_every_count(self):
         # Compare against the translated labels: the app renders in the visitor's
         # language (French by default), not in the English source strings.
         response = self._review()
-        self.assertContains(response, gettext("All (%(count)s)") % {"count": 2})
+        self.assertContains(response, gettext("All (%(count)s)") % {"count": 3})
+        self.assertContains(response, gettext("To confirm (%(count)s)") % {"count": 1})
         self.assertContains(response, gettext("Not found (%(count)s)") % {"count": 1})
 
-    def test_unmatched_only_shows_just_the_unmatched_item(self):
-        response = self._review(unmatched_only="1")
+    def test_suggested_filter_shows_just_the_probable_match(self):
+        response = self._review(filter="suggested")
+        items = list(response.context["items"])
+        self.assertEqual([item.pk for item in items], [self.suggested.pk])
+        self.assertEqual(response.context["filter_name"], "suggested")
+
+    def test_unmatched_filter_shows_just_the_not_found_item(self):
+        # The suggested document has a proposal to decide on, so it is not
+        # "not found" — it is listed under its own filter.
+        response = self._review(filter="unmatched")
         items = list(response.context["items"])
         self.assertEqual([item.pk for item in items], [self.unmatched.pk])
-        self.assertTrue(response.context["unmatched_only"])
+        self.assertEqual(response.context["filter_name"], "unmatched")
 
-    def test_unmatched_only_survives_an_invalid_send(self):
+    def test_unknown_filter_falls_back_to_everything(self):
+        response = self._review(filter="nonsense")
+        self.assertEqual(response.context["filter_name"], "all")
+        self.assertEqual(len(response.context["items"]), 3)
+
+    def test_dismissed_suggestion_moves_to_the_not_found_filter(self):
+        self.suggested.suggestion_dismissed = True
+        self.suggested.save(update_fields=["suggestion_dismissed"])
+
+        suggested = self._review(filter="suggested")
+        self.assertEqual(len(suggested.context["items"]), 0)
+
+        unmatched = self._review(filter="unmatched")
+        self.assertEqual(
+            [item.pk for item in unmatched.context["items"]],
+            [self.unmatched.pk, self.suggested.pk],
+        )
+
+    def test_probable_match_row_offers_both_ways_out(self):
+        response = self._review(filter="suggested")
+        self.assertContains(response, gettext("Probable match"))
+        self.assertContains(
+            response,
+            reverse(
+                "attestations:accept_suggestion",
+                args=[self.campaign.pk, self.suggested.pk],
+            ),
+        )
+        self.assertContains(
+            response,
+            reverse(
+                "attestations:dismiss_suggestion",
+                args=[self.campaign.pk, self.suggested.pk],
+            ),
+        )
+        # 0.85 renders as a percentage, and the addresses confirming it would
+        # send to are shown before the operator commits to anything.
+        self.assertContains(response, "85 %")
+        self.assertContains(response, "alice@test.com")
+        # Flagged apart from both the matched and the not-found rows.
+        self.assertContains(response, "table-info")
+        # Both buttons post through htmx, which needs the CSRF token in a header
+        # — the row is inside the send form, not a form of its own.
+        self.assertContains(response, "hx-post")
+        self.assertContains(response, "X-CSRFToken")
+
+    def test_a_confirmed_match_is_no_longer_offered_as_a_suggestion(self):
+        self.suggested.matched_person = self.child
+        self.suggested.save(update_fields=["matched_person"])
+        response = self._review(filter="suggested")
+        self.assertEqual(len(response.context["items"]), 0)
+
+    def test_unmatched_filter_survives_an_invalid_send(self):
         response = self.client.post(
             reverse("attestations:send", args=[self.campaign.pk]),
-            {"subject": "", "body": "", "unmatched_only": "1"},
+            {"subject": "", "body": "", "filter": "unmatched"},
         )
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(response.context["unmatched_only"])
+        self.assertEqual(response.context["filter_name"], "unmatched")
         self.assertEqual(len(response.context["items"]), 1)
 
     def test_filtered_out_items_are_still_sent_with_their_stored_match(self):
         # Hiding the matched rows must not drop them from the send.
         self.client.post(
             reverse("attestations:send", args=[self.campaign.pk]),
-            {"subject": "s", "body": "b", "unmatched_only": "1"},
+            {"subject": "s", "body": "b", "filter": "unmatched"},
         )
         self.matched.refresh_from_db()
         self.assertEqual(self.matched.status, AttestationItem.Status.SENT)
         self.unmatched.refresh_from_db()
         self.assertEqual(self.unmatched.status, AttestationItem.Status.PENDING)
+        self.suggested.refresh_from_db()
+        self.assertEqual(self.suggested.status, AttestationItem.Status.PENDING)
