@@ -128,10 +128,12 @@ templates actually exist in, so a parent whose `preferred_language` is `nl` or
 `en` gets an email rather than a lookup failure.
 
 Changing or adding copy means editing `members/email_templates.py` and running
-`makemigrations` for a new seeding migration — the tests assert the database
-matches the module, so the two cannot drift apart. Re-seeding never overwrites
-copy an administrator has rewritten by hand: a row is replaced only when it
-still holds text this project seeded (`email_templates.LEGACY_MARKERS`).
+`makemigrations` for a new seeding migration that calls
+`email_templates.seed(..., force=True)`. The `force` is needed: by default
+re-seeding replaces a row only while it still holds text this project seeded
+(`email_templates.LEGACY_MARKERS`), which is what protects an administrator's
+own wording, but it also means the default cannot recognise copy this module
+itself wrote earlier.
 
 Two things to know about post_office here:
 

@@ -196,6 +196,29 @@ class SeedingTest(TestCase):
         self.assertEqual(row.subject, "Notre sujet")
         self.assertEqual(row.content, "Notre propre texte.")
 
+    def test_force_replaces_copy_that_no_longer_looks_seeded(self):
+        """What a migration changing the canonical copy has to pass.
+
+        After the first seed a row holds this module's copy, which the
+        conservative check cannot recognise, so without force=True the new
+        wording would never reach an already-seeded database.
+        """
+        EmailTemplate.objects.filter(name="new_child_staff", language="fr").update(
+            subject="Previous canonical subject",
+            content="Previous canonical copy.",
+            html_content="<p>Previous canonical copy.</p>",
+        )
+
+        email_templates.seed(EmailTemplate)
+        unchanged = EmailTemplate.objects.get(name="new_child_staff", language="fr")
+        self.assertEqual(unchanged.subject, "Previous canonical subject")
+
+        email_templates.seed(EmailTemplate, force=True)
+        replaced = EmailTemplate.objects.get(name="new_child_staff", language="fr")
+        self.assertEqual(
+            replaced.subject, email_templates.TEMPLATES["new_child_staff"]["fr"]["subject"]
+        )
+
     def test_it_creates_a_language_that_was_never_seeded(self):
         EmailTemplate.objects.filter(name="new_child_staff").delete()
 

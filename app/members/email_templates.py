@@ -436,12 +436,19 @@ def _looks_seeded(text):
     return any(marker in (text or "") for marker in LEGACY_MARKERS)
 
 
-def seed(EmailTemplate):
+def seed(EmailTemplate, force=False):
     """Write the canonical copy into ``EmailTemplate``, replacing what is there.
 
     Takes the model as an argument so a data migration can pass the historical
-    version from ``apps.get_model``. Existing rows are only overwritten when
-    they still hold seeded copy; see :func:`_looks_seeded`.
+    version from ``apps.get_model``.
+
+    By default only rows that still hold copy this project seeded are
+    overwritten, so an administrator's own wording survives. That check cannot
+    recognise *this* module's copy, though -- once a row holds it, it no longer
+    matches :data:`LEGACY_MARKERS` -- so a migration that changes the canonical
+    copy must pass ``force=True``, having decided the new copy is what belongs
+    there. Without it, such a migration would quietly do nothing on any
+    database seeded since this was introduced.
     """
     for name, language, fields in rows():
         existing = EmailTemplate.objects.filter(name=name, language=language).first()
@@ -451,7 +458,7 @@ def seed(EmailTemplate):
             continue
 
         current = existing.subject + existing.content + existing.html_content
-        if _looks_seeded(current):
+        if force or _looks_seeded(current):
             for field, value in fields.items():
                 setattr(existing, field, value)
             existing.save()
