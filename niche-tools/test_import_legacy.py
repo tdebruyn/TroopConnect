@@ -1,15 +1,26 @@
-"""End-to-end tests for the legacy DB importer.
+"""End-to-end tests for the legacy DB importer (``import_legacy.py``).
 
 Each test builds a small SQLite file mimicking the legacy schema
-(db21sv_20240520.sqlite), then runs ``import_legacy`` against it and asserts the
+(db21sv_20240520.sqlite), then runs the importer against it and asserts the
 records that land in the target models.
+
+The importer is not a Django management command any more (it lives outside
+``app/`` so it stays out of the Docker image), so it is loaded straight from
+this folder instead of via ``call_command``.  Run it with the tool's folder
+mounted into the web container — see README.md:
+
+    docker compose -f docker-compose-local.yml run --rm \\
+      -v "$PWD/niche-tools:/app/niche_tools" \\
+      web uv run /app/manage.py test niche_tools.test_import_legacy
 """
 
+import importlib.util
 import os
 import sqlite3
 import tempfile
+from io import StringIO
+from pathlib import Path
 
-from django.core.management import call_command
 from django.test import TestCase
 
 from finance.models import CotisationConfig, FeeRule, Payment
@@ -23,6 +34,18 @@ from members.models import (
     Role,
     Section,
 )
+
+
+def _load_importer():
+    """Import ``import_legacy.py`` from this folder (it is not on sys.path)."""
+    path = Path(__file__).resolve().with_name("import_legacy.py")
+    spec = importlib.util.spec_from_file_location("niche_tools_import_legacy", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+IMPORTER = _load_importer()
 
 
 def _source_db():
@@ -122,11 +145,21 @@ def _source_db():
     return path
 
 
+def _run(path, **options):
+    """Run the importer, swallowing its progress report.
+
+    ``handle()`` reads the option keys the CLI parser would have filled in, so
+    supply the same defaults `--dry-run` would leave behind.
+    """
+    options.setdefault("dry_run", False)
+    IMPORTER.LegacyImporter(stdout=StringIO()).handle(sqlite_path=path, **options)
+
+
 class ImportLegacyTest(TestCase):
     def test_import(self):
         path = _source_db()
         try:
-            call_command("import_legacy", path)
+            _run(path)
         finally:
             os.remove(path)
 
@@ -184,7 +217,7 @@ class ImportLegacyTest(TestCase):
     def test_dry_run_imports_nothing(self):
         path = _source_db()
         try:
-            call_command("import_legacy", path, dry_run=True)
+            _run(path, dry_run=True)
         finally:
             os.remove(path)
 
