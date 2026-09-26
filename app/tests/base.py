@@ -2,10 +2,10 @@
 
 ``django.test.TestCase`` rolls the database back after each test, but a rollback
 does not undo a write to the cache — and both the troop settings row and
-post_office's templates live in the shared Redis. An entry written by one test
-is still readable by the next, which then sees a row that has been rolled back
-out from under it. ``tests.mail`` works around that for post_office; the base
-here does it for :class:`members.models.TroopSettings`.
+post_office's templates are cached. An entry written by one test is still
+readable by the next, which then sees a row that has been rolled back out from
+under it. ``tests.mail`` works around that for post_office; the base here does
+it for :class:`members.models.TroopSettings`.
 """
 
 from django.test import TestCase

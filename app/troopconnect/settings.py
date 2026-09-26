@@ -8,6 +8,7 @@ Parsing happens here; validation happens in ``troopconnect/checks.py`` so that
 ``manage.py check`` is the single place an operator sees what is wrong.
 """
 
+import sys
 from pathlib import Path
 
 from celery.schedules import crontab
@@ -475,6 +476,13 @@ CACHES = {
         },
     }
 }
+
+# Tests get a cache private to their own process: see troopconnect.testcache.
+if "test" in sys.argv:
+    CACHES["default"] = {
+        "BACKEND": "troopconnect.testcache.LocMemCache",
+        "LOCATION": "troopconnect-tests",
+    }
 
 # ---------------------------------------------------------------------------
 # Optional integrations

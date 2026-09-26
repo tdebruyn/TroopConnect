@@ -24,6 +24,12 @@ docker compose -f compose.yml -f compose.dev.yml exec web python manage.py shell
 # Note: bare `manage.py test` only discovers apps in INSTALLED_APPS; `tests` is a
 # top-level package, so name it explicitly.
 docker compose -f compose.yml -f compose.dev.yml exec web python manage.py test tests
+# `--parallel 8` splits the suite across worker processes and takes the suite
+# from ~195s to ~31s. Past 8 workers it stops paying: the run is bounded by the
+# slowest worker, not by the CPU. Each worker gets its own test database, and
+# its own cache (troopconnect/testcache.py) so the workers cannot see each
+# other's state.
+docker compose -f compose.yml -f compose.dev.yml exec web python manage.py test tests --parallel 8
 # Run a single module, e.g. just the lint check:
 docker compose -f compose.yml -f compose.dev.yml exec web python manage.py test tests.test_lint
 

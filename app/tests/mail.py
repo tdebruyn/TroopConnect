@@ -10,9 +10,9 @@ DUMMY_POST_OFFICE = {
     "BACKENDS": {"default": "troopconnect.dummy_backend.DummyEmailBackend"},
 }
 
-# post_office caches templates in the shared Redis cache, which a TestCase's
-# rollback does not clear -- so without this a run can render a template left
-# behind by an earlier one. The application-side invalidation lives in
+# post_office caches templates in the cache, which a TestCase's rollback does
+# not clear -- so without this a run can render a template left behind by an
+# earlier one. The application-side invalidation lives in
 # troopconnect.postoffice; this is belt and braces for the tests.
 NO_TEMPLATE_CACHE = {"POST_OFFICE_TEMPLATE_CACHE": False}
 
