@@ -130,6 +130,18 @@ msgstr ""
 msgid "Attestation items"
 msgstr ""
 
+#: attestations/models.py:149
+msgid "The name as the PDF spells it."
+msgstr ""
+
+#: attestations/models.py:168
+msgid "Name correspondence"
+msgstr ""
+
+#: attestations/models.py:169
+msgid "Name correspondences"
+msgstr ""
+
 #: attestations/templates/attestations/_steps.html:4
 #, python-format
 msgid "Step %(current)s of %(total)s"
@@ -232,6 +244,14 @@ msgstr ""
 
 #: attestations/templates/attestations/review.html:39
 msgid "Skip"
+msgstr ""
+
+#: attestations/templates/attestations/review.html:65
+msgid "Matched by a name correspondence saved in an earlier campaign."
+msgstr ""
+
+#: attestations/templates/attestations/review.html:66
+msgid "Remembered"
 msgstr ""
 
 #: attestations/templates/attestations/review.html:49

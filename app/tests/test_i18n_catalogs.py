@@ -31,6 +31,12 @@ NEW_STRINGS = [
         "fond blanc",
         "achtergrond",
     ),
+    ("Remembered", "Mémorisé", "Onthouden"),
+    (
+        "Matched by a name correspondence saved in an earlier campaign.",
+        "campagne",
+        "campagne",
+    ),
 ]
 
 

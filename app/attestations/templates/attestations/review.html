@@ -60,6 +60,10 @@
                         </select>
                         {% if not item.matched_person %}
                             <span class="badge text-bg-warning mt-1">{% trans "Not found" %}</span>
+                        {% elif item.matched_by_alias %}
+                            <span class="badge text-bg-info mt-1"
+                                  title="{% trans 'Matched by a name correspondence saved in an earlier campaign.' %}"
+                                  data-bs-toggle="tooltip">{% trans "Remembered" %}</span>
                         {% endif %}
                     </td>
                     <td>

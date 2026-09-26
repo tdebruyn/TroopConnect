@@ -3,6 +3,8 @@ from django.utils.translation import gettext_lazy as _
 
 from members.models import Person
 
+from .normalization import name_key
+
 
 class AttestationCampaign(models.Model):
     """A batch of attestation PDFs to split, sign and email."""
@@ -106,6 +108,10 @@ class AttestationItem(models.Model):
         blank=True,
         related_name="attestation_items",
     )
+    # Whether the match came from a remembered correspondence rather than from
+    # the names themselves. The review step flags those rows, because a
+    # remembered name is an earlier decision that may no longer be right.
+    matched_by_alias = models.BooleanField(default=False)
     recipients = models.JSONField(default=list)
     status = models.CharField(
         max_length=10, choices=Status.choices, default=Status.PENDING
@@ -126,3 +132,45 @@ class AttestationItem(models.Model):
         base = self.extracted_name or f"attestation-{self.pk}"
         safe = "".join(c if c.isalnum() or c in "-_" else "-" for c in base)
         return f"{safe}.pdf"
+
+
+class NameAlias(models.Model):
+    """A manual PDF-name → Person correspondence, remembered across campaigns.
+
+    Some documents spell a name in a way no amount of typo tolerance can bridge
+    ("Van den Berg" for "Vandenberghe"), so step 5 lets an operator point the
+    row at the right person by hand. That decision is stored here and looked up
+    by the matcher first, so the next campaign carrying the same spelling
+    resolves on its own.
+    """
+
+    name = models.CharField(
+        max_length=300,
+        help_text=_("The name as the PDF spells it."),
+    )
+    match_key = models.CharField(max_length=300, unique=True, editable=False)
+    person = models.ForeignKey(
+        Person,
+        on_delete=models.CASCADE,
+        related_name="attestation_name_aliases",
+    )
+    created_by = models.ForeignKey(
+        Person,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="attestation_name_aliases_created",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["name"]
+        verbose_name = _("Name correspondence")
+        verbose_name_plural = _("Name correspondences")
+
+    def __str__(self):
+        return f"{self.name} → {self.person}"
+
+    def save(self, *args, **kwargs):
+        self.match_key = name_key(self.name)
+        super().save(*args, **kwargs)
