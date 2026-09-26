@@ -7,7 +7,17 @@ from django.utils.translation import gettext_lazy as _
 from .constants import (
     ROLE_CHOICES,
 )
-from .models import Account, Enrollment, Person, PersonRole, Role, SchoolYear, Section
+from .models import (
+    AVAILABLE_LANGUAGE_CHOICES,
+    Account,
+    Enrollment,
+    Person,
+    PersonRole,
+    Role,
+    SchoolYear,
+    Section,
+    TroopSettings,
+)
 
 
 class SectionModelChoiceField(forms.ModelChoiceField):
@@ -598,3 +608,162 @@ class AdminAccountChangeForm(UserChangeForm):
             self.fields["person_phone"].initial = person.phone
             self.fields["person_photo_consent"].initial = person.photo_consent
             self.fields["person_note"].initial = person.note
+
+
+class LanguageSelectionMixin(forms.Form):
+    """The enabled/default language pair, shared by the admin and the settings page.
+
+    This subclasses ``forms.Form`` rather than being a plain mixin on purpose:
+    Django's form metaclass only collects declared fields from bases that are
+    themselves forms, so a plain mixin's fields would be silently dropped.
+    """
+
+    # The labels are spelled out so they are translatable; the help texts are
+    # deliberately left to the model fields, which is the one wording the admin
+    # and the settings page both show.
+    enabled_languages = forms.MultipleChoiceField(
+        required=True,
+        choices=AVAILABLE_LANGUAGE_CHOICES,
+        widget=forms.CheckboxSelectMultiple,
+        label=_("Enabled languages"),
+    )
+    default_language = forms.ChoiceField(
+        required=True,
+        choices=AVAILABLE_LANGUAGE_CHOICES,
+        widget=forms.Select,
+        label=_("Default language"),
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Constrain the default-language dropdown to the currently-selected
+        # enabled languages (from POST when saving, else the stored value).
+        enabled = self._selected_enabled()
+        if enabled:
+            self.fields["default_language"].choices = [
+                (code, label)
+                for code, label in AVAILABLE_LANGUAGE_CHOICES
+                if code in enabled
+            ]
+
+    def _selected_enabled(self):
+        """Languages the user has marked enabled, from bound data or instance."""
+        if self.is_bound:
+            if hasattr(self.data, "getlist"):  # QueryDict (real request)
+                return self.data.getlist("enabled_languages")
+            value = self.data.get("enabled_languages", [])
+        elif self.instance and self.instance.pk:
+            value = self.instance.enabled_languages or []
+        else:
+            value = self.initial.get("enabled_languages", [])
+        if isinstance(value, str):
+            return [value]
+        return list(value or [])
+
+    def clean(self):
+        cleaned = super().clean()
+        enabled = cleaned.get("enabled_languages") or []
+        default = cleaned.get("default_language")
+        if not enabled:
+            self.add_error(
+                "enabled_languages", _("Select at least one available language.")
+            )
+        elif default and default not in enabled:
+            self.add_error(
+                "default_language",
+                _("The default language must be one of the available languages."),
+            )
+        return cleaned
+
+
+class OrganisationSettingsForm(forms.ModelForm):
+    """Who the troop is, and how the outside reaches it."""
+
+    class Meta:
+        model = TroopSettings
+        fields = (
+            "name",
+            "short_name",
+            "federation",
+            "contact_email",
+            "reply_to_email",
+            "contact_phone",
+            "footer_address",
+            "privacy_policy",
+        )
+        labels = {
+            "name": _("Unit name"),
+            "short_name": _("Short name"),
+            "federation": _("Federation"),
+            "contact_email": _("Public contact email"),
+            "reply_to_email": _("Reply-to address"),
+            "contact_phone": _("Public phone"),
+            "footer_address": _("Address shown in the footer"),
+            "privacy_policy": _("Privacy policy"),
+        }
+        help_texts = {
+            "short_name": _("Used where the full name does not fit. Empty uses the full name."),
+            "reply_to_email": _(
+                "Where answers to automated mail should go. "
+                "Empty replies to the sender address."
+            ),
+        }
+
+
+class LocaleSettingsForm(LanguageSelectionMixin, forms.ModelForm):
+    """The languages offered, and the conventions used to display values."""
+
+    class Meta:
+        model = TroopSettings
+        fields = ("enabled_languages", "default_language", "phone_region", "currency")
+        labels = {
+            "phone_region": _("Phone country"),
+            "currency": _("Currency"),
+        }
+        # No help_texts here: the model's own are the single wording for these
+        # two, so the admin and this page cannot drift apart.
+
+
+class CalendarSettingsForm(forms.ModelForm):
+    """The dates that shape a scout year."""
+
+    class Meta:
+        model = TroopSettings
+        fields = (
+            "year_start_month",
+            "year_start_day",
+            "age_reference_month",
+            "age_reference_day",
+            "passage_month",
+            "passage_day",
+            "passage_mode",
+            "archive_retention_years",
+        )
+        labels = {
+            "year_start_month": _("School year starts — month"),
+            "year_start_day": _("School year starts — day"),
+            "age_reference_month": _("Ages are taken on — month"),
+            "age_reference_day": _("Ages are taken on — day"),
+            "passage_month": _("Section passage — month"),
+            "passage_day": _("Section passage — day"),
+            "passage_mode": _("Section passage runs"),
+            "archive_retention_years": _("Keep archived members for (years)"),
+        }
+        help_texts = {
+            "age_reference_month": _("The day a member's age is measured on."),
+            # passage_mode's help text comes from the model, so the admin and
+            # this page say the same thing.
+        }
+
+
+class ModuleSettingsForm(forms.ModelForm):
+    """Which of the optional modules this troop uses."""
+
+    class Meta:
+        model = TroopSettings
+        fields = ("fees_enabled", "signing_enabled", "public_agenda_enabled")
+        labels = {
+            "fees_enabled": _("Membership fees"),
+            "signing_enabled": _("Signature campaigns"),
+            "public_agenda_enabled": _("Public agenda"),
+        }

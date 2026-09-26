@@ -7,7 +7,7 @@ from .models import TroopSettings
 def contact_info(request):
     """Make contact information available to all templates."""
     troop_settings = TroopSettings.get_settings()
-    available = getattr(request, "available_languages", None)
+    available = getattr(request, "enabled_languages", None)
     if available is None:
         available = list(troop_settings.enabled_languages or [settings.LANGUAGE_CODE])
     return {

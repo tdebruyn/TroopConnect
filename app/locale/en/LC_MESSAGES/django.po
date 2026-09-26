@@ -2210,3 +2210,185 @@ msgstr ""
 msgid "Purge an archived member only when the data may really be discarded."
 msgstr ""
 
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Organisation"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Unit name"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Short name"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Federation"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Address shown in the footer"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Section passage runs"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Signature campaigns"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Settings"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Enabled languages"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Locale"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Calendar"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Modules"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Public contact email"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Reply-to address"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Public phone"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Privacy policy"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Used where the full name does not fit. Empty uses the full name."
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid ""
+"Where answers to automated mail should go. Empty replies to the sender address."
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Phone country"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Currency"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "School year starts — month"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "School year starts — day"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Ages are taken on — month"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Ages are taken on — day"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Section passage — month"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Section passage — day"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Keep archived members for (years)"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "The day a member's age is measured on."
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Public agenda"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Enter a three-letter currency code, e.g. EUR."
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Automatic"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Manual"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid ""
+"Link or text of your privacy policy. A URL becomes a link, anything else is shown as text."
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Country code used to parse and format phone numbers, e.g. BE."
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Three-letter currency code used to display amounts, e.g. EUR."
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid ""
+"Automatic runs the passage on the date above; manual leaves it to whoever presses the button."
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "%(region)s is not a country code phone numbers can be parsed for."
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid ""
+"What this instance is called, which languages it offers and how its scout year runs. Every change takes effect immediately."
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Unknown settings section."
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Settings saved."
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Payment of %(amount)s recorded for %(person)s."
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Amount (%(currency)s)"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid ""
+"Hello {prenom},\n"
+"\n"
+"Your membership fee balance is {solde}.\n"
+"Please proceed with the payment.\n"
+"\n"
+"Best regards,\n"
+"The treasurer"
+msgstr ""

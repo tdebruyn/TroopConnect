@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n money %}
 <div class="modal-content">
     <div class="modal-header">
         <h5 class="modal-title">{% blocktranslate %}Payment history — {{ person }}{% endblocktranslate %}</h5>
@@ -22,7 +22,7 @@
                 {% for p in payments %}
                 <tr>
                     <td>{{ p.date }}</td>
-                    <td>{{ p.amount }}€</td>
+                    <td>{{ p.amount |money }}</td>
                     <td>{{ p.note|default:"—" }}</td>
                     <td>{{ p.recorded_by|default:"—" }}</td>
                 </tr>

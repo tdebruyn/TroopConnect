@@ -116,6 +116,37 @@ NEW_STRINGS = [
         "campagne",
         "campagne",
     ),
+    # Troop settings: the staff page and the fields it edits. English sources
+    # identical to their French wording ("Modules", "Organisation") are left
+    # out — this list only proves a translation exists where one is needed.
+    ("Settings", "Paramètres", "Instellingen"),
+    ("Settings saved.", "Paramètres enregistrés", "Instellingen opgeslagen"),
+    ("Unknown settings section.", "Section de paramètres inconnue", "Onbekende instellingensectie"),
+    ("Locale", "Langue et région", "Taal en regio"),
+    ("Calendar", "Calendrier", "Kalender"),
+    ("Unit name", "Nom de l'unité", "Naam van de eenheid"),
+    ("Short name", "Nom court", "Korte naam"),
+    ("Federation", "Fédération", "Federatie"),
+    ("Public contact email", "contact public", "contact-e-mailadres"),
+    ("Reply-to address", "Adresse de réponse", "Antwoordadres"),
+    ("Privacy policy", "confidentialité", "Privacybeleid"),
+    ("Phone country", "Pays des téléphones", "Land van telefoonnummers"),
+    ("Currency", "Devise", "Munteenheid"),
+    ("Enabled languages", "Langues actives", "Actieve talen"),
+    ("Public agenda", "Agenda public", "Openbare agenda"),
+    ("Signature campaigns", "Campagnes de signatures", "Handtekeningcampagnes"),
+    ("Automatic", "Automatique", "Automatisch"),
+    ("Manual", "Manuel", "Handmatig"),
+    (
+        "Enter a three-letter currency code, e.g. EUR.",
+        "trois lettres",
+        "drie letters",
+    ),
+    (
+        "%(region)s is not a country code phone numbers can be parsed for.",
+        "code pays",
+        "landcode",
+    ),
 ]
 
 

@@ -6,11 +6,14 @@ from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import gettext_lazy as _
 from modeltranslation.admin import TranslationAdmin
 
-from .forms import AccountCreationForm, AdminAccountChangeForm
+from .forms import (
+    AccountCreationForm,
+    AdminAccountChangeForm,
+    LanguageSelectionMixin,
+)
 
 # from .models import CustomUser, CustomGroup, SchoolYear, Age
 from .models import (
-    AVAILABLE_LANGUAGE_CHOICES,
     Account,
     Branch,
     ImportantDocument,
@@ -133,72 +136,17 @@ class BranchAdmin(TranslationAdmin):
     search_fields = ("name",)
 
 
-class TroopSettingsForm(forms.ModelForm):
-    """Explicit selectors for enabled + default languages.
+class TroopSettingsForm(LanguageSelectionMixin, forms.ModelForm):
+    """The admin's view of the troop settings: one form, every field.
 
-    Declaring the fields here (rather than relying on formfield_overrides for the
-    ArrayField) guarantees the checkboxes/dropdown render reliably. The same
-    field pair is declared on the staff settings page's locale form, which is
-    where a troop normally edits it.
+    The enabled/default language pair and its validation are shared with the
+    staff settings page's locale form (``members.forms.LanguageSelectionMixin``)
+    so the two cannot drift apart.
     """
-
-    enabled_languages = forms.MultipleChoiceField(
-        required=True,
-        choices=AVAILABLE_LANGUAGE_CHOICES,
-        widget=forms.CheckboxSelectMultiple,
-        label=_("Enabled languages"),
-        help_text=_("Languages available to users in the site language selector."),
-    )
-    default_language = forms.ChoiceField(
-        required=True,
-        choices=AVAILABLE_LANGUAGE_CHOICES,
-        widget=forms.Select,
-        label=_("Default language"),
-        help_text=_("Default language for visitors. Must be one of the enabled languages."),
-    )
 
     class Meta:
         model = TroopSettings
         fields = "__all__"  # noqa: DJ007 — admin-only singleton form
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # Constrain the default-language dropdown to the currently-selected
-        # enabled languages (from POST when saving, else the stored value).
-        enabled = self._selected_enabled()
-        if enabled:
-            self.fields["default_language"].choices = [
-                (code, label) for code, label in AVAILABLE_LANGUAGE_CHOICES if code in enabled
-            ]
-
-    def _selected_enabled(self):
-        """Languages the user has marked enabled, from bound data or instance."""
-        if self.is_bound:
-            if hasattr(self.data, "getlist"):  # QueryDict (real request)
-                return self.data.getlist("enabled_languages")
-            value = self.data.get("enabled_languages", [])
-        elif self.instance and self.instance.pk:
-            value = self.instance.enabled_languages or []
-        else:
-            value = self.initial.get("enabled_languages", [])
-        if isinstance(value, str):
-            return [value]
-        return list(value or [])
-
-    def clean(self):
-        cleaned = super().clean()
-        enabled = cleaned.get("enabled_languages") or []
-        default = cleaned.get("default_language")
-        if not enabled:
-            self.add_error(
-                "enabled_languages", _("Select at least one available language.")
-            )
-        elif default and default not in enabled:
-            self.add_error(
-                "default_language",
-                _("The default language must be one of the available languages."),
-            )
-        return cleaned
 
 
 @admin.register(TroopSettings)

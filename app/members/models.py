@@ -934,8 +934,9 @@ class TroopSettings(models.Model):
     )
 
     # --- Modules -----------------------------------------------------------
-    # Feature switches. Off hides the module from the navigation and refuses
-    # its views.
+    # Feature switches. Off hides the module from the navigation, which is what
+    # a troop that does not use it wants; the views themselves stay reachable,
+    # since they are already behind their own role checks.
     fees_enabled = models.BooleanField(default=True)
     signing_enabled = models.BooleanField(default=True)
     public_agenda_enabled = models.BooleanField(default=True)

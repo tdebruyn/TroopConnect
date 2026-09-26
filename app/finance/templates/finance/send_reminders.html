@@ -1,5 +1,5 @@
 {% extends "members/base.html" %}
-{% load i18n %}
+{% load i18n money %}
 {% block hat_title %}{% trans "Send reminders" %}{% endblock hat_title %}
 {% block hat_text %}{% trans "Membership fee reminders" %}{% endblock hat_text %}
 {% block subcontent %}
@@ -33,7 +33,7 @@
         <tr>
             <td>{{ a.person }}</td>
             <td>{{ a.children_names }}</td>
-            <td>{{ a.balance }}€</td>
+            <td>{{ a.balance |money }}</td>
         </tr>
         {% endfor %}
     </tbody>

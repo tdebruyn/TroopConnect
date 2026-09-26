@@ -5,14 +5,14 @@ Two kinds of configuration, deliberately kept apart:
 | Kind | Lives in | Changed by | Examples |
 | --- | --- | --- | --- |
 | Infrastructure | environment variables (`.env`) | whoever runs the server | domain, mail server, database password |
-| Troop content | the database (`SiteSettings`) | the troop's admins, in the web UI | unit name, contact address, registration open/closed |
+| Troop content | the database (`TroopSettings`) | the troop's staff, in the web UI | unit name, languages offered, scout-year dates |
 
 Neither requires editing a file shipped in this repository. A troop never
 edits files; a hoster never edits the database by hand.
 
 This document is the reference for both. **Update it whenever you add or
 change an environment variable, a management command, a service or a
-`SiteSettings` field.**
+`TroopSettings` field.**
 
 ---
 
@@ -45,7 +45,6 @@ run the app before wiring up mail.
 | `DJANGO_DEBUG` | off | `1`/`true`/`yes`/`on` turns debug on. Never set on a public domain; a system check warns if you do. |
 | `SITE_ID` | `1` | The `django.contrib.sites` row allauth reads. Only change it for an instance migrated from the old `.settings.json`. |
 | `TIME_ZONE` | `Europe/Brussels` | Used for dates and Celery schedules. |
-| `TROOP_NAME` | `TroopConnect` | The name outgoing email speaks for. Placeholder until the troop-editable settings move into the database, so set it or families are told they registered with "TroopConnect". |
 | `POSTGRES_USER` | `troopconnect` | |
 | `POSTGRES_DB` | `troopconnect` | |
 | `POSTGRES_PASSWORD` | generated | Set it only to choose the password yourself, and only before the first start: the database is initialised with whatever the first run generated. |
@@ -82,24 +81,72 @@ run the app before wiring up mail.
 
 ---
 
-## 2. Troop-editable settings (`SiteSettings`)
+## 2. Troop-editable settings (`TroopSettings`)
 
-A singleton row edited by admins in the web UI. Defaults are generic, not
-troop-specific. Read through `SiteSettings.get_settings()`, which caches in the
-Django cache.
+A singleton row edited by staff at **`/users/settings`** (and, field by field,
+in the Django admin). Defaults are generic, not troop-specific, and migration
+`members/0025` creates the row, so a freshly migrated instance has a settings
+page to open before anyone has saved anything. Read it through
+`TroopSettings.get_settings()`, which serves a cached copy and is invalidated
+whenever the row is saved. Save it with `save()`/`delete()` rather than
+`queryset.update()`, which the invalidation does not see.
+
+The page shows the four groups below, in this order. Every field is optional to
+set: the defaults are what a troop that has configured nothing gets.
+
+### Organisation
 
 | Field | Purpose |
 | --- | --- |
-| `site_name` | Unit name, shown in the header and emails. |
+| `name` | The unit's name. Shown in the header, and the name outgoing mail speaks for — resolved in the *recipient's* language, not the sender's. |
+| `short_name` | Short form for places the full name does not fit. Empty falls back to `name` (`display_short_name()`). |
+| `federation` | Free text — the federation this unit belongs to is not something this project can enumerate. |
+| `contact_email` | Public contact address, exposed to every template as `contact_email` via `members.context_processors.contact_info`. Empty by default: a placeholder that looks like a real address would have a troop publishing somebody else's. |
+| `contact_phone` | Public phone number. |
+| `reply_to_email` | Where answers to automated mail should go. Empty means "reply to the sender" (`DEFAULT_FROM_EMAIL`). |
+| `footer_address` | Postal address shown in the footer. Formerly `contact_address`. |
+| `privacy_policy` | A URL or a block of text, whichever the troop has. `privacy_policy_url()` returns the value when it is a link and `""` otherwise, so a template can test before rendering an `<a href>`. |
+
+### Locale
+
+| Field | Purpose |
+| --- | --- |
+| `enabled_languages` | A subset of the shipped `LANGUAGES` (`fr`, `nl`, `en`). Drives the language switcher and `AvailableLanguagesMiddleware`. With exactly one entry the site is locked to it and the selector is hidden. Default `["fr"]`. |
+| `default_language` | Used when the visitor's language is not enabled. Must be one of `enabled_languages`; enforced in `clean()` and by the settings form. |
+| `phone_region` | ISO 3166-1 alpha-2. Decides how a locally-written number ("0475 12 34 56") is read and how it is displayed back. Numbers are stored in E.164 either way, so changing this never rewrites the database. Validated against `phonenumbers.SUPPORTED_REGIONS`. Default `BE`. |
+| `currency` | ISO 4217. Every amount in the UI goes through `members.money.format_money`, which writes the symbol for `EUR`/`USD`/`GBP` and the code itself for anything else. Default `EUR`. |
+
+### Calendar
+
+| Field | Purpose |
+| --- | --- |
+| `year_start_month`, `year_start_day` | First day of the scout year (default 1 August). Used when a `SchoolYear` row is created and when `create_year_task` decides which year "today" belongs to. |
+| `age_reference_month`, `age_reference_day` | The day a member's age is measured on (default 31 December). Used by `Person.age_on_dec_31` and by `run_passage`. The `Branch.min_age_dec_31`/`max_age_dec_31` columns keep names that predate this setting; they mean "age at the reference day". |
+| `passage_month`, `passage_day` | The day the section passage falls due (default 1 May). |
+| `passage_mode` | `auto` (default) runs `run_passage` on that day; `manual` switches the automatic run off so the passage is done by hand. |
+| `archive_retention_years` | How long an archived member is kept before `delete_archived_users` may discard them (default 5). `notify_upcoming_deletion` warns a month before. |
+
+### Modules
+
+| Field | Default | Purpose |
+| --- | --- | --- |
+| `fees_enabled` | `true` | Membership-fees entry in the navigation. |
+| `signing_enabled` | `true` | Attestations entry in the navigation. |
+| `public_agenda_enabled` | `true` | Agenda entry in the navigation. |
+
+A switch takes the module out of the *navigation*; the views behind it stay
+reachable, because they already have their own role checks.
+
+### Retained site content
+
+| Field | Purpose |
+| --- | --- |
 | `site_description`, `site_keywords` | Meta description and keywords. |
-| `contact_email`, `contact_phone`, `contact_address` | Public contact details, exposed to every template as `contact_email` via `members.context_processors.contact_info`. |
 | `facebook_url`, `instagram_url` | Social links in the footer. |
 | `email_signature` | Appended to outgoing mail. |
 | `registration_open`, `registration_message` | Whether new registrations are accepted, and what to say when they are not. |
 | `photo_consent_text` | Consent wording shown on the child form. |
 | `address_placeholder` | Example address shown under the address field. |
-| `available_languages` | Languages offered in the selector. With one entry the site is locked to it. |
-| `default_language` | Language for visitors whose browser language is not enabled. Must be one of `available_languages`. |
 | `last_passage_school_year` | Bookkeeping for the yearly section passage; do not edit by hand. |
 
 `ImportantDocument` (title, description, url, file) is likewise admin-managed.
@@ -115,6 +162,7 @@ registration, with nothing seeded by hand:
 | --- | --- | --- |
 | The `django.contrib.sites` row for `SITE_ID` | Migration `members/0021` | `troopconnect/siteconfig.py`, on every `migrate`: rewrites its `domain` from `SITE_DOMAIN` |
 | The email templates, in `fr`, `nl` and `en` | Migration `members/0021`, from `members/email_templates.py` | — |
+| The `TroopSettings` row, with generic defaults | Migration `members/0025` | The staff settings page, `/users/settings` |
 
 `django.contrib.sites` ships no data of its own, so without that migration
 `Site.objects.get_current()` raises `DoesNotExist` and the first registration
@@ -124,10 +172,12 @@ its value current, because `SITE_DOMAIN` can change long after the migration
 has run.
 
 The templates name no troop. They say `{{ troop_name }}`, which
-`members.mail.send_templated` fills in from `TROOP_NAME`; that helper also
-builds absolute URLs from the Site row and resolves the language to one
-templates actually exist in, so a parent whose `preferred_language` is `nl` or
-`en` gets an email rather than a lookup failure.
+`members.mail.send_templated` fills in from `TroopSettings.name` — read in the
+language the message is being written in, not whichever one the sender has on
+screen. That helper also builds absolute URLs from the Site row, sets
+`Reply-To` from `reply_to_email` when the troop has one, and resolves the
+language to one templates actually exist in, so a parent whose
+`preferred_language` is `nl` or `en` gets an email rather than a lookup failure.
 
 Changing or adding copy means editing `members/email_templates.py` and running
 `makemigrations` for a new seeding migration that calls

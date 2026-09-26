@@ -9,6 +9,7 @@ from django.utils.translation import gettext_lazy as _
 from post_office import mail
 
 from members.models import Branch, Person, SchoolYear
+from members.money import format_money
 from members.permissions import (
     ANIMATEUR_ROLES,
     ANIME,
@@ -192,8 +193,11 @@ def record_payment(request):
                 return response
             messages.success(
                 request,
-                _("Payment of %(amount)s€ recorded for %(person)s.")
-                % {"amount": form.cleaned_data["amount"], "person": person},
+                _("Payment of %(amount)s recorded for %(person)s.")
+                % {
+                    "amount": format_money(form.cleaned_data["amount"]),
+                    "person": person,
+                },
             )
             return redirect("finance:billing")
     else:
@@ -253,7 +257,7 @@ def send_reminders(request):
             for adult in adults:
                 body = form.cleaned_data["body"]
                 body = body.replace("{prenom}", adult["person"].first_name)
-                body = body.replace("{solde}", str(adult["balance"]))
+                body = body.replace("{solde}", format_money(adult["balance"]))
 
                 try:
                     mail.send(

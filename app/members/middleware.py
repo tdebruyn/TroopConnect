@@ -70,7 +70,7 @@ class AvailableLanguagesMiddleware:
 
     def __call__(self, request):
         available = self._available_languages()
-        request.available_languages = available
+        request.enabled_languages = available
 
         active = translation.get_language()
         clamped = False

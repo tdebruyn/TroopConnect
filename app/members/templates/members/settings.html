@@ -1,0 +1,17 @@
+{% extends "members/base.html" %}
+{% load i18n %}
+{% block hat_title %}
+  {% trans "Settings" %}
+{% endblock hat_title %}
+{% block hat_text %}
+  {% trans "What this instance is called, which languages it offers and how its scout year runs. Every change takes effect immediately." %}
+{% endblock hat_text %}
+{% block subcontent %}
+  <div class="row">
+    <div class="col-lg-8">
+      {% for section in sections %}
+        {% include "members/_settings_section.html" %}
+      {% endfor %}
+    </div>
+  </div>
+{% endblock subcontent %}

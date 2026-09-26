@@ -49,7 +49,8 @@ Package management uses `uv` (not pip directly). Dependencies are pinned in `app
 - **Role system**: Primary roles (Nouveau, Animateur, Parent, Anime) and secondary roles (Admin, Tresorier, etc.) via M2M through `PersonRole`.
 - **Parent-child**: Self-referential M2M on Person via `ParentChild` through model.
 - **Enrollment**: Person + Section + SchoolYear (unique_together constraint).
-- **SiteSettings**: Singleton model for site-wide config (name, contact, registration toggle).
+- **TroopSettings**: Singleton model for the troop's own config (organisation, locale,
+  calendar, module switches), edited on the staff settings page at `/users/settings`.
 
 ### Frontend Patterns
 - HTMX for partial page updates (child list, child forms, secondary role loading). Views return `HX-Trigger` headers.
@@ -67,7 +68,9 @@ Package management uses `uv` (not pip directly). Dependencies are pinned in `app
 - Parsing helpers live in `troopconnect/env.py`; validation lives in `troopconnect/checks.py`, so `manage.py check` is the single place configuration problems surface. In production a bad variable is an error that stops startup; with `DJANGO_DEBUG=1` it is a warning.
 - Required: `SITE_DOMAIN`, `EMAIL_URL`, `DEFAULT_FROM_EMAIL`, `ACME_EMAIL`. Everything else is optional with a safe default.
 - `ALLOWED_HOSTS` and `CSRF_TRUSTED_ORIGINS` are derived from `SITE_DOMAIN`; `DEBUG` is off unless `DJANGO_DEBUG=1`. The secret key falls back to `/data/secrets/secret_key`, generated on first boot.
-- Troop-editable content (unit name, contact address, registration toggle) lives in the database (`SiteSettings`), never in the environment. See `docs/dev/CONTRACT.md` for the split.
+- Troop-editable content (unit name, languages, contact details, scout-year dates, module
+  switches) lives in the database (`TroopSettings`), never in the environment. See
+  `docs/dev/CONTRACT.md` for the split.
 
 ## Deployment
 

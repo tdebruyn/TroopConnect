@@ -22,9 +22,13 @@ from .filters import PersonFilter
 from .forms import (
     AdminUserUpdateForm,
     AnimeProfileForm,
+    CalendarSettingsForm,
     ChildForm,
     ChildFromKey,
+    LocaleSettingsForm,
+    ModuleSettingsForm,
     OnboardingForm,
+    OrganisationSettingsForm,
     ProfileEditForm,
 )
 from .mail import absolute_url, send_templated
@@ -34,6 +38,7 @@ from .models import (
     ImportantDocument,
     Person,
     SchoolYear,
+    TroopSettings,
     get_registration_admins,
 )
 from .permissions import can_delete_member, get_person, is_htmx
@@ -860,3 +865,90 @@ class MailQueueView(UserPassesTestMixin, TemplateView):
             count, _deleted = Email.objects.filter(status=STATUS.failed).delete()
             messages.success(request, _("%(count)s email(s) purged.") % {"count": count})
         return redirect("members:mail_queue")
+
+
+class TroopSettingsView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
+    """Staff page for the troop's own settings, in four grouped sections.
+
+    Each section is an independent form posting to this same view, so editing
+    the calendar cannot quietly overwrite mail settings nobody looked at. An
+    HTMX post gets that one section back; a plain post — JavaScript off, or a
+    stray Enter key — gets a redirect.
+
+    ``LoginRequiredMixin`` first, so an anonymous visitor is sent to the login
+    page rather than shown a bare 403.
+    """
+
+    template_name = "members/settings.html"
+    section_template_name = "members/_settings_section.html"
+
+    def test_func(self):
+        return self.request.user.is_staff
+
+    def _sections(self):
+        """The page's sections, in order.
+
+        Built per request rather than held in a class attribute so the titles
+        are translated in the language actually being rendered.
+        """
+        return (
+            ("organisation", _("Organisation"), OrganisationSettingsForm),
+            ("locale", _("Locale"), LocaleSettingsForm),
+            ("calendar", _("Calendar"), CalendarSettingsForm),
+            ("modules", _("Modules"), ModuleSettingsForm),
+        )
+
+    def _section_context(self, key, form, saved=False):
+        title = next(title for k, title, _cls in self._sections() if k == key)
+        return {"key": key, "title": title, "form": form, "saved": saved}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        instance = TroopSettings.get_settings()
+        bound_key = kwargs.get("bound_key")
+        bound_form = kwargs.get("bound_form")
+
+        context["sections"] = [
+            self._section_context(
+                key, bound_form if key == bound_key else form_class(instance=instance)
+            )
+            for key, _title, form_class in self._sections()
+        ]
+        return context
+
+    def post(self, request, *args, **kwargs):
+        key = request.POST.get("section")
+        form_class = {k: cls for k, _title, cls in self._sections()}.get(key)
+        if form_class is None:
+            return HttpResponseBadRequest(_("Unknown settings section."))
+
+        form = form_class(request.POST, instance=TroopSettings.get_settings())
+
+        if form.is_valid():
+            form.save()
+            if is_htmx(request):
+                return render(
+                    request,
+                    self.section_template_name,
+                    {
+                        "section": self._section_context(
+                            key,
+                            form_class(instance=TroopSettings.get_settings()),
+                            saved=True,
+                        )
+                    },
+                )
+            messages.success(request, _("Settings saved."))
+            return redirect("members:troop_settings")
+
+        # Invalid: hand the bound form back so the errors and what was typed
+        # are both still on screen.
+        if is_htmx(request):
+            return render(
+                request,
+                self.section_template_name,
+                {"section": self._section_context(key, form)},
+            )
+        return self.render_to_response(
+            self.get_context_data(bound_key=key, bound_form=form)
+        )

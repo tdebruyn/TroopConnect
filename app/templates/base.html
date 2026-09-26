@@ -68,9 +68,11 @@
                                     {% endfor %}
                                 </div>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link active" href="{% url 'agenda' %}">{% trans "Agenda" %}</a>
-                            </li>
+                            {% if public_agenda_enabled %}
+                                <li class="nav-item">
+                                    <a class="nav-link active" href="{% url 'agenda' %}">{% trans "Agenda" %}</a>
+                                </li>
+                            {% endif %}
                             {% if user.is_staff or user_is_tresorier or user_can_send_all %}
                                 <li class="nav-item dropdown">
                                     <a class="dropdown-toggle nav-link active"
@@ -80,14 +82,17 @@
                                     <div class="dropdown-menu dropdown-menu-dark">
                                         {% if user.is_staff %}
                                             <a class="dropdown-item" href="{% url 'members:admin_list' %}">{% trans "Member management" %}</a>
+                                            <a class="dropdown-item" href="{% url 'members:troop_settings' %}">{% trans "Settings" %}</a>
                                         {% endif %}
-                                        {% if user_is_tresorier %}
+                                        {% if user_is_tresorier and fees_enabled %}
                                             <a class="dropdown-item" href="{% url 'finance:billing' %}">{% trans "Membership fees" %}</a>
                                         {% endif %}
                                         {% if user_can_send_all %}
                                             <a class="dropdown-item" href="{% url 'messaging:compose' %}">{% trans "Send a message" %}</a>
                                             <a class="dropdown-item" href="{% url 'messaging:animateur_history' %}">{% trans "Message history" %}</a>
-                                            <a class="dropdown-item" href="{% url 'attestations:index' %}">{% trans "Attestations" %}</a>
+                                            {% if signing_enabled %}
+                                                <a class="dropdown-item" href="{% url 'attestations:index' %}">{% trans "Attestations" %}</a>
+                                            {% endif %}
                                         {% endif %}
                                     </div>
                                 </li>
