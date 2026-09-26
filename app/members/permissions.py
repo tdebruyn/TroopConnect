@@ -83,6 +83,16 @@ def can_manage_unit(user):
     return user.is_staff or has_any_role(user, UNIT_ADMIN_ROLES)
 
 
+def can_delete_member(user):
+    """Return True when the user may archive or purge a member's record.
+
+    Deliberately narrower than `can_manage_unit()`: purging a member destroys
+    their account, enrolments and payment history for good, so it is reserved
+    for Django superusers and holders of the ADMIN secondary role.
+    """
+    return user.is_superuser or has_any_role(user, (ADMIN,))
+
+
 def can_access_messaging(user):
     """Return True for unit admins and for section animateurs."""
     return can_manage_unit(user) or has_primary_role(user, (ANIMATEUR,))

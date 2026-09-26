@@ -2081,6 +2081,89 @@ msgstr[1] "%(counter)s e-mails konden niet worden verzonden."
 msgid "Manage"
 msgstr "Beheren"
 
+#: members/views.py
+msgid "You cannot delete your own account."
+msgstr "U kunt uw eigen account niet verwijderen."
+
+#: members/views.py
+#, python-format
+msgid "%(name)s has been archived: their login is disabled."
+msgstr "%(name)s is gearchiveerd: de login is uitgeschakeld."
+
+#: members/views.py
+#, python-format
+msgid "%(name)s is not archived — archive the member first."
+msgstr "%(name)s is niet gearchiveerd — archiveer het lid eerst."
+
+#: members/views.py
+#, python-format
+msgid "%(name)s and all their records have been permanently deleted."
+msgstr "%(name)s en alle bijbehorende gegevens zijn definitief verwijderd."
+
+#: members/templates/members/admin_list.html
+msgid "Archived"
+msgstr "Gearchiveerd"
+
+#: members/templates/members/admin_update.html
+msgid "Archived member"
+msgstr "Gearchiveerd lid"
+
+#: members/templates/members/admin_update.html
+msgid "This member is archived: their login is disabled, but their history is still stored. Purging destroys the person, their account, enrolments, payment history and message records for good."
+msgstr "Dit lid is gearchiveerd: de login is uitgeschakeld, maar de geschiedenis blijft bewaard. Definitief verwijderen wist de persoon, het account, de inschrijvingen, de betalingsgeschiedenis en de berichten voorgoed."
+
+#: members/templates/members/admin_update.html
+msgid "Permanently delete"
+msgstr "Definitief verwijderen"
+
+#: members/templates/members/admin_update.html
+msgid "Delete this member"
+msgstr "Dit lid verwijderen"
+
+#: members/templates/members/admin_update.html
+msgid "Deleting archives the member and disables their login. Their history is kept until they are purged."
+msgstr "Verwijderen archiveert het lid en schakelt de login uit. De geschiedenis blijft bewaard tot de purge."
+
+#: members/templates/members/admin_update.html
+msgid "Delete member"
+msgstr "Lid verwijderen"
+
+#: members/templates/members/member_delete.html
+#, python-format
+msgid "Delete %(name)s"
+msgstr "%(name)s verwijderen"
+
+#: members/templates/members/member_delete.html
+#, python-format
+msgid "Deleting %(name)s archives the member. Their account is disabled and they can no longer log in."
+msgstr "%(name)s verwijderen archiveert het lid. Het account wordt uitgeschakeld en kan niet meer inloggen."
+
+#: members/templates/members/member_delete.html
+msgid "Nothing is destroyed yet: enrolments, payment history and messages are kept, and the member can still be purged later."
+msgstr "Er wordt nog niets gewist: inschrijvingen, betalingsgeschiedenis en berichten blijven bewaard, en het lid kan later nog worden gepurged."
+
+#: members/templates/members/member_delete.html
+msgid "Enrolments"
+msgstr "Inschrijvingen"
+
+#: members/templates/members/member_purge.html
+#, python-format
+msgid "Permanently delete %(name)s"
+msgstr "%(name)s definitief verwijderen"
+
+#: members/templates/members/member_purge.html
+#, python-format
+msgid "This permanently destroys %(name)s and everything still linked to them. This cannot be undone."
+msgstr "Dit wist %(name)s en alles wat nog aan hen gekoppeld is definitief. Dit kan niet ongedaan worden gemaakt."
+
+#: members/templates/members/member_purge.html
+msgid "Attestation pages that matched this member are kept, but the link to them is cleared."
+msgstr "Attestationpagina's die aan dit lid gekoppeld waren, blijven bewaard, maar de link ernaar wordt gewist."
+
+#: members/templates/members/member_purge.html
+msgid "Purge an archived member only when the data may really be discarded."
+msgstr "Verwijder een gearchiveerd lid definitief alleen als de gegevens echt weg mogen."
+
 #~ msgid "Configure attestation"
 #~ msgstr "Attestatie configureren"
 

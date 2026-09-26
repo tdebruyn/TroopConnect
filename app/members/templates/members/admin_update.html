@@ -169,4 +169,24 @@
             </table>
         {% endif %}
     </div>
+    {% if can_delete and not is_self %}
+        <hr class="hr" />
+        <div class="container">
+            {% if object.status == "ar" %}
+                <p class="h4 text-danger">{% trans "Archived member" %}</p>
+                <p class="text-muted">
+                    {% trans "This member is archived: their login is disabled, but their history is still stored. Purging destroys the person, their account, enrolments, payment history and message records for good." %}
+                </p>
+                <a class="btn btn-danger"
+                   href="{% url 'members:member_purge' pk=object.pk %}">{% trans "Permanently delete" %}</a>
+            {% else %}
+                <p class="h4 text-danger">{% trans "Delete this member" %}</p>
+                <p class="text-muted">
+                    {% trans "Deleting archives the member and disables their login. Their history is kept until they are purged." %}
+                </p>
+                <a class="btn btn-outline-danger"
+                   href="{% url 'members:member_delete' pk=object.pk %}">{% trans "Delete member" %}</a>
+            {% endif %}
+        </div>
+    {% endif %}
 {% endblock subcontent %}

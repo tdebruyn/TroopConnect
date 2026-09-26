@@ -4,8 +4,10 @@ from urllib.parse import urlencode
 # from django.contrib.auth import get_user_model
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.sites.models import Site
+from django.core.exceptions import PermissionDenied
 from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
@@ -35,7 +37,7 @@ from .models import (
     SchoolYear,
     get_registration_admins,
 )
-from .permissions import is_htmx
+from .permissions import can_delete_member, get_person, is_htmx
 
 
 class Login(TemplateView):
@@ -252,6 +254,12 @@ class AdminUpdateView(UserPassesTestMixin, UpdateView):
         context = super().get_context_data(**kwargs)
         context["children"] = self.object.children.all()
         context["parents"] = self.object.parents.all()
+        # Gates the delete/purge buttons: staff reach this page, but only a
+        # superuser or an ADMIN may destroy a member's record.
+        context["can_delete"] = can_delete_member(self.request.user)
+        context["is_self"] = self.object.pk == getattr(
+            get_person(self.request.user), "pk", None
+        )
         return context
 
     def get(self, request, *args, **kwargs):
@@ -690,6 +698,127 @@ def remove_child_confirm(request, pk):
     if not child.has_section:
         child.delete()
     return redirect(reverse_lazy("members:profile", kwargs={"pk": request.user.pk}))
+
+
+# --- Deleting a member (superuser / ADMIN role only) ------------------------
+#
+# Deleting a member from the admin side is a two-phase affair: `member_delete`
+# archives the person (history kept, login shut off) and `member_purge` is the
+# separate, later action that destroys the record for good. Both are reached
+# from the member's modify page, and neither does anything on a GET, so a
+# prefetching browser or a stale link cannot remove anyone.
+
+
+def _require_member_deleter(request):
+    """Raise 403 unless the requesting user may delete members."""
+    if not can_delete_member(request.user):
+        raise PermissionDenied
+
+
+def _is_self(request, person):
+    """True when `person` is the requesting user's own record."""
+    own_person = get_person(request.user)
+    return own_person is not None and own_person.pk == person.pk
+
+
+def _archive_member(person):
+    """Soft-delete a member: archive them and shut off their login.
+
+    Enrolments, payments and messages are deliberately left alone — that is
+    what separates this from a purge. Mirrors `_archive_child`, which is not
+    reused as-is because a deregistered child keeps a usable account.
+    """
+    person.status = "ar"
+    person.archived_date = timezone.now().date()
+    person.save(update_fields=["status", "archived_date"])
+
+    account = getattr(person, "account", None)
+    if account is not None and account.is_active:
+        account.is_active = False
+        account.save(update_fields=["is_active"])
+
+
+def _member_record_context(person):
+    """The linked records that make the delete/purge warning pages concrete."""
+    return {
+        "person": person,
+        "enrollments": person.enrollment_set.select_related(
+            "section", "school_year"
+        ).order_by("-school_year__name"),
+        "children": person.children.all(),
+        "parents": person.parents.all(),
+        "payments": person.payments.select_related("school_year").order_by("-date"),
+        "received_messages": person.received_messages.count(),
+        "attestation_items": person.attestation_items.count(),
+    }
+
+
+@login_required
+def member_delete(request, pk):
+    """Delete a member the soft way: archive the person and disable the login.
+
+    The last step of the flow — the member's modify page links here, this page
+    spells out what an archive does and does not touch, and only the POST its
+    button issues actually performs it.
+    """
+    _require_member_deleter(request)
+    person = get_object_or_404(Person, id=pk)
+
+    if _is_self(request, person):
+        messages.error(request, _("You cannot delete your own account."))
+        return redirect("members:admin_list")
+
+    if person.status == "ar":
+        # Already archived, so the only thing left to do is the purge.
+        return redirect("members:member_purge", pk=person.pk)
+
+    if request.method == "POST":
+        _archive_member(person)
+        messages.success(
+            request,
+            _("%(name)s has been archived: their login is disabled.")
+            % {"name": person},
+        )
+        return redirect("members:admin_list")
+
+    return render(
+        request, "members/member_delete.html", _member_record_context(person)
+    )
+
+
+@login_required
+def member_purge(request, pk):
+    """Permanently destroy an archived member and everything linked to them.
+
+    Only archived members can be purged, so a hand-typed URL cannot destroy
+    someone who is still active — they have to be archived first.
+    """
+    _require_member_deleter(request)
+    person = get_object_or_404(Person, id=pk)
+
+    if _is_self(request, person):
+        messages.error(request, _("You cannot delete your own account."))
+        return redirect("members:admin_list")
+
+    if person.status != "ar":
+        messages.error(
+            request,
+            _("%(name)s is not archived — archive the member first.")
+            % {"name": person},
+        )
+        return redirect("members:admin_update", pk=person.pk)
+
+    if request.method == "POST":
+        name = str(person)
+        person.delete()
+        messages.success(
+            request,
+            _("%(name)s and all their records have been permanently deleted.")
+            % {"name": name},
+        )
+        return redirect("members:admin_list")
+
+    return render(request, "members/member_purge.html", _member_record_context(person))
 
 
 # class ProfileView(LoginRequiredMixin, ListView):

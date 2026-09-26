@@ -39,6 +39,77 @@ NEW_STRINGS = [
         "déjà envoyée",
         "verzonden",
     ),
+    # Member deletion (archive + purge), added with the super-admin delete flow.
+    ("You cannot delete your own account.", "propre compte", "eigen account"),
+    (
+        "%(name)s has been archived: their login is disabled.",
+        "archivé",
+        "gearchiveerd",
+    ),
+    (
+        "%(name)s is not archived — archive the member first.",
+        "archivez",
+        "archiveer",
+    ),
+    (
+        "%(name)s and all their records have been permanently deleted.",
+        "définitivement",
+        "definitief",
+    ),
+    ("Archived", "Archivé", "Gearchiveerd"),
+    ("Archived member", "Membre archivé", "Gearchiveerd lid"),
+    (
+        "This member is archived: their login is disabled, but their history "
+        "is still stored. Purging destroys the person, their account, "
+        "enrolments, payment history and message records for good.",
+        "La purge supprime",
+        "Definitief verwijderen wist",
+    ),
+    ("Permanently delete", "définitivement", "Definitief"),
+    ("Delete this member", "Supprimer ce membre", "Dit lid verwijderen"),
+    (
+        "Deleting archives the member and disables their login. Their history "
+        "is kept until they are purged.",
+        "jusqu'à la purge",
+        "tot de purge",
+    ),
+    ("Delete member", "Supprimer le membre", "Lid verwijderen"),
+    ("Delete %(name)s", "Supprimer", "verwijderen"),
+    (
+        "Deleting %(name)s archives the member. Their account is disabled and "
+        "they can no longer log in.",
+        "ne peut plus se connecter",
+        "niet meer inloggen",
+    ),
+    (
+        "Nothing is destroyed yet: enrolments, payment history and messages "
+        "are kept, and the member can still be purged later.",
+        "Rien n'est encore détruit",
+        "nog niets gewist",
+    ),
+    ("Enrolments", "Inscriptions", "Inschrijvingen"),
+    (
+        "Permanently delete %(name)s",
+        "Supprimer définitivement",
+        "definitief verwijderen",
+    ),
+    (
+        "This permanently destroys %(name)s and everything still linked to "
+        "them. This cannot be undone.",
+        "irréversible",
+        "ongedaan",
+    ),
+    (
+        "Attestation pages that matched this member are kept, but the link to "
+        "them is cleared.",
+        "attestations liées",
+        "Attestationpagina",
+    ),
+    (
+        "Purge an archived member only when the data may really be discarded.",
+        "Ne purgez",
+        "alleen als",
+    ),
 ]
 
 

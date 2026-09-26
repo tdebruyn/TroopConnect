@@ -1,0 +1,57 @@
+{% extends "members/base.html" %}
+{% load i18n %}
+{% block hat_title %}
+    {% blocktranslate with name=person %}Delete {{ name }}{% endblocktranslate %}
+{% endblock hat_title %}
+{% block subcontent %}
+    <p>
+        {% blocktranslate with name=person %}Deleting {{ name }} archives the member. Their account is disabled and they can no longer log in.{% endblocktranslate %}
+    </p>
+    <p>
+        {% trans "Nothing is destroyed yet: enrolments, payment history and messages are kept, and the member can still be purged later." %}
+    </p>
+    <div class="container">
+        <table class="table">
+            <tbody>
+                <tr>
+                    <th scope="row">{% trans "Role" %}</th>
+                    <td>{{ person.primary_role.name }}</td>
+                </tr>
+                {% if person.account %}
+                    <tr>
+                        <th scope="row">{% trans "Email" %}</th>
+                        <td>{{ person.account.email }}</td>
+                    </tr>
+                {% endif %}
+                <tr>
+                    <th scope="row">{% trans "Enrolments" %}</th>
+                    <td>
+                        {% for enrollment in enrollments %}
+                            {{ enrollment.school_year.name }} — {{ enrollment.section.name }}<br />
+                        {% empty %}
+                            -
+                        {% endfor %}
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">{% trans "Children" %}</th>
+                    <td>
+                        {% for child in children %}{{ child }}<br />{% empty %}-{% endfor %}
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">{% trans "Parents" %}</th>
+                    <td>
+                        {% for parent in parents %}{{ parent }}<br />{% empty %}-{% endfor %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger me-1">{% trans "Delete member" %}</button>
+        <a class="btn btn-outline-primary"
+           href="{% url 'members:admin_update' pk=person.pk %}">{% trans "Cancel" %}</a>
+    </form>
+{% endblock subcontent %}

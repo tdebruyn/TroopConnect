@@ -2079,3 +2079,87 @@ msgstr[1] ""
 #: templates/base.html:205
 msgid "Manage"
 msgstr ""
+
+#: members/views.py
+msgid "You cannot delete your own account."
+msgstr ""
+
+#: members/views.py
+#, python-format
+msgid "%(name)s has been archived: their login is disabled."
+msgstr ""
+
+#: members/views.py
+#, python-format
+msgid "%(name)s is not archived — archive the member first."
+msgstr ""
+
+#: members/views.py
+#, python-format
+msgid "%(name)s and all their records have been permanently deleted."
+msgstr ""
+
+#: members/templates/members/admin_list.html
+msgid "Archived"
+msgstr ""
+
+#: members/templates/members/admin_update.html
+msgid "Archived member"
+msgstr ""
+
+#: members/templates/members/admin_update.html
+msgid "This member is archived: their login is disabled, but their history is still stored. Purging destroys the person, their account, enrolments, payment history and message records for good."
+msgstr ""
+
+#: members/templates/members/admin_update.html
+msgid "Permanently delete"
+msgstr ""
+
+#: members/templates/members/admin_update.html
+msgid "Delete this member"
+msgstr ""
+
+#: members/templates/members/admin_update.html
+msgid "Deleting archives the member and disables their login. Their history is kept until they are purged."
+msgstr ""
+
+#: members/templates/members/admin_update.html
+msgid "Delete member"
+msgstr ""
+
+#: members/templates/members/member_delete.html
+#, python-format
+msgid "Delete %(name)s"
+msgstr ""
+
+#: members/templates/members/member_delete.html
+#, python-format
+msgid "Deleting %(name)s archives the member. Their account is disabled and they can no longer log in."
+msgstr ""
+
+#: members/templates/members/member_delete.html
+msgid "Nothing is destroyed yet: enrolments, payment history and messages are kept, and the member can still be purged later."
+msgstr ""
+
+#: members/templates/members/member_delete.html
+msgid "Enrolments"
+msgstr ""
+
+#: members/templates/members/member_purge.html
+#, python-format
+msgid "Permanently delete %(name)s"
+msgstr ""
+
+#: members/templates/members/member_purge.html
+#, python-format
+msgid "This permanently destroys %(name)s and everything still linked to them. This cannot be undone."
+msgstr ""
+
+#: members/templates/members/member_purge.html
+msgid "Attestation pages that matched this member are kept, but the link to them is cleared."
+msgstr ""
+
+#: members/templates/members/member_purge.html
+msgid "Purge an archived member only when the data may really be discarded."
+msgstr ""
+
