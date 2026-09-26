@@ -24,4 +24,8 @@ COPY app/ .
 # Expose port for Gunicorn
 EXPOSE 9000
 
-CMD ["/app/entrypoint.sh"]
+# The entrypoint generates the secrets, waits for the database, and (only for
+# the web service, which sets RUN_MIGRATIONS) migrates and collects static
+# files. Nothing here is privileged; the stack is driven by compose.yml.
+ENTRYPOINT ["/app/entrypoint.sh"]
+CMD ["gunicorn", "troopconnect.wsgi:application", "--bind=0.0.0.0:9000", "--workers=4", "--timeout=120"]

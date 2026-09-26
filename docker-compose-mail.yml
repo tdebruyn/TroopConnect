@@ -1,3 +1,9 @@
+# Mail forwarding for the troop's own domain.
+#
+# Part of the community-maintained Ansible deployment in contrib/ansible, which
+# starts this file from the mailforwarder role. It is not part of the supported
+# installation (compose.yml) and is not started by it.
+
 services:
   mail-forward:
     image: zixia/simple-mail-forwarder

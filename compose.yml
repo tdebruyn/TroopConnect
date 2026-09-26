@@ -1,0 +1,184 @@
+# TroopConnect.
+#
+# The whole installation is this file and a .env beside it:
+#
+#   cp .env.example .env     # fill in the four required values
+#   docker compose up -d
+#
+# Only `caddy` publishes ports. Every other service is reachable only from the
+# compose network, by service name, so the database and Redis are never
+# exposed to the host or the internet.
+#
+# For development, overlay compose.dev.yml, which builds the image locally:
+#
+#   docker compose -f compose.yml -f compose.dev.yml up --build
+
+# Published by the release workflow. Pin a release with TC_VERSION=1.2.3.
+x-image: &app-image ghcr.io/tdebruyn/troopconnect:${TC_VERSION:-1}
+
+services:
+  # Creates /data/secrets/{secret_key,postgres_password} and exits. Both are
+  # generated once and kept in the app_data volume; the database reads its
+  # password from the same file, so it has to exist before either db or the
+  # application starts. Safe to re-run: an existing file is never overwritten.
+  init:
+    image: *app-image
+    restart: "no"
+    env_file:
+      - .env
+    command: ["init-secrets"]
+    volumes:
+      - app_data:/data
+
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-troopconnect}
+      POSTGRES_DB: ${POSTGRES_DB:-troopconnect}
+      # Only the _FILE form: the Postgres image refuses to start if both
+      # POSTGRES_PASSWORD and POSTGRES_PASSWORD_FILE are set.
+      POSTGRES_PASSWORD_FILE: /data/secrets/postgres_password
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - app_data:/data:ro
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U ${POSTGRES_USER:-troopconnect} -d ${POSTGRES_DB:-troopconnect}
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    depends_on:
+      init:
+        condition: service_completed_successfully
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  web:
+    image: *app-image
+    restart: unless-stopped
+    env_file:
+      - .env
+    command:
+      - gunicorn
+      - troopconnect.wsgi:application
+      - --bind=0.0.0.0:9000
+      - --workers=4
+      - --timeout=120
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_USER: ${POSTGRES_USER:-troopconnect}
+      POSTGRES_DB: ${POSTGRES_DB:-troopconnect}
+      POSTGRES_PASSWORD_FILE: /data/secrets/postgres_password
+      SECRET_KEY_FILE: /data/secrets/secret_key
+      REDIS_URL: redis://redis:6379/0
+      # The web service is the only one that migrates and collects static
+      # files. See app/entrypoint.sh.
+      RUN_MIGRATIONS: "1"
+    volumes:
+      - app_data:/data
+      - media:/app/mediafiles
+      - static:/app/staticfiles
+    depends_on:
+      init:
+        condition: service_completed_successfully
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  worker:
+    image: *app-image
+    restart: unless-stopped
+    env_file:
+      - .env
+    command: ["celery", "-A", "troopconnect", "worker", "-l", "INFO"]
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_USER: ${POSTGRES_USER:-troopconnect}
+      POSTGRES_DB: ${POSTGRES_DB:-troopconnect}
+      POSTGRES_PASSWORD_FILE: /data/secrets/postgres_password
+      SECRET_KEY_FILE: /data/secrets/secret_key
+      REDIS_URL: redis://redis:6379/0
+    volumes:
+      # Needed to read the attachments on queued mail.
+      - media:/app/mediafiles
+      - app_data:/data
+    depends_on:
+      init:
+        condition: service_completed_successfully
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  beat:
+    image: *app-image
+    restart: unless-stopped
+    env_file:
+      - .env
+    command:
+      - celery
+      - -A
+      - troopconnect
+      - beat
+      - -l
+      - INFO
+      - --scheduler=django_celery_beat.schedulers:DatabaseScheduler
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_USER: ${POSTGRES_USER:-troopconnect}
+      POSTGRES_DB: ${POSTGRES_DB:-troopconnect}
+      POSTGRES_PASSWORD_FILE: /data/secrets/postgres_password
+      SECRET_KEY_FILE: /data/secrets/secret_key
+      REDIS_URL: redis://redis:6379/0
+    volumes:
+      - media:/app/mediafiles
+      - app_data:/data
+    depends_on:
+      init:
+        condition: service_completed_successfully
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    environment:
+      SITE_DOMAIN: ${SITE_DOMAIN:?SITE_DOMAIN must be set in .env}
+      ACME_EMAIL: ${ACME_EMAIL:?ACME_EMAIL must be set in .env}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - static:/vol/static:ro
+      - media:/vol/media:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - web
+
+volumes:
+  # Database files.
+  db_data:
+  # Secrets: SECRET_KEY and the generated database password.
+  app_data:
+  # User uploads (attachments, photos, generated PDFs).
+  media:
+  # collectstatic output.
+  static:
+  # TLS certificates and Caddy's autosaved configuration.
+  caddy_data:
+  caddy_config:

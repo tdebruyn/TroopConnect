@@ -5,9 +5,9 @@ the (escaped) msgid text, preserving all comments/flags/references. Re-running
 makemessages later merges cleanly; re-running this reapplies the dict.
 
 Run:
-    docker compose -f docker-compose-local.yml exec -T web \
+    docker compose -f compose.yml -f compose.dev.yml exec -T web \
         env APPLY_LIST=1 python /app/locale/_apply_translations.py   # list keys
-    docker compose -f docker-compose-local.yml exec -T web \
+    docker compose -f compose.yml -f compose.dev.yml exec -T web \
         python /app/locale/_apply_translations.py                    # apply
 """
 import os

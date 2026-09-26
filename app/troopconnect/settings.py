@@ -20,6 +20,7 @@ from troopconnect.env import (
     load_secret_key,
     parse_database_url,
     parse_email_url,
+    read_file_secret,
     record_problem,
 )
 
@@ -168,6 +169,10 @@ WSGI_APPLICATION = "troopconnect.wsgi.application"
 # Set DATABASE_URL to describe the whole connection in one variable, or use the
 # individual POSTGRES_* variables. PostgreSQL only: the project relies on
 # ArrayField and django.contrib.postgres.
+#
+# The password is read from POSTGRES_PASSWORD, or from the file named by
+# POSTGRES_PASSWORD_FILE, which is how a container picks up the password the
+# entrypoint generated into the secrets volume.
 
 _database = {}
 DATABASE_URL = env("DATABASE_URL")
@@ -182,8 +187,8 @@ DATABASES = {
         "ENGINE": _database.get("ENGINE", "django.db.backends.postgresql"),
         "NAME": _database.get("NAME", env("POSTGRES_DB", "troopconnect")),
         "USER": _database.get("USER", env("POSTGRES_USER", "troopconnect")),
-        "PASSWORD": _database.get("PASSWORD", env("POSTGRES_PASSWORD", "")),
-        "HOST": _database.get("HOST", env("POSTGRES_HOST", "postgres")),
+        "PASSWORD": _database.get("PASSWORD") or read_file_secret("POSTGRES_PASSWORD"),
+        "HOST": _database.get("HOST", env("POSTGRES_HOST", "db")),
         "PORT": _database.get("PORT", env("POSTGRES_PORT", "5432")),
         "CONN_MAX_AGE": env_int("POSTGRES_CONN_MAX_AGE", 0),
     }

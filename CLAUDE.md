@@ -11,23 +11,24 @@ It is built to be self-hosted: a troop deploys an independent instance from the 
 ## Development Commands
 
 ```bash
-# Start all dev services (Postgres, Redis, web, celery worker, celery-beat)
-docker compose -f docker-compose-local.yml up --build
+# Development runs compose.yml with the compose.dev.yml overlay, which builds
+# the image locally, mounts app/, and turns on debug. scripts/dev-*.sh wrap this.
+docker compose -f compose.yml -f compose.dev.yml up --build
 
 # Run Django management commands inside the web container
-docker compose -f docker-compose-local.yml exec web uv run /app/manage.py migrate
-docker compose -f docker-compose-local.yml exec web uv run /app/manage.py createsuperuser
-docker compose -f docker-compose-local.yml exec web uv run /app/manage.py shell
+docker compose -f compose.yml -f compose.dev.yml exec web python manage.py migrate
+docker compose -f compose.yml -f compose.dev.yml exec web python manage.py createsuperuser
+docker compose -f compose.yml -f compose.dev.yml exec web python manage.py shell
 
 # Run the test suite in app/tests/ (also runs a ruff lint check via test_lint.py).
 # Note: bare `manage.py test` only discovers apps in INSTALLED_APPS; `tests` is a
 # top-level package, so name it explicitly.
-docker compose -f docker-compose-local.yml exec web uv run /app/manage.py test tests
+docker compose -f compose.yml -f compose.dev.yml exec web python manage.py test tests
 # Run a single module, e.g. just the lint check:
-docker compose -f docker-compose-local.yml exec web uv run /app/manage.py test tests.test_lint
+docker compose -f compose.yml -f compose.dev.yml exec web python manage.py test tests.test_lint
 
 # Lint with ruff (config: app/ruff.toml). Append `--fix` to auto-fix safe issues.
-docker compose -f docker-compose-local.yml exec web uv run ruff check /app
+docker compose -f compose.yml -f compose.dev.yml exec web ruff check .
 
 # Run Celery locally (outside Docker, needs Redis running)
 celery -A troopconnect worker -l INFO
@@ -70,15 +71,18 @@ Package management uses `uv` (not pip directly). Dependencies are pinned in `app
 
 ## Deployment
 
-Production runs via Docker Compose (`docker-compose-prod.yml`) on a RHEL/AlmaLinux/Rocky VPS:
-- **Caddy** reverse proxy (auto-LetsEncrypt, ports 80/443)
-- **Gunicorn** on port 9000 (production entrypoint runs `collectstatic` + `migrate`)
-- **PostgreSQL**, **Redis**, **Celery worker**, **Celery beat**
+The installation is `compose.yml` plus a `.env`; see `docs/dev/CONTRACT.md`.
+Services: `init` (one-shot secrets), `web`, `worker`, `beat`, `db`, `redis`,
+`caddy`. Only caddy publishes ports. The application image is published to
+`ghcr.io/tdebruyn/troopconnect`, tagged by `TC_VERSION`.
 
-Ansible automation in `deploy/ansible/` with roles: `infra`, `mailforwarder`, `troopconnect`. Deploy with:
-```bash
-ansible-playbook -i deploy/ansible/inventory.ini deploy/ansible/playbook.yml
-```
+`app/entrypoint.sh` is the Dockerfile `ENTRYPOINT`: it generates the secrets
+into `/data/secrets`, waits for the database, and — only for the web service,
+which sets `RUN_MIGRATIONS` — migrates under a Postgres advisory lock and
+collects static files.
+
+Ansible automation lives in `contrib/ansible/`. It is community-maintained and
+unsupported; see its README before relying on it.
 
 ## Important Notes
 - Test suite lives in `app/tests/` (plus per-app `tests.py` for `finance`/`homepage`). `manage.py test tests` also runs a ruff lint check (`tests/test_lint.py`); linter config is `app/ruff.toml`.

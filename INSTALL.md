@@ -1,68 +1,83 @@
 # Installing TroopConnect
 
-## Option A — Docker Compose (any VPS with Docker)
+## What you need
 
-1. Point an A/AAAA record for your chosen domain at the server. Ports 80 and
-   443 must be reachable, because Caddy obtains the TLS certificate for it.
-2. Install Docker and the Compose plugin.
-3. Get the repository onto the server.
-4. Copy `.env.example` to `.env` and fill in the four required values:
+- A server with Docker and the Compose plugin.
+- A domain pointed at it (an A/AAAA record), with ports 80 and 443 reachable,
+  because Caddy obtains the TLS certificate for that name.
+
+That is the whole installation: **`compose.yml` and a `.env`**. There is no
+build step — the images come from `ghcr.io/tdebruyn/troopconnect`.
+
+## Install
+
+1. Get the repository onto the server, or just the two files:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Fill in the four required values at the top of `.env`:
 
    | Variable | What to put there |
    | --- | --- |
-   | `SITE_DOMAIN` | the domain from step 1, e.g. `troop.example.org` |
-   | `EMAIL_URL` | your SMTP provider, e.g. `smtp+tls://user:pass@mail.example.org:587` |
+   | `SITE_DOMAIN` | the domain from the DNS record, e.g. `troop.example.org` |
+   | `EMAIL_URL` | your mail provider, e.g. `smtp+tls://user:pass@mail.example.org:587` |
    | `DEFAULT_FROM_EMAIL` | the address your troop's mail is sent from |
    | `ACME_EMAIL` | your address, for Let's Encrypt expiry warnings |
 
-   `.env.example` documents every other variable; none of them need setting to
-   get a working instance.
-5. Start it:
+   Every other variable is optional. `.env.example` documents them.
+
+3. Start it:
 
    ```bash
-   docker compose -f docker-compose-prod.yml up -d --build
+   docker compose up -d
    ```
 
-6. Create the first administrator:
+   On first start a one-shot `init` service generates the database password and
+   the Django secret key into a volume, then the web service waits for the
+   database, migrates and collects static files. Nothing else to do.
+
+4. Create the first administrator:
 
    ```bash
-   docker compose -f docker-compose-prod.yml exec troopconnect python manage.py createsuperuser
+   docker compose exec web python manage.py createsuperuser
    ```
 
-   Log in, then fill in the unit's own details (name, contact address,
-   registration window) under Site settings in the admin. Those live in the
+5. Log in, then fill in the unit's own details — name, contact address,
+   registration window — under Site settings in the admin. Those live in the
    database, not in `.env`.
 
-If something is wrong, `python manage.py check` names the variable and what to
-do about it:
+If something is wrong, `manage.py check` names the variable and what to do
+about it:
 
 ```bash
-docker compose -f docker-compose-prod.yml exec troopconnect python manage.py check
+docker compose exec web python manage.py check
 ```
 
-## Option B — Ansible (RHEL / AlmaLinux / Rocky Linux)
+## Upgrading
 
-Provisions the VPS, the mail forwarder and the application together.
+Set `TC_VERSION` in `.env` to the release you want and recreate:
 
-1. Get a VPS with Red Hat Enterprise Linux, AlmaLinux or Rocky Linux.
-2. Create an A DNS record (with your registrar) and a PTR record (with your VPS
-   provider, who can also be your DNS registrar).
-3. Create a user with sudo access and configure password-less SSH.
-4. Download this repo on your local computer.
-5. Rename `deploy/ansible/config.yml-example` to `config.yml` and run
-   `python deploy/ansible/create-config.py` to fill in its values. It prompts
-   for the non-secret keys (`site_domain`, `acme_email`, `default_from_email`,
-   `email_url`, ...) and then for the secrets in `clear-vault.yml`, which it
-   encrypts into `vault.yml`.
-6. Rename `inventory.ini.example` to `inventory.ini` and update the values.
-7. Run the playbook:
+```bash
+docker compose pull && docker compose up -d
+```
 
-   ```bash
-   ansible-playbook -i deploy/ansible/inventory.ini deploy/ansible/playbook.yml
-   ```
+Migrations run automatically, under a lock, so a rolling restart is safe.
 
-   It writes the collected values to `.env` in the project directory and starts
-   the stack from `docker-compose-prod.yml`.
-8. Put the content of
-   `/var/lib/docker/volumes/troopconnect_dkim/_data/yourdomain/default.txt` as a
-   TXT record in DNS (check the DKIM guide).
+## Backups
+
+Two volumes matter: `db_data` (the database) and `media` (uploads). The
+`app_data` volume holds the generated secrets — keep it, or every user is
+logged out and the application can no longer authenticate to the database it
+already initialised.
+
+Deleting `db_data` without deleting `app_data` leaves the stored password
+pointing at a database that no longer has it. Delete both, or neither.
+
+## Community-maintained deployment
+
+`contrib/ansible/` contains one troop's Ansible automation for provisioning a
+RHEL/AlmaLinux/Rocky host end to end, including a mail forwarder. It is
+published as a starting point and is explicitly unsupported — read
+[its README](contrib/ansible/README.md) before relying on it.

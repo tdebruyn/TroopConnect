@@ -18,7 +18,7 @@ from urllib.parse import parse_qs, unquote, urlparse
 
 # Where the SECRET_KEY is persisted when the operator does not supply one.
 # Mounted as a volume in production so the key survives container recreation;
-# see docker-compose-prod.yml.
+# see compose.yml.
 DEFAULT_SECRET_KEY_PATH = Path("/data/secrets/secret_key")
 
 # Emails are the only thing Django can be asked to send through, and a scout
@@ -96,6 +96,36 @@ def env_int(name, default):
     except ValueError:
         record_problem(
             name, f"{name} must be a whole number, but it is set to '{value}'."
+        )
+        return default
+
+
+def read_file_secret(variable, default=""):
+    """Return ``VAR``, or the contents of the file ``VAR_FILE`` points at.
+
+    This is the ``VAR`` / ``VAR_FILE`` convention the official PostgreSQL image
+    uses, so the same variables work on both sides of the connection.
+
+    A file that is configured but unreadable is recorded as a problem rather
+    than silently becoming an empty value: the fallback would otherwise only
+    surface later, as a confusing authentication failure.
+    """
+    value = env(variable)
+    if value:
+        return value
+
+    path = env(f"{variable}_FILE")
+    if not path:
+        return default
+
+    try:
+        return Path(path).read_text().strip()
+    except OSError as exc:
+        record_problem(
+            f"{variable}_FILE",
+            f"{variable}_FILE points at {path}, which could not be read "
+            f"({exc.strerror}). On a fresh install the init service creates it "
+            f"at startup.",
         )
         return default
 

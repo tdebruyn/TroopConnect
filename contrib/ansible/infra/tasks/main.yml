@@ -53,10 +53,10 @@
     force: yes
   become: true
 
-- name: Copy local deploy/ansible/config.yml to remote {project_dir}/deploy/ansible/config.yml
+- name: Copy local contrib/ansible/config.yml to remote {project_dir}/contrib/ansible/config.yml
   ansible.builtin.copy:
     src: config.yml
-    dest: "{{ project_dir }}/deploy/ansible/config.yml"
+    dest: "{{ project_dir }}/contrib/ansible/config.yml"
   become: true
 
 - name: Allow SSH service in the firewall

@@ -47,8 +47,9 @@ run the app before wiring up mail.
 | `TIME_ZONE` | `Europe/Brussels` | Used for dates and Celery schedules. |
 | `POSTGRES_USER` | `troopconnect` | |
 | `POSTGRES_DB` | `troopconnect` | |
-| `POSTGRES_PASSWORD` | empty | |
-| `POSTGRES_HOST` | `postgres` | |
+| `POSTGRES_PASSWORD` | generated | Set it only to choose the password yourself, and only before the first start: the database is initialised with whatever the first run generated. |
+| `POSTGRES_PASSWORD_FILE` | unset | Read when `POSTGRES_PASSWORD` is unset. The compose file points it at `/data/secrets/postgres_password`; the same convention on the Postgres side. |
+| `POSTGRES_HOST` | `db` | The compose service name. |
 | `POSTGRES_PORT` | `5432` | |
 | `POSTGRES_CONN_MAX_AGE` | `0` | Seconds to keep connections open. |
 | `DATABASE_URL` | unset | `postgres://user:pass@host:5432/db`. Overrides the `POSTGRES_*` variables. |
@@ -67,11 +68,14 @@ run the app before wiring up mail.
 | `UPDATE_CHECK` | off | Reserved. No outbound update check is implemented yet. |
 | `UPDATE_CHECK_URL` | GitHub releases API | Reserved, as above. |
 
-### Reserved for the Self-Hosted Deployment
+### Read by the images, not by Django
 
-`ACME_EMAIL` and `SITE_DOMAIN` are also read by the Caddy container. The
-`caddy/run.sh` entrypoint refuses to start without them rather than generating
-a broken Caddyfile.
+| Variable | Default | Read by |
+| --- | --- | --- |
+| `TC_VERSION` | `1` | `compose.yml`, to choose the image tag: `ghcr.io/tdebruyn/troopconnect:$TC_VERSION`. |
+| `SECRETS_DIR` | `/data/secrets` | `app/entrypoint.sh`, where the generated secrets are written. |
+| `RUN_MIGRATIONS` | unset | `app/entrypoint.sh`. Set on the web service only: it makes the entrypoint migrate and collect static files. |
+| `SITE_DOMAIN`, `ACME_EMAIL` | required | Also read by Caddy, which substitutes `{$SITE_DOMAIN}` and `{$ACME_EMAIL}` into `caddy/Caddyfile` and refuses to serve an empty site address. |
 
 ---
 
@@ -103,39 +107,84 @@ Django cache.
 
 | Command | Notes |
 | --- | --- |
+| `wait_for_db` | Blocks until the database answers. Used by the entrypoint. |
+| `migrate_locked` | `migrate` under a Postgres advisory lock, so only one process migrates. Used by the entrypoint. |
 | `create_test_data` | Seeds the Playwright end-to-end users described in the README. Development only. |
 | `import_legacy` | One-off import of members from the pre-TroopConnect system. |
 
-The production entrypoint (`app/entrypoint.sh`) always runs `collectstatic` and
-`migrate` before starting Gunicorn. `migrate` also rewrites the
-`django.contrib.sites` row's domain from `SITE_DOMAIN`
-(`app/troopconnect/siteconfig.py`), so links in outgoing email point at the
-right host on a fresh install.
+`migrate` also rewrites the `django.contrib.sites` row's domain from
+`SITE_DOMAIN` (`app/troopconnect/siteconfig.py`), so links in outgoing email
+point at the right host on a fresh install.
 
 ---
 
 ## 4. Services
 
-`docker-compose-prod.yml`:
+`compose.yml`:
 
-| Service | Image / build | Role |
+| Service | Image | Role |
 | --- | --- | --- |
-| `caddy` | `caddy/` | TLS termination and reverse proxy; serves `/static/` and `/media/` from volumes. |
-| `troopconnect` | `app/Dockerfile.prod` | Gunicorn on port 9000. Runs `collectstatic` + `migrate` at start. |
-| `celery` | `app/Dockerfile.prod` | Worker. `send_queued_mail`, `create_year_task`, `run_passage`, cleanup tasks. |
-| `celery-beat` | `app/Dockerfile.prod` | Scheduler (`django_celery_beat`, database-backed). |
-| `postgres` | `postgres:alpine` | Database. PostgreSQL only — the app uses `ArrayField`. |
-| `redis` | `redis:alpine` | Celery broker and cache. |
+| `init` | app image | One shot. Runs `entrypoint.sh init-secrets` and exits. |
+| `web` | app image | Gunicorn on 9000. The only service that migrates and collects static files. |
+| `worker` | app image | Celery worker: `send_queued_mail`, `create_year_task`, `run_passage`, cleanup tasks. |
+| `beat` | app image | Celery scheduler (`django_celery_beat`, database-backed). |
+| `db` | `postgres:17-alpine` | Database. PostgreSQL only — the app uses `ArrayField`. |
+| `redis` | `redis:7-alpine` | Celery broker and cache. |
+| `caddy` | `caddy:2-alpine` | TLS termination and reverse proxy; serves `/static/` and `/media/` from volumes. |
 
-Volumes: `postgres_data`, `static_volume`, `media_volume`, `caddy_data`,
-`caddy_config`, and `app_secrets` (holds the generated `SECRET_KEY`).
+The four application services run the same image,
+`ghcr.io/tdebruyn/troopconnect:${TC_VERSION:-1}`. Only `caddy` publishes ports
+(80 and 443); the rest are reachable only from the compose network, by service
+name. There are no `container_name` overrides, so the project name keeps two
+instances on one host from colliding.
 
-`docker-compose-local.yml` mirrors this for development, with `DJANGO_DEBUG=1`,
-`SITE_DOMAIN=localhost` and `EMAIL_URL=console://` so the app runs with no
-external services.
+Volumes:
 
-The `shared_net` network is created by the Ansible `infra` role and declared
-`external` in the production compose file.
+| Volume | Mounted at | Holds |
+| --- | --- | --- |
+| `db_data` | `db:/var/lib/postgresql/data` | Database files. |
+| `app_data` | `init`, `web`, `worker`, `beat`, `db` (ro) | Generated secrets: `secret_key` and `postgres_password`. |
+| `media` | `web`, `worker`, `beat`, `caddy` (ro) | User uploads. |
+| `static` | `web`, `caddy` (ro) | `collectstatic` output. |
+| `caddy_data`, `caddy_config` | caddy | Certificates and Caddy's autosaved config. |
+
+`app_data` is shared deliberately: `db` reads its password from the same file
+the entrypoint generated, so the two can never disagree. The consequence is
+that deleting `db_data` without deleting `app_data` leaves the generated
+password pointing at a database that no longer has it — delete both, or
+neither.
+
+`compose.dev.yml` overlays the same file for development: it builds the image
+locally as `troopconnect-dev:local` (so it never shadows a release tag), mounts
+`app/`, sets `DJANGO_DEBUG=1` with `SITE_DOMAIN=localhost` and
+`EMAIL_URL=console://`, publishes the web port and the database ports, and puts
+`caddy` behind a profile so it does not start.
+
+The `init` service exists because Postgres reads `POSTGRES_PASSWORD_FILE` once,
+when it first initialises an empty data directory. Something has to create that
+file before then, and compose can only express that ordering with a one-shot
+service and `depends_on: condition: service_completed_successfully`.
+
+---
+
+## 4a. Container entrypoint
+
+`app/entrypoint.sh` runs for every service built from the app image, as the
+Dockerfile `ENTRYPOINT` with the service's `command` as arguments.
+
+1. **Secrets.** Creates `/data/secrets/secret_key` (mode 600) and
+   `/data/secrets/postgres_password` (mode 644, because Postgres reads it as a
+   different user). An existing file is never overwritten, so `SECRET_KEY` or
+   `POSTGRES_PASSWORD` in the environment wins on the first start and is
+   ignored afterwards. With the argument `init-secrets` it stops here — that is
+   all the `init` service does.
+2. **Wait for the database.** `manage.py wait_for_db`, which fails with a
+   clear message after `--timeout` (60s) rather than a connection traceback.
+3. **Once-per-deploy work**, only when `RUN_MIGRATIONS` is set, which only the
+   web service does. `manage.py migrate_locked` takes a Postgres advisory lock
+   and gives up with a plain-language message if another process is still
+   migrating; then `collectstatic`.
+4. `exec "$@"` — the service's command, usually Gunicorn or Celery.
 
 ---
 
@@ -155,14 +204,18 @@ The backend is chosen from `MAIL_SEND_MODE` / `MAILERSEND_API_KEY` / `EMAIL_URL`
 
 ## 6. Deployment
 
-**Self-hosted (recommended):** copy `.env.example` to `.env`, fill in the four
-required variables, then
+**Self-hosted (supported):** the installation is two files. Copy `.env.example`
+to `.env`, fill in the four required variables, then
 
 ```bash
-docker compose -f docker-compose-prod.yml up -d --build
+docker compose up -d
 ```
 
-**Ansible:** `deploy/ansible/`. Non-secret values go in `config.yml` (from
-`config.yml-example`), secrets in `vault.yml` (edited with
-`create-config.py`). The playbook writes them to `{{ project_dir }}/.env` as
-uppercase variables and runs the compose file. See `INSTALL.md`.
+Nothing in the shipped files is edited, and there is no build step: the images
+come from `ghcr.io/tdebruyn/troopconnect`.
+
+**Ansible (community-maintained, unsupported):** `contrib/ansible/`. Non-secret
+values go in `config.yml` (from `config.yml-example`), secrets in `vault.yml`
+(edited with `create-config.py`). The playbook writes them to
+`{{ project_dir }}/.env` as uppercase variables and starts `compose.yml`. See
+that directory's README before relying on it.

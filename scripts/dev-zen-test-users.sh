@@ -25,7 +25,7 @@ BASE_URL="${BASE_URL%/}"
 ZEN_BIN="${ZEN_BIN:-zen-browser}"
 PROFILES_ROOT="${HOME}/.zen"
 PASSWORD="Test1234!"
-COMPOSE_FILE="docker-compose-local.yml"
+COMPOSE_FILES=(-f compose.yml -f compose.dev.yml)
 
 # slug|email|start path
 PERSONAS=(
@@ -51,13 +51,13 @@ command -v "$ZEN_BIN" >/dev/null 2>&1 || die "Zen Browser not found ($ZEN_BIN)"
 command -v python3 >/dev/null 2>&1 || die "python3 is required"
 curl -fsS -o /dev/null "$BASE_URL/" || {
     die "Dev server not reachable at $BASE_URL.
-Start it with: docker compose -f $COMPOSE_FILE up --build"
+Start it with: docker compose -f compose.yml -f compose.dev.yml up --build"
 }
 
 if [ "${1:-}" = "--seed" ]; then
     say "Seeding test data..."
-    docker compose -f "$COMPOSE_FILE" exec -T web \
-        uv run /app/manage.py create_test_data
+    docker compose "${COMPOSE_FILES[@]}" exec -T web \
+        python /app/manage.py create_test_data
 fi
 
 # Create the profile's database files once, headlessly, so we can inject the

@@ -498,6 +498,52 @@ class DerivedSettingsTest(SimpleTestCase):
         self.assertTrue(self.probe(DJANGO_DEBUG="1")["SERVE_MEDIA_LOCALLY"])
 
 
+class ReadFileSecretTest(SimpleTestCase):
+    """The VAR / VAR_FILE convention the Postgres image also uses."""
+
+    def setUp(self):
+        env.reset_problems()
+        self.addCleanup(env.reset_problems)
+        self.addCleanup(os.environ.pop, "TROOPCONNECT_TEST_SECRET", None)
+        self.addCleanup(os.environ.pop, "TROOPCONNECT_TEST_SECRET_FILE", None)
+
+    def test_the_variable_wins_over_the_file(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "secret"
+            path.write_text("from-file\n")
+            os.environ["TROOPCONNECT_TEST_SECRET"] = "from-env"
+            os.environ["TROOPCONNECT_TEST_SECRET_FILE"] = str(path)
+
+            self.assertEqual(
+                env.read_file_secret("TROOPCONNECT_TEST_SECRET"), "from-env"
+            )
+
+    def test_the_file_is_used_when_the_variable_is_unset(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "secret"
+            path.write_text("from-file\n")
+            os.environ["TROOPCONNECT_TEST_SECRET_FILE"] = str(path)
+
+            self.assertEqual(
+                env.read_file_secret("TROOPCONNECT_TEST_SECRET"), "from-file"
+            )
+
+    def test_neither_set_returns_the_default(self):
+        self.assertEqual(
+            env.read_file_secret("TROOPCONNECT_TEST_SECRET", "fallback"), "fallback"
+        )
+
+    def test_an_unreadable_file_is_reported_rather_than_silently_empty(self):
+        os.environ["TROOPCONNECT_TEST_SECRET_FILE"] = "/nonexistent/secret"
+
+        self.assertEqual(env.read_file_secret("TROOPCONNECT_TEST_SECRET"), "")
+
+        problems = env.get_problems()
+        self.assertEqual(len(problems), 1)
+        self.assertEqual(problems[0].variable, "TROOPCONNECT_TEST_SECRET_FILE")
+        self.assertIn("/nonexistent/secret", problems[0].message)
+
+
 class ConfigProblemTest(SimpleTestCase):
     def test_problem_keeps_the_variable_and_message(self):
         problem = ConfigProblem("SITE_DOMAIN", "SITE_DOMAIN is not set.")

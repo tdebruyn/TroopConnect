@@ -26,5 +26,10 @@ RUN uv pip install -r requirements.txt
 # Expose port for Django development server
 EXPOSE 8000
 
+# Same entrypoint as production, so development exercises the secret
+# generation, the database wait and the locked migration. compose.dev.yml
+# supplies the command.
+ENTRYPOINT ["/app/entrypoint.sh"]
+
 
 

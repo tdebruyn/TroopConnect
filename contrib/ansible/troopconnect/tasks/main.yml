@@ -21,7 +21,7 @@
   community.docker.docker_compose_v2:
     project_src: "{{ project_dir }}"
     files:
-      - docker-compose-prod.yml
+      - compose.yml
     recreate: always
     build: always
   register: compose_result
