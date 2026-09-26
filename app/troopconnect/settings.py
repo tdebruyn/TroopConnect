@@ -244,10 +244,13 @@ MEDIA_URL = "/media/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_ROOT = BASE_DIR / "mediafiles"
 
-if DEBUG:
-    STATICFILES_DIRS = [
-        BASE_DIR / "static",
-    ]
+# The project-level static dir (site CSS, JS, fonts). Previously this was only
+# listed while DEBUG was on, which went unnoticed because the production branch
+# forced DEBUG = True; now that DEBUG really is off in production, leaving it
+# out would silently stop `collectstatic` from publishing the site's own CSS.
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
 
 # Serve user-uploaded media through Django rather than letting the reverse
 # proxy serve the media volume directly. Defaults to on in dev and off in

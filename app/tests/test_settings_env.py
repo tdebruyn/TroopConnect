@@ -51,6 +51,9 @@ print(json.dumps({
     "MAIL_SEND_MODE": settings.MAIL_SEND_MODE,
     "DATABASE_NAME": settings.DATABASES["default"]["NAME"],
     "DATABASE_HOST": settings.DATABASES["default"]["HOST"],
+    "STATICFILES_DIRS": [str(d) for d in settings.STATICFILES_DIRS],
+    "STATIC_ROOT": str(settings.STATIC_ROOT),
+    "SERVE_MEDIA_LOCALLY": settings.SERVE_MEDIA_LOCALLY,
 }))
 """
 
@@ -482,6 +485,17 @@ class DerivedSettingsTest(SimpleTestCase):
     def test_site_id_defaults_to_one(self):
         self.assertEqual(self.probe()["SITE_ID"], 1)
         self.assertEqual(self.probe(SITE_ID="2")["SITE_ID"], 2)
+
+    def test_project_static_dir_is_collected_in_and_out_of_debug(self):
+        """The site's own CSS/JS lives there, so collectstatic needs it always."""
+        expected = str(APP_ROOT / "static")
+
+        self.assertIn(expected, self.probe()["STATICFILES_DIRS"])
+        self.assertIn(expected, self.probe(DJANGO_DEBUG="1")["STATICFILES_DIRS"])
+
+    def test_media_is_served_by_django_only_in_debug_by_default(self):
+        self.assertFalse(self.probe()["SERVE_MEDIA_LOCALLY"])
+        self.assertTrue(self.probe(DJANGO_DEBUG="1")["SERVE_MEDIA_LOCALLY"])
 
 
 class ConfigProblemTest(SimpleTestCase):
