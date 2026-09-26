@@ -770,3 +770,56 @@ GitHub Actions; minor and patch bumps arrive as one grouped pull request.
 
 Versioning, the tag-to-image-tag mapping, and the one-time step that makes the
 GHCR package public are in `RELEASING.md`.
+
+---
+
+## 8. Translations
+
+The source strings are **English**; `app/locale/fr` and `app/locale/nl` carry
+the French and Dutch. Both the `.po` and the compiled `.mo` are tracked in git.
+
+**A missing entry fails silently.** gettext falls back to the English source, so
+a French troop sees one English line among French ones and nothing anywhere
+reports it. `app/tests/test_i18n_catalogs.py` is the guard: it holds a list of
+strings that must translate, which is why a newly added string belongs in it.
+Everything below is what that test cannot catch on its own.
+
+### Adding a string
+
+1. Add the entry to **both** `fr` and `nl`, next to the block it belongs to —
+   the wizard's own strings sit under a
+   `#: members/wizard (hand-added; see docs/dev/CONTRACT.md)` marker.
+2. Compile, or the `.po` ships inert — **nothing compiles the catalogs at build
+   time**, and the running application reads only the `.mo`:
+
+   ```bash
+   msgfmt -o app/locale/fr/LC_MESSAGES/django.mo app/locale/fr/LC_MESSAGES/django.po
+   msgfmt -o app/locale/nl/LC_MESSAGES/django.mo app/locale/nl/LC_MESSAGES/django.po
+   ```
+
+   (`manage.py compilemessages -l fr -l nl` does the same inside the container.
+   Use one toolchain or the other consistently: the two gettext versions write
+   different bytes, so mixing them rewrites the tracked `.mo` wholesale.)
+3. Commit the `.po` **and** the `.mo`, and add the string to `NEW_STRINGS` in
+   `app/tests/test_i18n_catalogs.py`.
+
+`makemessages` is the general path and the catalogs are the product of it, but
+it renumbers every source reference and marks new entries fuzzy, so a single
+string is usually hand-added rather than regenerating the file. Two rules keep
+that honest:
+
+* **Escape for the file, not for the terminal.** The `.po` is a text format
+  where a newline is written `\n` and a quote `\"`. Writing `\\n` stores a
+  literal backslash and an `n`, which never equals the runtime string — the
+  entry is then dead, present in the catalog, reported as translated by
+  `msgfmt --statistics`, and silently ignored by the application. Two entries
+  in the wizard block were written that way and had never once matched.
+* **A string identical in both languages needs no entry** (`Sections`,
+  `Modules`, `Agenda`, `Logo`), and shows up in any "untranslated" sweep as a
+  false positive. Do not add those to `NEW_STRINGS`: the test asserts the
+  translation *differs* from the source.
+
+`modules.MODULE_LABELS` are interpolated into
+`"The %(module)s module is not in use by this troop."`, so they carry no article
+of their own — the French is `agenda`, not `l'agenda`, or the sentence reads
+"le module l'agenda".

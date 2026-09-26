@@ -3048,12 +3048,20 @@ msgid "Setup code"
 msgstr "Installatiecode"
 
 #: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "Administrator"
+msgstr "Beheerder"
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
 msgid "That account already existed; kept it."
 msgstr "Dat account bestond al; het is behouden."
 
 #: members/wizard (hand-added; see docs/dev/CONTRACT.md)
 msgid "The unit"
 msgstr "De eenheid"
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "Languages and country"
+msgstr "Talen en land"
 
 #: members/wizard (hand-added; see docs/dev/CONTRACT.md)
 msgid "Removed: %(rows)s."
@@ -3076,8 +3084,8 @@ msgid "Test message from %(site)s"
 msgstr "Testbericht van %(site)s"
 
 #: members/wizard (hand-added; see docs/dev/CONTRACT.md)
-msgid "This is a test message from %(site)s.\\n\\nIf you are reading it, this instance can send mail: registration confirmations, section messages and reminders will all arrive."
-msgstr "Dit is een testbericht van %(site)s.\\n\\nAls je dit leest, kan deze instantie mail versturen: bevestigingen van inschrijving, sectieberichten en herinneringen komen allemaal aan."
+msgid "This is a test message from %(site)s.\n\nIf you are reading it, this instance can send mail: registration confirmations, section messages and reminders will all arrive."
+msgstr "Dit is een testbericht van %(site)s.\n\nAls u dit leest, kan deze instantie e-mail versturen: bevestigingen van inschrijving, berichten per tak en herinneringen komen allemaal aan."
 
 #: members/wizard (hand-added; see docs/dev/CONTRACT.md)
 msgid "The mail backend reported that it sent nothing."
@@ -3096,8 +3104,8 @@ msgid "Done"
 msgstr "Klaar"
 
 #: members/wizard (hand-added; see docs/dev/CONTRACT.md)
-msgid "The code is in the web container's log, printed when the instance started. `docker compose logs web | grep -i \\\"setup code\\\"` shows it again, and `manage.py setup_code` prints it on demand."
-msgstr "De code staat in het logboek van de webcontainer, afgedrukt bij het starten van de instantie. `docker compose logs web | grep -i \\\"setup code\\\"` toont hem opnieuw, en `manage.py setup_code` drukt hem af op verzoek."
+msgid "The code is in the web container's log, printed when the instance started. `docker compose logs web | grep -i \"setup code\"` shows it again, and `manage.py setup_code` prints it on demand."
+msgstr "De code staat in het logboek van de webcontainer, afgedrukt bij het opstarten van de instantie. `docker compose logs web | grep -i \"setup code\"` toont hem opnieuw, en `manage.py setup_code` drukt hem af op verzoek."
 
 #: members/wizard (hand-added; see docs/dev/CONTRACT.md)
 msgid "That is not this instance's setup code."
@@ -3142,6 +3150,38 @@ msgstr "Te veel foute codes vanaf dit adres. Probeer het over %(minutes)s minute
 #: members/wizard (hand-added; see docs/dev/CONTRACT.md)
 msgid "Stable identifier from a branch preset, used to recognise this branch again when the preset is applied a second time."
 msgstr "Stabiele identificatie uit een afdelingspreset, waarmee deze afdeling opnieuw herkend wordt wanneer de preset een tweede keer wordt toegepast."
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "The two passwords do not match."
+msgstr "De twee wachtwoorden komen niet overeen."
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "The message could not be sent."
+msgstr "Het bericht kon niet worden verzonden."
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "Enable at least one language first."
+msgstr "Schakel eerst minstens één taal in."
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "%(count)s branches created."
+msgstr "%(count)s takken aangemaakt."
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "The %(module)s module is not in use by this troop."
+msgstr "De module %(module)s wordt niet gebruikt door deze eenheid."
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "membership fees"
+msgstr "lidgelden"
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "document signing"
+msgstr "documentondertekening"
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "the agenda"
+msgstr "agenda"
 
 #: section agenda (hand-added; see docs/dev/CONTRACT.md)
 msgid "Meeting"
