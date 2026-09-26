@@ -162,14 +162,33 @@ again.
 
 ### Modules
 
-| Field | Default | Purpose |
+| Field | Default | Switches off |
 | --- | --- | --- |
-| `fees_enabled` | `true` | Membership-fees entry in the navigation. |
-| `signing_enabled` | `true` | Attestations entry in the navigation. |
-| `public_agenda_enabled` | `true` | Agenda entry in the navigation. |
+| `fees_enabled` | `true` | The membership-fees module: `/finance/`, the price grid, recording payments, payment history, reminders, the Treasurer role in the member form, and the fee count on the member purge page. |
+| `signing_enabled` | `true` | The attestation (document signing) wizard, every step of it. |
+| `public_agenda_enabled` | `true` | The public agenda page. |
 
-A switch takes the module out of the *navigation*; the views behind it stay
-reachable, because they already have their own role checks.
+A switch means the module is not installed as far as the troop is concerned:
+its URLs answer **404**, and the UI that belongs to it disappears from the
+navigation and from the member screens. What the module *stores* is never
+touched — events, campaigns, payments and enrolments all stay put — so turning
+a switch back on restores everything.
+
+One implementation, in `members/modules.py`, reached three ways so a view, a
+template and the navigation cannot disagree:
+
+* `@requires_module(FEES)` on a view function (below `@login_required`, so a
+  stranger is sent to the login page rather than told which modules the troop
+  uses), `ModuleRequiredMixin` with `required_module` on a class-based view;
+* `{% module_enabled "fees" as fees_on %}` in a template, from
+  `members/templatetags/modules.py`;
+* `fees_enabled` / `signing_enabled` / `public_agenda_enabled` as context
+  variables, from `members.context_processors.contact_info`.
+
+The settings page and the Django admin are deliberately **not** gated: a troop
+that switches a module off has to be able to switch it back on. A role the
+module hides (Treasurer) is hidden, not deleted — an existing assignment
+survives an unrelated edit of that member.
 
 ### Retained site content
 

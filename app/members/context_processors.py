@@ -1,7 +1,9 @@
 from django.conf import settings
 from django.utils import translation
 
+from . import modules
 from .models import TroopSettings
+from .modules import module_enabled
 
 
 def contact_info(request):
@@ -24,10 +26,12 @@ def contact_info(request):
         "address_placeholder": troop_settings.address_placeholder,
         "currency": troop_settings.currency,
         "phone_region": troop_settings.phone_region,
-        # Module switches, so the navigation can hide what is turned off.
-        "fees_enabled": troop_settings.fees_enabled,
-        "signing_enabled": troop_settings.signing_enabled,
-        "public_agenda_enabled": troop_settings.public_agenda_enabled,
+        # Module switches, so any template can hide what is turned off. Read
+        # through members.modules so this and the {% module_enabled %} tag (and
+        # the decorator that 404s the same module's URLs) cannot disagree.
+        "fees_enabled": module_enabled(modules.FEES),
+        "signing_enabled": module_enabled(modules.SIGNING),
+        "public_agenda_enabled": module_enabled(modules.AGENDA),
         # Language selector support (set by AvailableLanguagesMiddleware).
         "available_languages": list(available),
         "current_language": translation.get_language(),

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 {% load static %}
 {% load account %}
+{% load modules %}
 {% load i18n %}
 <html lang="{{ current_language }}">
     <head>
@@ -68,7 +69,8 @@
                                     {% endfor %}
                                 </div>
                             </li>
-                            {% if public_agenda_enabled %}
+                            {% module_enabled "agenda" as agenda_on %}
+                            {% if agenda_on %}
                                 <li class="nav-item">
                                     <a class="nav-link active" href="{% url 'agenda' %}">{% trans "Agenda" %}</a>
                                 </li>
@@ -85,13 +87,15 @@
                                             <a class="dropdown-item" href="{% url 'members:passage' %}">{% trans "Section passage" %}</a>
                                             <a class="dropdown-item" href="{% url 'members:troop_settings' %}">{% trans "Settings" %}</a>
                                         {% endif %}
-                                        {% if user_is_tresorier and fees_enabled %}
+                                        {% module_enabled "fees" as fees_on %}
+                                        {% if user_is_tresorier and fees_on %}
                                             <a class="dropdown-item" href="{% url 'finance:billing' %}">{% trans "Membership fees" %}</a>
                                         {% endif %}
                                         {% if user_can_send_all %}
                                             <a class="dropdown-item" href="{% url 'messaging:compose' %}">{% trans "Send a message" %}</a>
                                             <a class="dropdown-item" href="{% url 'messaging:animateur_history' %}">{% trans "Message history" %}</a>
-                                            {% if signing_enabled %}
+                                            {% module_enabled "signing" as signing_on %}
+                                            {% if signing_on %}
                                                 <a class="dropdown-item" href="{% url 'attestations:index' %}">{% trans "Attestations" %}</a>
                                             {% endif %}
                                         {% endif %}

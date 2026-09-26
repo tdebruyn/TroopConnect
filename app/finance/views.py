@@ -9,6 +9,7 @@ from django.utils.translation import gettext_lazy as _
 from post_office import mail
 
 from members.models import Branch, Person, SchoolYear
+from members.modules import FEES, requires_module
 from members.money import format_money
 from members.permissions import (
     ANIMATEUR_ROLES,
@@ -28,6 +29,7 @@ from .models import (
 
 
 @login_required
+@requires_module(FEES)
 def billing_overview(request):
     """Overview of all household balances for the current year."""
     if not can_access_finance(request.user):
@@ -116,6 +118,7 @@ def billing_overview(request):
 
 
 @login_required
+@requires_module(FEES)
 def edit_prices(request):
     """Editable price grid for the trésorier, per school year."""
     if not can_access_finance(request.user):
@@ -157,6 +160,7 @@ def edit_prices(request):
 
 
 @login_required
+@requires_module(FEES)
 def record_payment(request):
     """Trésorier records a payment for a person."""
     if not can_access_finance(request.user):
@@ -213,6 +217,7 @@ def record_payment(request):
 
 
 @login_required
+@requires_module(FEES)
 def payment_history(request, person_id):
     """Show payment history for a person in an HTMX modal."""
     if not can_access_finance(request.user):
@@ -237,6 +242,7 @@ def payment_history(request, person_id):
 
 
 @login_required
+@requires_module(FEES)
 def send_reminders(request):
     """Bulk send reminder emails to adults with unpaid balances."""
     if not can_access_finance(request.user):

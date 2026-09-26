@@ -4,6 +4,7 @@ from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
+from . import modules
 from .constants import (
     ROLE_CHOICES,
 )
@@ -18,6 +19,23 @@ from .models import (
     Section,
     TroopSettings,
 )
+from .modules import module_enabled
+from .permissions import TRESORIER
+
+
+def secondary_role_queryset():
+    """The secondary roles a troop can hand out.
+
+    The Treasurer role is hidden while the membership-fees module is switched
+    off: with the finance screens gone it grants nothing, so offering it would
+    only invite a troop to file someone under a responsibility that does not
+    exist. The role itself is untouched — see AdminUserUpdateForm.save(), which
+    keeps roles this form does not offer.
+    """
+    roles = Role.objects.filter(is_primary=False)
+    if not module_enabled(modules.FEES):
+        roles = roles.exclude(short=TRESORIER)
+    return roles
 
 
 class SectionModelChoiceField(forms.ModelChoiceField):
@@ -62,12 +80,14 @@ class AdminUserUpdateForm(forms.ModelForm):
         label=_("Primary role"),
     )
 
-    # Secondary roles (multiple selection)
+    # Secondary roles (multiple selection). The queryset is filled in __init__
+    # rather than here: which roles a troop can hand out depends on its module
+    # switches, and a queryset declared on the class is evaluated once and then
+    # shared by every instance (see secondary_role_queryset()).
     secondary_roles = forms.ModelMultipleChoiceField(
-        queryset=Role.objects.filter(is_primary=False),
+        queryset=Role.objects.none(),
         required=False,
         label=_("Secondary roles"),
-        # widget=forms.SelectMultiple(attrs={"class": "form-select", "size": "5"}),
         widget=forms.CheckboxSelectMultiple,
     )
 
@@ -132,6 +152,7 @@ class AdminUserUpdateForm(forms.ModelForm):
             if self.instance.primary_role.short == Person.CHILD_ROLE_SHORT:
                 self.fields.pop("secondary_roles", None)
             else:
+                self.fields["secondary_roles"].queryset = secondary_role_queryset()
                 secondary_roles = self.instance.roles.filter(is_primary=False)
                 if secondary_roles.exists():
                     self.fields["secondary_roles"].initial = secondary_roles.all()
@@ -174,8 +195,16 @@ class AdminUserUpdateForm(forms.ModelForm):
             person.primary_role = primary_role
             person.save()
 
-            # Handle roles
-            PersonRole.objects.filter(person=person, role__is_primary=False).delete()
+            # Handle roles. Only the roles this form offered are replaced: a
+            # role it hides — the Treasurer role while membership fees are
+            # switched off — must survive an unrelated edit rather than be
+            # deleted for not having been on screen to re-submit. The exception
+            # is a Participant, for whom the field is dropped on purpose: an
+            # empty submission then means "clear them" (rule 1).
+            stored = PersonRole.objects.filter(person=person, role__is_primary=False)
+            if "secondary_roles" in self.fields:
+                stored = stored.filter(role__in=self.fields["secondary_roles"].queryset)
+            stored.delete()
             for role in (secondary_roles or []):
                 PersonRole.objects.create(person=person, role=role)
 

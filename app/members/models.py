@@ -1001,9 +1001,12 @@ class TroopSettings(models.Model):
     )
 
     # --- Modules -----------------------------------------------------------
-    # Feature switches. Off hides the module from the navigation, which is what
-    # a troop that does not use it wants; the views themselves stay reachable,
-    # since they are already behind their own role checks.
+    # Feature switches. Off means the module is not installed as far as the
+    # troop is concerned: its URLs answer 404, its UI disappears — see
+    # members/modules.py for the decorator, the mixin and the template tag that
+    # read these. What the module stores is left alone, so switching one back
+    # on restores it. The settings page and the Django admin stay open on
+    # purpose, so a troop can always undo the switch.
     fees_enabled = models.BooleanField(default=True)
     signing_enabled = models.BooleanField(default=True)
     public_agenda_enabled = models.BooleanField(default=True)
