@@ -1,6 +1,7 @@
 from datetime import date
 
 from django.core.management import call_command
+from django.db import connection
 from django.test import TestCase
 from django.urls import reverse
 from post_office.models import EmailTemplate
@@ -147,6 +148,14 @@ class Migration0018PurgeTest(TestCase):
             primary_role=role_p, status="a",
         )
         PersonRole.objects.create(person=parent, role=role_t)
+
+        # Foreign keys are deferred, so the inserts above left referential
+        # checks queued against members_person. Rewinding members unapplies
+        # every app that depends on it — including the attestations ones, whose
+        # foreign key to members_person is dropped — and Postgres refuses to
+        # alter a table with trigger events still pending. Run them now.
+        with connection.cursor() as cursor:
+            cursor.execute("SET CONSTRAINTS ALL IMMEDIATE")
 
         call_command("migrate", "members", "0017", verbosity=0)
         self.assertEqual(
