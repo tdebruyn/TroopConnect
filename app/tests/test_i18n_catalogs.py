@@ -350,6 +350,26 @@ NEW_STRINGS = [
         "Identifiant stable",
         "Stabiele identificatie",
     ),
+    # Households and their fee adjustments, added with the billing override.
+    ("Household", "Foyer", "Huishouden"),
+    ("Inferred from the address", "adresse", "adres"),
+    (
+        "Negative writes off, positive adds to what the household owes",
+        "remise",
+        "kwijtschelding",
+    ),
+    ("Billed by address again", "facturé par adresse", "per adres"),
+    (
+        "Deleting the household does not touch its members: they go back to "
+        "being billed by address. Its adjustment lines are deleted with it.",
+        "ajustements",
+        "aanpassingen",
+    ),
+    (
+        "Household “%(name)s” deleted. Its members are billed by address again.",
+        "supprimé",
+        "verwijderd",
+    ),
 ]
 
 

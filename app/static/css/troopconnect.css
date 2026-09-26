@@ -209,3 +209,9 @@ header.masthead {
     display: inline;
   }
 }
+
+/* The household column in the member list shows a free-text address when the
+   household is inferred, so it needs a ceiling of its own to stay one line. */
+.household-cell {
+  max-width: 16rem;
+}

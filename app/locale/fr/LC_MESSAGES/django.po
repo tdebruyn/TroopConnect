@@ -2432,6 +2432,261 @@ msgstr ""
 "La petite icône que les navigateurs affichent pour le site. Laissez vide "
 "pour ne pas en afficher."
 
+#: finance/forms.py:145 finance/models.py:150
+#: finance/templates/finance/billing_overview.html:79
+#: finance/templates/finance/household_list.html:30
+#: members/templates/members/admin_update.html:139 members/views.py:230
+msgid "Household"
+msgstr "Foyer"
+
+#: finance/models.py:151 finance/templates/finance/billing_overview.html:8
+#: finance/templates/finance/billing_overview.html:72
+#: finance/templates/finance/household_list.html:3
+msgid "Households"
+msgstr "Foyers"
+
+#: finance/forms.py:146
+msgid "Inferred from address"
+msgstr "Déduit de l'adresse"
+
+#: members/templates/members/admin_list.html:118
+msgid "Inferred from the address"
+msgstr "Déduit de l'adresse"
+
+#: finance/models.py:178
+msgid "Household member"
+msgstr "Membre du foyer"
+
+#: finance/models.py:179
+msgid "Household members"
+msgstr "Membres du foyer"
+
+#: finance/models.py:217
+msgid "Household adjustment"
+msgstr "Ajustement du foyer"
+
+#: finance/models.py:218
+msgid "Household adjustments"
+msgstr "Ajustements du foyer"
+
+#: finance/models.py:137
+msgid "A name the treasurer recognises, e.g. “Famille Dupont”"
+msgstr "Un nom que le trésorier reconnaît, p. ex. « Famille Dupont »"
+
+#: finance/models.py:203
+msgid "Negative writes off, positive adds to what is owed"
+msgstr "Négatif = remise, positif = ajout à ce qui est dû"
+
+#: finance/forms.py:195
+msgid "Negative writes off, positive adds to what the household owes"
+msgstr "Négatif = remise, positif = ajout à ce que le foyer doit"
+
+#: finance/forms.py:201
+msgid "An adjustment of zero changes nothing."
+msgstr "Un ajustement de zéro ne change rien."
+
+#: finance/templates/finance/billing_overview.html:80
+#: finance/templates/finance/household_detail.html:44
+#: finance/templates/finance/household_list.html:31
+#: members/templates/members/setup/_step_done.html:15
+msgid "Members"
+msgstr "Membres"
+
+#: finance/templates/finance/billing_overview.html:81
+msgid "Fees"
+msgstr "Cotisations"
+
+#: finance/templates/finance/billing_overview.html:82
+#: finance/templates/finance/billing_overview.html:127
+#: finance/templates/finance/billing_overview.html:167
+#: finance/templates/finance/household_detail.html:52
+msgid "Adjustment"
+msgstr "Ajustement"
+
+#: finance/templates/finance/household_detail.html:126
+msgid "Adjustments"
+msgstr "Ajustements"
+
+#: finance/templates/finance/household_detail.html:138
+#: finance/templates/finance/payment_history.html:45
+msgid "Author"
+msgstr "Auteur"
+
+#: finance/templates/finance/household_detail.html:50
+msgid "Rank"
+msgstr "Rang"
+
+#: finance/templates/finance/household_detail.html:71
+msgid "Not billed"
+msgstr "Non facturé"
+
+#: finance/templates/finance/household_detail.html:4
+msgid "Treasurer — household"
+msgstr "Trésorier — foyer"
+
+#: finance/templates/finance/household_list.html:4
+msgid "Treasurer — billing groups"
+msgstr "Trésorier — groupes de facturation"
+
+#: finance/templates/finance/household_list.html:12
+msgid "Add a household"
+msgstr "Ajouter un foyer"
+
+#: finance/templates/finance/household_detail.html:25
+msgid "Add a member"
+msgstr "Ajouter un membre"
+
+#: finance/templates/finance/household_detail.html:166
+msgid "Add an adjustment"
+msgstr "Ajouter un ajustement"
+
+#: finance/templates/finance/household_detail.html:32
+#: finance/templates/finance/household_detail.html:194
+msgid "Add"
+msgstr "Ajouter"
+
+#: finance/templates/finance/household_list.html:18
+msgid "Create"
+msgstr "Créer"
+
+#: finance/templates/finance/household_detail.html:16
+msgid "Rename"
+msgstr "Renommer"
+
+#: finance/templates/finance/household_detail.html:153
+msgid "Delete"
+msgstr "Supprimer"
+
+#: finance/templates/finance/household_detail.html:206
+msgid "Delete this household"
+msgstr "Supprimer ce foyer"
+
+#: finance/templates/finance/household_detail.html:208
+msgid "Back to households"
+msgstr "Retour aux foyers"
+
+#: finance/templates/finance/household_list.html:74
+msgid "Back to fees"
+msgstr "Retour aux cotisations"
+
+#: members/templates/members/admin_update.html:174
+msgid "Manage households"
+msgstr "Gérer les foyers"
+
+#: finance/templates/finance/household_detail.html:104
+msgid "Billed by address again"
+msgstr "À nouveau facturé par adresse"
+
+#: finance/templates/finance/household_list.html:50
+msgid "No member"
+msgstr "Aucun membre"
+
+#: finance/templates/finance/household_detail.html:112
+msgid "No member in this household yet."
+msgstr "Aucun membre dans ce foyer pour l'instant."
+
+#: finance/templates/finance/household_detail.html:159
+msgid "No adjustment."
+msgstr "Aucun ajustement."
+
+#: finance/templates/finance/household_list.html:59
+msgid "Nobody enrolled this year."
+msgstr "Personne n'est inscrit cette année."
+
+#: finance/templates/finance/household_list.html:69
+msgid "No household defined — every member is billed by address."
+msgstr "Aucun foyer défini — chaque membre est facturé par adresse."
+
+#: members/templates/members/admin_update.html:147
+msgid "No household set, so one is inferred from the address."
+msgstr "Aucun foyer défini : il est déduit de l'adresse."
+
+#: finance/templates/finance/household_detail.html:35
+msgid "A member can only be in one household: adding them here takes them out of any other."
+msgstr "Un membre ne peut appartenir qu'à un seul foyer : l'ajouter ici le retire de tout autre."
+
+#: finance/templates/finance/household_list.html:7
+msgid "Fees are billed per household: members sharing an address are billed together, eldest first. Create a household here only when that guess is wrong — to bill members at different addresses together, or to split one out of their family."
+msgstr "Les cotisations sont facturées par foyer : les membres qui partagent une adresse sont facturés ensemble, du plus âgé au plus jeune. Créez un foyer ici uniquement lorsque cette déduction est fausse — pour facturer ensemble des membres à des adresses différentes, ou pour en sortir un de sa famille."
+
+#: finance/templates/finance/billing_overview.html:74
+msgid "Members sharing an address are billed together, unless a household below says otherwise. The adjustment column is the manual correction added to that household's fees."
+msgstr "Les membres qui partagent une adresse sont facturés ensemble, sauf si un foyer ci-dessous en décide autrement. La colonne des ajustements reprend la correction manuelle ajoutée aux cotisations de ce foyer."
+
+#: finance/templates/finance/household_detail.html:122
+msgid "Only the members enrolled this school year are billed, ranked by age within this household. A member enrolled under a different address is not billed here."
+msgstr "Seuls les membres inscrits cette année scolaire sont facturés, classés par âge au sein de ce foyer. Un membre inscrit sous une autre adresse n'est pas facturé ici."
+
+#: finance/templates/finance/household_detail.html:204
+msgid "Deleting the household does not touch its members: they go back to being billed by address. Its adjustment lines are deleted with it."
+msgstr "Supprimer le foyer ne touche pas à ses membres : ils sont à nouveau facturés par adresse. Ses ajustements sont supprimés."
+
+#: members/templates/members/admin_update.html:159
+msgid "Nobody with this member is billed this year — a household only counts members enrolled in the current school year."
+msgstr "Personne n'est facturé avec ce membre cette année — un foyer ne compte que les membres inscrits pour l'année scolaire en cours."
+
+#: members/templates/members/admin_update.html:145
+msgid "No household set, so one is inferred from the address: the members below share it and are billed together, eldest first."
+msgstr "Aucun foyer défini : il est déduit de l'adresse, et les membres ci-dessous le partagent et sont facturés ensemble, du plus âgé au plus jeune."
+
+#: members/templates/members/admin_update.html:142
+#, python-format
+msgid "Billed in the household “%(name)s”. Fees are split with the members below, eldest first."
+msgstr "Facturé dans le foyer « %(name)s ». Les cotisations sont réparties avec les membres ci-dessous, du plus âgé au plus jeune."
+
+#: finance/templates/finance/household_detail.html:120
+#, python-format
+msgid "How %(year)s is billed"
+msgstr "Comment %(year)s est facturée"
+
+#: finance/templates/finance/household_detail.html:129
+#, python-format
+msgid "This household owes %(amount)s in adjustments for %(year)s, but nobody from it is enrolled that year, so the amount is not being applied to anyone's balance."
+msgstr "Ce foyer doit %(amount)s d'ajustements pour %(year)s, mais aucun de ses membres n'est inscrit cette année-là : le montant n'est appliqué au solde de personne."
+
+#: finance/templates/finance/payment_history.html:38
+#, python-format
+msgid "Household adjustments — %(name)s"
+msgstr "Ajustements du foyer — %(name)s"
+
+#: finance/views.py:370
+#, python-format
+msgid "Household “%(name)s” created."
+msgstr "Foyer « %(name)s » créé."
+
+#: finance/views.py:427
+#, python-format
+msgid "Household renamed to “%(name)s”."
+msgstr "Foyer renommé en « %(name)s »."
+
+#: finance/views.py:439 finance/views.py:551
+#, python-format
+msgid "%(person)s is now billed with “%(household)s”."
+msgstr "%(person)s est désormais facturé avec « %(household)s »."
+
+#: finance/views.py:451
+#, python-format
+msgid "Adjustment of %(amount)s recorded for “%(household)s”."
+msgstr "Ajustement de %(amount)s enregistré pour « %(household)s »."
+
+#: finance/views.py:530
+msgid "Could not change the household."
+msgstr "Impossible de modifier le foyer."
+
+#: finance/views.py:543
+#, python-format
+msgid "%(person)s is billed by address again."
+msgstr "%(person)s est à nouveau facturé par adresse."
+
+#: finance/views.py:571
+#, python-format
+msgid "Household “%(name)s” deleted. Its members are billed by address again."
+msgstr "Foyer « %(name)s » supprimé. Ses membres sont à nouveau facturés par adresse."
+
+#: finance/views.py:590
+msgid "Adjustment deleted."
+msgstr "Ajustement supprimé."
+
 #~ msgid "Configure attestation"
 #~ msgstr "Configurer l'attestation"
 

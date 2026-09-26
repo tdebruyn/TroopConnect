@@ -168,7 +168,7 @@ again.
 
 | Field | Default | Switches off |
 | --- | --- | --- |
-| `fees_enabled` | `true` | The membership-fees module: `/finance/`, the price grid, recording payments, payment history, reminders, the Treasurer role in the member form, and the fee count on the member purge page. |
+| `fees_enabled` | `true` | The membership-fees module: `/finance/`, the price grid, recording payments, payment history, reminders, households and their fee adjustments, the Treasurer role in the member form, and the fee count on the member purge page. |
 | `signing_enabled` | `true` | The attestation (document signing) wizard, every step of it. |
 | `public_agenda_enabled` | `true` | The public agenda page. |
 
@@ -193,6 +193,47 @@ The settings page and the Django admin are deliberately **not** gated: a troop
 that switches a module off has to be able to switch it back on. A role the
 module hides (Treasurer) is hidden, not deleted — an existing assignment
 survives an unrelated edit of that member.
+
+### Households and fee adjustments
+
+Fees are billed per **household**. By default a household is *inferred from the
+postal address*: every enrolled member sharing an address is billed together,
+ranked by age, the eldest paying the first-member price.
+
+`finance.Household` is the override. A member named in one is billed there and
+is **not** folded back into their address group, which makes the two things a
+treasurer needs ordinary membership edits:
+
+* **merge** — put members that inference would separate into one household
+  (blended families, two families at one address, a child whose address was
+  mistyped);
+* **split** — give one member their own household, which removes that member and
+  only that member from the group at their address, so the siblings left behind
+  re-rank.
+
+A member belongs to **at most one** household (a unique constraint on
+`HouseholdMember.person`), and membership is not scoped to a school year: which
+of its members are billed, and in what order, is recomputed each year from that
+year's enrolments — only enrolled members with an active status and a billed
+role (child, animator, animateur responsable) count.
+
+Staff reach the override from the member's edit page (a panel that is its own
+form, so saving the member cannot clear it) and from the member list, which
+shows the household name and falls back to the address inference.
+
+`finance.HouseholdAdjustment` is a manual correction: a signed amount, a reason,
+a school year and its author. It applies **after** the late penalty — it
+corrects the total, it is not another price to be surcharged — and it lands on
+the household's first enrolled *child*, since a balance is per person while an
+adjustment is per household. A household with no child enrolled that year (or
+none at all) applies to nobody, and the household page says so rather than
+leaving the line looking effective. A parent's reminder amount is the **net** of
+their children's balances, credits included, so a household written off in full
+stops being chased for the share that was waived.
+
+Both belong to the fees module: with `fees_enabled` off, `/finance/households/`
+and the assignment endpoint answer 404 and the member screens hide the panel.
+What is stored is kept.
 
 ### Retained site content
 
