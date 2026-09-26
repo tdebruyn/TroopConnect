@@ -739,6 +739,10 @@ class CommandTest(EmptyInstanceTestCase):
 
     def answers_file(self, data):
         path = self.directory / "answers.json"
+        # The admin password that travels in `data` is STRONG_PASSWORD, a
+        # literal declared in this module: writing it to a throwaway answers
+        # file is the behaviour under test, not a secret put at rest.
+        # codeql[py/clear-text-storage-sensitive-data]
         path.write_text(json.dumps(data), encoding="utf-8")
         return str(path)
 
