@@ -42,36 +42,99 @@ _WRAPPER_SELECTORS = {"", "html", "body", "*"}
 # duplicates the title. Stripped at both render and save; the Home page keeps
 # its card (it is real content there, and "masthead" carries no styling of its
 # own).
-_FAQ_MASTHEAD_RE = re.compile(r"<header class=\"masthead\">.*?</header>", re.DOTALL)
 _FAQ_EMPTIED_CONTAINER_RE = re.compile(r"<div class=\"container row\">\s*</div>")
 
 
-# The home snippet used to wrap the hero in a Bootstrap grid div. The hero is
-# an ordinary block now: inside that div the full-bleed photo would be inset by
-# the grid's gutters, and the card would be laid out as a flex item. Pages saved
-# before the change are unwrapped at render and at save, the way the FAQ
-# masthead is — so they look right before anyone edits them again.
-#
-# Deliberately narrow: the div must hold the hero and nothing else, which is
-# what the old snippet produced. Anything else is left alone.
-_HERO_ROW_RE = re.compile(
-    r'<div class="container row">\s*(<header class="masthead">.*?</header>)\s*</div>',
-    re.DOTALL,
-)
+# These markers are matched with `str.find` rather than a regex to keep the pass
+# linear. An unanchored `<header class="masthead">.*?</header>` walks to the end
+# of the document from every position where the opening tag matches, so content
+# that repeats that tag without ever closing it costs a scan per repetition.
+# A cursor that only ever moves forward costs one pass whatever the input.
+_MASTHEAD_OPEN = '<header class="masthead">'
+_MASTHEAD_CLOSE = "</header>"
+_HERO_ROW_OPEN = '<div class="container row">'
+_HERO_ROW_CLOSE = "</div>"
+
+
+def _cut_mastheads(html):
+    """Drop every `<header class="masthead">…</header>` element from `html`."""
+    pieces = []
+    pos = 0
+    while True:
+        start = html.find(_MASTHEAD_OPEN, pos)
+        if start == -1:
+            break
+        end = html.find(_MASTHEAD_CLOSE, start + len(_MASTHEAD_OPEN))
+        if end == -1:
+            # No close tag left in the document, so no later element has one
+            # either — the same would-be match is not worth looking for again.
+            break
+        pieces.append(html[pos:start])
+        pos = end + len(_MASTHEAD_CLOSE)
+    pieces.append(html[pos:])
+    return "".join(pieces)
+
+
+def _back_over_blanks(html, pos):
+    """The index where the run of blanks ending at `pos` begins."""
+    while pos > 0 and html[pos - 1].isspace():
+        pos -= 1
+    return pos
+
+
+def _forward_over_blanks(html, pos):
+    """The first index at or after `pos` holding something other than a blank."""
+    while pos < len(html) and html[pos].isspace():
+        pos += 1
+    return pos
 
 
 def _unwrap_legacy_hero(html):
-    """Lift the hero out of the grid div the old home snippet wrapped it in."""
+    """Lift the hero out of the grid div the old home snippet wrapped it in.
+
+    The hero is an ordinary block now; left inside that div the full-bleed photo
+    would be inset by the grid's gutters and the card laid out as a flex item.
+    Pages saved before the change are unwrapped at render and at save, the way
+    the FAQ masthead is — so they look right before anyone edits them again.
+    Only a div holding the hero and nothing else is removed, which is what the
+    old snippet produced. Anything else is left alone.
+    """
     if not html:
         return html
-    return _HERO_ROW_RE.sub(r"\1", html)
+    pieces = []
+    # Two cursors: `search` skips past a hero that turns out not to be wrapped,
+    # while `copied` only advances once the text before it has been kept.
+    copied = 0
+    search = 0
+    while True:
+        start = html.find(_MASTHEAD_OPEN, search)
+        if start == -1:
+            break
+        end = html.find(_MASTHEAD_CLOSE, start + len(_MASTHEAD_OPEN))
+        if end == -1:
+            break  # no close tag left, so no later element is closed either
+        end += len(_MASTHEAD_CLOSE)
+        search = end
+        row_end = _back_over_blanks(html, start)
+        row_start = row_end - len(_HERO_ROW_OPEN)
+        if row_start < copied or not html.startswith(_HERO_ROW_OPEN, row_start):
+            continue
+        row_close = _forward_over_blanks(html, end)
+        if not html.startswith(_HERO_ROW_CLOSE, row_close):
+            continue
+        pieces.append(html[copied:row_start])
+        pieces.append(html[start:end])
+        copied = row_close + len(_HERO_ROW_CLOSE)
+        search = copied
+    pieces.append(html[copied:])
+    return "".join(pieces)
 
 
 def _strip_legacy_faq_header(html):
     """Drop the pre-banner masthead card (and its emptied wrapper) from FAQ HTML."""
     if not html:
         return html
-    html = _FAQ_MASTHEAD_RE.sub("", html)
+    html = _cut_mastheads(html)
     html = _FAQ_EMPTIED_CONTAINER_RE.sub("", html)
     return html.strip()
 

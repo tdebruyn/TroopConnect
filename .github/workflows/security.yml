@@ -9,6 +9,12 @@ on:
     # waiting for the next push.
     - cron: "17 6 * * 1"
 
+# Auditing the dependencies and scanning the image both only read the
+# repository — neither uploads a report — so the token is limited to that
+# rather than left at the repository default.
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
