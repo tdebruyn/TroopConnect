@@ -3246,3 +3246,43 @@ msgstr "Optioneel, voor een bericht aan een sectie: de activiteit wordt toegevoe
 #: section emails (hand-added; see docs/dev/CONTRACT.md)
 msgid "Where answers to this section's messages should go. Empty uses the unit's reply-to address."
 msgstr "Waar antwoorden op de berichten van deze sectie toekomen. Laat leeg om het antwoordadres van de eenheid te gebruiken."
+
+#: members/templates/members/_agenda_day.html
+msgid "Absent"
+msgstr "Afwezig"
+
+#: members/templates/members/_agenda_day.html
+msgid "Withdraw"
+msgstr "Intrekken"
+
+#: members/templates/members/_agenda_day.html
+msgid "Report an absence"
+msgstr "Een afwezigheid melden"
+
+#: members/templates/members/absence_form.html
+msgid "Report the absence"
+msgstr "De afwezigheid melden"
+
+#: members/forms.py
+msgid "Please give a short explanation."
+msgstr "Geef een korte uitleg."
+
+#: members/views.py
+msgid "The absence has been reported to the section."
+msgstr "De afwezigheid is gemeld aan de sectie."
+
+#: members/views.py
+msgid "The absence has been withdrawn."
+msgstr "De afwezigheid is ingetrokken."
+
+#: members/models.py
+msgid "Activity"
+msgstr "Activiteit"
+
+#: members/models.py
+msgid "Reported by"
+msgstr "Gemeld door"
+
+#: members/absences.py
+msgid "A parent"
+msgstr "Een ouder"

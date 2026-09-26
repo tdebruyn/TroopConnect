@@ -168,6 +168,48 @@ def can_edit_section_agenda(user, section):
     ).exists()
 
 
+def reportable_children(user, section):
+    """The children ``user`` may report an absence for, in ``section``.
+
+    A parent's own children, and only the ones enrolled in that section this
+    school year: a parent of a Baladin and a Louveteau sees each child on that
+    child's own agenda and nowhere else. Empty for anyone who is not a parent —
+    a leader reads every absence their section's activities carry, but does not
+    report one on a family's behalf.
+    """
+    from .models import Person, SchoolYear
+
+    person = get_person(user)
+    if person is None or section is None:
+        return Person.objects.none()
+
+    current_year = SchoolYear.current()
+    if current_year is None:
+        return Person.objects.none()
+
+    return (
+        person.children.filter(
+            enrollment__section=section, enrollment__school_year=current_year
+        )
+        .distinct()
+        .order_by("last_name", "first_name")
+    )
+
+
+def can_report_absence(user, event, child):
+    """True when ``user`` may report ``child`` absent from ``event``.
+
+    Three things have to hold: the user is one of the child's parents, the
+    child is enrolled in the activity's section this school year, and the
+    activity has not happened yet. The last is what makes an absence a *notice*
+    — telling the section about a meeting that is already over is what the
+    register is for, not this.
+    """
+    if event is None or child is None or event.is_past:
+        return False
+    return reportable_children(user, event.section).filter(pk=child.pk).exists()
+
+
 def is_htmx(request):
     """Return True when the request was issued by HTMX."""
     return request.META.get("HTTP_HX_REQUEST") == "true"

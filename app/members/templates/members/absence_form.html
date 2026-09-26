@@ -1,0 +1,44 @@
+{% extends "members/base.html" %}
+{% load i18n %}
+{% block hat_title %}
+    {% trans "Report an absence" %}
+{% endblock hat_title %}
+{% block hat_text %}
+    {{ event.title }}
+{% endblock hat_text %}
+{% block subcontent %}
+    <div class="col-lg-8">
+        {% comment %}
+            The activity is spelled out above the form so a parent can check
+            they are reporting for the right day before sending it — the link
+            they followed named only the activity.
+        {% endcomment %}
+        <p class="text-muted">
+            <span class="badge {{ event.type_css_class }} text-white">{{ event.get_activity_type_display }}</span>
+            {{ section.name }} ·
+            {% if event.is_multi_day %}
+                {{ event.start_date|date:"j F Y" }} – {{ event.last_date|date:"j F Y" }}
+            {% else %}
+                {{ event.start_date|date:"j F Y" }}
+            {% endif %}
+            {% if event.time_range %}· {{ event.time_range }}{% endif %}
+        </p>
+        <form method="post">
+            {% csrf_token %}
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+            {% endif %}
+            {% for field in form %}
+                <div class="mb-3">
+                    <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+                    {% for error in field.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+                </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary">{% trans "Report the absence" %}</button>
+            <a class="btn btn-secondary"
+               href="{% url 'members:agenda' %}?section={{ section.pk }}&month={{ event.start_date|date:'Y-m' }}">{% trans "Cancel" %}</a>
+        </form>
+    </div>
+{% endblock subcontent %}

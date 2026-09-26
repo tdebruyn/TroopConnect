@@ -17,6 +17,8 @@ Variables each template expects:
 ``archive_deletion_warning`` ``person_name``, ``deletion_date``
 ``deregistration_admin``     ``parent``, ``first_name``, ``last_name``, ``url``
 ``section_message``          ``sender_name``, ``section_name``, ``subject``, ``body``
+``absence_reported``         ``child_name``, ``activity_title``, ``activity_date``,
+                             ``section_name``, ``reason``, ``reporter_name``, ``url``
 ============================ =========================================
 """
 
@@ -411,6 +413,96 @@ TEMPLATES = {
                 "<hr>"
                 "<p><small>This message was sent through the {{ troop_name }} "
                 "site.</small></p>"
+            ),
+        },
+    },
+    # Sent to the section's own address when a parent reports that their child
+    # will miss an activity. Addressed to a shared mailbox rather than to a
+    # person, so it says who reported it and for which child.
+    "absence_reported": {
+        "fr": {
+            "subject": "Absence signalée – {{ child_name }} ({{ activity_title }})",
+            "content": (
+                "Bonjour,\n\n"
+                "{{ reporter_name }} a signalé que {{ child_name }} ne "
+                "participera pas à l'activité suivante de la section "
+                "{{ section_name }} :\n\n"
+                "{{ activity_title }} — {{ activity_date }}\n\n"
+                "Raison donnée :\n"
+                "{{ reason }}\n\n"
+                "L'agenda de la section est ici :\n"
+                "{{ url }}\n\n"
+                "Cordialement,\n"
+                "L'équipe du site {{ troop_name }}"
+            ),
+            "html_content": (
+                "<p>Bonjour,</p>"
+                "<p><strong>{{ reporter_name }}</strong> a signalé que "
+                "<strong>{{ child_name }}</strong> ne participera pas à "
+                "l'activité suivante de la section "
+                "<strong>{{ section_name }}</strong> :</p>"
+                "<p><strong>{{ activity_title }}</strong> — {{ activity_date }}</p>"
+                "<p>Raison donnée :<br>{{ reason|linebreaksbr }}</p>"
+                f'<p><a href="{{{{ url }}}}" style="{_BUTTON}">'
+                "Voir l'agenda</a></p>"
+                "<p>Cordialement,<br>L'équipe du site {{ troop_name }}</p>"
+            ),
+        },
+        "nl": {
+            "subject": "Afwezigheid gemeld – {{ child_name }} ({{ activity_title }})",
+            "content": (
+                "Hallo,\n\n"
+                "{{ reporter_name }} heeft gemeld dat {{ child_name }} niet "
+                "zal deelnemen aan de volgende activiteit van de sectie "
+                "{{ section_name }} :\n\n"
+                "{{ activity_title }} — {{ activity_date }}\n\n"
+                "Opgegeven reden :\n"
+                "{{ reason }}\n\n"
+                "De agenda van de sectie staat hier :\n"
+                "{{ url }}\n\n"
+                "Vriendelijke groeten,\n"
+                "Het team van de site {{ troop_name }}"
+            ),
+            "html_content": (
+                "<p>Hallo,</p>"
+                "<p><strong>{{ reporter_name }}</strong> heeft gemeld dat "
+                "<strong>{{ child_name }}</strong> niet zal deelnemen aan de "
+                "volgende activiteit van de sectie "
+                "<strong>{{ section_name }}</strong> :</p>"
+                "<p><strong>{{ activity_title }}</strong> — {{ activity_date }}</p>"
+                "<p>Opgegeven reden :<br>{{ reason|linebreaksbr }}</p>"
+                f'<p><a href="{{{{ url }}}}" style="{_BUTTON}">'
+                "Agenda bekijken</a></p>"
+                "<p>Vriendelijke groeten,<br>Het team van de site "
+                "{{ troop_name }}</p>"
+            ),
+        },
+        "en": {
+            "subject": "Absence reported – {{ child_name }} ({{ activity_title }})",
+            "content": (
+                "Hello,\n\n"
+                "{{ reporter_name }} has reported that {{ child_name }} will "
+                "not be attending the following activity of the "
+                "{{ section_name }} section:\n\n"
+                "{{ activity_title }} — {{ activity_date }}\n\n"
+                "Reason given:\n"
+                "{{ reason }}\n\n"
+                "The section's agenda is here:\n"
+                "{{ url }}\n\n"
+                "Kind regards,\n"
+                "The {{ troop_name }} site team"
+            ),
+            "html_content": (
+                "<p>Hello,</p>"
+                "<p><strong>{{ reporter_name }}</strong> has reported that "
+                "<strong>{{ child_name }}</strong> will not be attending the "
+                "following activity of the <strong>{{ section_name }}</strong> "
+                "section:</p>"
+                "<p><strong>{{ activity_title }}</strong> — {{ activity_date }}</p>"
+                "<p>Reason given:<br>{{ reason|linebreaksbr }}</p>"
+                f'<p><a href="{{{{ url }}}}" style="{_BUTTON}">'
+                "See the agenda</a></p>"
+                "<p>Kind regards,<br>The {{ troop_name }} site team</p>"
             ),
         },
     },

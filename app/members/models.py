@@ -565,7 +565,6 @@ class Section(models.Model):
     name = models.CharField(max_length=30, null=True, blank=True)
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE, null=True, blank=True)
     sex = models.CharField(max_length=1, choices=Sex.choices, null=True, blank=True)
-
     # The section's own address: answers to the messages a leader sends to the
     # section go here (see ``messaging.views.compose_message``). Empty is the
     # ordinary case and leaves the unit's own reply-to address in charge —
@@ -742,6 +741,64 @@ class SectionEvent(models.Model):
     def occurs_on(self, day):
         """Whether the activity covers `day`; used to fill the month grid."""
         return self.start_date <= day <= self.last_date
+
+    @property
+    def is_past(self):
+        """Whether the activity is over; a week-end ends on its last day."""
+        return self.last_date < timezone.localdate()
+
+
+class Absence(models.Model):
+    """A parent's notice that their child will miss one activity.
+
+    Belongs to the activity rather than to the child's year: what a leader
+    needs on the morning of a hike is the list of who is not coming, which is
+    why the notice is read from the agenda's own day view.
+
+    An absence refers to the whole activity, not to a single day of it. A
+    week-end entered as one spanning activity is therefore one notice, which is
+    what a parent means by "she cannot come that weekend"; a troop that wants
+    per-day notices enters its activities per day, and gets them.
+    """
+
+    event = models.ForeignKey(
+        SectionEvent,
+        on_delete=models.CASCADE,
+        related_name="absences",
+        verbose_name=_("Activity"),
+    )
+    child = models.ForeignKey(
+        Person,
+        on_delete=models.CASCADE,
+        related_name="absences",
+        verbose_name=_("Child"),
+    )
+    # Kept even if the reporting parent's account is later archived: the
+    # leader-facing record of who called it in should outlive the login.
+    reported_by = models.ForeignKey(
+        Person,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="reported_absences",
+        verbose_name=_("Reported by"),
+    )
+    reason = models.TextField(blank=True, verbose_name=_("Reason"))
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        constraints = [
+            # One notice per child and activity: a parent who reports twice —
+            # or two parents of the same child who both do — gets one row
+            # rather than a leader reading the same name twice.
+            models.UniqueConstraint(
+                fields=["event", "child"], name="uniq_absence_event_child"
+            ),
+        ]
+
+    def __str__(self):
+        return f"{self.child} — {self.event}"
 
 
 def get_registration_admins():

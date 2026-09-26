@@ -170,7 +170,7 @@ again.
 | --- | --- | --- |
 | `fees_enabled` | `true` | The membership-fees module: `/finance/`, the price grid, recording payments, payment history, reminders, households and their fee adjustments, the Treasurer role in the member form, and the fee count on the member purge page. |
 | `signing_enabled` | `true` | The attestation (document signing) wizard, every step of it. |
-| `agenda_enabled` | `true` | The section agenda: `/users/agenda/`, its month grid and day frame, and the write screens behind them. |
+| `agenda_enabled` | `true` | The section agenda: `/users/agenda/`, its month grid and day frame, the write screens behind them, and parents' absence notices. |
 
 A switch means the module is not installed as far as the troop is concerned:
 its URLs answer **404**, and the UI that belongs to it disappears from the
@@ -193,6 +193,22 @@ The settings page and the Django admin are deliberately **not** gated: a troop
 that switches a module off has to be able to switch it back on. A role the
 module hides (Treasurer) is hidden, not deleted — an existing assignment
 survives an unrelated edit of that member.
+
+### Absence notices
+
+A parent can report that their child will miss a future activity, from the day
+the activity falls on in the section agenda. The notice is stored against the
+activity and the child (one row per pair: a second report corrects the first
+rather than adding another), and is shown under that activity in the agenda's
+day view — to the section's leaders in full, to a family only for its own
+children.
+
+Sending it is the point: the notice is queued to **the section's own email
+address** (`Section.email`, edited in the Django admin with the section's other
+fields). An empty section address falls back to the troop's reply-to address,
+exactly as that field's help text says; with neither set the absence is still
+recorded, it just does not travel. The notice is part of the **agenda** module
+and its screens 404 while `agenda_enabled` is off.
 
 ### Households and fee adjustments
 
@@ -492,7 +508,9 @@ path to a file in the same shape for a federation or a unit to contribute.
 
 A branch carries `key`, `name` (per language, French required), the two age
 bounds, `promotes_to` (a key) and `is_top`; a section carries a name and the
-sex it takes (`M`, `F` or `B`). `app/members/presets/__init__.py` validates the
+sex it takes (`M`, `F` or `B`). A preset never carries a section's email
+address — that belongs to the unit, and is set on the section in the Django
+admin. `app/members/presets/__init__.py` validates the
 file on load and reports *every* problem at once, naming the path into the
 file (`$.branches[2].promotes_to`) — it implements the subset of JSON Schema
 the schema uses rather than pulling in a schema library, and adds the checks a

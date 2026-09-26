@@ -69,6 +69,18 @@ urlpatterns = [
         views.agenda_event_delete,
         name="agenda_event_delete",
     ),
+    # A parent reporting that their child will miss an activity, and either the
+    # family or a leader withdrawing that notice. Part of the agenda module.
+    path(
+        "agenda/<int:pk>/absence/",
+        views.absence_report,
+        name="absence_report",
+    ),
+    path(
+        "agenda/absence/<int:pk>/cancel/",
+        views.absence_cancel,
+        name="absence_cancel",
+    ),
     # The troop's own settings (name, languages, calendar, modules). Staff only.
     path("settings", views.TroopSettingsView.as_view(), name="troop_settings"),
     # The yearly section passage: when it runs, and the button to run it now.

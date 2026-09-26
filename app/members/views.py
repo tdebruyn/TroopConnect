@@ -19,11 +19,13 @@ from django.views.decorators.http import require_POST
 from django.views.generic import ListView, TemplateView, UpdateView
 from post_office.models import STATUS, Email
 
+from .absences import notify_section
 from .constants import (
     ERROR_MESSAGES,
 )
 from .filters import PersonFilter
 from .forms import (
+    AbsenceForm,
     AdminUserUpdateForm,
     AnimeProfileForm,
     CalendarSettingsForm,
@@ -39,6 +41,7 @@ from .forms import (
 from .mail import absolute_url, send_templated
 from .models import (
     PASSAGE_MODE_MANUAL,
+    Absence,
     Account,
     Enrollment,
     ImportantDocument,
@@ -55,6 +58,7 @@ from .permissions import (
     can_edit_section_agenda,
     get_person,
     is_htmx,
+    reportable_children,
     visible_sections,
 )
 from .tasks import run_passage
@@ -1241,6 +1245,35 @@ def agenda_grid(request):
     return render(request, "members/_agenda_grid.html", context)
 
 
+def _absences_by_event(user, events, can_edit):
+    """The absence notices to show against each activity, keyed by event id.
+
+    A leader sees every notice their section's activities carry — that is what
+    the feature is for, and what the day view is opened for on the morning of
+    an outing. Everyone else sees only the notices they are party to: a parent
+    needs to know their own report landed, but the day view has no business
+    telling one family which of the others will be missing.
+    """
+    if not events:
+        return {}
+
+    notices = Absence.objects.filter(event__in=events).select_related(
+        "child", "reported_by"
+    )
+    if not can_edit:
+        person = get_person(user)
+        if person is None:
+            return {}
+        # Either parent may have been the one to report, so the child's parents
+        # are checked as well as the reporter.
+        notices = notices.filter(Q(reported_by=person) | Q(child__parents=person))
+
+    by_event = defaultdict(list)
+    for absence in notices.order_by("child__last_name", "child__first_name").distinct():
+        by_event[absence.event_id].append(absence)
+    return by_event
+
+
 @login_required
 @requires_module(AGENDA)
 def agenda_day(request):
@@ -1250,7 +1283,23 @@ def agenda_day(request):
     if section is None:
         raise Http404
     day = _selected_day(request)
-    context.update({"day": day, "events": _events_on(section, day)})
+    events = list(_events_on(section, day))
+    # The notices are hung off the activity they belong to rather than passed
+    # as a dict: a Django template cannot look a dict up by a variable key, and
+    # this keeps the day template a plain nested loop.
+    notices = _absences_by_event(request.user, events, context["can_edit"])
+    for event in events:
+        event.notices = notices.get(event.pk, [])
+
+    context.update(
+        {
+            "day": day,
+            "events": events,
+            # Whether this reader has a child to report for at all; the day
+            # view offers the button per activity only when they do.
+            "can_report": reportable_children(request.user, section).exists(),
+        }
+    )
     return render(request, "members/_agenda_day.html", context)
 
 
@@ -1326,3 +1375,61 @@ def agenda_event_delete(request, pk):
     event.delete()
     messages.success(request, _("The activity has been removed from the agenda."))
     return redirect(_agenda_url(section, day))
+
+
+@login_required
+@requires_module(AGENDA)
+def absence_report(request, pk):
+    """Report a child absent from one activity, or correct a notice.
+
+    Reached from the day the activity falls on. A parent is the only person who
+    reports an absence, and only for a child of theirs enrolled in that
+    section, so anything else is a 404 rather than a refusal.
+    """
+    event = get_object_or_404(SectionEvent, pk=pk)
+    section = event.section
+    if event.is_past or not reportable_children(request.user, section).exists():
+        raise Http404
+
+    if request.method == "POST":
+        form = AbsenceForm(request.POST, event=event, user=request.user)
+        if form.is_valid():
+            absence = form.save()
+            notify_section(absence, _agenda_url(section, event.start_date))
+            messages.success(
+                request, _("The absence has been reported to the section.")
+            )
+            return redirect(_agenda_url(section, event.start_date))
+    else:
+        form = AbsenceForm(event=event, user=request.user)
+
+    return render(
+        request,
+        "members/absence_form.html",
+        {"form": form, "event": event, "section": section},
+    )
+
+
+@login_required
+@requires_module(AGENDA)
+@require_POST
+def absence_cancel(request, pk):
+    """Withdraw an absence notice: the child's family, or a section leader.
+
+    A family withdraws a notice when the child turns out to be coming after
+    all; a leader clears one that was reported twice or that no longer holds.
+    """
+    absence = get_object_or_404(Absence, pk=pk)
+    event = absence.event
+    person = get_person(request.user)
+    is_family = person is not None and absence.child.parents.filter(
+        pk=person.pk
+    ).exists()
+    if not (
+        is_family or can_edit_section_agenda(request.user, section=event.section)
+    ):
+        raise Http404
+
+    absence.delete()
+    messages.success(request, _("The absence has been withdrawn."))
+    return redirect(_agenda_url(event.section, event.start_date))

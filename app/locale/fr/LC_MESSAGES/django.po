@@ -3249,3 +3249,43 @@ msgstr "Facultatif, pour un message envoyé à une section : l'activité est ajo
 #: section emails (hand-added; see docs/dev/CONTRACT.md)
 msgid "Where answers to this section's messages should go. Empty uses the unit's reply-to address."
 msgstr "Où arrivent les réponses aux messages de cette section. Laisser vide pour utiliser l'adresse de réponse de l'unité."
+
+#: members/templates/members/_agenda_day.html
+msgid "Absent"
+msgstr "Absent"
+
+#: members/templates/members/_agenda_day.html
+msgid "Withdraw"
+msgstr "Retirer"
+
+#: members/templates/members/_agenda_day.html
+msgid "Report an absence"
+msgstr "Signaler une absence"
+
+#: members/templates/members/absence_form.html
+msgid "Report the absence"
+msgstr "Signaler l'absence"
+
+#: members/forms.py
+msgid "Please give a short explanation."
+msgstr "Merci de donner une brève explication."
+
+#: members/views.py
+msgid "The absence has been reported to the section."
+msgstr "L'absence a été signalée à la section."
+
+#: members/views.py
+msgid "The absence has been withdrawn."
+msgstr "L'absence a été retirée."
+
+#: members/models.py
+msgid "Activity"
+msgstr "Activité"
+
+#: members/models.py
+msgid "Reported by"
+msgstr "Signalée par"
+
+#: members/absences.py
+msgid "A parent"
+msgstr "Un parent"

@@ -442,6 +442,14 @@ NEW_STRINGS = [
         "Laisser vide",
         "Laat leeg",
     ),
+    # Reporting a child absent from a future activity.
+    ("Report an absence", "Signaler une absence", "afwezigheid melden"),
+    (
+        "The absence has been reported to the section.",
+        "signalée à la section",
+        "gemeld aan de sectie",
+    ),
+    ("The absence has been withdrawn.", "retirée", "ingetrokken"),
 ]
 
 

@@ -10,6 +10,7 @@ from .constants import (
 )
 from .models import (
     AVAILABLE_LANGUAGE_CHOICES,
+    Absence,
     Account,
     Enrollment,
     Person,
@@ -21,7 +22,7 @@ from .models import (
     TroopSettings,
 )
 from .modules import module_enabled
-from .permissions import TRESORIER
+from .permissions import TRESORIER, get_person, reportable_children
 
 
 def secondary_role_queryset():
@@ -846,3 +847,64 @@ class SectionEventForm(forms.ModelForm):
         if commit:
             event.save()
         return event
+
+
+class AbsenceForm(forms.ModelForm):
+    """A parent's notice that one child will miss one activity.
+
+    ``event`` is not a field: the view resolves the activity from the URL and
+    passes it in, so the POST body cannot point a notice at an activity of a
+    section the parent has nothing to do with. ``child`` is a field, because a
+    parent may have several children in the same section — but its queryset is
+    the parent's own children *in this activity's section*, so it cannot be
+    used to reach another family's child either.
+    """
+
+    class Meta:
+        model = Absence
+        fields = ("child", "reason")
+        widgets = {
+            "child": forms.Select(attrs={"class": "form-select"}),
+            "reason": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
+        }
+
+    def __init__(self, *args, event=None, user=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.event = event
+        self.reporter = get_person(user)
+
+        children = reportable_children(user, event.section if event else None)
+        self.fields["child"].queryset = children
+        self.fields["child"].label = _("Child")
+        # A parent of one child in this section is not made to choose them.
+        if not self.is_bound and children.count() == 1:
+            self.fields["child"].initial = children.first()
+
+    def clean_reason(self):
+        # Required here although the column is blank-able: a leader reads the
+        # reason to decide whether the child needs anything before the next
+        # activity, so an empty notice is not worth sending.
+        reason = self.cleaned_data["reason"].strip()
+        if not reason:
+            raise ValidationError(_("Please give a short explanation."))
+        return reason
+
+    def save(self):
+        """Record the notice, or rewrite the one already recorded.
+
+        ``event`` and ``child`` are unique together, and reporting twice is a
+        parent correcting themselves — or the second parent of the same child
+        saying the same thing — rather than an error worth showing. So the
+        existing row is updated in place instead of colliding with the
+        constraint.
+        """
+        absence, _ = Absence.objects.update_or_create(
+            event=self.event,
+            child=self.cleaned_data["child"],
+            defaults={
+                "reason": self.cleaned_data["reason"],
+                "reported_by": self.reporter,
+            },
+        )
+        self.instance = absence
+        return absence

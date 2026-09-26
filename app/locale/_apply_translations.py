@@ -852,6 +852,26 @@ TRANSLATIONS = {
         "Où arrivent les réponses aux messages de cette section. Laisser vide pour utiliser l'adresse de réponse de l'unité.",
         "Waar antwoorden op de berichten van deze sectie toekomen. Laat leeg om het antwoordadres van de eenheid te gebruiken.",
     ),
+    # --- reporting a child absent from an activity ---
+    "Absent": ("Absent", "Afwezig"),
+    "Withdraw": ("Retirer", "Intrekken"),
+    "Report an absence": ("Signaler une absence", "Een afwezigheid melden"),
+    "Report the absence": ("Signaler l'absence", "De afwezigheid melden"),
+    "Please give a short explanation.": (
+        "Merci de donner une brève explication.",
+        "Geef een korte uitleg.",
+    ),
+    "The absence has been reported to the section.": (
+        "L'absence a été signalée à la section.",
+        "De afwezigheid is gemeld aan de sectie.",
+    ),
+    "The absence has been withdrawn.": (
+        "L'absence a été retirée.",
+        "De afwezigheid is ingetrokken.",
+    ),
+    "Activity": ("Activité", "Activiteit"),
+    "Reported by": ("Signalée par", "Gemeld door"),
+    "A parent": ("Un parent", "Een ouder"),
 }
 
 

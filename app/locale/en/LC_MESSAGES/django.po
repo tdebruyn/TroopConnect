@@ -3086,3 +3086,47 @@ msgstr ""
 #: finance/views.py:590
 msgid "Adjustment deleted."
 msgstr ""
+
+#: members/templates/members/_agenda_day.html
+msgid "Absent"
+msgstr ""
+
+#: members/templates/members/_agenda_day.html
+msgid "Withdraw"
+msgstr ""
+
+#: members/templates/members/_agenda_day.html
+msgid "Report an absence"
+msgstr ""
+
+#: members/templates/members/absence_form.html
+msgid "Report the absence"
+msgstr ""
+
+#: members/forms.py
+msgid "Please give a short explanation."
+msgstr ""
+
+#: members/views.py
+msgid "The absence has been reported to the section."
+msgstr ""
+
+#: members/views.py
+msgid "The absence has been withdrawn."
+msgstr ""
+
+#: members/models.py
+msgid "Activity"
+msgstr ""
+
+#: members/models.py
+msgid "Reported by"
+msgstr ""
+
+#: members/absences.py
+msgid "A parent"
+msgstr ""
+
+#: members/models.py
+msgid "Where answers to this section's messages should go. Empty uses the unit's reply-to address."
+msgstr ""
