@@ -1654,8 +1654,9 @@ msgid ""
 msgstr "Als de uitschrijving wordt aangevraagd voor het lopende jaar en de inschrijving actief is, is een handmatige tussenkomst nodig. Zorg ervoor dat je de procedure uit het huishoudelijk reglement hebt gevolgd."
 
 #: members/templates/members/deregister_child.html:17
-msgid "The year starts on August 1st, right after camp."
-msgstr "Het jaar start op 1 augustus, vlak na het kamp."
+#, python-format
+msgid "The year starts on %(year_start)s, right after camp."
+msgstr "Het jaar start op %(year_start)s, vlak na het kamp."
 
 #: members/templates/members/deregister_child.html:21
 #, python-format

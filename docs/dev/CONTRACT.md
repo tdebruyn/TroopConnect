@@ -121,10 +121,19 @@ set: the defaults are what a troop that has configured nothing gets.
 | Field | Purpose |
 | --- | --- |
 | `year_start_month`, `year_start_day` | First day of the scout year (default 1 August). Used when a `SchoolYear` row is created and when `create_year_task` decides which year "today" belongs to. |
-| `age_reference_month`, `age_reference_day` | The day a member's age is measured on (default 31 December). Used by `Person.age_on_dec_31` and by `run_passage`. The `Branch.min_age_dec_31`/`max_age_dec_31` columns keep names that predate this setting; they mean "age at the reference day". |
-| `passage_month`, `passage_day` | The day the section passage falls due (default 1 May). |
+| `age_reference_month`, `age_reference_day` | The day a member's age is measured on (default 31 December). Read through `TroopSettings.age_at_reference`, which the passage task, the member list's branch check and `Person.age_on_dec_31` all share. The `Branch.min_age_dec_31`/`max_age_dec_31` columns keep names that predate this setting; they mean "age at the reference day". |
+| `passage_month`, `passage_day` | The day the section passage falls due (default 1 May), i.e. in the *start* calendar year of the school year it prepares. |
 | `passage_mode` | `auto` (default) runs `run_passage` on that day; `manual` switches the automatic run off so the passage is done by hand. |
-| `archive_retention_years` | How long an archived member is kept before `delete_archived_users` may discard them (default 5). `notify_upcoming_deletion` warns a month before. |
+| `archive_retention_years` | How long an archived member is kept before `delete_archived_users` may discard them (default 5). `notify_upcoming_deletion` warns a month before. The unit is 365-day years, not calendar years. |
+
+These six fields are read only through the `TroopSettings` calendar helpers —
+`school_year_for`, `school_year_bounds`, `age_reference_date`,
+`age_at_reference`, `passage_datetime`, `next_passage_datetime` and the
+`archive_*` retention trio. Views, tasks and templates must call those rather
+than re-deriving a date from the month/day pair, so that changing a calendar
+setting moves every calculation with it. The age reference day is pinned to
+whichever calendar year places it *inside* the school year, so 31 December means
+31 December of a September-starting year, not of the year before it.
 
 ### Modules
 

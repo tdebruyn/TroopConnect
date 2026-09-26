@@ -66,7 +66,8 @@ class PersonBranchAgeTest(TestCase):
         )
 
     def test_age_on_dec_31_simple(self):
-        # 10th birthday in June of the school year's end year (year.name + 1)
+        # Born in June, ten years before the school year starts: 10 on the
+        # 31 December that falls inside that school year.
         person = self._person(date(self.year.name - 10, 6, 15))
         self.assertEqual(person.age_on_dec_31(), 10)
 

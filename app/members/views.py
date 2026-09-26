@@ -10,7 +10,7 @@ from django.core.exceptions import PermissionDenied
 from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
-from django.utils import timezone
+from django.utils import formats, timezone
 from django.utils.translation import gettext as _
 from django.views.generic import ListView, TemplateView, UpdateView
 from post_office.models import STATUS, Email
@@ -178,25 +178,35 @@ class AdminListView(UserPassesTestMixin, ListView):
         context["filter"] = self._get_filterset()
 
         # For each person in the (paginated) object_list, add their section for the selected year
+        troop = TroopSettings.get_settings()
         for person in context["object_list"]:
             try:
                 enrollment = person.enrollment_set.filter(
                     school_year=selected_year
                 ).select_related("section__branch").first()
                 person.section_display = enrollment.section.name if enrollment else "-"
-                # Check age compatibility with section's branch
+                # Check age compatibility with section's branch, using the same
+                # age definition the passage task and the role rules use.
                 person.age_mismatch = False
                 if enrollment and person.birthday and enrollment.section.branch:
-                    age_at_dec_31 = selected_year.name - person.birthday.year
+                    age_at_reference = troop.age_at_reference(person, selected_year)
                     branch = enrollment.section.branch
-                    if branch.min_age_dec_31 is not None and branch.max_age_dec_31 is not None:
-                        if not (branch.min_age_dec_31 <= age_at_dec_31 <= branch.max_age_dec_31):
+                    if (
+                        age_at_reference is not None
+                        and branch.min_age_dec_31 is not None
+                        and branch.max_age_dec_31 is not None
+                    ):
+                        if not (
+                            branch.min_age_dec_31
+                            <= age_at_reference
+                            <= branch.max_age_dec_31
+                        ):
                             person.age_mismatch = True
                             person.age_mismatch_detail = _(
                                 "%(age)s years old — branch %(branch)s: "
                                 "%(min)s-%(max)s years old"
                             ) % {
-                                "age": age_at_dec_31,
+                                "age": age_at_reference,
                                 "branch": branch.name,
                                 "min": branch.min_age_dec_31,
                                 "max": branch.max_age_dec_31,
@@ -577,13 +587,21 @@ def deregister_child(request, pk):
     context["child"] = child
     if child.parents.filter(id=parent.id).exists():
         context["allow_deregister"] = True
+
+    # The footnote tells the parent when the scout year starts. That date is
+    # the troop's own, so read it from the settings rather than naming a month.
+    troop = TroopSettings.get_settings()
+    year_start, _year_end = troop.school_year_bounds(
+        troop.school_year_for(timezone.localdate())
+    )
+    context["year_start"] = formats.date_format(year_start, "j F")
     return render(
         request=request, template_name="members/deregister_child.html", context=context
     )
 
 
 def _archive_child(child):
-    """Archive a child, stamping the date that drives the 5-year retention clock."""
+    """Archive a child, stamping the date that drives the retention clock."""
     child.status = "ar"
     child.archived_date = timezone.now().date()
     child.save(update_fields=["status", "archived_date"])

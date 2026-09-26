@@ -89,7 +89,7 @@ class ChildMovesToNextBranchTest(PassageTestBase):
 
     def test_child_aging_out_moves_to_next_branch(self):
         """A 9-year-old (turns 10 before Dec 31 next year) should move to Louveteaux."""
-        dec_31_next = self.next_year.name + 1  # calendar year of Dec 31
+        dec_31_next = self.next_year.name  # the Dec 31 inside that school year
         # Birthday: turns 10 before Dec 31 of next school year
         birthday = timezone.now().date().replace(year=dec_31_next - 10) + timedelta(days=1)
         child = Person.objects.create(
@@ -112,7 +112,7 @@ class ChildStaysInBranchTest(PassageTestBase):
 
     def test_child_stays_in_branch(self):
         """An 8-year-old stays in Baladins."""
-        dec_31_next = self.next_year.name + 1
+        dec_31_next = self.next_year.name  # the Dec 31 inside that school year
         birthday = timezone.now().date().replace(year=dec_31_next - 8)
         child = Person.objects.create(
             first_name="Test", last_name="Child",
@@ -134,7 +134,7 @@ class ChildAgesOutTest(PassageTestBase):
 
     def test_child_exceeding_oldest_branch_becomes_animateur(self):
         """A 17-year-old (turns 18 before Dec 31) ages out → Animateur."""
-        dec_31_next = self.next_year.name + 1
+        dec_31_next = self.next_year.name  # the Dec 31 inside that school year
         birthday = timezone.now().date().replace(year=dec_31_next - 18)
         child = Person.objects.create(
             first_name="Test", last_name="Child",
@@ -152,7 +152,7 @@ class ChildAgesOutTest(PassageTestBase):
 
     def test_aged_out_child_removed_from_household(self):
         """Aged-out child's ParentChild links are deleted."""
-        dec_31_next = self.next_year.name + 1
+        dec_31_next = self.next_year.name  # the Dec 31 inside that school year
         birthday = timezone.now().date().replace(year=dec_31_next - 18)
         child = Person.objects.create(
             first_name="Test", last_name="Child",
@@ -185,7 +185,7 @@ class NextSectionOverrideTest(PassageTestBase):
         branch fails here — with a "now - 8 years" birthday the age path landed
         in ``section_mid`` by itself and the test proved nothing.
         """
-        birthday = date(self.next_year.name + 1 - 8, 6, 1)
+        birthday = date(self.next_year.name - 8, 6, 1)
         child = Person.objects.create(
             first_name="Test", last_name="Child",
             primary_role=self.role_anime, status="a",
@@ -210,7 +210,7 @@ class AlphabeticalSectionTest(PassageTestBase):
         section_aigles = Section.objects.create(
             name="Aigles", branch=self.branch_mid,
         )
-        dec_31_next = self.next_year.name + 1
+        dec_31_next = self.next_year.name  # the Dec 31 inside that school year
         birthday = timezone.now().date().replace(year=dec_31_next - 10)
         child = Person.objects.create(
             first_name="Test", last_name="Child",
@@ -363,3 +363,78 @@ class PassageGuardTest(PassageTestBase):
             Enrollment.objects.get(user=child, school_year=self.next_year).section,
             self.section_mid,
         )
+
+
+class PassageCustomDayTest(PassageTestBase):
+    """The date gate follows the troop's passage day, not a hardcoded 1 May.
+
+    ``PassageTestBase`` freezes today on 1 May of the target year, so moving
+    the passage day around that date decides whether the daily task acts.
+    """
+
+    def _child(self):
+        child = Person.objects.create(
+            first_name="Test", last_name="Child",
+            primary_role=self.role_anime, status="a",
+            next_section=self.section_mid,
+            birthday=timezone.now().date() - timedelta(days=365 * 8),
+        )
+        Enrollment.objects.create(
+            user=child, section=self.section_young, school_year=self.current_year,
+        )
+        return child
+
+    def _set_passage_day(self, month, day):
+        troop = TroopSettings.get_settings()
+        troop.passage_month, troop.passage_day = month, day
+        troop.save(update_fields=["passage_month", "passage_day"])
+
+    def test_a_later_passage_day_blocks_the_run(self):
+        self._set_passage_day(6, 1)
+        child = self._child()
+
+        run_passage()
+
+        self.assertFalse(
+            Enrollment.objects.filter(user=child, school_year=self.next_year).exists()
+        )
+        # Marker must stay unset, or the catch-up would never happen.
+        self.assertIsNone(TroopSettings.get_settings().last_passage_school_year)
+
+    def test_an_earlier_passage_day_lets_it_run(self):
+        self._set_passage_day(4, 1)
+        child = self._child()
+
+        run_passage()
+
+        self.assertEqual(
+            Enrollment.objects.get(user=child, school_year=self.next_year).section,
+            self.section_mid,
+        )
+
+
+class AgeReferenceConsistencyTest(PassageTestBase):
+    """``run_passage`` and ``Person.age_on_dec_31`` must measure the same day.
+
+    Regression: the task used to take the age on 31 December of the calendar
+    year *after* the target school year — a day outside that school year, and a
+    full year later than the age every other call site reckons with.
+    """
+
+    def test_the_age_is_the_one_inside_the_target_school_year(self):
+        # 9 on 31 Dec of the target school year → Baladins (6-9): the child
+        # stays. The old end-of-next-year reference made them 10 → Louveteaux.
+        child = Person.objects.create(
+            first_name="Test", last_name="Child",
+            primary_role=self.role_anime, status="a",
+            birthday=date(self.next_year.name - 9, 6, 1),
+        )
+        Enrollment.objects.create(
+            user=child, section=self.section_young, school_year=self.current_year,
+        )
+        self.assertEqual(child.age_on_dec_31(self.next_year), 9)
+
+        run_passage()
+
+        next_enrollment = Enrollment.objects.get(user=child, school_year=self.next_year)
+        self.assertEqual(next_enrollment.section, self.section_young)

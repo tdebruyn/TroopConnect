@@ -1,6 +1,7 @@
+import calendar
 import re
 import uuid
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, time, timedelta
 
 import phonenumbers
 from django.contrib.auth.models import (
@@ -89,6 +90,10 @@ PASSAGE_MODE_CHOICES = [
 # and a DateField would drag a meaningless year (and leap-year handling) behind it.
 MONTH_VALIDATORS = [MinValueValidator(1), MaxValueValidator(12)]
 DAY_VALIDATORS = [MinValueValidator(1), MaxValueValidator(31)]
+
+# How long before an archived person is purged the warning email goes out. Used
+# by TroopSettings.archive_warning_cutoff and the notify_upcoming_deletion task.
+ARCHIVE_WARNING_DAYS = 30
 
 
 def validate_phone_region(value):
@@ -287,26 +292,14 @@ class Person(models.Model):
     def age_on_dec_31(self, school_year=None):
         """Whole-year age at the troop's age reference day, that school year.
 
-        Mirrors the age computation used by the run_passage task
-        ((reference - birthday).days // 365). Returns None when the birthday or
-        the school year cannot be resolved.
-
         The name is historical: the reference day is
         ``TroopSettings.age_reference_month``/``_day`` (31 December by default),
         which is also the convention the ``Branch.min_age_dec_31`` and
-        ``max_age_dec_31`` columns are named after.
+        ``max_age_dec_31`` columns are named after. The computation itself lives
+        in :meth:`TroopSettings.age_at_reference`, shared with the passage task
+        and the member list's branch check.
         """
-        if not self.birthday:
-            return None
-        if school_year is None:
-            school_year = SchoolYear.current()
-        if school_year is None:
-            return None
-        troop = TroopSettings.get_settings()
-        reference = date(
-            school_year.name, troop.age_reference_month, troop.age_reference_day
-        )
-        return (reference - self.birthday).days // 365
+        return TroopSettings.get_settings().age_at_reference(self, school_year)
 
     def age_fits_branch(self, school_year=None):
         """True if this person is of an age that fits some Branch on 31 Dec of
@@ -657,15 +650,7 @@ class Account(AbstractBaseUser, PermissionsMixin):
 class SchoolYearManager(models.Manager):
     def create_year(self, year):
         troop = TroopSettings.get_settings()
-        start_date = date(year, troop.year_start_month, troop.year_start_day)
-        # A school year runs a full twelve months from its start day, so the
-        # end is the day before the next one begins.
-        try:
-            next_start = date(year + 1, troop.year_start_month, troop.year_start_day)
-        except ValueError:
-            # A 29 February start: the following year has no such day.
-            next_start = date(year + 1, 3, 1)
-        end_date = next_start - timedelta(days=1)
+        start_date, end_date = troop.school_year_bounds(year)
         range_str = f"{year}-{year + 1}"
         school_year = self.create(
             name=year, start_date=start_date, end_date=end_date, range=range_str
@@ -1036,6 +1021,133 @@ class TroopSettings(models.Model):
         if policy.startswith(("http://", "https://")):
             return policy
         return ""
+
+    # --- Calendar ----------------------------------------------------------
+    # Every school-year, age-reference and retention date the application
+    # computes is derived here, from the six month/day fields above. Views,
+    # Celery tasks and templates must call these rather than reach for the
+    # fields — a troop that moves its year boundary or its age reference day
+    # must not have to find every place that assumed August or December.
+
+    def school_year_start(self, year):
+        """The first day of the school year named ``year``.
+
+        ``year`` is the calendar year the school year starts in — the value
+        stored in :attr:`SchoolYear.name`.
+        """
+        try:
+            return date(year, self.year_start_month, self.year_start_day)
+        except ValueError:
+            # A 29 February start: that day does not exist every year.
+            return date(year, 3, 1)
+
+    def school_year_for(self, on_date):
+        """The start year of the school year that contains ``on_date``.
+
+        Returned as an integer ``SchoolYear.name``, computed from the
+        configured year start, so it also answers for a date no
+        :class:`SchoolYear` row covers yet.
+        """
+        start = self.school_year_start(on_date.year)
+        return on_date.year if on_date >= start else on_date.year - 1
+
+    def school_year_bounds(self, year):
+        """``(start_date, end_date)`` of the school year named ``year``.
+
+        A school year runs a full twelve months, so it ends the day before the
+        next one begins.
+        """
+        start = self.school_year_start(year)
+        end = self.school_year_start(year + 1) - timedelta(days=1)
+        return start, end
+
+    def age_reference_date(self, school_year):
+        """The day ages are taken on for ``school_year``.
+
+        ``school_year`` is a :class:`SchoolYear` instance or its ``name``. The
+        configured reference month/day (31 December by default) is pinned to
+        whichever calendar year puts it *inside* the school year, so a troop
+        whose year starts in September or in January still gets 31 December of
+        that school year rather than of the year before it.
+        """
+        start = getattr(school_year, "start_date", None)
+        if start is None:
+            start, _end = self.school_year_bounds(school_year)
+        candidate = self._calendar_date(
+            start.year, self.age_reference_month, self.age_reference_day
+        )
+        if candidate < start:
+            candidate = self._calendar_date(
+                start.year + 1, self.age_reference_month, self.age_reference_day
+            )
+        return candidate
+
+    def age_at_reference(self, person, school_year=None):
+        """``person``'s age on the age reference day of ``school_year``.
+
+        The single definition of "how old is this child this school year". The
+        passage task, the member list's branch check and
+        :meth:`Person.age_fits_branch` all go through it, so they can no longer
+        disagree about which December is meant. Returns ``None`` when the
+        birthday or the school year is unknown.
+        """
+        if person.birthday is None:
+            return None
+        if school_year is None:
+            school_year = SchoolYear.current()
+        if school_year is None:
+            return None
+        reference = self.age_reference_date(school_year)
+        return (reference - person.birthday).days // 365
+
+    def passage_datetime(self, school_year):
+        """The moment the passage preparing ``school_year`` falls due.
+
+        The configured passage day (1 May by default) in the start calendar
+        year of that school year: the passage runs in the spring before the
+        year it prepares children for.
+        """
+        name = getattr(school_year, "name", school_year)
+        day = self._calendar_date(name, self.passage_month, self.passage_day)
+        return timezone.make_aware(datetime.combine(day, time.min))
+
+    def next_passage_datetime(self, on_date=None):
+        """The moment of the next passage — the one preparing the school year
+        after the one ``on_date`` (today by default) falls in.
+        """
+        if on_date is None:
+            on_date = timezone.localdate()
+        return self.passage_datetime(self.school_year_for(on_date) + 1)
+
+    def _calendar_date(self, year, month, day):
+        """``date(year, month, day)``, clamped to that month's last day.
+
+        The month and day fields are validated separately, so a combination
+        like 31 February is reachable (through the admin, or through the
+        settings page's form). Clamping keeps the nightly tasks and the page
+        rendering that read these values from raising on one.
+        """
+        return date(year, month, min(day, calendar.monthrange(year, month)[1]))
+
+    # --- Archive retention -------------------------------------------------
+
+    def archive_purge_date(self, archived_date):
+        """The day a person archived on ``archived_date`` is deleted for good."""
+        return archived_date + timedelta(days=self.archive_retention_years * 365)
+
+    def archive_purge_cutoff(self, on_date):
+        """The latest ``archived_date`` that is due for deletion on ``on_date``."""
+        return on_date - timedelta(days=self.archive_retention_years * 365)
+
+    def archive_warning_cutoff(self, on_date):
+        """The ``archived_date`` whose deletion warning is due on ``on_date``.
+
+        The warning goes out :data:`ARCHIVE_WARNING_DAYS` before the purge —
+        the ``archived_date`` on which that day is today.
+        """
+        return self.archive_purge_cutoff(on_date) + timedelta(
+            days=ARCHIVE_WARNING_DAYS
+        )
 
     def clean(self):
         """Cross-field rules the individual field validators cannot express."""

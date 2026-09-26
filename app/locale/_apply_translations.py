@@ -196,6 +196,11 @@ TRANSLATIONS = {
     'Reset': ("Réinitialiser", "Resetten"),
     'Actions': ("Actions", "Acties"),
     'Incompatible age: %(detail)s': ("Âge incompatible : %(detail)s", "Incompatibele leeftijd: %(detail)s"),
+    # The scout year start is a TroopSettings value, rendered with the date filter.
+    'The year starts on %(year_start)s, right after camp.': (
+        "L'année commence le %(year_start)s, juste après le camp.",
+        "Het jaar start op %(year_start)s, vlak na het kamp.",
+    ),
     'Edit': ("Modifier", "Bewerken"),
     'No results': ("Aucun résultat", "Geen resultaten"),
     'Previous': ("Précédent", "Vorige"),

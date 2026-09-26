@@ -14,6 +14,7 @@ from members.models import (
     Role,
     SchoolYear,
     Section,
+    TroopSettings,
 )
 from members.signals import notify_admins_on_profile_save
 
@@ -37,11 +38,12 @@ class Command(BaseCommand):
             start_date__lte=today, end_date__gte=today
         ).first()
         if not school_year:
+            start_date, end_date = TroopSettings.get_settings().school_year_bounds(year)
             school_year, created = SchoolYear.objects.get_or_create(
                 name=year,
                 defaults={
-                    "start_date": date(year, 9, 1),
-                    "end_date": date(year + 1, 8, 31),
+                    "start_date": start_date,
+                    "end_date": end_date,
                     "range": f"{year}-{year + 1}",
                 },
             )

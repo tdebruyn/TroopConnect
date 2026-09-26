@@ -1653,7 +1653,8 @@ msgid ""
 msgstr ""
 
 #: members/templates/members/deregister_child.html:17
-msgid "The year starts on August 1st, right after camp."
+#, python-format
+msgid "The year starts on %(year_start)s, right after camp."
 msgstr ""
 
 #: members/templates/members/deregister_child.html:21
