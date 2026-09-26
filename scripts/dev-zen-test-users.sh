@@ -110,7 +110,15 @@ session_for() {
         --data-urlencode "password=$PASSWORD" \
         --data-urlencode "remember=on" \
         -e "$BASE_URL/accounts/login/")
-    [ "$code" = "302" ] || die "login failed for $email (HTTP $code)"
+    if [ "$code" != "302" ]; then
+        # A rejected login re-renders the form with 200 and an error message,
+        # so this is either a wrong password or no such account. In dev the
+        # usual cause is the latter: a named volume that gets renamed comes up
+        # blank, and every account create_test_data made is gone with it.
+        die "login failed for $email (HTTP $code).
+No such account, or a different password. Recreate the test accounts with:
+    scripts/dev-zen-test-users.sh --seed"
+    fi
     awk '$6 == "sessionid" {print $7; exit}' "$jar"
 }
 
