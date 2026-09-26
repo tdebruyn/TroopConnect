@@ -207,6 +207,9 @@ NEW_STRINGS = [
         "Een paar vragen",
     ),
     ("Setup code", "Code d'installation", "Installatiecode"),
+    ("Administrator", "Administrateur", "Beheerder"),
+    ("The unit", "L'unité", "De eenheid"),
+    ("Languages and country", "Langues et pays", "Talen en land"),
     (
         "That is not this instance's setup code.",
         "Ce n'est pas le code d'installation",
@@ -221,6 +224,37 @@ NEW_STRINGS = [
     ("Where to go next", "La suite", "Wat nu"),
     ("Send and finish", "Envoyer et terminer", "Verzenden en afronden"),
     ("Test email", "E-mail de test", "Test-e-mail"),
+    ("The two passwords do not match.", "ne correspondent pas", "komen niet overeen"),
+    ("The message could not be sent.", "n'a pas pu être envoyé", "kon niet worden verzonden"),
+    ("Enable at least one language first.", "au moins une langue", "minstens één taal"),
+    ("%(count)s branches created.", "branches créées", "takken aangemaakt"),
+    (
+        "The %(module)s module is not in use by this troop.",
+        "n'est pas utilisé par cette unité",
+        "wordt niet gebruikt door deze eenheid",
+    ),
+    # Interpolated into the sentence above, so they carry no article.
+    ("membership fees", "cotisations", "lidgelden"),
+    ("document signing", "signature de documents", "documentondertekening"),
+    ("the agenda", "agenda", "agenda"),
+    # These two were in the catalogs with a newline or a quote written as a
+    # literal backslash escape, so gettext never matched them and the wizard
+    # showed them in English. Spelled out here because their escaping is the
+    # whole point.
+    (
+        "This is a test message from %(site)s.\n\nIf you are reading it, this "
+        "instance can send mail: registration confirmations, section messages "
+        "and reminders will all arrive.",
+        "message de test",
+        "testbericht",
+    ),
+    (
+        "The code is in the web container's log, printed when the instance "
+        'started. `docker compose logs web | grep -i "setup code"` shows it '
+        "again, and `manage.py setup_code` prints it on demand.",
+        "journal du conteneur web",
+        "logboek van de webcontainer",
+    ),
     (
         "Your unit's site is ready. You can sign in as <strong>%(admin_email)s</strong> "
         "from now on.",
