@@ -17,7 +17,7 @@ as the response to accepting or rejecting a suggestion — hence ``campaign``,
         {% if item.has_suggestion %}
             <div class="d-flex flex-wrap align-items-center gap-1 mt-1">
                 <span class="badge text-bg-info">{% trans "Probable match" %}</span>
-                <span class="small">{{ item.suggested_person }} ({{ item.suggested_person.primary_role }}) — {% widthratio item.match_score 1 100 %} %</span>
+                <span class="small">{{ item.suggested_person }} ({{ item.suggested_person.primary_role }}){% if item.match_score %} — {% widthratio item.match_score 1 100 %} %{% endif %}</span>
                 <button type="button" class="btn btn-sm btn-outline-primary"
                         hx-post="{% url 'attestations:accept_suggestion' campaign.pk item.pk %}"
                         hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
