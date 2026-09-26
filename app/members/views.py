@@ -56,6 +56,7 @@ from .permissions import (
     can_access_finance,
     can_delete_member,
     can_edit_section_agenda,
+    can_manage_unit,
     get_person,
     is_htmx,
     reportable_children,
@@ -1245,14 +1246,17 @@ def agenda_grid(request):
     return render(request, "members/_agenda_grid.html", context)
 
 
-def _absences_by_event(user, events, can_edit):
+def _absences_by_event(user, events, sees_every_notice):
     """The absence notices to show against each activity, keyed by event id.
 
-    A leader sees every notice their section's activities carry — that is what
-    the feature is for, and what the day view is opened for on the morning of
-    an outing. Everyone else sees only the notices they are party to: a parent
-    needs to know their own report landed, but the day view has no business
-    telling one family which of the others will be missing.
+    Whoever answers "who is missing on Saturday?" sees the whole list: the
+    section's own leaders, and unit staff, who may read any section's agenda
+    and run the outing when a leader is away. The list is who is *not* coming,
+    which is exactly what the day view is opened for on the morning of an
+    activity.
+
+    A family sees only the notices it is party to. The day view has no business
+    telling one parent which of the other children will be away.
     """
     if not events:
         return {}
@@ -1260,7 +1264,7 @@ def _absences_by_event(user, events, can_edit):
     notices = Absence.objects.filter(event__in=events).select_related(
         "child", "reported_by"
     )
-    if not can_edit:
+    if not sees_every_notice:
         person = get_person(user)
         if person is None:
             return {}
@@ -1287,7 +1291,8 @@ def agenda_day(request):
     # The notices are hung off the activity they belong to rather than passed
     # as a dict: a Django template cannot look a dict up by a variable key, and
     # this keeps the day template a plain nested loop.
-    notices = _absences_by_event(request.user, events, context["can_edit"])
+    sees_every_notice = context["can_edit"] or can_manage_unit(request.user)
+    notices = _absences_by_event(request.user, events, sees_every_notice)
     for event in events:
         event.notices = notices.get(event.pk, [])
 

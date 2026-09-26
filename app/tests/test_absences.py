@@ -72,6 +72,22 @@ class AbsenceTestBase(MailTestCase):
             primary_role=Role.objects.get(short="p"),
             status="a",
         )
+        # Both read every section's agenda without leading one, which is the
+        # state most troop staff are in: a unit admin is not enrolled in the
+        # section, and a site staff member need not hold a role at all.
+        cls.unit_admin = Person.objects.create(
+            first_name="Ada",
+            last_name="Responsable",
+            primary_role=Role.objects.get(short="p"),
+            status="a",
+        )
+        cls.unit_admin.roles.add(Role.objects.get(short="ar"))
+        cls.staff = Person.objects.create(
+            first_name="Sam",
+            last_name="Staff",
+            primary_role=Role.objects.get(short="p"),
+            status="a",
+        )
         cls.child = Person.objects.create(
             first_name="Chloe",
             last_name="Child",
@@ -105,8 +121,15 @@ class AbsenceTestBase(MailTestCase):
             (cls.other_parent, "other@test.be"),
             (cls.child, "child@test.be"),
             (cls.other_child, "otherchild@test.be"),
+            (cls.unit_admin, "unitadmin@test.be"),
         ):
             Account.objects.create_user(email=email, password="testpass", person=person)
+        Account.objects.create_user(
+            email="staff@test.be",
+            password="testpass",
+            person=cls.staff,
+            is_staff=True,
+        )
 
         cls.today = timezone.localdate()
         cls.event = SectionEvent.objects.create(
@@ -300,6 +323,34 @@ class DayViewTest(AbsenceTestBase):
         response = self.client.get(self.day_url())
         self.assertContains(response, "Chloe Child")
         self.assertContains(response, "Malade")
+
+    def test_a_unit_admin_sees_the_notices_of_a_section_they_do_not_lead(self):
+        """Staff read every section's agenda, so they see who is missing."""
+        Absence.objects.create(event=self.event, child=self.child, reason="Malade")
+        self.login("unitadmin@test.be")
+        response = self.client.get(self.day_url())
+        self.assertContains(response, "Chloe Child")
+        self.assertContains(response, "Malade")
+
+    def test_site_staff_see_the_notices_of_a_section_they_do_not_lead(self):
+        Absence.objects.create(event=self.event, child=self.child, reason="Malade")
+        self.login("staff@test.be")
+        self.assertContains(self.client.get(self.day_url()), "Chloe Child")
+
+    def test_reading_the_list_does_not_allow_reporting_or_withdrawing(self):
+        """Seeing every notice is reading; a family's act stays a family's."""
+        absence = Absence.objects.create(
+            event=self.event, child=self.child, reason="Malade"
+        )
+        self.login("unitadmin@test.be")
+        self.assertNotContains(
+            self.client.get(self.day_url()), self.report_link()
+        )
+        response = self.client.post(
+            reverse("members:absence_cancel", args=[absence.pk])
+        )
+        self.assertEqual(response.status_code, 404)
+        self.assertTrue(Absence.objects.exists())
 
     def test_the_reporting_family_sees_its_own_notice(self):
         Absence.objects.create(event=self.event, child=self.child, reason="Malade")
