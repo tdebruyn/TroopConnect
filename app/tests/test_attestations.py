@@ -199,17 +199,6 @@ class BuildSignedPdfTest(SimpleTestCase):
         out = build_signed_pdf(BytesIO(_blank_pdf(1)), pages, signature_page=1)
         self.assertEqual(len(PdfReader(BytesIO(out)).pages), 3)
 
-    def test_signature_on_chosen_page(self):
-        pages = list(PdfReader(BytesIO(_blank_pdf(3))).pages)
-        out = build_signed_pdf(
-            BytesIO(_blank_pdf(1)),
-            pages,
-            offset_x=10,
-            offset_y=-20,
-            signature_page=3,
-        )
-        self.assertEqual(len(PdfReader(BytesIO(out)).pages), 3)
-
     def test_page_without_the_signature_is_untouched(self):
         page = self._stamp(_signature_pdf(WHITE_SIGNATURE), num_pages=3, signature_page=3)
         self.assertIsNone(_stamp_soft_mask(page))
@@ -383,8 +372,10 @@ class SuggestPersonTest(AttestationDbTestBase):
         # obviously "Charlie Dupont".
         person, score = suggest_person("Charlle Dupnot")
         self.assertEqual(person, self.child)
-        self.assertGreaterEqual(score, 0.8)
-        self.assertLessEqual(score, 1.0)
+        # The score is what separates a suggestion from a match. The lower
+        # bound is implied by the matcher (it returns None below 0.8), so
+        # assert the upper one: a two-typo name must not read as a match.
+        self.assertLess(score, 1.0)
 
     def test_suggests_the_person_behind_a_single_letter_miss(self):
         person, _ = suggest_person("Charlie Dupondt")
@@ -455,7 +446,9 @@ class ProcessCampaignSuggestionTest(AttestationDbTestBase):
         item = self._process("Charlle Dupnot")
         self.assertIsNone(item.matched_person)
         self.assertEqual(item.suggested_person, self.child)
-        self.assertGreaterEqual(item.match_score, 0.8)
+        # Stored as a near-miss, not as a match (>= 0.8 is implied: the
+        # matcher returns None below that).
+        self.assertLess(item.match_score, 1.0)
         # Nothing is sent on the strength of a suggestion, so the item is left
         # with no recipients and stays pending.
         self.assertEqual(item.recipients, [])
@@ -852,7 +845,12 @@ class ReviewFilterTest(AttestationDbTestBase):
         # The recipient pickers are wired for the type-to-filter combobox, which
         # enhances the <select> in place (the select still posts the person pk).
         self.assertContains(response, "person-select")
-        self.assertContains(response, "tom-select")
+        # The combobox script, not just its stylesheet: the <link> alone
+        # satisfied the previous bare "tom-select" match with the JS removed.
+        self.assertRegex(
+            response.content.decode(),
+            r'<script[^>]*src="[^"]*tom-select[^"]*\.js"',
+        )
 
     def test_filter_shows_every_count(self):
         # Compare against the translated labels: the app renders in the visitor's

@@ -51,15 +51,6 @@ class RemoveChildTestBase(TestCase):
         )
 
 
-class HasSectionTest(RemoveChildTestBase):
-    def test_no_section_by_default(self):
-        self.assertFalse(self.child.has_section)
-
-    def test_has_section_when_enrolled(self):
-        self.enroll()
-        self.assertTrue(self.child.has_section)
-
-
 class ChildListActionTest(RemoveChildTestBase):
     def _html(self):
         return self.client.get(

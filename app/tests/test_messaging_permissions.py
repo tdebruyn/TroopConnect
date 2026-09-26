@@ -1,4 +1,5 @@
 from django.test import Client, TestCase
+from django.urls import reverse
 
 from members.models import Account, Enrollment, Person, Role, SchoolYear, Section
 
@@ -85,11 +86,20 @@ class MessagingPermissionTest(TestCase):
         self.assertEqual(response.status_code, 404)
 
     def test_animateur_history_shows_compose_button(self):
+        """The history page itself offers a way to compose.
+
+        Counted rather than asserted by label: base.html renders "Envoyer un
+        message" in the nav dropdown for anyone who can compose, so asserting
+        the label passed even with the page's own button deleted.
+        """
         self.client.login(email="anim@test.com", password="testpass")
         response = self.client.get("/messaging/history/")
-        self.assertContains(response, "Envoyer un message")
+        html = response.content.decode()
+        # one link from the nav dropdown, one from the page body
+        self.assertEqual(html.count(reverse("messaging:compose")), 2)
 
     def test_staff_history_shows_compose_button(self):
         self.client.login(email="staff@test.com", password="testpass")
         response = self.client.get("/messaging/history/")
-        self.assertContains(response, "Envoyer un message")
+        html = response.content.decode()
+        self.assertEqual(html.count(reverse("messaging:compose")), 2)

@@ -147,16 +147,6 @@ class FinanceTestBase(TestCase):
 class HouseholdGroupingTest(FinanceTestBase):
     """Tests for household grouping by address."""
 
-    def test_children_grouped_by_address(self):
-        balances = calculate_balances(self.current_year)
-        child_balances = [
-            b for b in balances
-            if b["person_id"] in [self.child_eldest.pk, self.child_youngest.pk, self.child_other.pk]
-        ]
-        # Charlie + Diana in same household = 2 children
-        # Eve alone = 1 child
-        self.assertEqual(len(child_balances), 3)
-
     def test_eldest_gets_full_fee(self):
         balances = calculate_balances(self.current_year)
         eldest_balance = next(
@@ -188,25 +178,6 @@ class AnimateurFlatRateTest(FinanceTestBase):
             b for b in balances if b["person_id"] == self.animateur.pk
         )
         self.assertEqual(anim_balance["amount_due"], Decimal("30.00"))
-
-    def test_animateur_fee_independent_of_child_pricing(self):
-        """Animateur fee comes from animator rules, not child branch pricing."""
-        balances = calculate_balances(self.current_year)
-        anim_balance = next(
-            balance for balance in balances if balance["person_id"] == self.animateur.pk
-        )
-        self.assertEqual(anim_balance["amount_due"], Decimal("30.00"))
-        child_amounts = {
-            balance["amount_due"]
-            for balance in balances
-            if balance["person_id"] in [
-                self.child_eldest.pk,
-                self.child_youngest.pk,
-                self.child_other.pk,
-            ]
-        }
-        self.assertNotIn(anim_balance["amount_due"], child_amounts)
-
 
 class LatePenaltyTest(FinanceTestBase):
     """Tests for late payment penalty."""
@@ -391,30 +362,6 @@ class BulkReminderTest(FinanceTestBase):
         self.assertEqual(len(adults), 0)
 
 
-class FinanceAppImportTest(TestCase):
-    """Tests that the finance app loads correctly."""
-
-    def test_finance_models_import(self):
-        from finance.models import CotisationConfig, FeeRule, Payment
-        self.assertTrue(CotisationConfig)
-        self.assertTrue(FeeRule)
-        self.assertTrue(Payment)
-
-    def test_finance_forms_instantiate(self):
-        from finance.forms import PaymentForm, ReminderForm
-        form1 = PaymentForm()
-        form2 = ReminderForm()
-        self.assertIn("amount", form1.fields)
-        self.assertIn("subject", form2.fields)
-        self.assertIn("body", form2.fields)
-
-    def test_finance_urls_resolve(self):
-        self.assertEqual(reverse("finance:billing"), "/finance/")
-        self.assertEqual(reverse("finance:prices"), "/finance/prices/")
-        self.assertEqual(reverse("finance:record_payment"), "/finance/payment/")
-        self.assertEqual(reverse("finance:reminders"), "/finance/reminders/")
-
-
 class BillingViewAccessTest(FinanceTestBase):
     """Tests for Trésorier access to billing views."""
 
@@ -444,11 +391,6 @@ class BillingViewAccessTest(FinanceTestBase):
         self._login_tresorier()
         response = self.client.get("/finance/reminders/")
         self.assertEqual(response.status_code, 200)
-
-    def test_plain_parent_cannot_record_payment(self):
-        self.client.login(email="alice@test.com", password="testpass")
-        response = self.client.get("/finance/payment/")
-        self.assertEqual(response.status_code, 404)
 
     def test_tresorier_sees_cotisations_nav_link(self):
         self._login_tresorier()

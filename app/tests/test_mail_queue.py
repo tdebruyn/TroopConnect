@@ -152,30 +152,10 @@ class MailQueueViewTest(MailTestCase):
 
 
 class MailQueueContextProcessorTest(MailTestCase):
-    def setUp(self):
-        super().setUp()
-        self.role_parent = Role.objects.get(short="p")
-        self.staff = Person.objects.create(
-            first_name="Staff", last_name="User",
-            primary_role=self.role_parent, status="a",
-        )
-        self.staff_account = Account.objects.create_user(
-            email="staff@test.be", password="pw", person=self.staff, is_staff=True,
-        )
-        post_office_mail.send(
-            recipients=["to@test.be"],
-            sender="from@test.be",
-            subject="Hello",
-            message="Body",
-        )
-        Email.objects.update(status=STATUS.failed)
+    """The anonymous branch only — the staff branch is asserted end-to-end
+    through the view in MailQueueViewTest.test_staff_sees_failed_count."""
 
     def test_anonymous_gets_nothing(self):
         request = RequestFactory().get("/")
         request.user = AnonymousUser()
         self.assertEqual(mail_queue_status(request), {})
-
-    def test_staff_gets_failed_count(self):
-        request = RequestFactory().get("/")
-        request.user = self.staff_account
-        self.assertEqual(mail_queue_status(request)["failed_mail_count"], 1)

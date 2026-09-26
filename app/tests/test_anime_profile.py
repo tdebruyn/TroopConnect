@@ -53,11 +53,16 @@ class AnimeProfileEditTest(TestCase):
         self.assertContains(response, "id_phone")
 
     def test_anime_profile_shows_address_readonly(self):
-        """Animé profile should show address as disabled (read-only)."""
+        """Animé still sees their address, displayed read-only.
+
+        Asserting on the word "disabled" would be vacuous: base.html renders
+        ``class="dropdown-item disabled"`` in the empty Sections dropdown, which
+        is exactly this user's case. Assert the value itself is rendered.
+        """
         self.client.force_login(self.anime_user)
         url = reverse("members:profile", kwargs={"pk": self.anime_user.pk})
         response = self.client.get(url)
-        self.assertContains(response, "disabled")
+        self.assertContains(response, self.anime_person.address)
         self.assertContains(response, "L'adresse est gérée par le parent responsable")
 
     def test_anime_profile_no_address_edit_field(self):
@@ -67,43 +72,24 @@ class AnimeProfileEditTest(TestCase):
         response = self.client.get(url)
         self.assertNotContains(response, 'name="address"')
 
-    def test_anime_can_update_totem(self):
-        """Animé user can update their totem."""
+    def test_anime_can_update_totem_phone_and_email(self):
+        """Animé self-serves the three fields AnimeProfileForm exposes.
+
+        One post, all three fields: the previous three near-identical clones
+        re-posted the same payload and asserted a single field each.
+        """
         self.client.force_login(self.anime_user)
         url = reverse("members:profile", kwargs={"pk": self.anime_user.pk})
         response = self.client.post(url, {
             "totem": "Loup Agile",
-            "phone": "0470123456",
-            "email": "jean@test.com",
-        })
-        self.assertEqual(response.status_code, 302)
-        self.anime_person.refresh_from_db()
-        self.assertEqual(self.anime_person.totem, "Loup Agile")
-
-    def test_anime_can_update_phone(self):
-        """Animé user can update their phone."""
-        self.client.force_login(self.anime_user)
-        url = reverse("members:profile", kwargs={"pk": self.anime_user.pk})
-        response = self.client.post(url, {
-            "totem": "Loup",
             "phone": "0499999999",
-            "email": "jean@test.com",
-        })
-        self.assertEqual(response.status_code, 302)
-        self.anime_person.refresh_from_db()
-        self.assertIn("499999999", str(self.anime_person.phone))
-
-    def test_anime_can_update_email(self):
-        """Animé user can update their email."""
-        self.client.force_login(self.anime_user)
-        url = reverse("members:profile", kwargs={"pk": self.anime_user.pk})
-        response = self.client.post(url, {
-            "totem": "Loup",
-            "phone": "0470123456",
             "email": "jean.new@test.com",
         })
         self.assertEqual(response.status_code, 302)
+        self.anime_person.refresh_from_db()
         self.anime_user.refresh_from_db()
+        self.assertEqual(self.anime_person.totem, "Loup Agile")
+        self.assertIn("499999999", str(self.anime_person.phone))
         self.assertEqual(self.anime_user.email, "jean.new@test.com")
 
     def test_anime_address_not_changed_by_post(self):
@@ -119,19 +105,17 @@ class AnimeProfileEditTest(TestCase):
         self.anime_person.refresh_from_db()
         self.assertEqual(self.anime_person.address, original_address)
 
-    def test_anime_profile_no_child_section(self):
-        """Animé profile should NOT show the child management section."""
-        self.client.force_login(self.anime_user)
-        url = reverse("members:profile", kwargs={"pk": self.anime_user.pk})
-        response = self.client.get(url)
-        self.assertNotContains(response, "child-add")
+    def test_anime_profile_has_no_parent_only_blocks(self):
+        """Animé gets neither the role radios nor the child management block.
 
-    def test_anime_profile_no_role_radios(self):
-        """Animé profile should NOT show primary role radio buttons."""
+        Both live behind the same ``{% if form.fields.primary_role %}`` guard in
+        profile.html, so one test covers the guard.
+        """
         self.client.force_login(self.anime_user)
         url = reverse("members:profile", kwargs={"pk": self.anime_user.pk})
         response = self.client.get(url)
         self.assertNotContains(response, "primary_role")
+        self.assertNotContains(response, "child-add")
 
     def test_parent_profile_still_has_full_form(self):
         """Parent user should still get the full ProfileEditForm."""

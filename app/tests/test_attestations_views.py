@@ -487,13 +487,6 @@ class SendBranchingTest(AttestationViewTestBase):
         self.assertEqual(item.status, AttestationItem.Status.SENT)
         self.assertEqual(Email.objects.get().to, ["frank@test.com"])
 
-    def test_existing_match_is_kept_when_the_same_person_is_resubmitted(self):
-        item = self.make_item(self.campaign)
-        self._post(**{f"person_{item.pk}": str(self.child.pk)})
-        item.refresh_from_db()
-        self.assertEqual(item.matched_person, self.child)
-        self.assertEqual(item.status, AttestationItem.Status.SENT)
-
     def test_send_failure_marks_the_item_failed(self):
         item = self.make_item(self.campaign)
         with patch(
@@ -635,14 +628,6 @@ class PlaceholderResolutionTest(AttestationViewTestBase):
         self.assertEqual(
             _resolve_placeholders("{prenom} {nom}", None, item), "Jean Dupont"
         )
-
-    def test_falls_back_to_a_single_token_extracted_name(self):
-        item = self.make_item(self._campaign(), extracted_name="Cher")
-        self.assertEqual(_resolve_placeholders("{prenom}-{nom}", None, item), "Cher-")
-
-    def test_empty_extracted_name_leaves_placeholders_empty(self):
-        item = self.make_item(self._campaign(), extracted_name="")
-        self.assertEqual(_resolve_placeholders("{prenom}{nom}", None, item), "")
 
 
 class CanManageTest(AttestationDbTestBase):

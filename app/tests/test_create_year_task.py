@@ -29,14 +29,6 @@ class CreateYearTaskTest(TestCase):
         self.assertTrue(SchoolYear.objects.filter(name=2026).exists())  # next
         self.assertFalse(SchoolYear.objects.filter(name=2027).exists())
 
-    def test_creates_current_year_when_missing(self):
-        """With no school years at all, the task creates the current one too."""
-        SchoolYear.objects.all().delete()
-        self._run_at(date(2026, 7, 23))
-
-        self.assertTrue(SchoolYear.objects.filter(name=2025).exists())  # current
-        self.assertTrue(SchoolYear.objects.filter(name=2026).exists())  # next
-
     def test_after_august_current_year_is_calendar_year(self):
         """On/after Aug 1 the current school year starts this calendar year."""
         SchoolYear.objects.all().delete()

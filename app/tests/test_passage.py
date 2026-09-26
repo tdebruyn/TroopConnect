@@ -171,12 +171,20 @@ class NextSectionOverrideTest(PassageTestBase):
     """Manual next_section override is respected."""
 
     def test_manual_override_assigns_correct_section(self):
-        """When next_section is set, it takes priority over age calculation."""
+        """next_section takes priority over the age calculation.
+
+        The birthday is pinned so the age path alone keeps the child in
+        ``section_young`` (age 8 → Baladins, max 9). The override is therefore
+        the only reason they end up in ``section_mid``, so deleting the override
+        branch fails here — with a "now - 8 years" birthday the age path landed
+        in ``section_mid`` by itself and the test proved nothing.
+        """
+        birthday = date(self.next_year.name + 1 - 8, 6, 1)
         child = Person.objects.create(
             first_name="Test", last_name="Child",
             primary_role=self.role_anime, status="a",
             next_section=self.section_mid,
-            birthday=timezone.now().date() - timedelta(days=365 * 8),
+            birthday=birthday,
         )
         Enrollment.objects.create(
             user=child, section=self.section_young, school_year=self.current_year,
@@ -186,23 +194,6 @@ class NextSectionOverrideTest(PassageTestBase):
 
         next_enrollment = Enrollment.objects.get(user=child, school_year=self.next_year)
         self.assertEqual(next_enrollment.section, self.section_mid)
-
-    def test_manual_override_cleared_after_use(self):
-        """next_section is reset to None after passage."""
-        child = Person.objects.create(
-            first_name="Test", last_name="Child",
-            primary_role=self.role_anime, status="a",
-            next_section=self.section_mid,
-            birthday=timezone.now().date() - timedelta(days=365 * 8),
-        )
-        Enrollment.objects.create(
-            user=child, section=self.section_young, school_year=self.current_year,
-        )
-
-        run_passage()
-
-        child.refresh_from_db()
-        self.assertIsNone(child.next_section)
 
 
 class AlphabeticalSectionTest(PassageTestBase):

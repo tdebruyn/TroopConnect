@@ -164,19 +164,13 @@ class OnboardingViewTest(TestCase):
         self.assertEqual(self.account.person.status, "a")
         self.assertTrue(self.account.person.photo_consent)
 
-    def test_submit_sets_status_to_active(self):
-        self.client.post(
-            reverse("members:onboarding"),
-            {
-                "first_name": "Test",
-                "last_name": "User",
-                "primary_role": "a",
-            },
-        )
-        self.account.person.refresh_from_db()
-        self.assertEqual(self.account.person.status, "a")
-
     def test_submit_missing_required_fields_shows_errors(self):
+        """The form rejects the post and flags each missing field.
+
+        Asserted on the form's errors rather than the rendered message: "Ce
+        champ est obligatoire" is Django's own French translation, so asserting
+        it would pin the framework's catalogue, not this project's.
+        """
         response = self.client.post(
             reverse("members:onboarding"),
             {
@@ -186,7 +180,10 @@ class OnboardingViewTest(TestCase):
             },
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Ce champ est obligatoire")
+        errors = response.context["form"].errors
+        self.assertEqual(
+            sorted(errors), ["first_name", "last_name", "primary_role"],
+        )
 
     def test_already_completed_profile_redirects_away(self):
         """If a user with status='a' hits onboarding, redirect to homepage."""

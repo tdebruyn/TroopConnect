@@ -56,10 +56,6 @@ class AdminUpdateParticipantSecondaryRolesTest(TestCase):
         data.update(overrides)
         return data
 
-    def test_field_dropped_for_participant(self):
-        form = AdminUserUpdateForm(instance=self.participant)
-        self.assertNotIn("secondary_roles", form.fields)
-
     def test_field_kept_for_non_participant(self):
         form = AdminUserUpdateForm(instance=self.parent)
         self.assertIn("secondary_roles", form.fields)

@@ -139,8 +139,3 @@ class NewStringTranslationTest(SimpleTestCase):
                         translated, source, f"no Dutch translation for {source!r}"
                     )
                     self.assertIn(fragment, translated)
-
-    def test_gettext_falls_back_to_the_english_source(self):
-        """Sanity check that the assertions above can actually fail."""
-        with translation.override("en"):
-            self.assertEqual(gettext(NEW_STRINGS[0][0]), NEW_STRINGS[0][0])

@@ -294,17 +294,23 @@ class ComposeSchoolYearSelectionTest(MailTestCase):
         self.assertIn("Aucun destinataire trouvé.", html)
 
     def test_school_year_field_has_explanatory_tooltip(self):
-        """The tooltip markup and its translation are rendered.
+        """The info icon carries the explanation as its tooltip title.
 
-        This cannot prove the tooltip actually appears: it is shown by JS, and
-        the initialisation has to live in base.html (page content renders above
-        the Bootstrap bundle, so a page-level init runs too early and silently
-        does nothing). Verify appearance in a browser when touching this.
+        Matched as one element carrying both attributes: asserting the bare
+        ``data-bs-toggle="tooltip"`` string passed on an icon whose title had
+        been dropped, and on any other tooltip on the page.
+
+        This still cannot prove the tooltip appears — it is shown by JS, and the
+        initialisation has to live in base.html (page content renders above the
+        Bootstrap bundle, so a page-level init runs too early and silently does
+        nothing). Verify appearance in a browser when touching this.
         """
         response = self.client.get("/messaging/compose/")
-        self.assertContains(response, 'data-bs-toggle="tooltip"')
         # Default language is French, so the explanation must be translated.
-        self.assertContains(response, "Choisissez une année scolaire passée")
+        self.assertRegex(
+            response.content.decode(),
+            r'data-bs-toggle="tooltip"[^>]*title="[^"]*passée',
+        )
 
     def test_form_school_year_options_are_recent_years(self):
         # Plenty of past years: the dropdown must cap at last 5 + next year.
@@ -342,10 +348,15 @@ class ComposeEmptyGroupTest(MailTestCase):
         self.client.login(email="staff@test.com", password="testpass")
 
     def test_empty_group_renders_message_not_table(self):
+        """An empty group renders the empty state, and no table at all.
+
+        The previous assertion matched the table's exact class attribute, so a
+        restyle passed while the empty state still rendered a bare table.
+        """
         response = self.client.post(
             "/messaging/compose/",
             {"recipient_group": "active_parents", "hx_load_recipients": "1"},
         )
         html = response.content.decode()
         self.assertIn("Aucun destinataire trouvé.", html)
-        self.assertNotIn('<table class="table table-striped">', html)
+        self.assertNotIn("<table", html)

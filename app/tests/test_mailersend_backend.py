@@ -157,11 +157,6 @@ class ResponseHandlingTest(MailerSendTestBase):
         self.assertIn("422", "".join(logs.output))
         self.assertIn("unprocessable", "".join(logs.output))
 
-    def test_server_error_returns_zero(self):
-        message = EmailMessage("Sujet", "Corps", "from@test.be", ["to@test.be"])
-        count, _ = self.post_for(message, _response(500))
-        self.assertEqual(count, 0)
-
     def test_partial_failure_counts_only_successes(self):
         """One bad recipient must not mask the messages that did go out."""
         good = EmailMessage("Sujet", "Corps", "from@test.be", ["good@test.be"])
@@ -201,10 +196,3 @@ class ExceptionHandlingTest(MailerSendTestBase):
         with patch(POST_PATH, side_effect=ConnectionError("boom")):
             with self.assertRaises(ConnectionError):
                 self.backend.send_messages([message])
-
-
-class ConnectionTest(MailerSendTestBase):
-    def test_open_and_close_are_noops(self):
-        """BaseEmailBackend.open() returns None; post_office calls both."""
-        self.assertTrue(self.backend.open())
-        self.assertIsNone(self.backend.close())

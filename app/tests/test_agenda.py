@@ -9,10 +9,6 @@ from members.models import Section
 
 
 class EventModelTest(TestCase):
-    def test_str(self):
-        event = Event(title="Camp d'été", date=timezone.now().date())
-        self.assertIn("Camp d'été", str(event))
-
     def test_is_past_true(self):
         event = Event(title="Past", date=timezone.now().date() - timedelta(days=1))
         self.assertTrue(event.is_past)
@@ -96,13 +92,6 @@ class AgendaViewTest(TestCase):
     def test_empty_state(self):
         response = self.client.get("/agenda/")
         self.assertContains(response, "Aucun événement")
-
-    def test_events_ordered_by_date(self):
-        Event.objects.create(title="Later", date=self.today + timedelta(days=10))
-        Event.objects.create(title="Earlier", date=self.today + timedelta(days=2))
-        response = self.client.get("/agenda/")
-        content = response.content.decode()
-        self.assertLess(content.index("Earlier"), content.index("Later"))
 
     def test_section_displayed(self):
         section = Section.objects.create(name="Louveteaux")

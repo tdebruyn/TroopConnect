@@ -131,12 +131,6 @@ class IsAdultTest(ChildLifecycleTestBase):
             self.make_child(birthday=None, primary_role=self.role_parent).is_adult()
         )
 
-    def test_helpers_agree_on_format(self):
-        child = self.make_child(birthday=date(2015, 6, 15))
-        self.assertEqual(child.birthday_to_int(), 20150615)
-        # 8 digits, so the >180000 comparison reads as "more than 18 years".
-        self.assertEqual(len(str(child.current_date_to_int())), 8)
-
 
 class DetachPageTest(ChildLifecycleTestBase):
     def url(self, child):

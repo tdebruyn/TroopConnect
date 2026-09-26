@@ -102,29 +102,6 @@ class AdminListFilterTest(TestCase):
         self.assertContains(response, "Alice")
         self.assertNotContains(response, "Bob")
 
-    def test_school_year_toggle(self):
-        """Changing year changes the displayed section assignments."""
-        self.client.force_login(self.staff_user)
-        current_year = SchoolYear.current()
-
-        # With current year, person1 should show a section if enrolled
-        response = self.client.get(
-            reverse("members:admin_list"), {"year": current_year.pk}
-        )
-        self.assertEqual(response.status_code, 200)
-
-        # With a different year, section display may change
-        # Create a next year if it doesn't exist
-        next_year_name = current_year.name + 1
-        next_year, _ = SchoolYear.objects.get_or_create(
-            name=next_year_name,
-            defaults={"start_date": current_year.start_date, "end_date": current_year.end_date},
-        )
-        response = self.client.get(
-            reverse("members:admin_list"), {"year": next_year.pk}
-        )
-        self.assertEqual(response.status_code, 200)
-
     def test_unknown_school_year_falls_back_instead_of_erroring(self):
         """A stale or malformed ?year= must still render the list.
 

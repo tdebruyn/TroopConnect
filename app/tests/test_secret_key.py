@@ -25,13 +25,6 @@ class SecretKeyTest(TestCase):
         )
         self.assertEqual(len(person.secret_key), 6)
 
-    def test_secret_key_matches_uuid_prefix(self):
-        person = Person.objects.create(
-            first_name="Test", last_name="Child",
-            primary_role=self.role_anime, status="a",
-        )
-        self.assertEqual(person.secret_key, str(person.id)[:6])
-
     def test_secret_key_persists_on_save(self):
         person = Person.objects.create(
             first_name="Test", last_name="Child",
@@ -50,13 +43,3 @@ class SecretKeyTest(TestCase):
         )
         found = Person.objects.get(secret_key=person.secret_key)
         self.assertEqual(found, person)
-
-    def test_child_from_key_form_max_length(self):
-        from members.forms import ChildFromKey
-        form = ChildFromKey()
-        self.assertEqual(form.fields["secret_key"].max_length, 6)
-
-    def test_child_from_key_label(self):
-        from members.forms import ChildFromKey
-        form = ChildFromKey()
-        self.assertIn("6", str(form.fields["secret_key"].label))

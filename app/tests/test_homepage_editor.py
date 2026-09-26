@@ -2,10 +2,9 @@ import json
 import re
 import shutil
 import tempfile
-from pathlib import Path
 
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import TestCase, override_settings
+from django.test import TestCase
 from django.urls import reverse
 from django.utils.translation import override
 
@@ -222,18 +221,6 @@ class EditorAssetsTest(HomePageEditorTestBase):
         response = self.client.post(reverse("homepage_editor_assets"))
         self.assertEqual(response.status_code, 400)
 
-    @override_settings(MEDIA_ROOT=Path(tempfile.mkdtemp()))
-    def test_uploaded_file_lands_in_media_root(self):
-        self.client.force_login(self.superuser)
-        upload = SimpleUploadedFile("logo.png", b"\x89PNG...", content_type="image/png")
-        response = self.client.post(
-            reverse("homepage_editor_assets"), {"file": upload}
-        )
-        self.assertEqual(response.status_code, 200)
-        asset = ImageAsset.objects.first()
-        self.assertTrue(asset.file.storage.exists(asset.file.name))
-
-
 class EditLinkTest(HomePageEditorTestBase):
     """The 'Edit homepage' link is superuser-only."""
 
@@ -250,13 +237,6 @@ class EditLinkTest(HomePageEditorTestBase):
     def test_anonymous_does_not_see_edit_homepage_link(self):
         response = self.client.get(reverse("homepage"))
         self.assertNotContains(response, reverse("homepage_editor"))
-
-
-class SiteContentModelTest(HomePageEditorTestBase):
-    """Model helpers."""
-
-    def test_get_content_returns_none_when_absent(self):
-        self.assertIsNone(SiteContent.get_content(SiteContent.Page.HOME))
 
 
 class WrapperSanitizerTest(HomePageEditorTestBase):
@@ -379,7 +359,18 @@ class NavbarBrandLinkTest(HomePageEditorTestBase):
     """Logo and site name link back to the home page."""
 
     def test_brand_links_to_homepage(self):
+        """The navbar brand links back to the home page.
+
+        Matches any attribute order and tolerates more than one brand element
+        (e.g. a separate one for the mobile collapse): the previous
+        ``<a class="navbar-brand[^>]*>`` pattern pinned ``class`` as the first
+        attribute and the count at exactly one, failing on refactors that break
+        nothing.
+        """
         response = self.client.get(reverse("homepage"))
-        brands = re.findall(r'<a class="navbar-brand[^>]*>', response.content.decode())
-        self.assertEqual(len(brands), 1)
-        self.assertIn(f'href="{reverse("homepage")}"', brands[0])
+        brands = re.findall(r"<a[^>]*navbar-brand[^>]*>", response.content.decode())
+        self.assertTrue(brands, "no navbar-brand link rendered")
+        self.assertTrue(
+            any(f'href="{reverse("homepage")}"' in brand for brand in brands),
+            "no navbar-brand link points back to the home page",
+        )

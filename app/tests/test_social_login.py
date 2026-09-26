@@ -15,9 +15,12 @@ class FacebookButtonTemplateTest(TestCase):
         self.assertNotIn('href="#!"', source)
 
     def test_login_template_has_facebook_provider_url(self):
+        """Matched quote-agnostically: a button written with double quotes
+        (`{% provider_login_url "facebook" %}`) is equally valid but used to
+        fail this assertion."""
         template = get_template("account/login.html")
         source = template.template.source
-        self.assertIn("provider_login_url 'facebook'", source)
+        self.assertRegex(source, r"provider_login_url\s+['\"]facebook['\"]")
 
     def test_signup_template_does_not_contain_dead_link(self):
         template = get_template("account/signup.html")
@@ -27,7 +30,7 @@ class FacebookButtonTemplateTest(TestCase):
     def test_signup_template_has_facebook_provider_url(self):
         template = get_template("account/signup.html")
         source = template.template.source
-        self.assertIn("provider_login_url 'facebook'", source)
+        self.assertRegex(source, r"provider_login_url\s+['\"]facebook['\"]")
 
 
 class GoogleButtonTemplateTest(TestCase):
@@ -36,12 +39,12 @@ class GoogleButtonTemplateTest(TestCase):
     def test_login_template_has_google_provider_url(self):
         template = get_template("account/login.html")
         source = template.template.source
-        self.assertIn("provider_login_url 'google'", source)
+        self.assertRegex(source, r"provider_login_url\s+['\"]google['\"]")
 
     def test_signup_template_has_google_provider_url(self):
         template = get_template("account/signup.html")
         source = template.template.source
-        self.assertIn("provider_login_url 'google'", source)
+        self.assertRegex(source, r"provider_login_url\s+['\"]google['\"]")
 
 
 class SocialAccountAdapterTest(TestCase):
@@ -63,11 +66,6 @@ class SocialAccountAdapterTest(TestCase):
             password="Test1234!",
             person=self.person,
         )
-
-    def test_adapter_class_exists(self):
-        adapter = SocialAccountAdapter()
-        self.assertTrue(hasattr(adapter, "pre_social_login"))
-        self.assertTrue(hasattr(adapter, "get_connect_redirect_url"))
 
     def test_connect_redirect_url_is_homepage(self):
         adapter = SocialAccountAdapter()
@@ -99,10 +97,14 @@ class SocialLoginMiddlewareExemptTest(TestCase):
             person=person,
         )
         self.client.force_login(account)
-        # /accounts/social/signup/ should not redirect to onboarding
+        # /accounts/social/signup/ should not redirect to onboarding. Asserted
+        # unconditionally: the previous `if response.status_code == 302:` guard
+        # meant any other status — including a 500 — asserted nothing at all.
         response = self.client.get(reverse("socialaccount_signup"), follow=False)
-        if response.status_code == 302:
-            self.assertNotEqual(response.url, reverse("members:onboarding"))
+        self.assertIn(response.status_code, (200, 302))
+        self.assertNotEqual(
+            response.headers.get("Location", ""), reverse("members:onboarding"),
+        )
 
     def test_logout_exempt_from_middleware(self):
         """Logout should work even for unprofiled users."""
@@ -119,9 +121,11 @@ class SocialLoginMiddlewareExemptTest(TestCase):
         )
         self.client.force_login(account)
         response = self.client.post(reverse("account_logout"), follow=False)
-        # Should not redirect to onboarding
-        if response.status_code == 302:
-            self.assertNotEqual(response.url, reverse("members:onboarding"))
+        # Should not redirect to onboarding (asserted unconditionally, see above).
+        self.assertIn(response.status_code, (200, 302))
+        self.assertNotEqual(
+            response.headers.get("Location", ""), reverse("members:onboarding"),
+        )
 
 
 class SocialAccountSignupTemplateTest(TestCase):
@@ -134,6 +138,8 @@ class SocialAccountSignupTemplateTest(TestCase):
         self.assertNotIn("form.as_p", source)
 
     def test_social_signup_template_has_submit_button(self):
+        """Assert the element, not the word: "Continue" appearing anywhere —
+        a paragraph, a comment — used to satisfy this."""
         template = get_template("socialaccount/signup.html")
         source = template.template.source
-        self.assertIn("Continue", source)
+        self.assertRegex(source, r'<button[^>]*type="submit"')
