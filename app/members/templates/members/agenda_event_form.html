@@ -13,9 +13,11 @@
 {% block subcontent %}
     <form method="post" class="col-lg-8">
         {% csrf_token %}
-        {# Carried in the body as well as the URL: a leader who leads two
-           sections must not have the entry filed under the other one. The
-           edit view ignores it and keeps the entry's own section. #}
+        {% comment %}
+            Carried in the body as well as the URL: a leader who leads two
+            sections must not have the entry filed under the other one. The
+            edit view ignores it and keeps the entry's own section.
+        {% endcomment %}
         <input type="hidden" name="section" value="{{ section.pk }}" />
         {% if form.non_field_errors %}
             <div class="alert alert-danger">{{ form.non_field_errors }}</div>

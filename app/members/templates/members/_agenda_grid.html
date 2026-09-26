@@ -6,9 +6,11 @@ page still works with the swap taken away.
 {% endcomment %}
 <div id="agenda-grid">
     <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
-        {# The section being shown is always named, even when there is only one:
-           a reader whose children are in two sections needs to know which
-           calendar they are looking at. #}
+        {% comment %}
+            The section being shown is always named, even when there is only
+            one: a reader whose children are in two sections needs to know
+            which calendar they are looking at.
+        {% endcomment %}
         <div class="btn-group btn-group-sm" role="group">
             {% for candidate in sections %}
                 <a class="btn {% if candidate.pk == section.pk %}btn-primary{% else %}btn-outline-primary{% endif %}"
@@ -76,8 +78,11 @@ page still works with the swap taken away.
             </tbody>
         </table>
     </div>
-    {# Inside the grid on purpose: turning a month over throws away the day
-       being shown, which would otherwise describe a month no longer on screen. #}
+    {% comment %}
+        Inside the grid on purpose: turning a month over throws away the day
+        being shown, which would otherwise describe a month no longer on
+        screen.
+    {% endcomment %}
     <div id="agenda-day" class="mt-4">
         <p class="text-muted">{% trans "Pick a day to see what is on." %}</p>
     </div>

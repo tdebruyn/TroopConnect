@@ -429,6 +429,40 @@ class AgendaDayFrameTest(AgendaTestBase):
         )
 
 
+class AgendaTemplateSyntaxTest(AgendaTestBase):
+    """None of these screens renders template syntax as text.
+
+    ``{# … #}`` is a *single-line* comment in Django. Written across several
+    lines it is not a comment at all: the grid showed its own explanatory notes
+    to every reader. A plain string assertion is what catches that — the page
+    renders fine either way.
+    """
+
+    def agenda_responses(self):
+        return {
+            "page": self.client.get(reverse("members:agenda")),
+            "grid": self.client.get(url("members:agenda_grid", section=self.meute.pk)),
+            "day": self.client.get(
+                url(
+                    "members:agenda_day",
+                    section=self.meute.pk,
+                    date=self.today.isoformat(),
+                )
+            ),
+            "form": self.client.get(
+                url("members:agenda_event_create", section=self.meute.pk)
+            ),
+        }
+
+    def test_nothing_unrendered_reaches_the_reader(self):
+        self.login("meute@test.be")
+
+        for view, response in self.agenda_responses().items():
+            with self.subTest(view=view):
+                self.assertNotContains(response, "{#")
+                self.assertNotContains(response, "{%")
+
+
 class AgendaWritingTest(AgendaTestBase):
     """Only the leader of a section writes to its agenda."""
 
