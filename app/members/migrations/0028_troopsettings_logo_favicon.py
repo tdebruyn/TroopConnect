@@ -18,8 +18,24 @@ match no hand-edited row can produce.
 """
 
 from django.db import migrations, models
+from post_office import cache as template_cache
 
 from members import email_templates
+from troopconnect.postoffice import cache_token
+
+
+def _rewrite(row, html_content):
+    """Store a new body and drop the copy post_office is holding.
+
+    The cache fix in ``troopconnect.postoffice`` hangs off ``EmailTemplate``'s
+    post_save signal, which the historical model does not send. Without this
+    the old body keeps being sent — post_office's cache entry has an expiry,
+    so it would correct itself eventually, which is worse: the change would
+    look like it had not worked for an afternoon.
+    """
+    row.html_content = html_content
+    row.save(update_fields=["html_content"])
+    template_cache.delete(cache_token(row))
 
 
 def add_logo_to_bodies(apps, schema_editor):
@@ -35,8 +51,7 @@ def add_logo_to_bodies(apps, schema_editor):
             # Rewritten by hand, or seeded from different copy. Leave it.
             continue
 
-        row.html_content = fields["html_content"]
-        row.save(update_fields=["html_content"])
+        _rewrite(row, fields["html_content"])
 
 
 def remove_logo_from_bodies(apps, schema_editor):
@@ -47,8 +62,7 @@ def remove_logo_from_bodies(apps, schema_editor):
         if row is None or row.html_content != fields["html_content"]:
             continue
 
-        row.html_content = email_templates.without_logo(fields["html_content"])
-        row.save(update_fields=["html_content"])
+        _rewrite(row, email_templates.without_logo(fields["html_content"]))
 
 
 class Migration(migrations.Migration):

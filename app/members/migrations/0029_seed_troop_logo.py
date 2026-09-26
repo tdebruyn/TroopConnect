@@ -21,10 +21,11 @@ alone and starts on the shipped mark; see ``TroopSettings.logo_url``.
 import os
 
 from django.contrib.staticfiles import finders
+from django.core.cache import cache
 from django.core.files.storage import default_storage
 from django.db import migrations
 
-from members.constants import DEFAULT_LOGO
+from members.constants import DEFAULT_LOGO, TROOP_SETTINGS_CACHE_KEY
 
 
 def seed_logo(apps, schema_editor):
@@ -60,6 +61,14 @@ def seed_logo(apps, schema_editor):
     troop.logo = stored
     troop.save(update_fields=["logo"])
 
+    # Written through the historical model, so the post_save receiver that
+    # normally drops the cached row never fires. The cache has no expiry, and
+    # it lives in Redis, which outlives the deploy — without this the instance
+    # would go on serving the row it cached before the migration, the header
+    # would keep showing the static fallback, and the settings page would show
+    # an empty logo field over a row that has one.
+    cache.delete(TROOP_SETTINGS_CACHE_KEY)
+
 
 def clear_logo(apps, schema_editor):
     """Drop the copy this migration made, putting the instance back on the fallback.
@@ -87,6 +96,7 @@ def clear_logo(apps, schema_editor):
 
     troop.logo = ""
     troop.save(update_fields=["logo"])
+    cache.delete(TROOP_SETTINGS_CACHE_KEY)
 
     if default_storage.exists(name):
         default_storage.delete(name)

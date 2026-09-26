@@ -311,6 +311,23 @@ Two things to know about post_office here:
   (or an admin edit) takes effect immediately instead of after the cache entry
   expires.
 
+**A data migration that writes a cached row has to invalidate the cache itself.**
+Both of these are cache-backed, and in both cases the app's invalidation is a
+`post_save` receiver on the *real* model — which a migration never sends: it
+gets its models from `apps.get_model` on the historical registry, and that is a
+class rebuilt from the recorded migration state, so the sender differs and the
+receiver is skipped. `TroopSettings` is worse than `EmailTemplate`, because its
+cache entry is written with **no expiry** into Redis, which outlives the deploy:
+without an explicit `cache.delete(TROOP_SETTINGS_CACHE_KEY)` the instance goes on
+serving the row it cached *before* the migration, and the change looks like it
+never happened. Migrations `0028` and `0029` show both.
+
+This is invisible to a test that calls a migration function with
+`django.apps.apps`, because that registry hands back the real model and fires the
+receiver the migration does not get. `tests/test_branding.py` disconnects the
+receivers to put the condition back; without that a test passes whether or not
+the migration invalidates anything.
+
 ---
 
 ## 3. Management commands

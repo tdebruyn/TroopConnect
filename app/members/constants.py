@@ -10,6 +10,15 @@ from django.utils.translation import gettext_lazy as _
 # there would be invisible to it.
 DEFAULT_LOGO = "images/troop/mini-logo-moutons.png"
 
+# Where :meth:`members.models.TroopSettings.get_settings` caches the singleton
+# row. Lives here for the same reason as DEFAULT_LOGO: a data migration that
+# writes that row has to drop the cached copy — the cache has no expiry, so a
+# deployment that upgraded would keep serving the row it cached before the
+# migration, and the change would look like it never happened — and a
+# migration cannot read a class attribute off ``apps.get_model``, which returns
+# the fields and nothing else.
+TROOP_SETTINGS_CACHE_KEY = "members.TroopSettings"
+
 # # Role names
 # PARENT_ROLE = "p"
 # ANIMATOR_ROLE = "a"

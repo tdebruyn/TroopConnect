@@ -13,6 +13,11 @@ through Django's cache directly.
 
 from post_office import cache as template_cache
 
+# Names the subscription, so connecting twice is a no-op and a test can take it
+# off to see what a caller that gets no signal — a data migration — has to do
+# for itself.
+TEMPLATE_CACHE_UID = "troopconnect.postoffice.forget_template_on_save"
+
 
 def cache_token(template):
     """The name post_office caches ``template`` under, before its own mangling."""
@@ -31,7 +36,7 @@ def connect():
     post_save.connect(
         forget_template,
         sender=EmailTemplate,
-        dispatch_uid="troopconnect.postoffice.forget_template_on_save",
+        dispatch_uid=TEMPLATE_CACHE_UID,
     )
     post_delete.connect(
         forget_template,

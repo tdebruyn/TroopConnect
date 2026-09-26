@@ -20,7 +20,7 @@ from django.templatetags.static import static
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from .constants import DEFAULT_LOGO
+from .constants import DEFAULT_LOGO, TROOP_SETTINGS_CACHE_KEY
 from .phone import TroopPhoneNumberField
 
 # class CustomAccountManager(BaseUserManager):
@@ -879,7 +879,9 @@ class TroopSettings(models.Model):
     cached. Nothing does that today; use ``save()`` and ``delete()``.
     """
 
-    CACHE_KEY = "members.TroopSettings"
+    # Where the cached copy lives. Defined in constants so a data migration can
+    # invalidate it — see TROOP_SETTINGS_CACHE_KEY.
+    CACHE_KEY = TROOP_SETTINGS_CACHE_KEY
 
     # --- Organisation ------------------------------------------------------
     # The unit's name, and the name outgoing email speaks for.

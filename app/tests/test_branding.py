@@ -15,14 +15,24 @@ import tempfile
 from django.apps import apps as django_apps
 from django.contrib.staticfiles import finders
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.db.models.signals import post_delete, post_save
 from django.test import override_settings
 from django.urls import reverse
+from post_office import cache as template_cache
 from post_office.models import Email, EmailTemplate
+from post_office.utils import get_email_template
 
 from members import email_templates
 from members.constants import DEFAULT_LOGO
 from members.mail import absolute_url, send_templated
-from members.models import Account, Person, Role, TroopSettings
+from members.models import (
+    Account,
+    Person,
+    Role,
+    TroopSettings,
+    _invalidate_troop_settings_cache,
+)
+from troopconnect.postoffice import TEMPLATE_CACHE_UID, cache_token, forget_template
 
 from .base import TroopSettingsTestCase
 from .mail import MailTestCase
@@ -285,7 +295,49 @@ class EmailLogoTest(TroopSettingsTestCase, MailTestCase):
         self.assertIn(troop_url, Email.objects.latest("created").html_message)
 
 
-class EmailLogoMigrationTest(TroopSettingsTestCase):
+class HistoricalModelMixin:
+    """Exercise a migration the way ``migrate`` actually calls it.
+
+    A migration never sees the model the application imported. It gets one
+    rebuilt from the recorded migration state, and ``save()`` on that class
+    sends ``post_save`` with a *different* sender — so every receiver the app
+    connected is skipped. Calling a migration function with ``django.apps.apps``
+    hands it the real model instead, which fires those receivers and does the
+    invalidation the migration is supposed to do itself. A test written that way
+    passes whether or not the migration does anything.
+
+    Disconnecting the receivers is what puts the condition back.
+    """
+
+    def without_settings_cache_receiver(self):
+        post_save.disconnect(_invalidate_troop_settings_cache, sender=TroopSettings)
+        post_delete.disconnect(_invalidate_troop_settings_cache, sender=TroopSettings)
+        self.addCleanup(
+            post_save.connect,
+            _invalidate_troop_settings_cache,
+            sender=TroopSettings,
+        )
+        self.addCleanup(
+            post_delete.connect,
+            _invalidate_troop_settings_cache,
+            sender=TroopSettings,
+        )
+
+    def without_template_cache_receiver(self):
+        post_save.disconnect(
+            forget_template,
+            sender=EmailTemplate,
+            dispatch_uid=TEMPLATE_CACHE_UID,
+        )
+        self.addCleanup(
+            post_save.connect,
+            forget_template,
+            sender=EmailTemplate,
+            dispatch_uid=TEMPLATE_CACHE_UID,
+        )
+
+
+class EmailLogoMigrationTest(HistoricalModelMixin, TroopSettingsTestCase):
     """The migration that adds the logo to bodies already in the database.
 
     It may only touch a body that still reads exactly as this project wrote it.
@@ -315,6 +367,28 @@ class EmailLogoMigrationTest(TroopSettingsTestCase):
         BODY_MIGRATION.add_logo_to_bodies(django_apps, None)
 
         self.assertEqual(self.body(), email_templates.with_logo(before))
+
+    def test_the_body_the_next_send_uses_is_the_new_one(self):
+        """The migration writes behind a cache, and so has to drop it.
+
+        post_office caches each body under ``name:language``, and the fix in
+        ``troopconnect.postoffice`` hangs off ``EmailTemplate``'s post_save
+        signal — which a migration's historical model does not send. Reading
+        through the same cached lookup a send uses is the only way to see it.
+        """
+        self.without_template_cache_receiver()
+        self.an_older_database()
+        row = EmailTemplate.objects.get(name="new_child_staff", language="fr")
+        get_email_template("new_child_staff", language="fr")  # fill the cache
+
+        cached = template_cache.get(cache_token(row))
+        self.assertIsNotNone(cached, "the template cache is off; this proves nothing")
+        self.assertFalse(cached.html_content.startswith(email_templates.LOGO_HTML))
+
+        BODY_MIGRATION.add_logo_to_bodies(django_apps, None)
+
+        rendered = get_email_template("new_child_staff", language="fr").html_content
+        self.assertTrue(rendered.startswith(email_templates.LOGO_HTML))
 
     def test_a_rewritten_body_is_left_alone(self):
         EmailTemplate.objects.filter(name="new_child_staff", language="fr").update(
@@ -348,7 +422,7 @@ class EmailLogoMigrationTest(TroopSettingsTestCase):
         self.assertEqual(self.body(), before)
 
 
-class SeedTroopLogoMigrationTest(MediaRootTestCase):
+class SeedTroopLogoMigrationTest(HistoricalModelMixin, MediaRootTestCase):
     """The migration that gives an instance already in use the logo it showed.
 
     "Already in use" is what the migration keys on: a database holding no
@@ -375,6 +449,33 @@ class SeedTroopLogoMigrationTest(MediaRootTestCase):
         self.assertTrue(troop.logo.storage.exists(troop.logo.name))
         # Same image, served from the troop's own storage rather than the app's.
         self.assertTrue(troop.logo_url().startswith("/media/troop/"))
+
+    def test_the_next_read_sees_the_logo_it_stored(self):
+        """The migration writes behind a cache, and so has to drop it.
+
+        ``get_settings`` serves a cached row with **no expiry**, kept in Redis,
+        which outlives the deploy. Without an explicit invalidation the instance
+        goes on serving the row it cached before the migration: the header keeps
+        showing the static fallback and the settings page offers an empty logo
+        field over a row that has one.
+        """
+        self.without_settings_cache_receiver()
+        self.an_existing_deployment()
+        self.assertFalse(TroopSettings.get_settings().logo)  # fills the cache
+
+        LOGO_MIGRATION.seed_logo(django_apps, None)
+
+        self.assertTrue(TroopSettings.get_settings().logo)
+
+    def test_undoing_it_is_visible_on_the_next_read_too(self):
+        self.without_settings_cache_receiver()
+        self.an_existing_deployment()
+        LOGO_MIGRATION.seed_logo(django_apps, None)
+        self.assertTrue(TroopSettings.get_settings().logo)
+
+        LOGO_MIGRATION.clear_logo(django_apps, None)
+
+        self.assertFalse(TroopSettings.get_settings().logo)
 
     def test_a_fresh_install_is_left_on_the_fallback(self):
         """No member means nothing was showing a logo worth keeping."""
