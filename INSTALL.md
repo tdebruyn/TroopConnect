@@ -1,5 +1,10 @@
 # Installing TroopConnect
 
+If you have never run a server before, start with
+[GETTING-STARTED.md](GETTING-STARTED.md) instead: it covers renting a machine,
+DNS and installing Docker, with screenshots. What follows assumes you know your
+way around a terminal and a `.env` file.
+
 ## What you need
 
 - A server with Docker and the Compose plugin.

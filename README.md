@@ -38,6 +38,11 @@ The whole installation is **`compose.yml`, the `caddy/Caddyfile` it mounts, and
 a `.env`**. There is no build step: the images come from
 `ghcr.io/tdebruyn/troopconnect`.
 
+> **Never run a server before?** [GETTING-STARTED.md](GETTING-STARTED.md) walks
+> through the whole thing — renting a machine, pointing a domain at it,
+> installing Docker — with a screenshot of every screen of the setup wizard.
+> The rest of this section is the same install without the hand-holding.
+
 ### What you need
 
 - A server with Docker and the Compose plugin.
@@ -183,6 +188,9 @@ error itself. `docker compose logs web` (and `worker`) is where the rest is.
 
 ### Reference
 
+- [GETTING-STARTED.md](GETTING-STARTED.md) — the same install for someone who
+  has never run a server: choosing a host, DNS, Docker, and the wizard screen
+  by screen.
 - [INSTALL.md](INSTALL.md) — the same install, step by step, plus the
   community-maintained Ansible playbook.
 - [docs/dev/CONTRACT.md](docs/dev/CONTRACT.md) — the full configuration
