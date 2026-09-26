@@ -11,14 +11,22 @@ way around a terminal and a `.env` file.
 - A domain pointed at it (an A/AAAA record), with ports 80 and 443 reachable,
   because Caddy obtains the TLS certificate for that name.
 
-That is the whole installation: **`compose.yml` and a `.env`**. There is no
-build step — the images come from `ghcr.io/tdebruyn/troopconnect`.
+That is the whole installation: **`compose.yml`, the `caddy/Caddyfile` it
+mounts, and a `.env`**. There is no build step — the images come from
+`ghcr.io/tdebruyn/troopconnect`, and none of the project's source is needed on
+the server.
 
 ## Install
 
-1. Get the repository onto the server, or just the two files:
+1. Get those three files onto the server — clone the repository, or fetch just
+   them:
 
    ```bash
+   curl -O https://raw.githubusercontent.com/tdebruyn/TroopConnect/main/compose.yml
+   curl --create-dirs -o caddy/Caddyfile \
+     https://raw.githubusercontent.com/tdebruyn/TroopConnect/main/caddy/Caddyfile
+   curl -O https://raw.githubusercontent.com/tdebruyn/TroopConnect/main/.env.example
+
    cp .env.example .env
    ```
 
