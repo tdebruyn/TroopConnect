@@ -6,7 +6,6 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib.sites.models import Site
 from django.core.exceptions import PermissionDenied
 from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
@@ -14,7 +13,6 @@ from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.utils.translation import gettext as _
 from django.views.generic import ListView, TemplateView, UpdateView
-from post_office import mail
 from post_office.models import STATUS, Email
 
 from .constants import (
@@ -29,6 +27,7 @@ from .forms import (
     OnboardingForm,
     ProfileEditForm,
 )
+from .mail import absolute_url, send_templated
 from .models import (
     Account,
     Enrollment,
@@ -397,27 +396,25 @@ def add_new_child_view(request):
             # a quick add: the HTMX childListChanged/showMessage response is the
             # confirmation, so no email should be sent.
             if form.cleaned_data.get("email"):
-                mail.send(
+                send_templated(
                     recipients=request.user.email,
-                    sender=settings.DEFAULT_FROM_EMAIL,
                     template="new_child_parent",
-                    language=getattr(request.user, "preferred_language", None) or settings.LANGUAGE_CODE,
+                    language=getattr(request.user, "preferred_language", None),
                     context={
                         "first_name": child.first_name,
                         "last_name": child.last_name,
                         "parent": f"{request.user.person.first_name} {request.user.person.last_name}",
                     },
                 )
-            mail.send(
+            send_templated(
                 recipients=get_registration_admins(),
-                sender=settings.DEFAULT_FROM_EMAIL,
                 template="new_child_staff",
                 # Staff notifications are sent in the site default language.
                 language=settings.LANGUAGE_CODE,
                 context={
                     "first_name": child.first_name,
                     "last_name": child.last_name,
-                    "url": f"{Site.objects.get_current()}/users/adminupdate/{child.id}",
+                    "url": absolute_url(f"/users/adminupdate/{child.id}"),
                 },
             )
             return HttpResponse(
@@ -594,9 +591,8 @@ def _notify_deregistration_admins(child, parent):
     automatically (fees and attestations are already built on that enrolment),
     so the admins are told to follow the internal-regulations procedure.
     """
-    mail.send(
+    send_templated(
         recipients=get_registration_admins(),
-        sender=settings.DEFAULT_FROM_EMAIL,
         template="deregistration_admin",
         # Staff notifications go out in the site default language.
         language=settings.LANGUAGE_CODE,
@@ -604,7 +600,7 @@ def _notify_deregistration_admins(child, parent):
             "first_name": child.first_name,
             "last_name": child.last_name,
             "parent": f"{parent.first_name} {parent.last_name}",
-            "url": f"{Site.objects.get_current()}/users/adminupdate/{child.id}",
+            "url": absolute_url(f"/users/adminupdate/{child.id}"),
         },
     )
 

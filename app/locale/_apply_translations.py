@@ -775,7 +775,7 @@ def _rewrite(path, lang):
             meta = {
                 "Language": lang,
                 "Language-Team": f"{lang} <{lang}@li.org>",
-                "Last-Translator": "TroopConnect <noreply@troop.tomctl.be>",
+                "Last-Translator": "TroopConnect",
                 "PO-Revision-Date": "2026-07-24 00:00+0200",
                 "Content-Type": "text/plain; charset=UTF-8",
             }

@@ -261,16 +261,16 @@ def notify_upcoming_deletion():
             continue
 
         from django.conf import settings
-        from post_office import mail
 
+        from .mail import send_templated
         from .models import Account
 
         for email in recipients:
             acct = Account.objects.filter(email=email).first()
-            mail.send(
+            send_templated(
                 recipients=[email],
                 template="archive_deletion_warning",
-                language=(acct.preferred_language if acct else None) or settings.LANGUAGE_CODE,
+                language=acct.preferred_language if acct else settings.LANGUAGE_CODE,
                 context={
                     "person_name": str(person),
                     "deletion_date": (person.archived_date + timedelta(days=5 * 365)).isoformat(),

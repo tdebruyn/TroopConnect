@@ -1,6 +1,5 @@
 import hashlib
 
-from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q
@@ -8,9 +7,9 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from post_office import mail
 
 from homepage.models import Event
+from members.mail import send_templated
 from members.models import (
     Enrollment,
     ImportantDocument,
@@ -465,11 +464,10 @@ def compose_message(request):
                     )
                     if hasattr(recipient, "account"):
                         try:
-                            mail.send(
+                            send_templated(
                                 recipients=[recipient.account.email],
-                                sender=settings.DEFAULT_FROM_EMAIL,
                                 template="section_message",
-                                language=getattr(recipient.account, "preferred_language", None) or settings.LANGUAGE_CODE,
+                                language=getattr(recipient.account, "preferred_language", None),
                                 context={
                                     "sender_name": str(person),
                                     "section_name": msg_section.name if msg_section else _("All members"),

@@ -45,6 +45,7 @@ run the app before wiring up mail.
 | `DJANGO_DEBUG` | off | `1`/`true`/`yes`/`on` turns debug on. Never set on a public domain; a system check warns if you do. |
 | `SITE_ID` | `1` | The `django.contrib.sites` row allauth reads. Only change it for an instance migrated from the old `.settings.json`. |
 | `TIME_ZONE` | `Europe/Brussels` | Used for dates and Celery schedules. |
+| `TROOP_NAME` | `TroopConnect` | The name outgoing email speaks for. Placeholder until the troop-editable settings move into the database, so set it or families are told they registered with "TroopConnect". |
 | `POSTGRES_USER` | `troopconnect` | |
 | `POSTGRES_DB` | `troopconnect` | |
 | `POSTGRES_PASSWORD` | generated | Set it only to choose the password yourself, and only before the first start: the database is initialised with whatever the first run generated. |
@@ -100,6 +101,47 @@ Django cache.
 | `last_passage_school_year` | Bookkeeping for the yearly section passage; do not edit by hand. |
 
 `ImportantDocument` (title, description, url, file) is likewise admin-managed.
+
+---
+
+## 2a. What a freshly migrated database contains
+
+`migrate` against an empty database leaves the instance able to take its first
+registration, with nothing seeded by hand:
+
+| What | Created by | Kept current by |
+| --- | --- | --- |
+| The `django.contrib.sites` row for `SITE_ID` | Migration `members/0021` | `troopconnect/siteconfig.py`, on every `migrate`: rewrites its `domain` from `SITE_DOMAIN` |
+| The email templates, in `fr`, `nl` and `en` | Migration `members/0021`, from `members/email_templates.py` | — |
+
+`django.contrib.sites` ships no data of its own, so without that migration
+`Site.objects.get_current()` raises `DoesNotExist` and the first registration
+fails — every email that links back to the site calls it. The split is
+deliberate: the migration guarantees the row exists, and the startup hook keeps
+its value current, because `SITE_DOMAIN` can change long after the migration
+has run.
+
+The templates name no troop. They say `{{ troop_name }}`, which
+`members.mail.send_templated` fills in from `TROOP_NAME`; that helper also
+builds absolute URLs from the Site row and resolves the language to one
+templates actually exist in, so a parent whose `preferred_language` is `nl` or
+`en` gets an email rather than a lookup failure.
+
+Changing or adding copy means editing `members/email_templates.py` and running
+`makemigrations` for a new seeding migration — the tests assert the database
+matches the module, so the two cannot drift apart. Re-seeding never overwrites
+copy an administrator has rewritten by hand: a row is replaced only when it
+still holds text this project seeded (`email_templates.LEGACY_MARKERS`).
+
+Two things to know about post_office here:
+
+* A template is looked up by the exact pair `(name, language)`, with no
+  fallback, which is why all three languages are seeded rather than one plus
+  translations.
+* Its template cache keys on `"{name}:{language}"` but its own `save()` only
+  clears `"{name}"`. `troopconnect/postoffice.py` corrects that, so re-seeding
+  (or an admin edit) takes effect immediately instead of after the cache entry
+  expires.
 
 ---
 

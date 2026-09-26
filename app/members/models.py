@@ -758,7 +758,10 @@ class SiteSettings(models.Model):
     )
 
     # Contact information
-    contact_email = models.EmailField(default="info@scouts.be")
+    # Left empty rather than pre-filled: a placeholder that looks like a real
+    # address would have a troop's own site publishing somebody else's, and
+    # mail to it would leave the unit. The admin is expected to set it.
+    contact_email = models.EmailField(default="", blank=True)
     contact_phone = models.CharField(max_length=20, blank=True)
     contact_address = models.TextField(blank=True)
 

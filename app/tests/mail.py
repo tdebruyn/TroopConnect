@@ -10,6 +10,12 @@ DUMMY_POST_OFFICE = {
     "BACKENDS": {"default": "troopconnect.dummy_backend.DummyEmailBackend"},
 }
 
+# post_office caches templates in the shared Redis cache, which a TestCase's
+# rollback does not clear -- so without this a run can render a template left
+# behind by an earlier one. The application-side invalidation lives in
+# troopconnect.postoffice; this is belt and braces for the tests.
+NO_TEMPLATE_CACHE = {"POST_OFFICE_TEMPLATE_CACHE": False}
+
 
 class MailTestCase(TestCase):
     """Base TestCase that uses the dummy backend and never dispatches to Celery.
@@ -24,7 +30,9 @@ class MailTestCase(TestCase):
 
     def setUp(self):
         super().setUp()
-        self._po_override = override_settings(POST_OFFICE=DUMMY_POST_OFFICE)
+        self._po_override = override_settings(
+            POST_OFFICE=DUMMY_POST_OFFICE, **NO_TEMPLATE_CACHE
+        )
         self._po_override.enable()
         self.addCleanup(self._po_override.disable)
         self._delay_patcher = mock.patch("post_office.tasks.send_queued_mail.delay")

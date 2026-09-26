@@ -48,6 +48,11 @@ DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL")
 # Django only insists it is set so a deployment cannot forget it.
 ACME_EMAIL = env("ACME_EMAIL")
 
+# Name the outgoing emails speak for. A placeholder until the troop-editable
+# settings move into the database; until then, set TROOP_NAME to your unit's
+# name or families will be told they registered with "TroopConnect".
+TROOP_NAME = env("TROOP_NAME", "TroopConnect")
+
 # ---------------------------------------------------------------------------
 # Core toggles
 # ---------------------------------------------------------------------------
