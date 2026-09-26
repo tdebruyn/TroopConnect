@@ -29,7 +29,7 @@ def notify_admins_on_profile_save(sender, instance, created, **kwargs):
 
     mail.send(
         recipients=recipients,
-        sender="MS_M3qCdl@tomctl.be",
+        sender=settings.DEFAULT_FROM_EMAIL,
         template="new_child_staff",
         # Staff notifications are sent in the site default language.
         language=settings.LANGUAGE_CODE,

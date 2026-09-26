@@ -1,3 +1,30 @@
+# TroopConnect
+
+Web application for running a scout unit: member registration (children,
+parents, animators), section enrollment by school year, email notifications and
+admin management. The interface is available in French, Dutch and English.
+
+Any troop can run its own independent instance: deploy the published images
+with a filled-in `.env`, and no code changes.
+
+```bash
+cp .env.example .env     # fill in SITE_DOMAIN, EMAIL_URL,
+                         # DEFAULT_FROM_EMAIL and ACME_EMAIL
+docker compose -f docker-compose-prod.yml up -d --build
+docker compose -f docker-compose-prod.yml exec troopconnect \
+    python manage.py createsuperuser
+```
+
+`python manage.py check` reports any configuration problem, one plain-language
+line per variable. Step-by-step instructions are in [INSTALL.md](INSTALL.md);
+the full configuration contract is in
+[docs/dev/CONTRACT.md](docs/dev/CONTRACT.md).
+
+Licensed under the [AGPL-3.0](LICENSE). To report a vulnerability, see
+[SECURITY.md](SECURITY.md).
+
+## Development notes
+
 TODO
 
 1. http://127.0.0.1:8000/users/adminlist

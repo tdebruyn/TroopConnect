@@ -1,13 +1,26 @@
+# Production stack for a self-hosted TroopConnect instance.
+#
+# Everything deployment-specific is read from a single .env file next to this
+# file (see .env.example). Compose reads it automatically for ${...}
+# interpolation, and each service also loads it into the container environment
+# so Django sees the same values.
+#
+#   cp .env.example .env   # then fill it in
+#   docker compose -f docker-compose-prod.yml up -d --build
+#
+# DATABASE_URL and REDIS_URL are set explicitly below because they point at
+# this file's own service names, not at anything the operator has to know.
+
 services:
   caddy:
-    env_file: "/tmp/myapp.env"
     build:
       context: caddy
-      args:
-        - LETSENCRYPT_CONTACT_EMAIL=${LETSENCRYPT_CONTACT_EMAIL}
     restart: always
     cap_add:
       - NET_ADMIN
+    environment:
+      - SITE_DOMAIN=${SITE_DOMAIN:?SITE_DOMAIN must be set in .env}
+      - ACME_EMAIL=${ACME_EMAIL:?ACME_EMAIL must be set in .env}
     ports:
       - "80:80"
       - "443:443"
@@ -25,11 +38,10 @@ services:
   postgres:
     image: postgres:alpine
     restart: always
-    env_file: "/tmp/myapp.env"
     environment:
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_DB=troopconnect
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in .env}
+      - POSTGRES_USER=${POSTGRES_USER:-troopconnect}
+      - POSTGRES_DB=${POSTGRES_DB:-troopconnect}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
@@ -46,20 +58,16 @@ services:
       context: .
       dockerfile: app/Dockerfile.prod
     restart: always
-    env_file: "/tmp/myapp.env"
-    # Remove the command override since we're using the entrypoint script
+    env_file:
+      - .env
     environment:
-      - DATABASE_URL=postgres://${DB_USER}:${DB_PASSWORD}@postgres:5432/troopconnect
-      - CELERY_BROKER_URL=redis://redis:6379/0
-      - DEBUG=False
-      - DJANGO_SETTINGS_MODULE=troopconnect.settings
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_DB=troopconnect
-      - POSTGRES_HOST=postgres
+      - DATABASE_URL=postgres://${POSTGRES_USER:-troopconnect}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-troopconnect}
+      - REDIS_URL=redis://redis:6379/0
     volumes:
       - static_volume:/app/staticfiles
       - media_volume:/app/mediafiles
+      # Holds the generated SECRET_KEY so sessions survive a container rebuild.
+      - app_secrets:/data/secrets
     networks:
       - shared_net
     depends_on:
@@ -71,17 +79,15 @@ services:
       context: .
       dockerfile: app/Dockerfile.prod
     restart: always
-    env_file: "/tmp/myapp.env"
+    env_file:
+      - .env
     command: celery -A troopconnect worker -l INFO
     environment:
-      - DATABASE_URL=postgres://${DB_USER}:${DB_PASSWORD}@postgres:5432/troopconnect
-      - CELERY_BROKER_URL=redis://redis:6379/0
-      - DEBUG=False
-      - DJANGO_SETTINGS_MODULE=troopconnect.settings
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_DB=troopconnect
-      - POSTGRES_HOST=postgres
+      - DATABASE_URL=postgres://${POSTGRES_USER:-troopconnect}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-troopconnect}
+      - REDIS_URL=redis://redis:6379/0
+    volumes:
+      - media_volume:/app/mediafiles
+      - app_secrets:/data/secrets
     networks:
       - shared_net
     depends_on:
@@ -93,17 +99,15 @@ services:
       context: .
       dockerfile: app/Dockerfile.prod
     restart: always
-    env_file: "/tmp/myapp.env"
+    env_file:
+      - .env
     command: celery -A troopconnect beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
     environment:
-      - DATABASE_URL=postgres://${DB_USER}:${DB_PASSWORD}@postgres:5432/troopconnect
-      - CELERY_BROKER_URL=redis://redis:6379/0
-      - DEBUG=False
-      - DJANGO_SETTINGS_MODULE=troopconnect.settings
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_DB=troopconnect
-      - POSTGRES_HOST=postgres
+      - DATABASE_URL=postgres://${POSTGRES_USER:-troopconnect}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-troopconnect}
+      - REDIS_URL=redis://redis:6379/0
+    volumes:
+      - media_volume:/app/mediafiles
+      - app_secrets:/data/secrets
     networks:
       - shared_net
     depends_on:
@@ -120,3 +124,4 @@ volumes:
   postgres_data:
   static_volume:
   media_volume:
+  app_secrets:

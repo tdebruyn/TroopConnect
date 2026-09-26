@@ -20,3 +20,5 @@ playwright-report/
 
 # Runtime uploads (user attachments, email attachments)
 app/media/
+# Production MEDIA_ROOT (what the media_volume is mounted over)
+app/mediafiles/

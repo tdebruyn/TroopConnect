@@ -4,6 +4,9 @@
     - config.yml
     - vault.yml
   pre_tasks:
+    # config.yml and vault.yml keys become UPPERCASE environment variables
+    # (site_domain -> SITE_DOMAIN). This is the same file a self-hoster writes
+    # by hand from .env.example.
     - name: Create .env content from vars
       set_fact:
         env_lines: |
@@ -11,18 +14,14 @@
           {{ key | upper }}={{ value }}
           {% endfor %}
 
-    - name: Create env file on remote (temporary)
+    # It lives next to the compose file rather than in /tmp: docker-compose
+    # reads it both for ${...} interpolation and as the container environment,
+    # so it has to still be there when the stack restarts.
+    - name: Write .env on remote
       ansible.builtin.copy:
-        dest: /tmp/myapp.env
+        dest: "{{ project_dir }}/.env"
         content: "{{ env_lines }}"
         mode: "0600"
-      no_log: true
-
-  post_tasks:
-    - name: Remove env file after startup
-      ansible.builtin.file:
-        path: /tmp/myapp.env
-        state: absent
       no_log: true
 
   roles:

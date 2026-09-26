@@ -1,8 +1,16 @@
+# Caddy configuration for a TroopConnect instance.
+#
+# run.sh substitutes ${SITE_DOMAIN}, ${ACME_EMAIL}, ${APP_HOST} and ${APP_PORT}
+# from the container environment, so nothing here is tied to one troop.
+# Caddy's own placeholders ({host}, {remote}, {scheme}) use single braces and
+# are left alone by envsubst.
+
 {
-	email ${LETSENCRYPT_CONTACT_EMAIL}
+	# Address Let's Encrypt uses to warn about expiring certificates.
+	email ${ACME_EMAIL}
 }
 
-${WEBSERVER} {
+${SITE_DOMAIN} {
 	encode zstd gzip
 
 	log {
@@ -27,24 +35,11 @@ ${WEBSERVER} {
 
 	# Forward all other requests to the Django application
 	handle {
-		reverse_proxy troopconnect:9000 {
+		reverse_proxy ${APP_HOST}:${APP_PORT} {
 			header_up Host {host}
 			header_up X-Real-IP {remote}
 			header_up X-Forwarded-For {remote}
 			header_up X-Forwarded-Proto {scheme}
 		}
 	}
-}
-
-www.tomctl.be {
-	log {
-		format console {
-			time_format iso8601
-		}
-	}
-    reverse_proxy http://siteperso:80
-}
-
-tomctl.be {
-	redir https://www.tomctl.be{uri} permanent
 }

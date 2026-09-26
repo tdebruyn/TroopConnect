@@ -410,8 +410,7 @@ def add_new_child_view(request):
                 )
             mail.send(
                 recipients=get_registration_admins(),
-                # sender="tom@tomctl.be",
-                sender="MS_M3qCdl@tomctl.be",
+                sender=settings.DEFAULT_FROM_EMAIL,
                 template="new_child_staff",
                 # Staff notifications are sent in the site default language.
                 language=settings.LANGUAGE_CODE,

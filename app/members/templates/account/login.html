@@ -43,19 +43,24 @@
             </div>
         </div>
     </form>
-    <div class="col-md-6 row">
-        <legend class="fw-bold">
-            {% trans "Or log in with" %}
-        </legend>
-        <div>
-            <a class="btn btn-primary mb-3 container"
-               style="background-color: #3b5998"
-               href="{% provider_login_url 'facebook' %}"
-               role="button"><i class="fab fa-facebook me-2"></i>Facebook</a>
-            <a class="btn btn-primary mb-3 container"
-               style="background-color: #dd4b39"
-               href="{% provider_login_url 'google' %}"
-               role="button"><i class="fab fa-google me-2"></i>Google</a>
+    {% comment %}
+      Only the providers actually configured for this instance are listed, so a
+      troop that never set GOOGLE_CLIENT_ID / FACEBOOK_APP_ID sees no button
+      (and no broken link) here.
+    {% endcomment %}
+    {% get_providers as socialaccount_providers %}
+    {% if socialaccount_providers %}
+        <div class="col-md-6 row">
+            <legend class="fw-bold">
+                {% trans "Or log in with" %}
+            </legend>
+            <div>
+                {% for provider in socialaccount_providers %}
+                    <a class="btn btn-primary mb-3 container"
+                       href="{% provider_login_url provider.id %}"
+                       role="button"><i class="fab fa-{{ provider.id }} me-2"></i>{{ provider.name }}</a>
+                {% endfor %}
+            </div>
         </div>
-    </div>
+    {% endif %}
 {% endblock subcontent %}

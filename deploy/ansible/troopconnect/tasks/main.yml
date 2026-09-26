@@ -22,8 +22,6 @@
     project_src: "{{ project_dir }}"
     files:
       - docker-compose-prod.yml
-    env_files:
-      - /tmp/myapp.env
     recreate: always
     build: always
   register: compose_result

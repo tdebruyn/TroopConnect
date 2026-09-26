@@ -68,6 +68,7 @@ regex==2026.9.10
 requests==2.34.2
 ruff==0.16.7
 s3transfer==0.19.2
+sentry-sdk==2.70.0
 six==1.17.0
 sqlparse==0.6.0
 stack-data==0.6.3

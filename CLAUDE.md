@@ -4,7 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-TroopConnect is a Django 6.0 web application for managing a Belgian scout unit ("Scouts de Limal"). It handles member registration (children, parents, animators), section enrollment by school year, email notifications via AWS SES, and admin management. Production domain: `troop.tomctl.be`. Language: Belgian French (`fr-be`).
+TroopConnect is a Django 6.0 web application for managing a scout unit. It handles member registration (children, parents, animators), section enrollment by school year, email notifications, and admin management. UI languages: French, Dutch and English (`fr-be` default).
+
+It is built to be self-hosted: a troop deploys an independent instance from the published images with a filled-in `.env` and no code edits. See `docs/dev/CONTRACT.md` for the full configuration contract and `.env.example` for a starting point.
 
 ## Development Commands
 
@@ -56,15 +58,15 @@ Package management uses `uv` (not pip directly). Dependencies are pinned in `app
 ### Email Pipeline
 - `django-post_office` queues emails. `POST_OFFICE["DEFAULT_PRIORITY"]="medium"`, so `mail.send()` creates a queued `Email` instead of dispatching synchronously.
 - Flushed asynchronously by Celery: the `send_queued_mail` beat task (every 5 min) plus the `email_queued` signal (with `CELERY_ENABLED`).
-- Sending backend is chosen by `MAIL_SEND_MODE` (`.settings.json`): `"real"` → MailerSend HTTP API (`troopconnect/mailersend_backend.py`), `"dummy"` → `troopconnect/dummy_backend.py` (records to `django.core.mail.outbox`). Defaults to `"real"` when `MAILERSEND_API_KEY` is set.
+- Sending backend follows `EMAIL_URL` (`smtp://`, `smtp+tls://`, `smtp+ssl://` or `console://`), parsed in `troopconnect/env.py`. `MAIL_SEND_MODE` overrides it: `mailersend` (or the legacy `real`) → MailerSend HTTP API (`troopconnect/mailersend_backend.py`), `dummy` → `troopconnect/dummy_backend.py` (records to `django.core.mail.outbox`). Setting `MAILERSEND_API_KEY` selects MailerSend implicitly.
 - Failed sends (after `MAX_RETRIES=3`) trigger a staff warning banner linking to the email queue page (`members:mail_queue`), where staff can **requeue** or **purge** failed emails.
-- `MAILERSEND_API_KEY` comes from a gitignored `.env` (referenced via `${MAILERSEND_API_KEY}` in docker-compose).
 
-### Secrets & Config
-- Secrets loaded from `app/troopconnect/.settings.json` (gitignored). Template at `.settings.json-default`.
-- DB password from `POSTGRES_PASSWORD` env var.
-- `MAILERSEND_API_KEY` from a gitignored `.env` at the repo root.
-- `ALLOWED_HOSTS` is set based on `DEBUG` flag: localhost in dev, `troop.tomctl.be` in prod.
+### Configuration
+- One settings module, `app/troopconnect/settings.py`, reads **only** the environment. There is no config file checked into or mounted into the app.
+- Parsing helpers live in `troopconnect/env.py`; validation lives in `troopconnect/checks.py`, so `manage.py check` is the single place configuration problems surface. In production a bad variable is an error that stops startup; with `DJANGO_DEBUG=1` it is a warning.
+- Required: `SITE_DOMAIN`, `EMAIL_URL`, `DEFAULT_FROM_EMAIL`, `ACME_EMAIL`. Everything else is optional with a safe default.
+- `ALLOWED_HOSTS` and `CSRF_TRUSTED_ORIGINS` are derived from `SITE_DOMAIN`; `DEBUG` is off unless `DJANGO_DEBUG=1`. The secret key falls back to `/data/secrets/secret_key`, generated on first boot.
+- Troop-editable content (unit name, contact address, registration toggle) lives in the database (`SiteSettings`), never in the environment. See `docs/dev/CONTRACT.md` for the split.
 
 ## Deployment
 
@@ -82,5 +84,6 @@ ansible-playbook -i deploy/ansible/inventory.ini deploy/ansible/playbook.yml
 - Test suite lives in `app/tests/` (plus per-app `tests.py` for `finance`/`homepage`). `manage.py test tests` also runs a ruff lint check (`tests/test_lint.py`); linter config is `app/ruff.toml`.
 - No CI/CD pipelines configured.
 - `django-simple-history` is installed but not actively used on models.
-- `members/signals.py` defines a `post_save` handler but is never imported (`members/apps.py` `ready()` is `pass`), so it is dead.
+- `members/signals.py` defines a `post_save` handler that is still not imported, so it is dead. `MembersConfig.ready()` now only registers the system checks and the `Site`-domain sync.
 - The SQLite files (`db.sqlite3`) are legacy; the project uses PostgreSQL exclusively.
+- `django-ses` is still in `requirements.txt` and its dashboard/webhook URLs are still routed in `troopconnect/urls.py`, left over from before email moved off AWS SES. It is not in `INSTALLED_APPS`, so those views cannot work. Removal is a pending decision, not an oversight.

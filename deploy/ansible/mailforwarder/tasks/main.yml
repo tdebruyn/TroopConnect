@@ -26,7 +26,7 @@
 
 - name: Create certificates for the mail server
   ansible.builtin.command: >
-    certbot certonly --standalone -d {{ mailserver }} --agree-tos --non-interactive --email {{ letsencrypt_contact_email }}
+    certbot certonly --standalone -d {{ mailserver }} --agree-tos --non-interactive --email {{ acme_email }}
   args:
     creates: /etc/letsencrypt/live/{{ mailserver }}/cert.pem
   become: true
@@ -36,7 +36,5 @@
     project_src: "{{ project_dir }}"
     files:
       - docker-compose-mail.yml
-    env_files:
-      - /tmp/myapp.env
   register: compose_result
   become: true

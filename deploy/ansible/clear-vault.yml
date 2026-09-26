@@ -1,1 +1,4 @@
-db_password: db_password
+# Template for the encrypted vault.yml. Run create-config.py to edit these
+# values and re-encrypt; the keys become UPPERCASE environment variables in the
+# .env the playbook writes on the server (postgres_password -> POSTGRES_PASSWORD).
+postgres_password: postgres_password

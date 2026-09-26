@@ -29,12 +29,15 @@ urlpatterns = [
     path("messaging/", include("messaging.urls", namespace="messaging")),
     path("finance/", include("finance.urls", namespace="finance")),
     path("attestations/", include("attestations.urls", namespace="attestations")),
-    path("__debug__/", include("debug_toolbar.urls")),
     path(
         "ses/event-webhook/", SESEventWebhookView.as_view(), name="handle-event-webhook"
     ),
     path("accounts/", include("allauth.urls")),
 ]
+
+# django-debug-toolbar is only installed (see settings.DEBUG) in debug mode.
+if "debug_toolbar" in settings.INSTALLED_APPS:
+    urlpatterns += [path("__debug__/", include("debug_toolbar.urls"))]
 
 if getattr(settings, "SERVE_MEDIA_LOCALLY", False):
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,7 +1,9 @@
 services:
   mail-forward:
     image: zixia/simple-mail-forwarder
-    env_file: "/tmp/myapp.env"
+    # Written by the Ansible playbook (or by hand from .env.example); also
+    # supplies ${MAILSERVER} for the certificate volume below.
+    env_file: ".env"
     environment:
       - SMF_SRS=true
       - SMF_POSTFIXMAIN_sender_canonical_maps=tcp:localhost:10001
