@@ -175,7 +175,7 @@ point at the right host on a fresh install.
 | `worker` | app image | Celery worker: `send_queued_mail`, `create_year_task`, `run_passage`, cleanup tasks. |
 | `beat` | app image | Celery scheduler (`django_celery_beat`, database-backed). |
 | `db` | `postgres:17-alpine` | Database. PostgreSQL only — the app uses `ArrayField`. |
-| `redis` | `redis:7-alpine` | Celery broker and cache. |
+| `redis` | `redis:8-alpine` | Celery broker and cache. |
 | `caddy` | `caddy:2-alpine` | TLS termination and reverse proxy; serves `/static/` and `/media/` from volumes. |
 
 The four application services run the same image,
@@ -307,7 +307,7 @@ that directory's README before relying on it.
 
 | Workflow | Does |
 | --- | --- |
-| `test` | The Django suite against Postgres 17 and Redis 7 services, plus `ruff`. The environment it sets is the same set of variables a troop puts in `.env`. |
+| `test` | The Django suite against Postgres 17 and Redis 8 services, plus `ruff`. The environment it sets is the same set of variables a troop puts in `.env`. |
 | `image` | Builds `ghcr.io/tdebruyn/troopconnect` for amd64 and arm64, and publishes it on tags and `main`. Pull requests build amd64 only and do not push. |
 | `smoke` | Builds the image locally, writes `.env` from `.env.example`, brings the stack up on empty volumes, waits for `/healthz`, checks the homepage and login page answer, then restarts on the same volumes and checks nothing was regenerated. |
 | `security` | `pip-audit` against `requirements.txt`, and Trivy over the built image failing on fixable criticals. Also runs weekly. |

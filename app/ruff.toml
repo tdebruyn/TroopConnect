@@ -2,7 +2,7 @@
 # Lives inside app/ because the dev Docker container only mounts ./app -> /app,
 # so a repo-root config would be invisible when tests run in-container.
 
-target-version = "py313"   # Dockerfile.dev: python:3.13-slim
+target-version = "py314"   # Dockerfile.dev: python:3.14-slim
 line-length = 88
 
 [lint]
