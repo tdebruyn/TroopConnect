@@ -54,7 +54,7 @@
         <span style="flex:1"></span>
         <a href="{% if page == 'home' %}{% url 'homepage' %}{% else %}{% url 'faq' %}{% endif %}"
            target="_blank" rel="noopener">{% trans "View site" %}</a>
-        <a href="{% url 'admin:members_sitesettings_changelist' %}"
+        <a href="{% url 'admin:members_troopsettings_changelist' %}"
            title="{% trans 'Site name and other settings are edited in the site settings.' %}">
             {% trans "Site settings" %}
         </a>

@@ -60,8 +60,8 @@ class AvailableLanguagesMiddleware:
     """Restrict the active language to those enabled by the superadmin.
 
     Placed immediately after ``django.middleware.locale.LocaleMiddleware``. If
-    the language it resolved is not in ``SiteSettings.available_languages``,
-    fall back to ``SiteSettings.default_language``. With exactly one enabled
+    the language it resolved is not in ``TroopSettings.enabled_languages``,
+    fall back to ``TroopSettings.default_language``. With exactly one enabled
     language the site is locked to it and the navbar selector is hidden.
     """
 
@@ -104,9 +104,9 @@ class AvailableLanguagesMiddleware:
     def _available_languages():
         # Local import to avoid a circular import at module load time
         # (models imports nothing from middleware, but keep it lazy).
-        from .models import SiteSettings
+        from .models import TroopSettings
 
-        available = list(SiteSettings.get_settings().available_languages or [])
+        available = list(TroopSettings.get_settings().enabled_languages or [])
         if not available:
             available = [settings.LANGUAGE_CODE]
         return available
@@ -114,7 +114,7 @@ class AvailableLanguagesMiddleware:
     @staticmethod
     def _default_language():
         # Local import to avoid a circular import at module load time.
-        from .models import SiteSettings
+        from .models import TroopSettings
 
-        default = SiteSettings.get_settings().default_language
+        default = TroopSettings.get_settings().default_language
         return default or settings.LANGUAGE_CODE

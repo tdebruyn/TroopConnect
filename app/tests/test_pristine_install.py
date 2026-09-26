@@ -20,8 +20,9 @@ from post_office.validators import validate_template_syntax
 
 from members import email_templates
 from members.mail import absolute_url, resolve_language, send_templated
-from members.models import SiteSettings
+from members.models import TroopSettings
 
+from .base import TroopSettingsTestCase
 from .mail import MailTestCase
 
 # The module name starts with a digit, so it cannot be imported normally.
@@ -30,11 +31,40 @@ SITE_MIGRATION = importlib.import_module(
 )
 
 
-class PristineDatabaseTest(TestCase):
+def name_the_troop(name):
+    """Give the troop a name in every language, so any recipient sees it.
+
+    ``TroopSettings.name`` is a translated field, and ``send_templated`` reads it
+    back in the language the message is written in, so setting the default
+    language's column alone would leave the other two empty.
+    """
+    troop = TroopSettings.get_settings()
+    troop.name_fr = troop.name_nl = troop.name_en = name
+    troop.save()
+
+
+class PristineDatabaseTest(TroopSettingsTestCase):
     """The state a fresh install is in before anything is configured."""
 
-    def test_the_database_starts_empty(self):
-        self.assertEqual(SiteSettings.objects.count(), 0)
+    def test_the_database_holds_one_row_of_generic_defaults(self):
+        """A migration creates the settings row; nothing names a real troop.
+
+        The row has to exist because the settings *page* has to be reachable on
+        a fresh install, and because the mail pipeline reads the troop's name
+        from it. What matters is that it holds the generic defaults rather than
+        anything a particular unit would recognise as its own.
+        """
+        troop = TroopSettings.get_settings()
+
+        self.assertEqual(TroopSettings.objects.count(), 1)
+        self.assertEqual(troop.name, "Scouts")
+        self.assertEqual(troop.enabled_languages, ["fr"])
+        self.assertEqual(troop.default_language, "fr")
+        self.assertEqual(troop.contact_email, "")
+        self.assertEqual(troop.footer_address, "")
+        self.assertEqual(troop.currency, "EUR")
+        self.assertEqual(troop.phone_region, "BE")
+        self.assertIsNone(troop.last_passage_school_year)
 
     def test_migrating_creates_the_site_row(self):
         """django.contrib.sites ships no data, so this has to come from us."""
@@ -52,11 +82,15 @@ class PristineDatabaseTest(TestCase):
         self.assertTrue(Site.objects.get_current().domain)
 
 
-class PristineEmailTest(MailTestCase):
-    """Rendering an email that links back to the site, on an untouched database."""
+class PristineEmailTest(TroopSettingsTestCase, MailTestCase):
+    """Rendering an email that links back to the site, on an untouched database.
 
-    @override_settings(TROOP_NAME="Unit Test")
+    These tests give the troop a name, so the cached row has to be dropped for
+    the next test's sake as well as their own.
+    """
+
     def test_a_registration_email_renders_with_an_absolute_url(self):
+        name_the_troop("Unit Test")
         domain = Site.objects.get_current().domain
 
         send_templated(
@@ -78,8 +112,8 @@ class PristineEmailTest(MailTestCase):
         self.assertIn(link, email.message)
         self.assertIn(link, email.html_message)
 
-    @override_settings(TROOP_NAME="Unit Test")
     def test_the_email_speaks_for_the_configured_troop(self):
+        name_the_troop("Unit Test")
         send_templated(
             recipients=["staff@example.org"],
             template="new_child_staff",

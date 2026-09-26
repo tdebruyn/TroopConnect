@@ -1,7 +1,6 @@
 from datetime import date, timedelta
 from unittest import mock
 
-from django.test import TestCase
 from django.utils import timezone
 from post_office.models import EmailTemplate
 
@@ -13,13 +12,19 @@ from members.models import (
     Role,
     SchoolYear,
     Section,
-    SiteSettings,
+    TroopSettings,
 )
 from members.tasks import run_passage
 
+from .base import TroopSettingsTestCase
 
-class PassageTestBase(TestCase):
-    """Shared setup for passage tests."""
+
+class PassageTestBase(TroopSettingsTestCase):
+    """Shared setup for passage tests.
+
+    ``run_passage`` writes the anti-replay marker back onto the troop settings
+    row, so these are exactly the tests that must not leave it cached.
+    """
 
     @classmethod
     def setUpTestData(cls):
@@ -28,6 +33,7 @@ class PassageTestBase(TestCase):
         )
 
     def setUp(self):
+        super().setUp()
         self.role_anime = Role.objects.get(short="e")
         self.role_animateur = Role.objects.get(short="a")
         self.role_parent = Role.objects.get(short="p")
@@ -256,7 +262,7 @@ class SkipInactiveChildrenTest(PassageTestBase):
         )
 
 
-class NoNextYearTest(TestCase):
+class NoNextYearTest(TroopSettingsTestCase):
     """Passage handles missing next school year gracefully."""
 
     @classmethod
@@ -303,7 +309,7 @@ class PassageGuardTest(PassageTestBase):
             Enrollment.objects.filter(user=child, school_year=self.next_year).exists()
         )
         # Marker must NOT be set, otherwise catch-up would be blocked.
-        self.assertIsNone(SiteSettings.get_settings().last_passage_school_year)
+        self.assertIsNone(TroopSettings.get_settings().last_passage_school_year)
 
     def test_catchup_after_missed_trigger_day(self):
         """Celery down on/around May 1: an April tick does nothing, the next
@@ -329,7 +335,7 @@ class PassageGuardTest(PassageTestBase):
             Enrollment.objects.filter(user=child, school_year=self.next_year).exists()
         )
         self.assertEqual(
-            SiteSettings.get_settings().last_passage_school_year, self.next_year.name
+            TroopSettings.get_settings().last_passage_school_year, self.next_year.name
         )
 
     def test_second_run_is_a_noop(self):

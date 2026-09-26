@@ -5,9 +5,9 @@ database (see migration 0021), to render at send time, and to assert against
 the database in tests.
 
 Every one of these speaks for the troop, so none of them names one: they all
-refer to ``{{ troop_name }}``. The value comes from the ``TROOP_NAME`` setting
-(see ``members.mail``); moving it into the database is a later step and needs
-no change here.
+refer to ``{{ troop_name }}``. The value comes from the troop's own settings
+(``members.TroopSettings.name``, resolved in the recipient's language by
+``members.mail``), so this copy stays troop-agnostic.
 
 Variables each template expects:
 

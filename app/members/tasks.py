@@ -6,15 +6,15 @@ from celery.utils.log import get_task_logger
 logger = get_task_logger(__name__)
 
 
-# Passage is intended to run on May 1 each year, for the upcoming school year.
-# The task is scheduled DAILY (not once a year): Celery beat's catch-up is
-# unreliable for yearly tasks, and a worker/beat outage on the trigger day
-# would otherwise skip the passage for a full year. Daily scheduling is safe
-# because run_passage self-guards with a date gate + an idempotency marker, so
-# it only actually promotes children once per target school year — and if May 1
-# was missed, it performs the passage at the next Celery start instead.
-PASSAGE_TRIGGER_MONTH = 5
-PASSAGE_TRIGGER_DAY = 1
+# Passage runs for the upcoming school year on the day the troop configured
+# (TroopSettings.passage_month/day — May 1 by default). The task is scheduled
+# DAILY (not once a year): Celery beat's catch-up is unreliable for yearly
+# tasks, and a worker/beat outage on the trigger day would otherwise skip the
+# passage for a full year. Daily scheduling is safe because run_passage
+# self-guards with a date gate + an idempotency marker, so it only actually
+# promotes children once per target school year — and if the trigger day was
+# missed, it performs the passage at the next Celery start instead. Setting
+# passage_mode to "manual" switches the automatic run off entirely.
 
 
 def _today():
@@ -38,11 +38,13 @@ def create_year_task():
     year, so using the raw calendar year is off by one (it created "2027-2028"
     on 2026-07-23 instead of "2026-2027").
     """
-    from .models import SchoolYear
+    from .models import SchoolYear, TroopSettings
 
+    troop = TroopSettings.get_settings()
     today = _today()
-    # School year containing today (Aug 1 → Jul 31).
-    current_start = today.year if today >= date(today.year, 8, 1) else today.year - 1
+    # School year containing today (Aug 1 → Jul 31, or whatever the troop set).
+    year_start = date(today.year, troop.year_start_month, troop.year_start_day)
+    current_start = today.year if today >= year_start else today.year - 1
 
     # Ensure the current school year exists.
     if not SchoolYear.objects.filter(name=current_start).exists():
@@ -71,24 +73,30 @@ def run_passage():
     the passage for a whole year, so this task runs every day and decides
     itself whether work is due via two guards:
 
-      1. Date gate — only act on/after May 1 of the target school year's start
-         calendar year, so the daily run doesn't promote children the moment
-         the next SchoolYear is created.
-      2. Marker gate — SiteSettings.last_passage_school_year records the target
+      1. Date gate — only act on/after the troop's passage day (May 1 by
+         default) of the target school year's start calendar year, so the
+         daily run doesn't promote children the moment the next SchoolYear is
+         created.
+      2. Marker gate — TroopSettings.last_passage_school_year records the target
          year already processed; once set the task is a no-op. This is what
          guarantees "run at next start if the trigger day was missed": when
          Celery comes back, the daily tick sees the marker unset for the
          current target year and performs the passage exactly once.
 
+    A troop that would rather move children up by hand sets
+    ``passage_mode`` to ``manual``, which switches this task off entirely.
+
     Promotion logic per active child:
       - If Person.next_section is set, use that override (then clear it).
-      - Otherwise compute the age on Dec 31 of the next school year:
+      - Otherwise compute the age on the troop's age reference day (Dec 31 by
+        default) of the next school year:
         * exceeding the current Branch max age → next Branch (ordered by
           min_age_dec_31); with several sections, the alphabetically first.
         * exceeding the oldest Branch → switch role to Animateur and remove
           ParentChild links (out of household billing).
     """
     from .models import (
+        PASSAGE_MODE_MANUAL,
         Branch,
         Enrollment,
         ParentChild,
@@ -96,8 +104,15 @@ def run_passage():
         Role,
         SchoolYear,
         Section,
-        SiteSettings,
+        TroopSettings,
     )
+
+    troop = TroopSettings.get_settings()
+
+    # --- Guard 0: the troop may run the passage by hand --------------------
+    if troop.passage_mode == PASSAGE_MODE_MANUAL:
+        logger.info("Passage mode is manual; the task leaves the passage alone")
+        return
 
     target_year = SchoolYear.next_school_year()
     if not target_year:
@@ -105,9 +120,10 @@ def run_passage():
         return
 
     # --- Guard 1: date gate ------------------------------------------------
-    # Only run on/after May 1 of the target year's start calendar year.
+    # Only run on/after the configured passage day of the target year's start
+    # calendar year.
     today = _today()
-    trigger = date(target_year.name, PASSAGE_TRIGGER_MONTH, PASSAGE_TRIGGER_DAY)
+    trigger = date(target_year.name, troop.passage_month, troop.passage_day)
     if today < trigger:
         logger.info(
             f"Passage not due yet (today {today} < {trigger} for "
@@ -116,15 +132,17 @@ def run_passage():
         return
 
     # --- Guard 2: marker gate (idempotency / catch-up) ---------------------
-    site_settings = SiteSettings.get_settings()
-    if site_settings.last_passage_school_year == target_year.name:
+    if troop.last_passage_school_year == target_year.name:
         logger.info(
             f"Passage already applied for school year {target_year.name}; skipping"
         )
         return
 
-    # Dec 31 of the next school year (starts Aug `name`, ends Jul `name + 1`)
-    dec_31 = date(target_year.name + 1, 12, 31)
+    # The age reference day of the next school year (starts Aug `name`, ends
+    # Jul `name + 1`), i.e. in the *end* calendar year of that school year.
+    reference_date = date(
+        target_year.name + 1, troop.age_reference_month, troop.age_reference_day
+    )
     current_year = SchoolYear.current()
 
     role_anime = Role.objects.get(short="e")
@@ -147,7 +165,7 @@ def run_passage():
             logger.warning(f"Skipping {child}: no birthday set")
             continue
 
-        age_on_dec_31 = (dec_31 - child.birthday).days // 365
+        age_on_dec_31 = (reference_date - child.birthday).days // 365
 
         # Manual override
         if child.next_section:
@@ -216,8 +234,8 @@ def run_passage():
         logger.info(f"{child} → {target_section}")
 
     # --- Record the marker so passage runs at most once per target year ----
-    site_settings.last_passage_school_year = target_year.name
-    site_settings.save(update_fields=["last_passage_school_year"])
+    troop.last_passage_school_year = target_year.name
+    troop.save(update_fields=["last_passage_school_year"])
 
     logger.info(f"Passage complete: {promoted} promoted, {aged_out} aged out")
     return {"promoted": promoted, "aged_out": aged_out}
@@ -227,17 +245,23 @@ def run_passage():
 def notify_upcoming_deletion():
     """
     Send notification emails to users who will be deleted in 1 month
-    (archived for 4 years 11 months). Runs daily via Celery beat.
+    (archived one month short of the troop's retention period).
+
+    The retention period is TroopSettings.archive_retention_years, 5 by
+    default. Runs daily via Celery beat.
     """
     from datetime import timedelta
 
     from django.utils import timezone as tz
 
-    from .models import Account, Person
+    from .models import Account, Person, TroopSettings
 
+    troop = TroopSettings.get_settings()
     today = tz.now().date()
-    # Users archived 4 years and 11 months ago (will hit 5 years in ~30 days)
-    notify_threshold = today - timedelta(days=5 * 365 - 30)
+    # Archived one month short of the retention cut-off.
+    notify_threshold = today - timedelta(
+        days=troop.archive_retention_years * 365 - 30
+    )
     # Only notify those that haven't been notified yet (no account = skip)
     to_notify = Person.objects.filter(
         status="ar",
@@ -273,7 +297,10 @@ def notify_upcoming_deletion():
                 language=acct.preferred_language if acct else settings.LANGUAGE_CODE,
                 context={
                     "person_name": str(person),
-                    "deletion_date": (person.archived_date + timedelta(days=5 * 365)).isoformat(),
+                    "deletion_date": (
+                        person.archived_date
+                        + timedelta(days=troop.archive_retention_years * 365)
+                    ).isoformat(),
                 },
             )
             notified += 1
@@ -285,17 +312,19 @@ def notify_upcoming_deletion():
 @shared_task(name="delete_archived_users")
 def delete_archived_users():
     """
-    Permanently delete users archived for 5+ consecutive years.
+    Permanently delete users archived for at least the troop's retention
+    period (TroopSettings.archive_retention_years, 5 by default).
     Runs daily via Celery beat.
     """
     from datetime import timedelta
 
     from django.utils import timezone as tz
 
-    from .models import Person
+    from .models import Person, TroopSettings
 
+    troop = TroopSettings.get_settings()
     today = tz.now().date()
-    cutoff = today - timedelta(days=5 * 365)
+    cutoff = today - timedelta(days=troop.archive_retention_years * 365)
     to_delete = Person.objects.filter(
         status="ar",
         archived_date__lte=cutoff,

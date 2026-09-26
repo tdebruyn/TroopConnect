@@ -277,9 +277,9 @@ class ProfileEditForm(UserChangeForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        from .models import SiteSettings
-        site_settings = SiteSettings.get_settings()
-        self.fields["photo_consent"].label = site_settings.photo_consent_text
+        from .models import TroopSettings
+        troop_settings = TroopSettings.get_settings()
+        self.fields["photo_consent"].label = troop_settings.photo_consent_text
         person = self.instance.person
         parent_active_role = Role.objects.get(short="pa")
 
@@ -533,9 +533,9 @@ class OnboardingForm(forms.Form):
     def __init__(self, *args, **kwargs):
         person = kwargs.pop("person", None)
         super().__init__(*args, **kwargs)
-        from .models import SiteSettings
-        site_settings = SiteSettings.get_settings()
-        self.fields["photo_consent"].label = site_settings.photo_consent_text
+        from .models import TroopSettings
+        troop_settings = TroopSettings.get_settings()
+        self.fields["photo_consent"].label = troop_settings.photo_consent_text
 
         # Rule 2: a person of branch age can only be a Participant.
         self.fits_branch = bool(person and person.age_fits_branch())

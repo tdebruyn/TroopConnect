@@ -1,24 +1,33 @@
 from django.conf import settings
 from django.utils import translation
 
-from .models import SiteSettings
+from .models import TroopSettings
 
 
 def contact_info(request):
     """Make contact information available to all templates."""
-    site_settings = SiteSettings.get_settings()
+    troop_settings = TroopSettings.get_settings()
     available = getattr(request, "available_languages", None)
     if available is None:
-        available = list(site_settings.available_languages or [settings.LANGUAGE_CODE])
+        available = list(troop_settings.enabled_languages or [settings.LANGUAGE_CODE])
     return {
-        "contact_email": site_settings.contact_email,
-        "site_name": site_settings.site_name,
-        "site_description": site_settings.site_description,
-        "site_keywords": site_settings.site_keywords,
-        "registration_open": site_settings.registration_open,
-        "registration_message": site_settings.registration_message,
-        "photo_consent_text": site_settings.photo_consent_text,
-        "address_placeholder": site_settings.address_placeholder,
+        "contact_email": troop_settings.contact_email,
+        # The templates say `site_name`; the model field is `name`. Keeping the
+        # context key means the header templates and their translations do not
+        # have to change with the model.
+        "site_name": troop_settings.name,
+        "site_description": troop_settings.site_description,
+        "site_keywords": troop_settings.site_keywords,
+        "registration_open": troop_settings.registration_open,
+        "registration_message": troop_settings.registration_message,
+        "photo_consent_text": troop_settings.photo_consent_text,
+        "address_placeholder": troop_settings.address_placeholder,
+        "currency": troop_settings.currency,
+        "phone_region": troop_settings.phone_region,
+        # Module switches, so the navigation can hide what is turned off.
+        "fees_enabled": troop_settings.fees_enabled,
+        "signing_enabled": troop_settings.signing_enabled,
+        "public_agenda_enabled": troop_settings.public_agenda_enabled,
         # Language selector support (set by AvailableLanguagesMiddleware).
         "available_languages": list(available),
         "current_language": translation.get_language(),

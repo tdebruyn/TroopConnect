@@ -8,20 +8,29 @@ template cannot quietly end up with a bare domain or somebody else's name.
 
 from django.conf import settings
 from django.contrib.sites.models import Site
+from django.utils import translation
 from post_office import mail
 
 from .email_templates import DEFAULT_LANGUAGE, LANGUAGES
+from .models import TroopSettings
 
 
-def troop_name():
+def troop_name(language=None):
     """Name the outgoing emails speak for.
 
-    For now this is the ``TROOP_NAME`` setting, so that a freshly installed
-    instance sends coherent mail before anyone has been into the admin. Moving
-    it to the troop-editable settings in the database is a later step and only
-    changes this function.
+    Read from the troop's own settings rather than the environment, so the name
+    a family sees in a confirmation is the one the troop typed into the settings
+    page, and it survives a redeploy.
+
+    ``name`` is translated, so pass the language the message is being written in
+    and the troop's own translation for that language is used; without it the
+    *sender's* current language would leak into a recipient's email.
     """
-    return settings.TROOP_NAME
+    if language is None:
+        return TroopSettings.get_settings().name
+
+    with translation.override(language):
+        return TroopSettings.get_settings().name
 
 
 def absolute_url(path):
@@ -61,15 +70,26 @@ def send_templated(*, template, recipients, context=None, language=None, **optio
     """``post_office.mail.send`` with the troop's own context filled in.
 
     Adds ``troop_name`` to the context, picks a language templates exist in,
-    and defaults the sender to ``DEFAULT_FROM_EMAIL``, so callers pass only
-    what is specific to the message.
+    defaults the sender to ``DEFAULT_FROM_EMAIL`` and the ``Reply-To`` to the
+    troop's own reply-to address when it has one, so callers pass only what is
+    specific to the message.
     """
+    resolved = resolve_language(language)
     options.setdefault("sender", settings.DEFAULT_FROM_EMAIL)
+
+    reply_to = TroopSettings.get_settings().reply_to_email
+    if reply_to:
+        # post_office stores no reply-to column of its own; the header is how a
+        # mail client learns where an answer should go. A caller that set its
+        # own header wins.
+        headers = dict(options.get("headers") or {})
+        headers.setdefault("Reply-To", reply_to)
+        options["headers"] = headers
 
     return mail.send(
         template=template,
         recipients=recipients,
-        language=resolve_language(language),
-        context={"troop_name": troop_name(), **(context or {})},
+        language=resolved,
+        context={"troop_name": troop_name(resolved), **(context or {})},
         **options,
     )
