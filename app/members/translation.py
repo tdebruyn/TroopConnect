@@ -7,15 +7,16 @@ msgids so they also work for Django's static translation catalog.
 """
 from modeltranslation.translator import TranslationOptions, register
 
-from .models import Branch, ImportantDocument, Role, Section, SiteSettings
+from .models import Branch, ImportantDocument, Role, Section, TroopSettings
 
 
-@register(SiteSettings)
-class SiteSettingsTranslationOptions(TranslationOptions):
+@register(TroopSettings)
+class TroopSettingsTranslationOptions(TranslationOptions):
     # Editorial text shown to users; NOT the config fields
-    # (available_languages, contact_*, registration_open, last_passage_school_year).
+    # (enabled_languages, phone_region, currency, contact_*, registration_open,
+    #  the calendar fields, the module switches, last_passage_school_year).
     fields = (
-        "site_name",
+        "name",
         "site_description",
         "site_keywords",
         "email_signature",

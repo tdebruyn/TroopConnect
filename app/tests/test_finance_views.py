@@ -190,7 +190,9 @@ class SendRemindersTest(FinanceMailTestBase):
     def _post(self, **overrides):
         data = {
             "subject": "Rappel de cotisation",
-            "body": "Bonjour {prenom}, votre solde est de {solde}€.",
+            # No currency sign in the template: `{solde}` is replaced by the
+            # amount already written in the troop's currency.
+            "body": "Bonjour {prenom}, votre solde est de {solde}.",
         }
         data.update(overrides)
         return self.client.post(self.url, data)

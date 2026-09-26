@@ -3,8 +3,10 @@ from unittest import mock
 
 from django.test import TestCase
 
-from members.models import SchoolYear
+from members.models import SchoolYear, TroopSettings
 from members.tasks import create_year_task
+
+from .base import TroopSettingsTestCase
 
 
 class CreateYearTaskTest(TestCase):
@@ -59,6 +61,43 @@ class CreateYearTaskTest(TestCase):
 
         self.assertEqual(SchoolYear.objects.filter(name=2025).count(), 1)
         self.assertEqual(SchoolYear.objects.filter(name=2026).count(), 1)
+
+
+class CreateYearCustomYearStartTest(TroopSettingsTestCase):
+    """The task and the rows it writes follow the troop's year start, which is
+    configurable — August 1st is only the default."""
+
+    def setUp(self):
+        super().setUp()
+        troop = TroopSettings.get_settings()
+        troop.year_start_month, troop.year_start_day = 9, 1
+        troop.save(update_fields=["year_start_month", "year_start_day"])
+        SchoolYear.objects.all().delete()
+
+    def test_mid_august_is_still_the_previous_school_year(self):
+        # 15 Aug 2026 is before the 1 Sep 2026 boundary, so the current school
+        # year is 2025-2026 and the next one is 2026-2027.
+        with mock.patch("members.tasks._today", return_value=date(2026, 8, 15)):
+            create_year_task()
+
+        self.assertTrue(SchoolYear.objects.filter(name=2025).exists())
+        self.assertTrue(SchoolYear.objects.filter(name=2026).exists())
+        self.assertFalse(SchoolYear.objects.filter(name=2027).exists())
+
+    def test_on_the_boundary_the_new_year_starts(self):
+        with mock.patch("members.tasks._today", return_value=date(2026, 9, 1)):
+            create_year_task()
+
+        self.assertTrue(SchoolYear.objects.filter(name=2026).exists())
+        self.assertTrue(SchoolYear.objects.filter(name=2027).exists())
+
+    def test_created_rows_use_the_configured_bounds(self):
+        with mock.patch("members.tasks._today", return_value=date(2026, 8, 15)):
+            create_year_task()
+
+        year = SchoolYear.objects.get(name=2025)
+        self.assertEqual(year.start_date, date(2025, 9, 1))
+        self.assertEqual(year.end_date, date(2026, 8, 31))
 
 
 class CreateYearStartupHookTest(TestCase):

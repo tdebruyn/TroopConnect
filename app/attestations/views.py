@@ -13,6 +13,7 @@ from post_office import mail
 from pypdf import PdfReader
 
 from members.models import Person
+from members.modules import SIGNING, requires_module
 from members.permissions import can_manage_unit
 
 from . import services
@@ -39,6 +40,7 @@ def _resolve_placeholders(text, person, item):
 
 
 @login_required
+@requires_module(SIGNING)
 def index(request):
     if not can_manage_unit(request.user):
         raise Http404
@@ -78,6 +80,7 @@ def _anchor_text(campaign, lines):
 
 
 @login_required
+@requires_module(SIGNING)
 def step1(request, pk=None):
     """Step 1: name the campaign — and rename it later, once one exists."""
     if not can_manage_unit(request.user):
@@ -116,6 +119,7 @@ def step1(request, pk=None):
 
 
 @login_required
+@requires_module(SIGNING)
 def step2(request, pk):
     """Step 2: upload the source PDF and describe the per-person page range."""
     if not can_manage_unit(request.user):
@@ -146,6 +150,7 @@ def step2(request, pk):
 
 
 @login_required
+@requires_module(SIGNING)
 def step3(request, pk):
     """Step 3: teach the app where the name lives on the indicated page."""
     if not can_manage_unit(request.user):
@@ -195,6 +200,7 @@ def step3(request, pk):
 
 
 @login_required
+@requires_module(SIGNING)
 def step4(request, pk):
     """Step 4: upload the signature, pick its page and preview the merge."""
     if not can_manage_unit(request.user):
@@ -230,6 +236,7 @@ def step4(request, pk):
 
 
 @login_required
+@requires_module(SIGNING)
 def review(request, pk):
     """Step 5: review the recipients, then send."""
     if not can_manage_unit(request.user):
@@ -346,6 +353,7 @@ def _render_row(request, item):
 
 
 @login_required
+@requires_module(SIGNING)
 @require_POST
 def accept_suggestion(request, pk, item_pk):
     """Confirm a probable match: it becomes the document's recipient.
@@ -366,6 +374,7 @@ def accept_suggestion(request, pk, item_pk):
 
 
 @login_required
+@requires_module(SIGNING)
 @require_POST
 def dismiss_suggestion(request, pk, item_pk):
     """Reject a probable match: the row falls back to the plain "not found".
@@ -380,6 +389,7 @@ def dismiss_suggestion(request, pk, item_pk):
 
 
 @login_required
+@requires_module(SIGNING)
 def send(request, pk):
     if not can_manage_unit(request.user):
         raise Http404

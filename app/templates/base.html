@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 {% load static %}
 {% load account %}
+{% load modules %}
 {% load i18n %}
 <html lang="{{ current_language }}">
     <head>
@@ -68,9 +69,12 @@
                                     {% endfor %}
                                 </div>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link active" href="{% url 'agenda' %}">{% trans "Agenda" %}</a>
-                            </li>
+                            {% module_enabled "agenda" as agenda_on %}
+                            {% if agenda_on %}
+                                <li class="nav-item">
+                                    <a class="nav-link active" href="{% url 'agenda' %}">{% trans "Agenda" %}</a>
+                                </li>
+                            {% endif %}
                             {% if user.is_staff or user_is_tresorier or user_can_send_all %}
                                 <li class="nav-item dropdown">
                                     <a class="dropdown-toggle nav-link active"
@@ -80,14 +84,20 @@
                                     <div class="dropdown-menu dropdown-menu-dark">
                                         {% if user.is_staff %}
                                             <a class="dropdown-item" href="{% url 'members:admin_list' %}">{% trans "Member management" %}</a>
+                                            <a class="dropdown-item" href="{% url 'members:passage' %}">{% trans "Section passage" %}</a>
+                                            <a class="dropdown-item" href="{% url 'members:troop_settings' %}">{% trans "Settings" %}</a>
                                         {% endif %}
-                                        {% if user_is_tresorier %}
+                                        {% module_enabled "fees" as fees_on %}
+                                        {% if user_is_tresorier and fees_on %}
                                             <a class="dropdown-item" href="{% url 'finance:billing' %}">{% trans "Membership fees" %}</a>
                                         {% endif %}
                                         {% if user_can_send_all %}
                                             <a class="dropdown-item" href="{% url 'messaging:compose' %}">{% trans "Send a message" %}</a>
                                             <a class="dropdown-item" href="{% url 'messaging:animateur_history' %}">{% trans "Message history" %}</a>
-                                            <a class="dropdown-item" href="{% url 'attestations:index' %}">{% trans "Attestations" %}</a>
+                                            {% module_enabled "signing" as signing_on %}
+                                            {% if signing_on %}
+                                                <a class="dropdown-item" href="{% url 'attestations:index' %}">{% trans "Attestations" %}</a>
+                                            {% endif %}
                                         {% endif %}
                                     </div>
                                 </li>

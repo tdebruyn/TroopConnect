@@ -48,10 +48,9 @@ DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL")
 # Django only insists it is set so a deployment cannot forget it.
 ACME_EMAIL = env("ACME_EMAIL")
 
-# Name the outgoing emails speak for. A placeholder until the troop-editable
-# settings move into the database; until then, set TROOP_NAME to your unit's
-# name or families will be told they registered with "TroopConnect".
-TROOP_NAME = env("TROOP_NAME", "TroopConnect")
+# The troop's name, the languages it offers and the shape of its scout year are
+# NOT settings: they live in the database (members.TroopSettings) and are edited
+# by the troop in the web UI. See docs/dev/CONTRACT.md.
 
 # ---------------------------------------------------------------------------
 # Core toggles
@@ -447,7 +446,7 @@ CELERY_BEAT_SCHEDULE = {
         # Daily (not yearly) so that if Celery/beat was down on the intended
         # trigger day (May 1), the passage runs at the next start instead of
         # being skipped for a whole year. run_passage self-guards by date +
-        # marker (SiteSettings.last_passage_school_year), so it only actually
+        # marker (TroopSettings.last_passage_school_year), so it only actually
         # promotes children once per target school year.
         "schedule": crontab(hour=3, minute=30),
     },

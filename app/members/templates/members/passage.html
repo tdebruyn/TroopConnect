@@ -1,0 +1,85 @@
+{% extends "members/base.html" %}
+{% load i18n %}
+{% block hat_title %}
+  {% trans "Section passage" %}
+{% endblock hat_title %}
+{% block hat_text %}
+  {% trans "Move members into their section for the coming year." %}
+{% endblock hat_text %}
+{% block subcontent %}
+  <div class="row mb-4">
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm mb-3">
+        <div class="card-body text-center">
+          <div class="text-muted">{% trans "Coming school year" %}</div>
+          <div class="h4 mb-0">
+            {% if target_year %}{{ target_year.range }}{% else %}{% trans "Not created yet" %}{% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm mb-3">
+        <div class="card-body text-center">
+          <div class="text-muted">{% trans "Automatic run" %}</div>
+          <div class="h4 mb-0">
+            {% if automatic %}{% trans "On" %}{% else %}{% trans "Off" %}{% endif %}
+          </div>
+          {% if next_due %}
+            <div class="small text-muted">
+              {% blocktranslate with date=next_due %}Due on {{ date }}{% endblocktranslate %}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm mb-3">
+        <div class="card-body text-center">
+          <div class="text-muted">{% trans "Last run prepared" %}</div>
+          <div class="h4 mb-0">
+            {% if last_run_year %}{{ last_run_year }}{% else %}{% trans "Never" %}{% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p>
+    {% trans "The passage places every participant in their next section. Running it again is safe: members already placed stay where they are, and the choices made by hand are kept." %}
+  </p>
+
+  <form method="post" class="mb-5">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary">{% trans "Run the passage now" %}</button>
+  </form>
+
+  <h2 class="h5">{% trans "Waiting for a decision" %}</h2>
+  {% if flagged %}
+    <p class="text-muted">
+      {% trans "The passage could not place these members on its own. Give each one a section for the coming year, or fix their branch, then run the passage again." %}
+    </p>
+    <table class="table table-sm">
+      <thead>
+        <tr>
+          <th>{% trans "Member" %}</th>
+          <th>{% trans "Reason" %}</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for person in flagged %}
+          <tr>
+            <td>{{ person.first_name }} {{ person.last_name }}</td>
+            <td>{{ person.get_passage_review_display }}</td>
+            <td>
+              <a href="{% url 'members:admin_update' person.pk %}">{% trans "Open" %}</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="text-muted">{% trans "Nobody is waiting for a decision." %}</p>
+  {% endif %}
+{% endblock subcontent %}

@@ -6,18 +6,21 @@ from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import gettext_lazy as _
 from modeltranslation.admin import TranslationAdmin
 
-from .forms import AccountCreationForm, AdminAccountChangeForm
+from .forms import (
+    AccountCreationForm,
+    AdminAccountChangeForm,
+    LanguageSelectionMixin,
+)
 
 # from .models import CustomUser, CustomGroup, SchoolYear, Age
 from .models import (
-    AVAILABLE_LANGUAGE_CHOICES,
     Account,
     Branch,
     ImportantDocument,
     Person,
     SchoolYear,
     Section,
-    SiteSettings,
+    TroopSettings,
 )
 
 
@@ -129,91 +132,81 @@ class SectionAdmin(TranslationAdmin):
 
 @admin.register(Branch)
 class BranchAdmin(TranslationAdmin):
-    list_display = ("name",)
+    # `promotes_to` / `is_top` are the ladder the passage walks: the columns are
+    # here so a troop can see and change its shape without reading the code.
+    list_display = ("name", "min_age_dec_31", "max_age_dec_31", "promotes_to", "is_top")
     search_fields = ("name",)
 
 
-class SiteSettingsForm(forms.ModelForm):
-    """Explicit selectors for available + default languages.
+class TroopSettingsForm(LanguageSelectionMixin, forms.ModelForm):
+    """The admin's view of the troop settings: one form, every field.
 
-    Declaring the fields here (rather than relying on formfield_overrides for the
-    ArrayField) guarantees the checkboxes/dropdown render reliably.
+    The enabled/default language pair and its validation are shared with the
+    staff settings page's locale form (``members.forms.LanguageSelectionMixin``)
+    so the two cannot drift apart.
     """
 
-    available_languages = forms.MultipleChoiceField(
-        required=True,
-        choices=AVAILABLE_LANGUAGE_CHOICES,
-        widget=forms.CheckboxSelectMultiple,
-        label=_("Available languages"),
-        help_text=_("Languages available to users in the site language selector."),
-    )
-    default_language = forms.ChoiceField(
-        required=True,
-        choices=AVAILABLE_LANGUAGE_CHOICES,
-        widget=forms.Select,
-        label=_("Default language"),
-        help_text=_("Default language for visitors. Must be one of the available languages."),
-    )
-
     class Meta:
-        model = SiteSettings
+        model = TroopSettings
         fields = "__all__"  # noqa: DJ007 — admin-only singleton form
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # Constrain the default-language dropdown to the currently-selected
-        # available languages (from POST when saving, else the stored value).
-        available = self._selected_available()
-        if available:
-            self.fields["default_language"].choices = [
-                (code, label) for code, label in AVAILABLE_LANGUAGE_CHOICES if code in available
-            ]
 
-    def _selected_available(self):
-        """Languages the user has marked available, from bound data or instance."""
-        if self.is_bound:
-            if hasattr(self.data, "getlist"):  # QueryDict (real request)
-                return self.data.getlist("available_languages")
-            value = self.data.get("available_languages", [])
-        elif self.instance and self.instance.pk:
-            value = self.instance.available_languages or []
-        else:
-            value = self.initial.get("available_languages", [])
-        if isinstance(value, str):
-            return [value]
-        return list(value or [])
+@admin.register(TroopSettings)
+class TroopSettingsAdmin(TranslationAdmin):
+    """Admin interface for troop settings (multilingual + language toggle)."""
 
-    def clean(self):
-        cleaned = super().clean()
-        available = cleaned.get("available_languages") or []
-        default = cleaned.get("default_language")
-        if not available:
-            self.add_error(
-                "available_languages", _("Select at least one available language.")
-            )
-        elif default and default not in available:
-            self.add_error(
-                "default_language",
-                _("The default language must be one of the available languages."),
-            )
-        return cleaned
-
-
-@admin.register(SiteSettings)
-class SiteSettingsAdmin(TranslationAdmin):
-    """Admin interface for site settings (multilingual + language toggle)."""
-
-    form = SiteSettingsForm
+    form = TroopSettingsForm
 
     fieldsets = (
-        (_("Languages"), {"fields": ("available_languages", "default_language")}),
         (
-            _("Site information"),
-            {"fields": ("site_name", "site_description", "site_keywords")},
+            _("Organisation"),
+            {
+                "fields": (
+                    "name",
+                    "short_name",
+                    "federation",
+                    "contact_email",
+                    "contact_phone",
+                    "reply_to_email",
+                    "footer_address",
+                    "privacy_policy",
+                )
+            },
         ),
         (
-            _("Contact information"),
-            {"fields": ("contact_email", "contact_phone", "contact_address")},
+            _("Locale"),
+            {
+                "fields": (
+                    "enabled_languages",
+                    "default_language",
+                    "phone_region",
+                    "currency",
+                )
+            },
+        ),
+        (
+            _("Calendar"),
+            {
+                "fields": (
+                    "year_start_month",
+                    "year_start_day",
+                    "age_reference_month",
+                    "age_reference_day",
+                    "passage_month",
+                    "passage_day",
+                    "passage_mode",
+                    "top_branch_graduates_become_leaders",
+                    "archive_retention_years",
+                )
+            },
+        ),
+        (
+            _("Modules"),
+            {"fields": ("fees_enabled", "signing_enabled", "public_agenda_enabled")},
+        ),
+        (
+            _("Site information"),
+            {"fields": ("site_description", "site_keywords")},
         ),
         (_("Social media"), {"fields": ("facebook_url", "instagram_url")}),
         (_("Email settings"), {"fields": ("email_signature",)}),
@@ -228,11 +221,11 @@ class SiteSettingsAdmin(TranslationAdmin):
     )
 
     def has_add_permission(self, request):
-        # Only allow one instance of site settings
-        return not SiteSettings.objects.exists()
+        # Only allow one instance of the troop settings
+        return not TroopSettings.objects.exists()
 
     def has_delete_permission(self, request, obj=None):
-        # Don't allow deleting the site settings
+        # Don't allow deleting the troop settings
         return False
 
 

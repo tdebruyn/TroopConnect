@@ -1,5 +1,6 @@
 {% extends "members/base.html" %}
 {% load i18n %}
+{% load modules %}
 {% block hat_title %}
     {% blocktranslate with name=person %}Permanently delete {{ name }}{% endblocktranslate %}
 {% endblock hat_title %}
@@ -28,10 +29,13 @@
                     <th scope="row">{% trans "Parents" %}</th>
                     <td>{{ parents|length }}</td>
                 </tr>
-                <tr>
-                    <th scope="row">{% trans "Payments" %}</th>
-                    <td>{{ payments|length }}</td>
-                </tr>
+                {% module_enabled "fees" as fees_on %}
+                {% if fees_on %}
+                    <tr>
+                        <th scope="row">{% trans "Payments" %}</th>
+                        <td>{{ payments|length }}</td>
+                    </tr>
+                {% endif %}
                 <tr>
                     <th scope="row">{% trans "Messages" %}</th>
                     <td>{{ received_messages }}</td>

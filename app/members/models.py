@@ -1,17 +1,25 @@
+import calendar
+import re
 import uuid
-from datetime import date, datetime
+from datetime import date, datetime, time, timedelta
 
+import phonenumbers
 from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager,
     PermissionsMixin,
 )
 from django.contrib.postgres.fields import ArrayField
+from django.core.cache import cache
 from django.core.exceptions import ValidationError
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.db.models.signals import post_delete, post_save
+from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from phonenumber_field.modelfields import PhoneNumberField
+
+from .phone import TroopPhoneNumberField
 
 # class CustomAccountManager(BaseUserManager):
 #     def create_user(
@@ -51,7 +59,7 @@ def default_role():
 
 
 # Languages available to users on the site. The superadmin chooses which subset
-# is enabled via SiteSettings.available_languages.
+# is enabled via TroopSettings.enabled_languages.
 AVAILABLE_LANGUAGE_CHOICES = [
     ("fr", "Français"),
     ("nl", "Nederlands"),
@@ -59,9 +67,50 @@ AVAILABLE_LANGUAGE_CHOICES = [
 ]
 
 
-def default_available_languages():
-    """Default available languages: French only (matches the pre-i18n site)."""
+def default_enabled_languages():
+    """Default enabled languages: French only (matches the pre-i18n site)."""
     return ["fr"]
+
+
+# The historical name is kept as an alias: migration 0014 serialises this dotted
+# path as the default of the `available_languages` column it adds, so the
+# function has to stay importable under both names.
+default_available_languages = default_enabled_languages
+
+# How a child moves up a section at the end of the scout year.
+PASSAGE_MODE_AUTO = "auto"
+PASSAGE_MODE_MANUAL = "manual"
+PASSAGE_MODE_CHOICES = [
+    (PASSAGE_MODE_AUTO, _("Automatic")),
+    (PASSAGE_MODE_MANUAL, _("Manual")),
+]
+
+# Every month/day pair below is stored as two small integers rather than a DateField:
+# a calendar rule like "passage on 1 May" is a recurring day, not a single date,
+# and a DateField would drag a meaningless year (and leap-year handling) behind it.
+MONTH_VALIDATORS = [MinValueValidator(1), MaxValueValidator(12)]
+DAY_VALIDATORS = [MinValueValidator(1), MaxValueValidator(31)]
+
+# How long before an archived person is purged the warning email goes out. Used
+# by TroopSettings.archive_warning_cutoff and the notify_upcoming_deletion task.
+ARCHIVE_WARNING_DAYS = 30
+
+
+def validate_phone_region(value):
+    """Reject a region ``phonenumbers`` could never parse a number for."""
+    if value and value.upper() not in phonenumbers.SUPPORTED_REGIONS:
+        raise ValidationError(
+            _("%(region)s is not a country code phone numbers can be parsed for."),
+            params={"region": value},
+        )
+
+
+def validate_currency(value):
+    """Reject anything that is not a bare three-letter ISO 4217 code."""
+    if value and not re.fullmatch(r"[A-Z]{3}", value):
+        raise ValidationError(
+            _("Enter a three-letter currency code, e.g. EUR.")
+        )
 
 
 class Person(models.Model):
@@ -88,7 +137,7 @@ class Person(models.Model):
     birthday = models.DateField(null=True, blank=True)
     sex = models.CharField(max_length=1, choices=Sex.choices, null=True, blank=True)
     address = models.CharField(max_length=200, null=True, blank=True)
-    phone = PhoneNumberField(region="BE", null=True, blank=True)
+    phone = TroopPhoneNumberField(null=True, blank=True)
     totem = models.CharField(max_length=60, null=True, blank=True)
     photo_consent = models.BooleanField(default=False)
     note = models.TextField(max_length=500, blank=True)
@@ -128,6 +177,24 @@ class Person(models.Model):
         blank=True,
         related_name="next_persons",
         help_text=_("Manual override for passage: section assigned the following year"),
+    )
+
+    class PassageReview(models.TextChoices):
+        """Why the passage could not place this member automatically."""
+
+        NO_SECTION = "no_section", _("No section fits — choose one")
+        NO_NEXT_BRANCH = "no_next_branch", _("The branch has no next branch set")
+        GRADUATION = "graduation", _("Leaving the last branch — decide what comes next")
+
+    passage_review = models.CharField(
+        max_length=20,
+        choices=PassageReview.choices,
+        blank=True,
+        default="",
+        help_text=_(
+            "Set by the passage when it cannot place a member on its own; "
+            "cleared as soon as one is placed."
+        ),
     )
 
     parents = models.ManyToManyField(
@@ -241,20 +308,16 @@ class Person(models.Model):
         return False, ""
 
     def age_on_dec_31(self, school_year=None):
-        """Whole-year age on 31 December of the given (or current) school year.
+        """Whole-year age at the troop's age reference day, that school year.
 
-        Mirrors the age computation used by the run_passage task
-        ((dec_31 - birthday).days // 365). Returns None when the birthday or
-        the school year cannot be resolved.
+        The name is historical: the reference day is
+        ``TroopSettings.age_reference_month``/``_day`` (31 December by default),
+        which is also the convention the ``Branch.min_age_dec_31`` and
+        ``max_age_dec_31`` columns are named after. The computation itself lives
+        in :meth:`TroopSettings.age_at_reference`, shared with the passage task
+        and the member list's branch check.
         """
-        if not self.birthday:
-            return None
-        if school_year is None:
-            school_year = SchoolYear.current()
-        if school_year is None:
-            return None
-        dec_31 = date(school_year.name, 12, 31)
-        return (dec_31 - self.birthday).days // 365
+        return TroopSettings.get_settings().age_at_reference(self, school_year)
 
     def age_fits_branch(self, school_year=None):
         """True if this person is of an age that fits some Branch on 31 Dec of
@@ -604,8 +667,8 @@ class Account(AbstractBaseUser, PermissionsMixin):
 
 class SchoolYearManager(models.Manager):
     def create_year(self, year):
-        start_date = date(year, 8, 1)
-        end_date = date(year + 1, 7, 31)
+        troop = TroopSettings.get_settings()
+        start_date, end_date = troop.school_year_bounds(year)
         range_str = f"{year}-{year + 1}"
         school_year = self.create(
             name=year, start_date=start_date, end_date=end_date, range=range_str
@@ -693,12 +756,42 @@ class Branch(models.Model):
         ),
     )
 
+    # The passage follows this link rather than an age ladder, so a troop is
+    # free to order, rename or fork its branches however it likes. Both fields
+    # are set for the ladder a troop already had by the migration that
+    # introduces them; a branch added afterwards starts unlinked (and its
+    # members are flagged for review rather than moved somewhere arbitrary).
+    promotes_to = models.ForeignKey(
+        "self",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="promoted_from",
+        help_text=_("The branch members move into when they outgrow this one."),
+    )
+    is_top = models.BooleanField(
+        default=False,
+        help_text=_(
+            "The last branch of the ladder: members who outgrow it leave it for good."
+        ),
+    )
+
     def __str__(self):
         return _("%(name)s (%(min)s-%(max)s years old)") % {
             "name": self.name,
             "min": self.min_age_dec_31,
             "max": self.max_age_dec_31,
         }
+
+    def section_for(self, sex):
+        """The section of this branch to place someone of ``sex`` in, or None.
+
+        None means nobody in this branch can take them: every section it has is
+        meant for other people.
+        """
+        return (
+            Section.compatible_with(sex).filter(branch=self).order_by("name").first()
+        )
 
 
 class Section(models.Model):
@@ -713,6 +806,28 @@ class Section(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.branch})"
+
+    @classmethod
+    def compatible_with(cls, sex):
+        """The sections open to someone of ``sex``.
+
+        A section that declares BOTH — or that declares nothing at all, which
+        is the other way a troop says "this one is mixed" — takes anyone. A
+        section declaring a sex takes only that one, and a member whose own sex
+        is unknown is only ever placed in a mixed section.
+
+        A classmethod rather than a queryset method on purpose: modeltranslation
+        replaces ``Section.objects`` with its own manager, so anything hanging
+        off the manager itself would not survive.
+        """
+        mixed = (
+            models.Q(sex__isnull=True)
+            | models.Q(sex="")
+            | models.Q(sex=cls.Sex.BOTH)
+        )
+        if sex:
+            return cls.objects.filter(mixed | models.Q(sex=sex))
+        return cls.objects.filter(mixed)
 
 
 class Enrollment(models.Model):
@@ -744,11 +859,159 @@ def get_registration_admins():
     return [admin.email for admin in admins_accounts]
 
 
-class SiteSettings(models.Model):
-    """Model to store site-wide settings that can be changed by admins."""
+class TroopSettings(models.Model):
+    """The troop's own settings: one row, edited by staff in the web UI.
 
-    # Site information
-    site_name = models.CharField(max_length=100, default="Scouts")
+    This is *troop content*, not infrastructure. A unit's name, the languages it
+    offers, the shape of its scout year — none of it belongs in the environment,
+    because the troop edits it in the browser and the value has to survive a
+    redeploy. See ``docs/dev/CONTRACT.md`` for where the line is drawn.
+
+    Read it through :meth:`get_settings`; that is the only accessor that both
+    guarantees the row exists and serves the cached copy. The row itself is
+    created by migration, so a freshly migrated instance already has sane
+    defaults rather than an empty settings page.
+
+    Caching note: ``queryset.update()`` / ``queryset.delete()`` bypass the
+    ``post_save``/``post_delete`` receivers below and would leave a stale copy
+    cached. Nothing does that today; use ``save()`` and ``delete()``.
+    """
+
+    CACHE_KEY = "members.TroopSettings"
+
+    # --- Organisation ------------------------------------------------------
+    # The unit's name, and the name outgoing email speaks for.
+    name = models.CharField(max_length=100, default="Scouts")
+
+    # A short form for places the full name does not fit (nav bar, email tags).
+    # Empty means "use `name`"; see `display_short_name`.
+    short_name = models.CharField(max_length=40, blank=True)
+
+    # Free text: troops belong to federations this project knows nothing about.
+    federation = models.CharField(max_length=120, blank=True)
+
+    # Public contact details, exposed to every template as `contact_email`.
+    # Left empty rather than pre-filled: a placeholder that looks like a real
+    # address would have a troop's own site publishing somebody else's, and
+    # mail to it would leave the unit. The admin is expected to set it.
+    contact_email = models.EmailField(default="", blank=True)
+    contact_phone = models.CharField(max_length=20, blank=True)
+    footer_address = models.TextField(blank=True)
+
+    # Where replies to automated mail should go, when that is not the sender
+    # (`DEFAULT_FROM_EMAIL`). Empty means "reply to the sender".
+    reply_to_email = models.EmailField(default="", blank=True)
+
+    # A URL or a block of text, whichever the troop has. Rendered as-is by the
+    # footer; see `privacy_policy_url` for the case where it is a link.
+    privacy_policy = models.TextField(
+        blank=True,
+        help_text=_(
+            "Link or text of your privacy policy. A URL becomes a link, "
+            "anything else is shown as text."
+        ),
+    )
+
+    # --- Locale ------------------------------------------------------------
+    # Languages enabled on the site. With more than one, a language selector is
+    # shown to users; with exactly one, the site is locked to that language.
+    # Backed by a PostgreSQL ArrayField (the project is Postgres-only).
+    enabled_languages = ArrayField(
+        base_field=models.CharField(max_length=5, choices=AVAILABLE_LANGUAGE_CHOICES),
+        default=default_enabled_languages,
+        help_text=_("Languages available to users in the site language selector."),
+    )
+
+    # Language shown to visitors whose browser/cookie language isn't one of the
+    # enabled languages (or on a first visit). Must be one of enabled_languages
+    # — enforced in clean() and the admin form.
+    default_language = models.CharField(
+        max_length=5,
+        choices=AVAILABLE_LANGUAGE_CHOICES,
+        default="fr",
+        help_text=_("Default language for visitors. Must be one of the available languages."),
+    )
+
+    # ISO 3166-1 alpha-2. Phone numbers are stored in E.164; this only decides
+    # how a locally-typed number ("0475 12 34 56") is interpreted and formatted.
+    phone_region = models.CharField(
+        max_length=2,
+        default="BE",
+        validators=[validate_phone_region],
+        help_text=_("Country code used to parse and format phone numbers, e.g. BE."),
+    )
+
+    # ISO 4217. Every amount in the UI is displayed in this currency.
+    currency = models.CharField(
+        max_length=3,
+        default="EUR",
+        validators=[validate_currency],
+        help_text=_("Three-letter currency code used to display amounts, e.g. EUR."),
+    )
+
+    # --- Calendar ----------------------------------------------------------
+    # The scout year runs year_start -> year_start + 1 year (default August 1).
+    year_start_month = models.PositiveSmallIntegerField(
+        default=8, validators=MONTH_VALIDATORS
+    )
+    year_start_day = models.PositiveSmallIntegerField(
+        default=1, validators=DAY_VALIDATORS
+    )
+
+    # A child's age is taken on this day (default December 31), which is what
+    # decides the section they belong to.
+    age_reference_month = models.PositiveSmallIntegerField(
+        default=12, validators=MONTH_VALIDATORS
+    )
+    age_reference_day = models.PositiveSmallIntegerField(
+        default=31, validators=DAY_VALIDATORS
+    )
+
+    # When sections are prompted to move children up (default May 1).
+    passage_month = models.PositiveSmallIntegerField(
+        default=5, validators=MONTH_VALIDATORS
+    )
+    passage_day = models.PositiveSmallIntegerField(default=1, validators=DAY_VALIDATORS)
+    passage_mode = models.CharField(
+        max_length=10,
+        choices=PASSAGE_MODE_CHOICES,
+        default=PASSAGE_MODE_AUTO,
+        help_text=_(
+            "Automatic runs the passage on the date above; manual leaves it to "
+            "whoever presses the button."
+        ),
+    )
+
+    # What happens to members who leave the last branch. Becoming an animator
+    # is right for a troop whose oldest members routinely stay on as staff;
+    # a troop that would rather look at each one turns this off and gets them
+    # flagged for review instead.
+    top_branch_graduates_become_leaders = models.BooleanField(
+        default=True,
+        help_text=_(
+            "Members who leave the last branch become animators. Turn this off "
+            "to be asked about each of them instead."
+        ),
+    )
+
+    # How long records of removed members are kept before the cleanup task may
+    # discard them.
+    archive_retention_years = models.PositiveSmallIntegerField(
+        default=5, validators=[MinValueValidator(1)]
+    )
+
+    # --- Modules -----------------------------------------------------------
+    # Feature switches. Off means the module is not installed as far as the
+    # troop is concerned: its URLs answer 404, its UI disappears — see
+    # members/modules.py for the decorator, the mixin and the template tag that
+    # read these. What the module stores is left alone, so switching one back
+    # on restores it. The settings page and the Django admin stay open on
+    # purpose, so a troop can always undo the switch.
+    fees_enabled = models.BooleanField(default=True)
+    signing_enabled = models.BooleanField(default=True)
+    public_agenda_enabled = models.BooleanField(default=True)
+
+    # --- Retained site content ---------------------------------------------
     site_description = models.TextField(
         default="Site officiel de votre unité scoute, permettant d'inscrire les enfants et de gérer les membres."
     )
@@ -756,14 +1019,6 @@ class SiteSettings(models.Model):
         max_length=255,
         default="scouts belgique baden-powel",
     )
-
-    # Contact information
-    # Left empty rather than pre-filled: a placeholder that looks like a real
-    # address would have a troop's own site publishing somebody else's, and
-    # mail to it would leave the unit. The admin is expected to set it.
-    contact_email = models.EmailField(default="", blank=True)
-    contact_phone = models.CharField(max_length=20, blank=True)
-    contact_address = models.TextField(blank=True)
 
     # Social media
     facebook_url = models.URLField(blank=True)
@@ -789,25 +1044,6 @@ class SiteSettings(models.Model):
         default="Ex: Rue de l'Église 1, 1000 Bruxelles",
     )
 
-    # Languages enabled on the site. With more than one, a language selector is
-    # shown to users; with exactly one, the site is locked to that language.
-    # Backed by a PostgreSQL ArrayField (the project is Postgres-only).
-    available_languages = ArrayField(
-        base_field=models.CharField(max_length=5, choices=AVAILABLE_LANGUAGE_CHOICES),
-        default=default_available_languages,
-        help_text=_("Languages available to users in the site language selector."),
-    )
-
-    # Language shown to visitors whose browser/cookie language isn't one of the
-    # enabled languages (or on a first visit). Must be one of available_languages
-    # — enforced in clean() and the admin form.
-    default_language = models.CharField(
-        max_length=5,
-        choices=AVAILABLE_LANGUAGE_CHOICES,
-        default="fr",
-        help_text=_("Default language for visitors. Must be one of the available languages."),
-    )
-
     # Automated passage (run_passage task) — idempotency marker
     last_passage_school_year = models.IntegerField(
         null=True,
@@ -821,22 +1057,188 @@ class SiteSettings(models.Model):
 
     # Singleton pattern
     class Meta:
-        verbose_name = "Site Settings"
-        verbose_name_plural = "Site Settings"
+        verbose_name = "Troop Settings"
+        verbose_name_plural = "Troop Settings"
 
     def __str__(self):
-        return self.site_name
+        return self.name
+
+    def save(self, *args, **kwargs):
+        # Normalise the ISO codes so a lower-case entry in the settings page and
+        # the same code typed in lower-case by a script agree on one row.
+        if self.phone_region:
+            self.phone_region = self.phone_region.upper()
+        if self.currency:
+            self.currency = self.currency.upper()
+        super().save(*args, **kwargs)
 
     @classmethod
     def get_settings(cls):
-        """Get the site settings, creating them if they don't exist."""
-        settings, created = cls.objects.get_or_create(pk=1)
-        return settings
+        """Return the singleton row, creating it if the migration was skipped.
+
+        The migration creates the row, so ``get_or_create`` is a fallback for a
+        database that predates it rather than the normal path.
+        """
+        cached = cache.get(cls.CACHE_KEY)
+        if cached is not None:
+            return cached
+
+        obj, _created = cls.objects.get_or_create(pk=1)
+        cache.set(cls.CACHE_KEY, obj, None)
+        return obj
+
+    @classmethod
+    def clear_cache(cls):
+        """Drop the cached row, so the next read picks up the stored values."""
+        cache.delete(cls.CACHE_KEY)
+
+    def display_short_name(self):
+        """The short name, or the full name when none was set."""
+        return self.short_name or self.name
+
+    def privacy_policy_url(self):
+        """The privacy policy as a link, or "" when it is not one.
+
+        The field holds either, so this is what a template should test before
+        rendering an ``<a href>``.
+        """
+        policy = (self.privacy_policy or "").strip()
+        if policy.startswith(("http://", "https://")):
+            return policy
+        return ""
+
+    # --- Calendar ----------------------------------------------------------
+    # Every school-year, age-reference and retention date the application
+    # computes is derived here, from the six month/day fields above. Views,
+    # Celery tasks and templates must call these rather than reach for the
+    # fields — a troop that moves its year boundary or its age reference day
+    # must not have to find every place that assumed August or December.
+
+    def school_year_start(self, year):
+        """The first day of the school year named ``year``.
+
+        ``year`` is the calendar year the school year starts in — the value
+        stored in :attr:`SchoolYear.name`.
+        """
+        try:
+            return date(year, self.year_start_month, self.year_start_day)
+        except ValueError:
+            # A 29 February start: that day does not exist every year.
+            return date(year, 3, 1)
+
+    def school_year_for(self, on_date):
+        """The start year of the school year that contains ``on_date``.
+
+        Returned as an integer ``SchoolYear.name``, computed from the
+        configured year start, so it also answers for a date no
+        :class:`SchoolYear` row covers yet.
+        """
+        start = self.school_year_start(on_date.year)
+        return on_date.year if on_date >= start else on_date.year - 1
+
+    def school_year_bounds(self, year):
+        """``(start_date, end_date)`` of the school year named ``year``.
+
+        A school year runs a full twelve months, so it ends the day before the
+        next one begins.
+        """
+        start = self.school_year_start(year)
+        end = self.school_year_start(year + 1) - timedelta(days=1)
+        return start, end
+
+    def age_reference_date(self, school_year):
+        """The day ages are taken on for ``school_year``.
+
+        ``school_year`` is a :class:`SchoolYear` instance or its ``name``. The
+        configured reference month/day (31 December by default) is pinned to
+        whichever calendar year puts it *inside* the school year, so a troop
+        whose year starts in September or in January still gets 31 December of
+        that school year rather than of the year before it.
+        """
+        start = getattr(school_year, "start_date", None)
+        if start is None:
+            start, _end = self.school_year_bounds(school_year)
+        candidate = self._calendar_date(
+            start.year, self.age_reference_month, self.age_reference_day
+        )
+        if candidate < start:
+            candidate = self._calendar_date(
+                start.year + 1, self.age_reference_month, self.age_reference_day
+            )
+        return candidate
+
+    def age_at_reference(self, person, school_year=None):
+        """``person``'s age on the age reference day of ``school_year``.
+
+        The single definition of "how old is this child this school year". The
+        passage task, the member list's branch check and
+        :meth:`Person.age_fits_branch` all go through it, so they can no longer
+        disagree about which December is meant. Returns ``None`` when the
+        birthday or the school year is unknown.
+        """
+        if person.birthday is None:
+            return None
+        if school_year is None:
+            school_year = SchoolYear.current()
+        if school_year is None:
+            return None
+        reference = self.age_reference_date(school_year)
+        return (reference - person.birthday).days // 365
+
+    def passage_datetime(self, school_year):
+        """The moment the passage preparing ``school_year`` falls due.
+
+        The configured passage day (1 May by default) in the start calendar
+        year of that school year: the passage runs in the spring before the
+        year it prepares children for.
+        """
+        name = getattr(school_year, "name", school_year)
+        day = self._calendar_date(name, self.passage_month, self.passage_day)
+        return timezone.make_aware(datetime.combine(day, time.min))
+
+    def next_passage_datetime(self, on_date=None):
+        """The moment of the next passage — the one preparing the school year
+        after the one ``on_date`` (today by default) falls in.
+        """
+        if on_date is None:
+            on_date = timezone.localdate()
+        return self.passage_datetime(self.school_year_for(on_date) + 1)
+
+    def _calendar_date(self, year, month, day):
+        """``date(year, month, day)``, clamped to that month's last day.
+
+        The month and day fields are validated separately, so a combination
+        like 31 February is reachable (through the admin, or through the
+        settings page's form). Clamping keeps the nightly tasks and the page
+        rendering that read these values from raising on one.
+        """
+        return date(year, month, min(day, calendar.monthrange(year, month)[1]))
+
+    # --- Archive retention -------------------------------------------------
+
+    def archive_purge_date(self, archived_date):
+        """The day a person archived on ``archived_date`` is deleted for good."""
+        return archived_date + timedelta(days=self.archive_retention_years * 365)
+
+    def archive_purge_cutoff(self, on_date):
+        """The latest ``archived_date`` that is due for deletion on ``on_date``."""
+        return on_date - timedelta(days=self.archive_retention_years * 365)
+
+    def archive_warning_cutoff(self, on_date):
+        """The ``archived_date`` whose deletion warning is due on ``on_date``.
+
+        The warning goes out :data:`ARCHIVE_WARNING_DAYS` before the purge —
+        the ``archived_date`` on which that day is today.
+        """
+        return self.archive_purge_cutoff(on_date) + timedelta(
+            days=ARCHIVE_WARNING_DAYS
+        )
 
     def clean(self):
-        """The default language must be one of the enabled languages."""
+        """Cross-field rules the individual field validators cannot express."""
         super().clean()
-        available = self.available_languages or []
+
+        available = self.enabled_languages or []
         if not available:
             raise ValidationError(_("Select at least one available language."))
         if self.default_language not in available:
@@ -847,6 +1249,13 @@ class SiteSettings(models.Model):
                     )
                 }
             )
+
+
+@receiver(post_save, sender=TroopSettings)
+@receiver(post_delete, sender=TroopSettings)
+def _invalidate_troop_settings_cache(sender, **kwargs):
+    """Forget the cached row whenever the stored one changes."""
+    TroopSettings.clear_cache()
 
 
 class ImportantDocument(models.Model):

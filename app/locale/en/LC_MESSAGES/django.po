@@ -1653,7 +1653,8 @@ msgid ""
 msgstr ""
 
 #: members/templates/members/deregister_child.html:17
-msgid "The year starts on August 1st, right after camp."
+#, python-format
+msgid "The year starts on %(year_start)s, right after camp."
 msgstr ""
 
 #: members/templates/members/deregister_child.html:21
@@ -2210,3 +2211,313 @@ msgstr ""
 msgid "Purge an archived member only when the data may really be discarded."
 msgstr ""
 
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Organisation"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Unit name"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Short name"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Federation"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Address shown in the footer"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Section passage runs"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Signature campaigns"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Settings"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Enabled languages"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Locale"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Calendar"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Modules"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Public contact email"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Reply-to address"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Public phone"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Privacy policy"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Used where the full name does not fit. Empty uses the full name."
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid ""
+"Where answers to automated mail should go. Empty replies to the sender address."
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Phone country"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Currency"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "School year starts — month"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "School year starts — day"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Ages are taken on — month"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Ages are taken on — day"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Section passage — month"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Section passage — day"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Keep archived members for (years)"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "The day a member's age is measured on."
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Public agenda"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Enter a three-letter currency code, e.g. EUR."
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Automatic"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Manual"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid ""
+"Link or text of your privacy policy. A URL becomes a link, anything else is shown as text."
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Country code used to parse and format phone numbers, e.g. BE."
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Three-letter currency code used to display amounts, e.g. EUR."
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid ""
+"Automatic runs the passage on the date above; manual leaves it to whoever presses the button."
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "%(region)s is not a country code phone numbers can be parsed for."
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid ""
+"What this instance is called, which languages it offers and how its scout year runs. Every change takes effect immediately."
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Unknown settings section."
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Settings saved."
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Payment of %(amount)s recorded for %(person)s."
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Amount (%(currency)s)"
+msgstr ""
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid ""
+"Hello {prenom},\n"
+"\n"
+"Your membership fee balance is {solde}.\n"
+"Please proceed with the payment.\n"
+"\n"
+"Best regards,\n"
+"The treasurer"
+msgstr ""
+
+# --- Section passage: the configurable branch ladder ---
+# Added by hand; covered by tests/test_i18n_catalogs.py.
+#: members/templates/members/passage.html
+msgid "Section passage"
+msgstr ""
+
+#: members/templates/members/passage.html
+msgid "Move members into their section for the coming year."
+msgstr ""
+
+#: members/templates/members/passage.html
+msgid "Coming school year"
+msgstr ""
+
+#: members/templates/members/passage.html
+msgid "Not created yet"
+msgstr ""
+
+#: members/templates/members/passage.html
+msgid "Automatic run"
+msgstr ""
+
+#: members/templates/members/passage.html
+msgid "On"
+msgstr ""
+
+#: members/templates/members/passage.html
+msgid "Off"
+msgstr ""
+
+#: members/templates/members/passage.html
+#, python-format
+msgid "Due on %(date)s"
+msgstr ""
+
+#: members/templates/members/passage.html
+msgid "Last run prepared"
+msgstr ""
+
+#: members/templates/members/passage.html
+msgid "Never"
+msgstr ""
+
+#: members/templates/members/passage.html
+msgid "The passage places every participant in their next section. Running it "
+"again is safe: members already placed stay where they are, and the choices "
+"made by hand are kept."
+msgstr ""
+
+#: members/templates/members/passage.html
+msgid "Run the passage now"
+msgstr ""
+
+#: members/templates/members/passage.html
+msgid "Waiting for a decision"
+msgstr ""
+
+#: members/templates/members/passage.html
+msgid "The passage could not place these members on its own. Give each one a "
+"section for the coming year, or fix their branch, then run the passage "
+"again."
+msgstr ""
+
+#: members/templates/members/passage.html
+msgid "Reason"
+msgstr ""
+
+#: members/templates/members/passage.html
+msgid "Open"
+msgstr ""
+
+#: members/templates/members/passage.html
+msgid "Nobody is waiting for a decision."
+msgstr ""
+
+#: members/views.py
+msgid "The passage did not run: there is no coming school year yet."
+msgstr ""
+
+#: members/views.py
+#, python-format
+msgid "Passage done: %(promoted)s placed, %(graduated)s graduated, %(flagged)s "
+"waiting for a decision."
+msgstr ""
+
+#: members/models.py
+msgid "No section fits — choose one"
+msgstr ""
+
+#: members/models.py
+msgid "The branch has no next branch set"
+msgstr ""
+
+#: members/models.py
+msgid "Leaving the last branch — decide what comes next"
+msgstr ""
+
+#: members/models.py
+msgid "Set by the passage when it cannot place a member on its own; cleared as "
+"soon as one is placed."
+msgstr ""
+
+#: members/models.py
+msgid "The branch members move into when they outgrow this one."
+msgstr ""
+
+#: members/models.py
+msgid "The last branch of the ladder: members who outgrow it leave it for good."
+msgstr ""
+
+#: members/models.py
+msgid "Members who leave the last branch become animators. Turn this off to be "
+"asked about each of them instead."
+msgstr ""
+
+#: members/forms.py
+msgid "Members leaving the last branch become animators"
+msgstr ""
+
+#: members/templates/members/admin_list.html
+msgid "To review"
+msgstr ""
+
+#: members/templates/members/admin_update.html
+#, python-format
+msgid "The section passage is waiting for a decision: %(reason)s"
+msgstr ""

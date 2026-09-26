@@ -1654,8 +1654,9 @@ msgid ""
 msgstr "Si la désinscription est demandée pour l'année en cours et que l'inscription est active, une intervention manuelle sera nécessaire. Assurez-vous d'avoir suivi la procédure décrite dans le règlement intérieur."
 
 #: members/templates/members/deregister_child.html:17
-msgid "The year starts on August 1st, right after camp."
-msgstr "L'année commence le 1er août, juste après le camp."
+#, python-format
+msgid "The year starts on %(year_start)s, right after camp."
+msgstr "L'année commence le %(year_start)s, juste après le camp."
 
 #: members/templates/members/deregister_child.html:21
 #, python-format
@@ -2211,6 +2212,204 @@ msgstr "Les attestations liées à ce membre sont conservées, mais le lien vers
 msgid "Purge an archived member only when the data may really be discarded."
 msgstr "Ne purgez un membre archivé que si les données peuvent réellement être supprimées."
 
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Organisation"
+msgstr "Organisation"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Unit name"
+msgstr "Nom de l'unité"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Short name"
+msgstr "Nom court"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Federation"
+msgstr "Fédération"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Address shown in the footer"
+msgstr "Adresse affichée dans le pied de page"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Section passage runs"
+msgstr "Le passage de section se fait"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Signature campaigns"
+msgstr "Campagnes de signatures"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Settings"
+msgstr "Paramètres"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Enabled languages"
+msgstr "Langues actives"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Locale"
+msgstr "Langue et région"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Calendar"
+msgstr "Calendrier"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Modules"
+msgstr "Modules"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Public contact email"
+msgstr "E-mail de contact public"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Reply-to address"
+msgstr "Adresse de réponse"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Public phone"
+msgstr "Téléphone public"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Privacy policy"
+msgstr "Politique de confidentialité"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Used where the full name does not fit. Empty uses the full name."
+msgstr ""
+"Utilisé là où le nom complet ne rentre pas. Vide, le nom complet est utilisé."
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid ""
+"Where answers to automated mail should go. Empty replies to the sender address."
+msgstr ""
+"Où arrivent les réponses aux e-mails automatiques. Vide, les réponses vont à l'expéditeur."
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Phone country"
+msgstr "Pays des téléphones"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Currency"
+msgstr "Devise"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "School year starts — month"
+msgstr "Début de l'année scoute — mois"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "School year starts — day"
+msgstr "Début de l'année scoute — jour"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Ages are taken on — month"
+msgstr "Âge calculé au — mois"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Ages are taken on — day"
+msgstr "Âge calculé au — jour"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Section passage — month"
+msgstr "Passage de section — mois"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Section passage — day"
+msgstr "Passage de section — jour"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Keep archived members for (years)"
+msgstr "Conserver les membres archivés pendant (années)"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "The day a member's age is measured on."
+msgstr "Le jour où l'âge d'un membre est mesuré."
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Public agenda"
+msgstr "Agenda public"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Enter a three-letter currency code, e.g. EUR."
+msgstr "Entrez un code devise de trois lettres, par ex. EUR."
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Automatic"
+msgstr "Automatique"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Manual"
+msgstr "Manuel"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid ""
+"Link or text of your privacy policy. A URL becomes a link, anything else is shown as text."
+msgstr ""
+"Lien ou texte de votre politique de confidentialité. Une URL devient un lien, tout le reste est affiché comme texte."
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Country code used to parse and format phone numbers, e.g. BE."
+msgstr ""
+"Code pays utilisé pour lire et formater les numéros de téléphone, par ex. BE."
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Three-letter currency code used to display amounts, e.g. EUR."
+msgstr ""
+"Code devise de trois lettres utilisé pour afficher les montants, par ex. EUR."
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid ""
+"Automatic runs the passage on the date above; manual leaves it to whoever presses the button."
+msgstr ""
+"Automatique effectue le passage à la date ci-dessus ; manuel le laisse à qui appuie sur le bouton."
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "%(region)s is not a country code phone numbers can be parsed for."
+msgstr ""
+"%(region)s n'est pas un code pays reconnu pour les numéros de téléphone."
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid ""
+"What this instance is called, which languages it offers and how its scout year runs. Every change takes effect immediately."
+msgstr ""
+"Le nom de cette instance, les langues qu'elle propose et le déroulement de son année scoute. Chaque modification prend effet immédiatement."
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Unknown settings section."
+msgstr "Section de paramètres inconnue."
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Settings saved."
+msgstr "Paramètres enregistrés."
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Payment of %(amount)s recorded for %(person)s."
+msgstr "Paiement de %(amount)s enregistré pour %(person)s."
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Amount (%(currency)s)"
+msgstr "Montant (%(currency)s)"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid ""
+"Hello {prenom},\n"
+"\n"
+"Your membership fee balance is {solde}.\n"
+"Please proceed with the payment.\n"
+"\n"
+"Best regards,\n"
+"The treasurer"
+msgstr ""
+"Bonjour {prenom},\n"
+"\n"
+"Le solde de votre cotisation est de {solde}.\n"
+"Veuillez procéder au paiement.\n"
+"\n"
+"Cordialement,\n"
+"Le trésorier"
+
 #~ msgid "Configure attestation"
 #~ msgstr "Configurer l'attestation"
 
@@ -2349,3 +2548,131 @@ msgstr "Ne purgez un membre archivé que si les données peuvent réellement êt
 #~ msgid "Languages shown to users in the site language selector."
 #~ msgstr ""
 #~ "Langues proposées aux utilisateurs dans le sélecteur de langue du site."
+
+# --- Section passage: the configurable branch ladder ---
+# Added by hand; covered by tests/test_i18n_catalogs.py.
+#: members/templates/members/passage.html
+msgid "Section passage"
+msgstr "Passage de section"
+
+#: members/templates/members/passage.html
+msgid "Move members into their section for the coming year."
+msgstr "Placer les membres dans leur section pour l'année à venir."
+
+#: members/templates/members/passage.html
+msgid "Coming school year"
+msgstr "Année scolaire à venir"
+
+#: members/templates/members/passage.html
+msgid "Not created yet"
+msgstr "Pas encore créée"
+
+#: members/templates/members/passage.html
+msgid "Automatic run"
+msgstr "Exécution automatique"
+
+#: members/templates/members/passage.html
+msgid "On"
+msgstr "Activée"
+
+#: members/templates/members/passage.html
+msgid "Off"
+msgstr "Désactivée"
+
+#: members/templates/members/passage.html
+#, python-format
+msgid "Due on %(date)s"
+msgstr "Prévue le %(date)s"
+
+#: members/templates/members/passage.html
+msgid "Last run prepared"
+msgstr "Dernière préparation"
+
+#: members/templates/members/passage.html
+msgid "Never"
+msgstr "Jamais"
+
+#: members/templates/members/passage.html
+msgid "The passage places every participant in their next section. Running it "
+"again is safe: members already placed stay where they are, and the choices "
+"made by hand are kept."
+msgstr "Le passage de section place chaque animé dans sa section suivante. Le relancer ne pose aucun problème : les membres déjà placés restent où ils sont et les choix faits à la main sont conservés."
+
+#: members/templates/members/passage.html
+msgid "Run the passage now"
+msgstr "Lancer le passage maintenant"
+
+#: members/templates/members/passage.html
+msgid "Waiting for a decision"
+msgstr "En attente d'une décision"
+
+#: members/templates/members/passage.html
+msgid "The passage could not place these members on its own. Give each one a "
+"section for the coming year, or fix their branch, then run the passage "
+"again."
+msgstr "Le passage n'a pas pu placer ces membres automatiquement. Attribuez à chacun une section pour l'année à venir, ou corrigez leur branche, puis relancez le passage."
+
+#: members/templates/members/passage.html
+msgid "Reason"
+msgstr "Raison"
+
+#: members/templates/members/passage.html
+msgid "Open"
+msgstr "Ouvrir"
+
+#: members/templates/members/passage.html
+msgid "Nobody is waiting for a decision."
+msgstr "Personne n'attend de décision."
+
+#: members/views.py
+msgid "The passage did not run: there is no coming school year yet."
+msgstr "Le passage n'a pas été lancé : l'année scolaire à venir n'existe pas encore."
+
+#: members/views.py
+#, python-format
+msgid "Passage done: %(promoted)s placed, %(graduated)s graduated, %(flagged)s "
+"waiting for a decision."
+msgstr "Passage effectué : %(promoted)s placés, %(graduated)s sortis, %(flagged)s en attente d'une décision."
+
+#: members/models.py
+msgid "No section fits — choose one"
+msgstr "Aucune section ne convient — à choisir"
+
+#: members/models.py
+msgid "The branch has no next branch set"
+msgstr "La branche n'a pas de branche suivante"
+
+#: members/models.py
+msgid "Leaving the last branch — decide what comes next"
+msgstr "Quitte la dernière branche — à décider"
+
+#: members/models.py
+msgid "Set by the passage when it cannot place a member on its own; cleared as "
+"soon as one is placed."
+msgstr "Placé par le passage lorsqu'il ne peut pas attribuer un membre automatiquement ; effacé dès qu'un membre est placé."
+
+#: members/models.py
+msgid "The branch members move into when they outgrow this one."
+msgstr "La branche vers laquelle les membres passent lorsqu'ils dépassent celle-ci."
+
+#: members/models.py
+msgid "The last branch of the ladder: members who outgrow it leave it for good."
+msgstr "La dernière branche de l'échelle : les membres qui la dépassent la quittent définitivement."
+
+#: members/models.py
+msgid "Members who leave the last branch become animators. Turn this off to be "
+"asked about each of them instead."
+msgstr "Les membres qui quittent la dernière branche deviennent animateurs. Désactivez cette option pour être consulté pour chacun d'eux."
+
+#: members/forms.py
+msgid "Members leaving the last branch become animators"
+msgstr "Les membres quittant la dernière branche deviennent animateurs"
+
+#: members/templates/members/admin_list.html
+msgid "To review"
+msgstr "À examiner"
+
+#: members/templates/members/admin_update.html
+#, python-format
+msgid "The section passage is waiting for a decision: %(reason)s"
+msgstr "Le passage de section attend une décision : %(reason)s"

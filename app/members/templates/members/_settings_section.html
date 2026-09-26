@@ -1,0 +1,53 @@
+{% load i18n widget_tweaks %}
+{% comment %}
+  One settings group: its own card, its own form, posting only its own fields.
+
+  The whole card is the HTMX swap target, so a save replaces just this section
+  and leaves the others — including anything half-typed in them — untouched.
+{% endcomment %}
+<div class="card border-0 shadow-sm mb-4" id="settings-{{ section.key }}">
+  <div class="card-header bg-white">
+    <h2 class="h5 mb-0">{{ section.title }}</h2>
+  </div>
+  <div class="card-body">
+    {% if section.saved %}
+      <div class="alert alert-success py-2" role="status">{% trans "Saved." %}</div>
+    {% endif %}
+    {% for error in section.form.non_field_errors %}
+      <div class="alert alert-danger py-2" role="alert">{{ error }}</div>
+    {% endfor %}
+    <form hx-post="{% url 'members:troop_settings' %}"
+          hx-target="#settings-{{ section.key }}"
+          hx-swap="outerHTML">
+      {% csrf_token %}
+      <input type="hidden" name="section" value="{{ section.key }}" />
+      {% for field in section.form %}
+        <div class="mb-3">
+          {% if field.field.widget.allow_multiple_selected %}
+            <div class="form-label">{{ field.label }}</div>
+            {{ field }}
+            {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+          {% elif field.field.widget.input_type == 'checkbox' %}
+            <div class="form-check">
+              {% render_field field class="form-check-input" %}
+              <label class="form-check-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+            </div>
+            {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+          {% else %}
+            <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {% if field.field.choices %}
+              {% render_field field class="form-select" %}
+            {% else %}
+              {% render_field field class="form-control" %}
+            {% endif %}
+            {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+          {% endif %}
+          {% for error in field.errors %}
+            <div class="alert-danger small mt-1" role="alert">{{ error }}</div>
+          {% endfor %}
+        </div>
+      {% endfor %}
+      <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
+    </form>
+  </div>
+</div>

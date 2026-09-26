@@ -10,7 +10,7 @@ from django.core.exceptions import PermissionDenied
 from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
-from django.utils import timezone
+from django.utils import formats, timezone
 from django.utils.translation import gettext as _
 from django.views.generic import ListView, TemplateView, UpdateView
 from post_office.models import STATUS, Email
@@ -22,21 +22,28 @@ from .filters import PersonFilter
 from .forms import (
     AdminUserUpdateForm,
     AnimeProfileForm,
+    CalendarSettingsForm,
     ChildForm,
     ChildFromKey,
+    LocaleSettingsForm,
+    ModuleSettingsForm,
     OnboardingForm,
+    OrganisationSettingsForm,
     ProfileEditForm,
 )
 from .mail import absolute_url, send_templated
 from .models import (
+    PASSAGE_MODE_MANUAL,
     Account,
     Enrollment,
     ImportantDocument,
     Person,
     SchoolYear,
+    TroopSettings,
     get_registration_admins,
 )
 from .permissions import can_delete_member, get_person, is_htmx
+from .tasks import run_passage
 
 
 class Login(TemplateView):
@@ -173,25 +180,35 @@ class AdminListView(UserPassesTestMixin, ListView):
         context["filter"] = self._get_filterset()
 
         # For each person in the (paginated) object_list, add their section for the selected year
+        troop = TroopSettings.get_settings()
         for person in context["object_list"]:
             try:
                 enrollment = person.enrollment_set.filter(
                     school_year=selected_year
                 ).select_related("section__branch").first()
                 person.section_display = enrollment.section.name if enrollment else "-"
-                # Check age compatibility with section's branch
+                # Check age compatibility with section's branch, using the same
+                # age definition the passage task and the role rules use.
                 person.age_mismatch = False
                 if enrollment and person.birthday and enrollment.section.branch:
-                    age_at_dec_31 = selected_year.name - person.birthday.year
+                    age_at_reference = troop.age_at_reference(person, selected_year)
                     branch = enrollment.section.branch
-                    if branch.min_age_dec_31 is not None and branch.max_age_dec_31 is not None:
-                        if not (branch.min_age_dec_31 <= age_at_dec_31 <= branch.max_age_dec_31):
+                    if (
+                        age_at_reference is not None
+                        and branch.min_age_dec_31 is not None
+                        and branch.max_age_dec_31 is not None
+                    ):
+                        if not (
+                            branch.min_age_dec_31
+                            <= age_at_reference
+                            <= branch.max_age_dec_31
+                        ):
                             person.age_mismatch = True
                             person.age_mismatch_detail = _(
                                 "%(age)s years old — branch %(branch)s: "
                                 "%(min)s-%(max)s years old"
                             ) % {
-                                "age": age_at_dec_31,
+                                "age": age_at_reference,
                                 "branch": branch.name,
                                 "min": branch.min_age_dec_31,
                                 "max": branch.max_age_dec_31,
@@ -572,13 +589,21 @@ def deregister_child(request, pk):
     context["child"] = child
     if child.parents.filter(id=parent.id).exists():
         context["allow_deregister"] = True
+
+    # The footnote tells the parent when the scout year starts. That date is
+    # the troop's own, so read it from the settings rather than naming a month.
+    troop = TroopSettings.get_settings()
+    year_start, _year_end = troop.school_year_bounds(
+        troop.school_year_for(timezone.localdate())
+    )
+    context["year_start"] = formats.date_format(year_start, "j F")
     return render(
         request=request, template_name="members/deregister_child.html", context=context
     )
 
 
 def _archive_child(child):
-    """Archive a child, stamping the date that drives the 5-year retention clock."""
+    """Archive a child, stamping the date that drives the retention clock."""
     child.status = "ar"
     child.archived_date = timezone.now().date()
     child.save(update_fields=["status", "archived_date"])
@@ -860,3 +885,147 @@ class MailQueueView(UserPassesTestMixin, TemplateView):
             count, _deleted = Email.objects.filter(status=STATUS.failed).delete()
             messages.success(request, _("%(count)s email(s) purged.") % {"count": count})
         return redirect("members:mail_queue")
+
+
+class TroopSettingsView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
+    """Staff page for the troop's own settings, in four grouped sections.
+
+    Each section is an independent form posting to this same view, so editing
+    the calendar cannot quietly overwrite mail settings nobody looked at. An
+    HTMX post gets that one section back; a plain post — JavaScript off, or a
+    stray Enter key — gets a redirect.
+
+    ``LoginRequiredMixin`` first, so an anonymous visitor is sent to the login
+    page rather than shown a bare 403.
+    """
+
+    template_name = "members/settings.html"
+    section_template_name = "members/_settings_section.html"
+
+    def test_func(self):
+        return self.request.user.is_staff
+
+    def _sections(self):
+        """The page's sections, in order.
+
+        Built per request rather than held in a class attribute so the titles
+        are translated in the language actually being rendered.
+        """
+        return (
+            ("organisation", _("Organisation"), OrganisationSettingsForm),
+            ("locale", _("Locale"), LocaleSettingsForm),
+            ("calendar", _("Calendar"), CalendarSettingsForm),
+            ("modules", _("Modules"), ModuleSettingsForm),
+        )
+
+    def _section_context(self, key, form, saved=False):
+        title = next(title for k, title, _cls in self._sections() if k == key)
+        return {"key": key, "title": title, "form": form, "saved": saved}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        instance = TroopSettings.get_settings()
+        bound_key = kwargs.get("bound_key")
+        bound_form = kwargs.get("bound_form")
+
+        context["sections"] = [
+            self._section_context(
+                key, bound_form if key == bound_key else form_class(instance=instance)
+            )
+            for key, _title, form_class in self._sections()
+        ]
+        return context
+
+    def post(self, request, *args, **kwargs):
+        key = request.POST.get("section")
+        form_class = {k: cls for k, _title, cls in self._sections()}.get(key)
+        if form_class is None:
+            return HttpResponseBadRequest(_("Unknown settings section."))
+
+        form = form_class(request.POST, instance=TroopSettings.get_settings())
+
+        if form.is_valid():
+            form.save()
+            if is_htmx(request):
+                return render(
+                    request,
+                    self.section_template_name,
+                    {
+                        "section": self._section_context(
+                            key,
+                            form_class(instance=TroopSettings.get_settings()),
+                            saved=True,
+                        )
+                    },
+                )
+            messages.success(request, _("Settings saved."))
+            return redirect("members:troop_settings")
+
+        # Invalid: hand the bound form back so the errors and what was typed
+        # are both still on screen.
+        if is_htmx(request):
+            return render(
+                request,
+                self.section_template_name,
+                {"section": self._section_context(key, form)},
+            )
+        return self.render_to_response(
+            self.get_context_data(bound_key=key, bound_form=form)
+        )
+
+
+class PassageView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
+    """Staff page for the yearly passage: when it runs, and who it could not place.
+
+    The automatic run answers to the troop's calendar and ``passage_mode``; this
+    page is the manual counterpart. Its button calls the very same task the
+    nightly run does, with ``force=True``, so the two cannot drift apart — a
+    forced run skips the guards that exist to stop the *daily* task acting early
+    or twice, and still records the marker so the nightly task will not repeat
+    the work.
+    """
+
+    template_name = "members/passage.html"
+
+    def test_func(self):
+        return self.request.user.is_staff
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        troop = TroopSettings.get_settings()
+        context["target_year"] = SchoolYear.next_school_year()
+        context["automatic"] = troop.passage_mode != PASSAGE_MODE_MANUAL
+        # Formatted here rather than in the template: a date filter cannot be
+        # used inside a blocktranslate block.
+        context["next_due"] = formats.date_format(
+            troop.next_passage_datetime(), "j F Y"
+        )
+        context["last_run_year"] = troop.last_passage_school_year
+        context["flagged"] = Person.objects.exclude(passage_review="").order_by(
+            "last_name", "first_name"
+        )
+        return context
+
+    def post(self, request, *args, **kwargs):
+        result = run_passage(force=True)
+        if result is None:
+            messages.error(
+                request,
+                _(
+                    "The passage did not run: there is no coming school year yet."
+                ),
+            )
+        else:
+            messages.success(
+                request,
+                _(
+                    "Passage done: %(promoted)s placed, %(graduated)s graduated, "
+                    "%(flagged)s waiting for a decision."
+                )
+                % {
+                    "promoted": result["promoted"],
+                    "graduated": result["aged_out"],
+                    "flagged": result["flagged"],
+                },
+            )
+        return redirect("members:passage")

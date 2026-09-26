@@ -4,10 +4,38 @@ from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
+from . import modules
 from .constants import (
     ROLE_CHOICES,
 )
-from .models import Account, Enrollment, Person, PersonRole, Role, SchoolYear, Section
+from .models import (
+    AVAILABLE_LANGUAGE_CHOICES,
+    Account,
+    Enrollment,
+    Person,
+    PersonRole,
+    Role,
+    SchoolYear,
+    Section,
+    TroopSettings,
+)
+from .modules import module_enabled
+from .permissions import TRESORIER
+
+
+def secondary_role_queryset():
+    """The secondary roles a troop can hand out.
+
+    The Treasurer role is hidden while the membership-fees module is switched
+    off: with the finance screens gone it grants nothing, so offering it would
+    only invite a troop to file someone under a responsibility that does not
+    exist. The role itself is untouched — see AdminUserUpdateForm.save(), which
+    keeps roles this form does not offer.
+    """
+    roles = Role.objects.filter(is_primary=False)
+    if not module_enabled(modules.FEES):
+        roles = roles.exclude(short=TRESORIER)
+    return roles
 
 
 class SectionModelChoiceField(forms.ModelChoiceField):
@@ -52,12 +80,14 @@ class AdminUserUpdateForm(forms.ModelForm):
         label=_("Primary role"),
     )
 
-    # Secondary roles (multiple selection)
+    # Secondary roles (multiple selection). The queryset is filled in __init__
+    # rather than here: which roles a troop can hand out depends on its module
+    # switches, and a queryset declared on the class is evaluated once and then
+    # shared by every instance (see secondary_role_queryset()).
     secondary_roles = forms.ModelMultipleChoiceField(
-        queryset=Role.objects.filter(is_primary=False),
+        queryset=Role.objects.none(),
         required=False,
         label=_("Secondary roles"),
-        # widget=forms.SelectMultiple(attrs={"class": "form-select", "size": "5"}),
         widget=forms.CheckboxSelectMultiple,
     )
 
@@ -122,6 +152,7 @@ class AdminUserUpdateForm(forms.ModelForm):
             if self.instance.primary_role.short == Person.CHILD_ROLE_SHORT:
                 self.fields.pop("secondary_roles", None)
             else:
+                self.fields["secondary_roles"].queryset = secondary_role_queryset()
                 secondary_roles = self.instance.roles.filter(is_primary=False)
                 if secondary_roles.exists():
                     self.fields["secondary_roles"].initial = secondary_roles.all()
@@ -164,8 +195,16 @@ class AdminUserUpdateForm(forms.ModelForm):
             person.primary_role = primary_role
             person.save()
 
-            # Handle roles
-            PersonRole.objects.filter(person=person, role__is_primary=False).delete()
+            # Handle roles. Only the roles this form offered are replaced: a
+            # role it hides — the Treasurer role while membership fees are
+            # switched off — must survive an unrelated edit rather than be
+            # deleted for not having been on screen to re-submit. The exception
+            # is a Participant, for whom the field is dropped on purpose: an
+            # empty submission then means "clear them" (rule 1).
+            stored = PersonRole.objects.filter(person=person, role__is_primary=False)
+            if "secondary_roles" in self.fields:
+                stored = stored.filter(role__in=self.fields["secondary_roles"].queryset)
+            stored.delete()
             for role in (secondary_roles or []):
                 PersonRole.objects.create(person=person, role=role)
 
@@ -193,6 +232,11 @@ class AdminUserUpdateForm(forms.ModelForm):
                     school_year=self.next_year,
                     defaults={"section": next_section},
                 )
+                # Choosing their section by hand is exactly the decision the
+                # passage was asking for, so the flag it left is answered.
+                if person.passage_review:
+                    person.passage_review = ""
+                    person.save(update_fields=["passage_review"])
             elif self.next_year:
                 # Remove enrollment if section is cleared
                 Enrollment.objects.filter(
@@ -277,9 +321,9 @@ class ProfileEditForm(UserChangeForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        from .models import SiteSettings
-        site_settings = SiteSettings.get_settings()
-        self.fields["photo_consent"].label = site_settings.photo_consent_text
+        from .models import TroopSettings
+        troop_settings = TroopSettings.get_settings()
+        self.fields["photo_consent"].label = troop_settings.photo_consent_text
         person = self.instance.person
         parent_active_role = Role.objects.get(short="pa")
 
@@ -533,9 +577,9 @@ class OnboardingForm(forms.Form):
     def __init__(self, *args, **kwargs):
         person = kwargs.pop("person", None)
         super().__init__(*args, **kwargs)
-        from .models import SiteSettings
-        site_settings = SiteSettings.get_settings()
-        self.fields["photo_consent"].label = site_settings.photo_consent_text
+        from .models import TroopSettings
+        troop_settings = TroopSettings.get_settings()
+        self.fields["photo_consent"].label = troop_settings.photo_consent_text
 
         # Rule 2: a person of branch age can only be a Participant.
         self.fits_branch = bool(person and person.age_fits_branch())
@@ -598,3 +642,166 @@ class AdminAccountChangeForm(UserChangeForm):
             self.fields["person_phone"].initial = person.phone
             self.fields["person_photo_consent"].initial = person.photo_consent
             self.fields["person_note"].initial = person.note
+
+
+class LanguageSelectionMixin(forms.Form):
+    """The enabled/default language pair, shared by the admin and the settings page.
+
+    This subclasses ``forms.Form`` rather than being a plain mixin on purpose:
+    Django's form metaclass only collects declared fields from bases that are
+    themselves forms, so a plain mixin's fields would be silently dropped.
+    """
+
+    # The labels are spelled out so they are translatable; the help texts are
+    # deliberately left to the model fields, which is the one wording the admin
+    # and the settings page both show.
+    enabled_languages = forms.MultipleChoiceField(
+        required=True,
+        choices=AVAILABLE_LANGUAGE_CHOICES,
+        widget=forms.CheckboxSelectMultiple,
+        label=_("Enabled languages"),
+    )
+    default_language = forms.ChoiceField(
+        required=True,
+        choices=AVAILABLE_LANGUAGE_CHOICES,
+        widget=forms.Select,
+        label=_("Default language"),
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Constrain the default-language dropdown to the currently-selected
+        # enabled languages (from POST when saving, else the stored value).
+        enabled = self._selected_enabled()
+        if enabled:
+            self.fields["default_language"].choices = [
+                (code, label)
+                for code, label in AVAILABLE_LANGUAGE_CHOICES
+                if code in enabled
+            ]
+
+    def _selected_enabled(self):
+        """Languages the user has marked enabled, from bound data or instance."""
+        if self.is_bound:
+            if hasattr(self.data, "getlist"):  # QueryDict (real request)
+                return self.data.getlist("enabled_languages")
+            value = self.data.get("enabled_languages", [])
+        elif self.instance and self.instance.pk:
+            value = self.instance.enabled_languages or []
+        else:
+            value = self.initial.get("enabled_languages", [])
+        if isinstance(value, str):
+            return [value]
+        return list(value or [])
+
+    def clean(self):
+        cleaned = super().clean()
+        enabled = cleaned.get("enabled_languages") or []
+        default = cleaned.get("default_language")
+        if not enabled:
+            self.add_error(
+                "enabled_languages", _("Select at least one available language.")
+            )
+        elif default and default not in enabled:
+            self.add_error(
+                "default_language",
+                _("The default language must be one of the available languages."),
+            )
+        return cleaned
+
+
+class OrganisationSettingsForm(forms.ModelForm):
+    """Who the troop is, and how the outside reaches it."""
+
+    class Meta:
+        model = TroopSettings
+        fields = (
+            "name",
+            "short_name",
+            "federation",
+            "contact_email",
+            "reply_to_email",
+            "contact_phone",
+            "footer_address",
+            "privacy_policy",
+        )
+        labels = {
+            "name": _("Unit name"),
+            "short_name": _("Short name"),
+            "federation": _("Federation"),
+            "contact_email": _("Public contact email"),
+            "reply_to_email": _("Reply-to address"),
+            "contact_phone": _("Public phone"),
+            "footer_address": _("Address shown in the footer"),
+            "privacy_policy": _("Privacy policy"),
+        }
+        help_texts = {
+            "short_name": _("Used where the full name does not fit. Empty uses the full name."),
+            "reply_to_email": _(
+                "Where answers to automated mail should go. "
+                "Empty replies to the sender address."
+            ),
+        }
+
+
+class LocaleSettingsForm(LanguageSelectionMixin, forms.ModelForm):
+    """The languages offered, and the conventions used to display values."""
+
+    class Meta:
+        model = TroopSettings
+        fields = ("enabled_languages", "default_language", "phone_region", "currency")
+        labels = {
+            "phone_region": _("Phone country"),
+            "currency": _("Currency"),
+        }
+        # No help_texts here: the model's own are the single wording for these
+        # two, so the admin and this page cannot drift apart.
+
+
+class CalendarSettingsForm(forms.ModelForm):
+    """The dates that shape a scout year."""
+
+    class Meta:
+        model = TroopSettings
+        fields = (
+            "year_start_month",
+            "year_start_day",
+            "age_reference_month",
+            "age_reference_day",
+            "passage_month",
+            "passage_day",
+            "passage_mode",
+            "top_branch_graduates_become_leaders",
+            "archive_retention_years",
+        )
+        labels = {
+            "year_start_month": _("School year starts — month"),
+            "year_start_day": _("School year starts — day"),
+            "age_reference_month": _("Ages are taken on — month"),
+            "age_reference_day": _("Ages are taken on — day"),
+            "passage_month": _("Section passage — month"),
+            "passage_day": _("Section passage — day"),
+            "passage_mode": _("Section passage runs"),
+            "top_branch_graduates_become_leaders": _(
+                "Members leaving the last branch become animators"
+            ),
+            "archive_retention_years": _("Keep archived members for (years)"),
+        }
+        help_texts = {
+            "age_reference_month": _("The day a member's age is measured on."),
+            # passage_mode's help text comes from the model, so the admin and
+            # this page say the same thing.
+        }
+
+
+class ModuleSettingsForm(forms.ModelForm):
+    """Which of the optional modules this troop uses."""
+
+    class Meta:
+        model = TroopSettings
+        fields = ("fees_enabled", "signing_enabled", "public_agenda_enabled")
+        labels = {
+            "fees_enabled": _("Membership fees"),
+            "signing_enabled": _("Signature campaigns"),
+            "public_agenda_enabled": _("Public agenda"),
+        }

@@ -5,6 +5,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from members.models import Branch, Enrollment, ParentChild, Person, SchoolYear
+from members.money import format_money
 
 
 class CotisationConfig(models.Model):
@@ -90,7 +91,7 @@ class FeeRule(models.Model):
 
     def __str__(self):
         branch = self.branch.name if self.branch else _("All branches")
-        return f"{self.school_year} — {self.get_member_type_display()} — {branch} — {self.get_rank_display()}: {self.amount}€"
+        return f"{self.school_year} — {self.get_member_type_display()} — {branch} — {self.get_rank_display()}: {format_money(self.amount)}"
 
     @classmethod
     def get_fee(cls, school_year, member_type, rank, branch=None):
@@ -135,7 +136,7 @@ class Payment(models.Model):
         ordering = ["-date"]
 
     def __str__(self):
-        return f"{self.person} — {self.amount}€ ({self.date})"
+        return f"{self.person} — {format_money(self.amount)} ({self.date})"
 
 
 def _get_households(school_year):

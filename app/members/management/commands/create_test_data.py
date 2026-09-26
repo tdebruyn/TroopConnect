@@ -14,8 +14,24 @@ from members.models import (
     Role,
     SchoolYear,
     Section,
+    TroopSettings,
 )
 from members.signals import notify_admins_on_profile_save
+
+
+def _years_before(day, years):
+    """``day`` shifted back by ``years``; 29 February falls back to the 28th."""
+    try:
+        return day.replace(year=day.year - years)
+    except ValueError:
+        return day.replace(year=day.year - years, day=28)
+
+
+def _age_inside(branch):
+    """An age in the middle of the branch's own range, or 9 when it has none."""
+    if branch.min_age_dec_31 is not None and branch.max_age_dec_31 is not None:
+        return (branch.min_age_dec_31 + branch.max_age_dec_31) // 2
+    return 9
 
 
 class Command(BaseCommand):
@@ -37,24 +53,32 @@ class Command(BaseCommand):
             start_date__lte=today, end_date__gte=today
         ).first()
         if not school_year:
+            start_date, end_date = TroopSettings.get_settings().school_year_bounds(year)
             school_year, created = SchoolYear.objects.get_or_create(
                 name=year,
                 defaults={
-                    "start_date": date(year, 9, 1),
-                    "end_date": date(year + 1, 8, 31),
+                    "start_date": start_date,
+                    "end_date": end_date,
                     "range": f"{year}-{year + 1}",
                 },
             )
             if created:
                 self.stdout.write(f"Created school year: {school_year}")
 
-        # Ensure branch and section exist
-        branch, _ = Branch.objects.get_or_create(
-            name="Baladins", defaults={"min_age_dec_31": 8, "max_age_dec_31": 10}
-        )
-        section, _ = Section.objects.get_or_create(
-            name="Baladins", defaults={"branch": branch, "sex": "B"}
-        )
+        # Ensure branch and section exist. The troop's own youngest branch is
+        # used when it has one, so this seed adds to a real ladder instead of
+        # next to it; a plain one-rung ladder is created otherwise. `is_top`
+        # because, with a single branch, there is nothing after it.
+        branch = Branch.objects.order_by("min_age_dec_31", "name").first()
+        if branch is None:
+            branch = Branch.objects.create(
+                name="Baladins", min_age_dec_31=8, max_age_dec_31=10, is_top=True
+            )
+        section = Section.objects.filter(branch=branch).order_by("name").first()
+        if section is None:
+            section = Section.objects.create(
+                name=branch.name, branch=branch, sex=Section.Sex.BOTH
+            )
 
         # Get roles
         role_parent = Role.objects.get(short="p")
@@ -72,25 +96,29 @@ class Command(BaseCommand):
         )
         self._set_primary_role(parent1.person, role_parent)
 
-        # Child for parent1. Children must have a birthday and sex — enforced
-        # by Person.clean() (run via _set_primary_role). Birth years are offset
-        # from the current school year so the children always fit the Baladins
-        # age band (8-10 on Dec 31), however many years pass.
-        baladins_birth = school_year.name - 9
+        # Child for parent1. Children must have a birthday and a sex — enforced
+        # by Person.clean() (run via _set_primary_role). The birthday is a whole
+        # number of years before the troop's age reference day, at an age the
+        # branch itself declares, so the child fits whatever ladder this troop
+        # has instead of a range this command invented.
+        child_birthday = _years_before(
+            TroopSettings.get_settings().age_reference_date(school_year),
+            _age_inside(branch),
+        )
         child = None
         if parent1.person.as_parent.exists():
             child = parent1.person.as_parent.first().child
         if child is None:
             child = Person(
                 first_name="Child", last_name="One",
-                birthday=date(baladins_birth, 6, 15), sex=Person.Sex.MALE,
+                birthday=child_birthday, sex=Person.Sex.MALE,
             )
             self._set_primary_role(child, role_child)
             ParentChild.objects.create(parent=parent1.person, child=child)
         elif not child.birthday or not child.sex:
             # Backfill a pre-existing child so the seed never leaves one
             # without birthday/sex.
-            child.birthday = child.birthday or date(baladins_birth, 6, 15)
+            child.birthday = child.birthday or child_birthday
             child.sex = child.sex or Person.Sex.MALE
             self._set_primary_role(child, role_child)
         Enrollment.objects.get_or_create(

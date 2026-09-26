@@ -1,5 +1,5 @@
 {% extends "members/base.html" %}
-{% load i18n %}
+{% load i18n money %}
 {% block hat_title %}{% trans "Membership fees" %}{% endblock hat_title %}
 {% block hat_text %}{% blocktranslate with year_range=school_year.range %}Financial management — {{ year_range }}{% endblocktranslate %}{% endblock hat_text %}
 {% block subcontent %}
@@ -29,7 +29,7 @@
                         <tr>
                             <th>{% if row.branch %}{{ row.branch }}{% else %}{% trans "All branches" %}{% endif %}</th>
                             {% for amount in row.amounts %}
-                            <td>{% if amount is not None %}{{ amount }}€{% else %}—{% endif %}</td>
+                            <td>{% if amount is not None %}{{ amount |money }}{% else %}—{% endif %}</td>
                             {% endfor %}
                         </tr>
                         {% empty %}
@@ -51,7 +51,7 @@
                     <tbody>
                         <tr>
                             {% for amount in animator_amounts %}
-                            <td>{% if amount is not None %}{{ amount }}€{% else %}—{% endif %}</td>
+                            <td>{% if amount is not None %}{{ amount |money }}{% else %}—{% endif %}</td>
                             {% endfor %}
                         </tr>
                     </tbody>
@@ -83,9 +83,9 @@
         {% for b in children_balances %}
         <tr class="{% if b.is_late %}table-danger{% endif %}">
             <td>{{ b.person }}</td>
-            <td>{{ b.amount_due }}€</td>
-            <td>{{ b.amount_paid }}€</td>
-            <td>{{ b.balance }}€</td>
+            <td>{{ b.amount_due |money }}</td>
+            <td>{{ b.amount_paid |money }}</td>
+            <td>{{ b.balance |money }}</td>
             <td>{% if b.is_late %}<span class="badge bg-danger">{% trans "Yes" %}</span>{% endif %}</td>
             <td>
                 <button hx-get="{% url 'finance:record_payment' %}?person_id={{ b.person_id }}" hx-target="#dialog" class="btn btn-sm btn-success">{% trans "Pay" %}</button>
@@ -114,9 +114,9 @@
         {% for b in animateur_balances %}
         <tr>
             <td>{{ b.person }}</td>
-            <td>{{ b.amount_due }}€</td>
-            <td>{{ b.amount_paid }}€</td>
-            <td>{{ b.balance }}€</td>
+            <td>{{ b.amount_due |money }}</td>
+            <td>{{ b.amount_paid |money }}</td>
+            <td>{{ b.balance |money }}</td>
             <td>
                 <button hx-get="{% url 'finance:record_payment' %}?person_id={{ b.person_id }}" hx-target="#dialog" class="btn btn-sm btn-success">{% trans "Pay" %}</button>
                 <button hx-get="{% url 'finance:payment_history' person_id=b.person_id %}" hx-target="#dialog" class="btn btn-sm btn-outline-secondary">{% trans "History" %}</button>

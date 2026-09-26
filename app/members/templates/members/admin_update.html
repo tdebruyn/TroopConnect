@@ -16,6 +16,11 @@
     {% endif %}
 {% endblock hat_text %}
 {% block subcontent %}
+    {% if object.passage_review %}
+        <div class="alert alert-warning" role="alert">
+            {% blocktranslate with reason=object.get_passage_review_display %}The section passage is waiting for a decision: {{ reason }}{% endblocktranslate %}
+        </div>
+    {% endif %}
     {% if object.primary_role.short == "p" %}
         <div class="topping-federation topping-top topping-right topping-large d-none d-lg-block"></div>
     {% elif object.primary_role.short == "e" %}

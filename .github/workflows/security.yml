@@ -23,7 +23,7 @@ jobs:
 
       - uses: actions/setup-python@v6
         with:
-          python-version: "3.13"
+          python-version: "3.14"
 
       - name: Install pip-audit
         run: pip install pip-audit
@@ -47,7 +47,7 @@ jobs:
       # failing on it would only make the check something to ignore. Anything
       # that does have a fix fails the run.
       - name: Scan
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: troopconnect:scan
           format: table

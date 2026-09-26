@@ -14,7 +14,7 @@
                 {% trans "If the deregistration is requested for the current year and the enrollment is active, it will require manual intervention. Make sure you have followed the procedure described in the internal regulations." %}
             </li>
         </ul>
-        <sup>1</sup> {% trans "The year starts on August 1st, right after camp." %}
+        <sup>1</sup> {% blocktranslate with year_start=year_start %}The year starts on {{ year_start }}, right after camp.{% endblocktranslate %}
     </p>
     <div class="container">
         <a class="btn btn-primary me-1"

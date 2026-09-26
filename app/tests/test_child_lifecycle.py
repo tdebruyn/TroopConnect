@@ -31,8 +31,11 @@ from members.models import (
     Role,
     SchoolYear,
     Section,
+    TroopSettings,
 )
 from tests.mail import MailTestCase
+
+from .base import TroopSettingsTestCase
 
 ADULT_BIRTHDAY = date(1990, 1, 1)
 CHILD_BIRTHDAY = date(2015, 6, 15)
@@ -235,6 +238,47 @@ class DeregisterPageTest(ChildLifecycleTestBase):
             reverse("members:profile", args=[self.parent_account.pk]),
             fetch_redirect_response=False,
         )
+
+
+class DeregisterYearStartTest(TroopSettingsTestCase):
+    """The page's footnote names the troop's own year start.
+
+    It used to hardcode "August 1st", which is the shipped default and not a
+    rule: a troop whose year starts on 1 September was told the wrong date.
+    """
+
+    def test_the_configured_year_start_is_shown(self):
+        troop = TroopSettings.get_settings()
+        troop.year_start_month, troop.year_start_day = 9, 1
+        troop.save(update_fields=["year_start_month", "year_start_day"])
+
+        parent = Person.objects.create(
+            first_name="Alice",
+            last_name="Dupont",
+            primary_role=Role.objects.get(short="p"),
+            status="a",
+        )
+        account = Account.objects.create_user(
+            email="carol@test.com", password="testpass", person=parent
+        )
+        child = Person.objects.create(
+            first_name="Charlie",
+            last_name="Dupont",
+            primary_role=Role.objects.get(short="e"),
+            status="a",
+            sex="M",
+            birthday=date(2015, 6, 15),
+        )
+        ParentChild.objects.create(parent=parent, child=child)
+        self.client.force_login(account)
+
+        response = self.client.get(reverse("members:deregister_child", args=[child.pk]))
+
+        self.assertEqual(response.status_code, 200)
+        # The suite renders in the site's default language (fr), so the date is
+        # the French form of 1 September — never the default 1 August.
+        self.assertContains(response, "1 septembre")
+        self.assertNotContains(response, "1 août")
 
 
 class DeregisterNextYearTest(ChildLifecycleTestBase):

@@ -14,6 +14,7 @@ from django.views import View
 from django.views.generic import TemplateView
 
 from homepage.models import Event, ImageAsset, SiteContent
+from members.modules import AGENDA, ModuleRequiredMixin
 
 # Languages offered in the editor's language tabs (modeltranslation languages).
 EDITOR_LANGUAGES = settings.MODELTRANSLATION_LANGUAGES
@@ -157,8 +158,11 @@ class FAQ(TemplateView):
         return context
 
 
-class Agenda(TemplateView):
+class Agenda(ModuleRequiredMixin, TemplateView):
+    """The troop's public agenda. Hidden, not deleted, when switched off."""
+
     template_name = "homepage/agenda.html"
+    required_module = AGENDA
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

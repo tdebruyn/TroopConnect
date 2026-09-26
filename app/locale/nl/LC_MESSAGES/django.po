@@ -1654,8 +1654,9 @@ msgid ""
 msgstr "Als de uitschrijving wordt aangevraagd voor het lopende jaar en de inschrijving actief is, is een handmatige tussenkomst nodig. Zorg ervoor dat je de procedure uit het huishoudelijk reglement hebt gevolgd."
 
 #: members/templates/members/deregister_child.html:17
-msgid "The year starts on August 1st, right after camp."
-msgstr "Het jaar start op 1 augustus, vlak na het kamp."
+#, python-format
+msgid "The year starts on %(year_start)s, right after camp."
+msgstr "Het jaar start op %(year_start)s, vlak na het kamp."
 
 #: members/templates/members/deregister_child.html:21
 #, python-format
@@ -2211,6 +2212,201 @@ msgstr "Attestationpagina's die aan dit lid gekoppeld waren, blijven bewaard, ma
 msgid "Purge an archived member only when the data may really be discarded."
 msgstr "Verwijder een gearchiveerd lid definitief alleen als de gegevens echt weg mogen."
 
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Organisation"
+msgstr "Organisatie"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Unit name"
+msgstr "Naam van de eenheid"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Short name"
+msgstr "Korte naam"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Federation"
+msgstr "Federatie"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Address shown in the footer"
+msgstr "Adres in de voettekst"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Section passage runs"
+msgstr "Overgang van afdeling gebeurt"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Signature campaigns"
+msgstr "Handtekeningcampagnes"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Settings"
+msgstr "Instellingen"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Enabled languages"
+msgstr "Actieve talen"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Locale"
+msgstr "Taal en regio"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Calendar"
+msgstr "Kalender"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Modules"
+msgstr "Modules"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Public contact email"
+msgstr "Openbaar contact-e-mailadres"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Reply-to address"
+msgstr "Antwoordadres"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Public phone"
+msgstr "Openbaar telefoonnummer"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Privacy policy"
+msgstr "Privacybeleid"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Used where the full name does not fit. Empty uses the full name."
+msgstr ""
+"Gebruikt waar de volledige naam niet past. Leeg gebruikt de volledige naam."
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid ""
+"Where answers to automated mail should go. Empty replies to the sender address."
+msgstr ""
+"Waar antwoorden op automatische e-mails terechtkomen. Leeg antwoordt naar het afzenderadres."
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Phone country"
+msgstr "Land van telefoonnummers"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Currency"
+msgstr "Munteenheid"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "School year starts — month"
+msgstr "Begin van het scoutjaar — maand"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "School year starts — day"
+msgstr "Begin van het scoutjaar — dag"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Ages are taken on — month"
+msgstr "Leeftijd bepaald op — maand"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Ages are taken on — day"
+msgstr "Leeftijd bepaald op — dag"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Section passage — month"
+msgstr "Overgang van afdeling — maand"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Section passage — day"
+msgstr "Overgang van afdeling — dag"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Keep archived members for (years)"
+msgstr "Gearchiveerde leden bewaren gedurende (jaren)"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "The day a member's age is measured on."
+msgstr "De dag waarop de leeftijd van een lid wordt bepaald."
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Public agenda"
+msgstr "Openbare agenda"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Enter a three-letter currency code, e.g. EUR."
+msgstr "Voer een munteenheid van drie letters in, bv. EUR."
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Automatic"
+msgstr "Automatisch"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Manual"
+msgstr "Handmatig"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid ""
+"Link or text of your privacy policy. A URL becomes a link, anything else is shown as text."
+msgstr ""
+"Link of tekst van je privacybeleid. Een URL wordt een link, al de rest wordt als tekst getoond."
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Country code used to parse and format phone numbers, e.g. BE."
+msgstr "Landcode om telefoonnummers te lezen en te formatteren, bv. BE."
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Three-letter currency code used to display amounts, e.g. EUR."
+msgstr "Munteenheid van drie letters om bedragen weer te geven, bv. EUR."
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid ""
+"Automatic runs the passage on the date above; manual leaves it to whoever presses the button."
+msgstr ""
+"Automatisch voert de overgang uit op bovenstaande datum; handmatig laat het aan wie op de knop drukt."
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "%(region)s is not a country code phone numbers can be parsed for."
+msgstr "%(region)s is geen landcode die voor telefoonnummers wordt herkend."
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid ""
+"What this instance is called, which languages it offers and how its scout year runs. Every change takes effect immediately."
+msgstr ""
+"De naam van deze site, de talen die hij aanbiedt en hoe het scoutjaar verloopt. Elke wijziging gaat onmiddellijk in."
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Unknown settings section."
+msgstr "Onbekende instellingensectie."
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Settings saved."
+msgstr "Instellingen opgeslagen."
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Payment of %(amount)s recorded for %(person)s."
+msgstr "Betaling van %(amount)s geregistreerd voor %(person)s."
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid "Amount (%(currency)s)"
+msgstr "Bedrag (%(currency)s)"
+
+#: settings page (hand-added; see docs/dev/CONTRACT.md)
+msgid ""
+"Hello {prenom},\n"
+"\n"
+"Your membership fee balance is {solde}.\n"
+"Please proceed with the payment.\n"
+"\n"
+"Best regards,\n"
+"The treasurer"
+msgstr ""
+"Beste {prenom},\n"
+"\n"
+"Het openstaande saldo van je lidgeld is {solde}.\n"
+"Gelieve de betaling te verrichten.\n"
+"\n"
+"Met vriendelijke groet,\n"
+"De penningmeester"
+
 #~ msgid "Configure attestation"
 #~ msgstr "Attestatie configureren"
 
@@ -2349,3 +2545,131 @@ msgstr "Verwijder een gearchiveerd lid definitief alleen als de gegevens echt we
 #~ msgstr ""
 #~ "Talen die beschikbaar zijn voor gebruikers in de taalkiezer van de "
 #~ "website."
+
+# --- Section passage: the configurable branch ladder ---
+# Added by hand; covered by tests/test_i18n_catalogs.py.
+#: members/templates/members/passage.html
+msgid "Section passage"
+msgstr "Overgang van afdeling"
+
+#: members/templates/members/passage.html
+msgid "Move members into their section for the coming year."
+msgstr "Zet de leden in hun sectie voor het komende jaar."
+
+#: members/templates/members/passage.html
+msgid "Coming school year"
+msgstr "Komend scoutjaar"
+
+#: members/templates/members/passage.html
+msgid "Not created yet"
+msgstr "Nog niet aangemaakt"
+
+#: members/templates/members/passage.html
+msgid "Automatic run"
+msgstr "Automatische uitvoering"
+
+#: members/templates/members/passage.html
+msgid "On"
+msgstr "Aan"
+
+#: members/templates/members/passage.html
+msgid "Off"
+msgstr "Uit"
+
+#: members/templates/members/passage.html
+#, python-format
+msgid "Due on %(date)s"
+msgstr "Voorzien op %(date)s"
+
+#: members/templates/members/passage.html
+msgid "Last run prepared"
+msgstr "Laatste voorbereiding"
+
+#: members/templates/members/passage.html
+msgid "Never"
+msgstr "Nooit"
+
+#: members/templates/members/passage.html
+msgid "The passage places every participant in their next section. Running it "
+"again is safe: members already placed stay where they are, and the choices "
+"made by hand are kept."
+msgstr "De overgang plaatst elk lid in de volgende sectie. Opnieuw uitvoeren is veilig: leden die al geplaatst zijn blijven staan en handmatige keuzes blijven behouden."
+
+#: members/templates/members/passage.html
+msgid "Run the passage now"
+msgstr "Nu de overgang uitvoeren"
+
+#: members/templates/members/passage.html
+msgid "Waiting for a decision"
+msgstr "Wacht op een beslissing"
+
+#: members/templates/members/passage.html
+msgid "The passage could not place these members on its own. Give each one a "
+"section for the coming year, or fix their branch, then run the passage "
+"again."
+msgstr "De overgang kon deze leden niet automatisch plaatsen. Geef elk een sectie voor het komende jaar, of corrigeer hun afdeling, en voer de overgang opnieuw uit."
+
+#: members/templates/members/passage.html
+msgid "Reason"
+msgstr "Reden"
+
+#: members/templates/members/passage.html
+msgid "Open"
+msgstr "Openen"
+
+#: members/templates/members/passage.html
+msgid "Nobody is waiting for a decision."
+msgstr "Niemand wacht op een beslissing."
+
+#: members/views.py
+msgid "The passage did not run: there is no coming school year yet."
+msgstr "De overgang is niet uitgevoerd: het komende scoutjaar bestaat nog niet."
+
+#: members/views.py
+#, python-format
+msgid "Passage done: %(promoted)s placed, %(graduated)s graduated, %(flagged)s "
+"waiting for a decision."
+msgstr "Overgang uitgevoerd: %(promoted)s geplaatst, %(graduated)s uitgestroomd, %(flagged)s wachten op een beslissing."
+
+#: members/models.py
+msgid "No section fits — choose one"
+msgstr "Geen enkele sectie past — kies er een"
+
+#: members/models.py
+msgid "The branch has no next branch set"
+msgstr "De afdeling heeft geen volgende afdeling"
+
+#: members/models.py
+msgid "Leaving the last branch — decide what comes next"
+msgstr "Verlaat de laatste afdeling — te beslissen"
+
+#: members/models.py
+msgid "Set by the passage when it cannot place a member on its own; cleared as "
+"soon as one is placed."
+msgstr "Ingesteld door de overgang wanneer een lid niet automatisch geplaatst kan worden; gewist zodra een lid geplaatst is."
+
+#: members/models.py
+msgid "The branch members move into when they outgrow this one."
+msgstr "De afdeling waar leden naartoe gaan als ze deze ontgroeien."
+
+#: members/models.py
+msgid "The last branch of the ladder: members who outgrow it leave it for good."
+msgstr "De laatste afdeling van de ladder: leden die ze ontgroeien verlaten ze definitief."
+
+#: members/models.py
+msgid "Members who leave the last branch become animators. Turn this off to be "
+"asked about each of them instead."
+msgstr "Leden die de laatste afdeling verlaten worden animator. Schakel dit uit om voor elk van hen bevraagd te worden."
+
+#: members/forms.py
+msgid "Members leaving the last branch become animators"
+msgstr "Leden die de laatste afdeling verlaten worden animator"
+
+#: members/templates/members/admin_list.html
+msgid "To review"
+msgstr "Te bekijken"
+
+#: members/templates/members/admin_update.html
+#, python-format
+msgid "The section passage is waiting for a decision: %(reason)s"
+msgstr "De overgang wacht op een beslissing: %(reason)s"

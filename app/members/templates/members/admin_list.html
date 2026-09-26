@@ -88,6 +88,10 @@
                                 {% if member.status == "ar" %}
                                     <span class="badge bg-secondary">{% trans "Archived" %}</span>
                                 {% endif %}
+                                {% if member.passage_review %}
+                                    <span class="badge bg-warning text-dark"
+                                          title="{{ member.get_passage_review_display }}">{% trans "To review" %}</span>
+                                {% endif %}
                             </td>
                             <td>{{ member.last_name }}</td>
                             <td>{{ member.birthday | default_if_none:'' }}</td>

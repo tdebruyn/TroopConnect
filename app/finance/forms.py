@@ -3,6 +3,8 @@ from decimal import Decimal
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
+from members.money import currency_symbol
+
 from .models import FeeRule
 
 
@@ -99,7 +101,7 @@ class PaymentForm(forms.Form):
     person_id = forms.CharField(widget=forms.HiddenInput())
     amount = forms.DecimalField(
         max_digits=8, decimal_places=2, min_value=Decimal("0.01"),
-        label=_("Amount (€)"),
+        label=_("Amount"),
     )
     date = forms.DateField(
         label=_("Date"),
@@ -110,6 +112,14 @@ class PaymentForm(forms.Form):
         label=_("Note"),
         widget=forms.TextInput(attrs={"class": "form-control"}),
     )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # The currency is troop content rather than a formatting setting, so
+        # the label is filled in per request instead of at import.
+        self.fields["amount"].label = _("Amount (%(currency)s)") % {
+            "currency": currency_symbol()
+        }
 
 
 class ReminderForm(forms.Form):
@@ -124,9 +134,11 @@ class ReminderForm(forms.Form):
         label=_("Message"),
         help_text=_("Use {prenom} and {solde} as variables."),
         widget=forms.Textarea(attrs={"class": "form-control", "rows": 6}),
+        # No currency sign here: `{solde}` is replaced with the amount already
+        # written in the troop's currency (see finance.views.send_reminders).
         initial=_(
             "Hello {prenom},\n\n"
-            "Your membership fee balance is {solde}€.\n"
+            "Your membership fee balance is {solde}.\n"
             "Please proceed with the payment.\n\n"
             "Best regards,\n"
             "The treasurer"

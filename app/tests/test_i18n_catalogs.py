@@ -116,6 +116,76 @@ NEW_STRINGS = [
         "campagne",
         "campagne",
     ),
+    # Troop settings: the staff page and the fields it edits. English sources
+    # identical to their French wording ("Modules", "Organisation") are left
+    # out — this list only proves a translation exists where one is needed.
+    ("Settings", "Paramètres", "Instellingen"),
+    ("Settings saved.", "Paramètres enregistrés", "Instellingen opgeslagen"),
+    ("Unknown settings section.", "Section de paramètres inconnue", "Onbekende instellingensectie"),
+    ("Locale", "Langue et région", "Taal en regio"),
+    ("Calendar", "Calendrier", "Kalender"),
+    ("Unit name", "Nom de l'unité", "Naam van de eenheid"),
+    ("Short name", "Nom court", "Korte naam"),
+    ("Federation", "Fédération", "Federatie"),
+    ("Public contact email", "contact public", "contact-e-mailadres"),
+    ("Reply-to address", "Adresse de réponse", "Antwoordadres"),
+    ("Privacy policy", "confidentialité", "Privacybeleid"),
+    ("Phone country", "Pays des téléphones", "Land van telefoonnummers"),
+    ("Currency", "Devise", "Munteenheid"),
+    ("Enabled languages", "Langues actives", "Actieve talen"),
+    ("Public agenda", "Agenda public", "Openbare agenda"),
+    ("Signature campaigns", "Campagnes de signatures", "Handtekeningcampagnes"),
+    ("Automatic", "Automatique", "Automatisch"),
+    ("Manual", "Manuel", "Handmatig"),
+    (
+        "Enter a three-letter currency code, e.g. EUR.",
+        "trois lettres",
+        "drie letters",
+    ),
+    (
+        "%(region)s is not a country code phone numbers can be parsed for.",
+        "code pays",
+        "landcode",
+    ),
+    # Section passage: the staff page and the flags it raises.
+    ("Section passage", "Passage de section", "Overgang van afdeling"),
+    ("Run the passage now", "Lancer le passage", "overgang uitvoeren"),
+    ("Waiting for a decision", "attente d'une décision", "Wacht op een beslissing"),
+    ("Nobody is waiting for a decision.", "Personne", "Niemand"),
+    ("To review", "examiner", "bekijken"),
+    (
+        "The passage did not run: there is no coming school year yet.",
+        "année scolaire à venir",
+        "komende scoutjaar",
+    ),
+    (
+        "Passage done: %(promoted)s placed, %(graduated)s graduated, "
+        "%(flagged)s waiting for a decision.",
+        "Passage effectué",
+        "Overgang uitgevoerd",
+    ),
+    ("No section fits — choose one", "Aucune section", "Geen enkele sectie"),
+    (
+        "The branch has no next branch set",
+        "branche suivante",
+        "volgende afdeling",
+    ),
+    (
+        "Leaving the last branch — decide what comes next",
+        "dernière branche",
+        "laatste afdeling",
+    ),
+    (
+        "Members who leave the last branch become animators. Turn this off to "
+        "be asked about each of them instead.",
+        "deviennent animateurs",
+        "worden animator",
+    ),
+    (
+        "The section passage is waiting for a decision: %(reason)s",
+        "attend une décision",
+        "wacht op een beslissing",
+    ),
 ]
 
 
