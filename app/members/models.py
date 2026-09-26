@@ -743,6 +743,22 @@ class SchoolYear(models.Model):
 
 class Branch(models.Model):
     name = models.CharField(max_length=30, null=True, blank=True)
+
+    # A stable slug from the preset this branch came from ("louveteaux"), so
+    # that applying a preset again recognises a branch the troop has renamed
+    # instead of adding a second copy of it. Empty on a branch nobody's preset
+    # created — the passage, the ladder and every template read the name and
+    # the links, never this, which is only ever an identity for re-runs.
+    key = models.CharField(
+        max_length=30,
+        blank=True,
+        default="",
+        help_text=_(
+            "Stable identifier from a branch preset, used to recognise this "
+            "branch again when the preset is applied a second time."
+        ),
+    )
+
     min_age_dec_31 = models.PositiveSmallIntegerField(
         null=True,
         blank=True,

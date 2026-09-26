@@ -38,15 +38,26 @@ build step — the images come from `ghcr.io/tdebruyn/troopconnect`.
    the Django secret key into a volume, then the web service waits for the
    database, migrates and collects static files. Nothing else to do.
 
-4. Create the first administrator:
+4. Set the instance up:
 
    ```bash
-   docker compose exec web python manage.py createsuperuser
+   docker compose exec web python manage.py setup
    ```
 
-5. Log in, then fill in the unit's own details — name, contact address,
-   registration window — under Site settings in the admin. Those live in the
-   database, not in `.env`.
+   It asks for the unit's name, its contact address, the languages the site
+   offers and the first administrator's details. From that it creates the
+   branches and sections, the current and next school year, the email
+   templates, the starter pages, the Celery beat schedule, and an
+   administrator account that can log in and reach the Django admin.
+
+   Answer without a terminal with `--answers answers.json` or flags, and see
+   what it would write first with `--dry-run`. Both are described in
+   `docs/dev/CONTRACT.md`. The command is safe to run again: it fills in what
+   is missing and changes nothing a troop has since edited. (`manage.py
+   createsuperuser` still works if that is all you want.)
+
+5. Log in with that account, then fill in the rest of the unit's details under
+   Site settings. They live in the database, not in `.env`.
 
 If something is wrong, `manage.py check` names the variable and what to do
 about it:

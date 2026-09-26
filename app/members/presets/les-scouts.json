@@ -1,0 +1,96 @@
+{
+  "name": "les-scouts",
+  "title": "Les Scouts — Fédération des scouts Baden-Powell de Belgique",
+  "source": "https://lesscouts.be/",
+  "note": "The four branches of Les Scouts, in the order the federation publishes them, with the ages it gives (ages are taken on the troop's age reference day, 31 December by default). The branch rows are the federation's, not any unit's: they carry no unit's section names, so a troop replaces the `sections` below with its own. Dutch names are the ones Les Scouts' Dutch-language material uses; the federation publishes no English names of its own (its English site keeps the French ones), so `en` repeats `fr` rather than inventing a translation.",
+  "branches": [
+    {
+      "key": "baladins",
+      "name": {
+        "fr": "Baladins",
+        "nl": "Baladins",
+        "en": "Baladins"
+      },
+      "min_age_dec_31": 6,
+      "max_age_dec_31": 8,
+      "promotes_to": "louveteaux",
+      "is_top": false,
+      "sections": [
+        {
+          "name": {
+            "fr": "Baladins",
+            "nl": "Baladins",
+            "en": "Baladins"
+          },
+          "sex": "B"
+        }
+      ]
+    },
+    {
+      "key": "louveteaux",
+      "name": {
+        "fr": "Louveteaux",
+        "nl": "Welpen",
+        "en": "Louveteaux"
+      },
+      "min_age_dec_31": 8,
+      "max_age_dec_31": 12,
+      "promotes_to": "eclaireurs",
+      "is_top": false,
+      "sections": [
+        {
+          "name": {
+            "fr": "Louveteaux",
+            "nl": "Welpen",
+            "en": "Louveteaux"
+          },
+          "sex": "B"
+        }
+      ]
+    },
+    {
+      "key": "eclaireurs",
+      "name": {
+        "fr": "Éclaireurs",
+        "nl": "Verkenners",
+        "en": "Éclaireurs"
+      },
+      "min_age_dec_31": 12,
+      "max_age_dec_31": 16,
+      "promotes_to": "pionniers",
+      "is_top": false,
+      "sections": [
+        {
+          "name": {
+            "fr": "Éclaireurs",
+            "nl": "Verkenners",
+            "en": "Éclaireurs"
+          },
+          "sex": "B"
+        }
+      ]
+    },
+    {
+      "key": "pionniers",
+      "name": {
+        "fr": "Pionniers",
+        "nl": "Pioniers",
+        "en": "Pionniers"
+      },
+      "min_age_dec_31": 16,
+      "max_age_dec_31": 18,
+      "promotes_to": null,
+      "is_top": true,
+      "sections": [
+        {
+          "name": {
+            "fr": "Pionniers",
+            "nl": "Pioniers",
+            "en": "Pionniers"
+          },
+          "sex": "B"
+        }
+      ]
+    }
+  ]
+}

@@ -134,8 +134,15 @@ class SectionAdmin(TranslationAdmin):
 class BranchAdmin(TranslationAdmin):
     # `promotes_to` / `is_top` are the ladder the passage walks: the columns are
     # here so a troop can see and change its shape without reading the code.
-    list_display = ("name", "min_age_dec_31", "max_age_dec_31", "promotes_to", "is_top")
-    search_fields = ("name",)
+    list_display = (
+        "name",
+        "key",
+        "min_age_dec_31",
+        "max_age_dec_31",
+        "promotes_to",
+        "is_top",
+    )
+    search_fields = ("name", "key")
 
 
 class TroopSettingsForm(LanguageSelectionMixin, forms.ModelForm):

@@ -8,7 +8,16 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "troopconnect.settings")
 app = Celery("troopconnect")
 app.conf.enable_utc = False
 app.config_from_object(settings, namespace="CELERY")
+
+# Every installed app's `tasks` module, and then this project's own.
+# `autodiscover_tasks()` walks INSTALLED_APPS, and `troopconnect` is the
+# project package rather than an installed app, so on its own it never imports
+# `troopconnect/tasks.py` — which defines the `send_queued_mail` that
+# CELERY_BEAT_SCHEDULE names. Without this the worker registers every task
+# except that one, and beat's every-five-minute mail flush is rejected with
+# "Received unregistered task of type 'send_queued_mail'".
 app.autodiscover_tasks()
+app.autodiscover_tasks(["troopconnect"])
 
 
 @worker_ready.connect

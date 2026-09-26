@@ -37,28 +37,15 @@ def create_year_task():
     through July the calendar year is already the next school year's start
     year, so using the raw calendar year is off by one (it created "2027-2028"
     on 2026-07-23 instead of "2026-2027").
+
+    The work itself is in ``members.setup.ensure_school_years``, which
+    ``manage.py setup`` calls on a fresh database too — the nightly task and a
+    first run have to agree about where the year boundary is, and the only way
+    to guarantee that is to run the same code.
     """
-    from .models import SchoolYear, TroopSettings
+    from .setup import ensure_school_years
 
-    troop = TroopSettings.get_settings()
-    today = _today()
-    # School year containing today, per the troop's configured year start.
-    current_start = troop.school_year_for(today)
-
-    # Ensure the current school year exists.
-    if not SchoolYear.objects.filter(name=current_start).exists():
-        SchoolYear.objects.create_year(current_start)
-        logger.info(f"Created current school year {current_start}")
-    else:
-        logger.info(f"Current school year {current_start} already exists")
-
-    # Ensure the next school year exists too.
-    next_start_year = current_start + 1
-    if not SchoolYear.objects.filter(name=next_start_year).exists():
-        SchoolYear.objects.create_year(next_start_year)
-        logger.info(f"Created school year {next_start_year}")
-    else:
-        logger.info(f"School year {next_start_year} already exists")
+    ensure_school_years(_today())
 
 
 def _place(child, school_year, section):

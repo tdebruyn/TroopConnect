@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TroopConnect branch preset",
+  "description": "The shape of a branch/section preset: the ladder a unit's sections are laid out in, and the sections to create with it. Read and validated by members/presets/__init__.py; described in docs/dev/CONTRACT.md. Only the subset of JSON Schema that module implements is used here: type, required, properties, additionalProperties, items, minItems, minLength, pattern, enum, minimum, maximum and local $ref.",
+  "type": "object",
+  "required": ["name", "branches"],
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "description": "Slug naming this preset, e.g. \"les-scouts\".",
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
+    },
+    "title": {
+      "description": "Human-readable name of the layout, shown by `manage.py setup`.",
+      "type": "string",
+      "minLength": 1
+    },
+    "source": {
+      "description": "Where the layout is documented, so a troop can check it against the federation's own description.",
+      "type": "string"
+    },
+    "note": {
+      "description": "Anything a contributor wants to say about the layout.",
+      "type": "string"
+    },
+    "branches": {
+      "description": "The branches, in the order the ladder runs.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["key", "name"],
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "description": "Stable identifier for this branch, unique within the file. `promotes_to` refers to it, and `manage.py setup` stores it on the branch so re-running recognises it after a rename.",
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9_-]*$"
+          },
+          "name": {
+            "$ref": "#/$defs/names"
+          },
+          "min_age_dec_31": {
+            "$ref": "#/$defs/age"
+          },
+          "max_age_dec_31": {
+            "$ref": "#/$defs/age"
+          },
+          "promotes_to": {
+            "description": "Key of the branch a member moves into when they outgrow this one. Null means the ladder stops here: a branch marked is_top graduates its members, any other leaves them flagged for review.",
+            "type": ["string", "null"]
+          },
+          "is_top": {
+            "description": "True for the branch members leave the ladder from. At least one branch must set it, and a branch that sets it must not set promotes_to.",
+            "type": "boolean"
+          },
+          "sections": {
+            "description": "Sections to create inside this branch. A section is only ever created, never changed: a section a troop already has is left as it is.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["name"],
+              "additionalProperties": false,
+              "properties": {
+                "name": {
+                  "$ref": "#/$defs/names"
+                },
+                "sex": {
+                  "description": "Who the section takes: M, F, or B for both. Defaults to B.",
+                  "enum": ["M", "F", "B"]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "names": {
+      "description": "The name per language. French is required — it is the language modeltranslation falls back to, so a language left out reads as French.",
+      "type": "object",
+      "required": ["fr"],
+      "additionalProperties": false,
+      "properties": {
+        "fr": {"type": "string", "minLength": 1},
+        "nl": {"type": "string", "minLength": 1},
+        "en": {"type": "string", "minLength": 1}
+      }
+    },
+    "age": {
+      "description": "Age on the troop's age reference day. Null means 'no limit', which is how a branch that keeps its members however old they get says so.",
+      "type": ["integer", "null"],
+      "minimum": 0,
+      "maximum": 99
+    }
+  }
+}

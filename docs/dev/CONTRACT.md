@@ -148,6 +148,7 @@ instead of inferring anything from names or ages:
 | `promotes_to` | The branch a member moves into when they outgrow this one. `null` means the passage cannot follow it. |
 | `is_top` | Marks the last branch of the ladder: members who outgrow it leave it for good. |
 | `min_age_dec_31` / `max_age_dec_31` | Only used to decide *when* someone has outgrown their branch. A branch with no maximum age keeps its members. |
+| `key` | The branch's identifier in the preset it was created from (`louveteaux`). This is what `manage.py setup` matches on when the preset is applied a second time, so a branch a troop has renamed is recognised rather than added again. Empty on a branch no preset created. Nothing else reads it: the passage walks `promotes_to`, never this. |
 
 A branch added after the ladder migration starts unlinked, so its members are
 flagged for review rather than moved somewhere arbitrary. Both fields are
@@ -259,6 +260,14 @@ registration, with nothing seeded by hand:
 | The `django.contrib.sites` row for `SITE_ID` | Migration `members/0021` | `troopconnect/siteconfig.py`, on every `migrate`: rewrites its `domain` from `SITE_DOMAIN` |
 | The email templates, in `fr`, `nl` and `en` | Migration `members/0021`, from `members/email_templates.py` | — |
 | The `TroopSettings` row, with generic defaults | Migration `members/0025` | The staff settings page, `/users/settings` |
+| The roles (`members/migrations/0002`), and a first pair of school years | Migrations | `manage.py setup`, and the nightly `create_year_task` |
+
+What `migrate` does **not** leave behind is the rest of the list in §3a:
+the branches, the administrator, the Celery beat schedule. Those come from
+`manage.py setup`, which is what turns a migrated database into an instance a
+troop can use. It is deliberately not a migration: a preset is a choice, the
+first administrator's address and password cannot be, and both are things a
+host may want to answer in a browser rather than at a shell.
 
 Nothing is uploaded, so the row's `logo` and `favicon` stay empty on a fresh
 install and the header falls back to the mark shipped with the application.
@@ -336,12 +345,113 @@ the migration invalidates anything.
 | --- | --- |
 | `wait_for_db` | Blocks until the database answers. Used by the entrypoint. |
 | `migrate_locked` | `migrate` under a Postgres advisory lock, so only one process migrates. Used by the entrypoint. |
+| `setup` | Brings an empty database to a usable state. See §3a. |
 | `create_test_data` | Seeds the Playwright end-to-end users described in the README. Development only. |
 | `import_legacy` | One-off import of members from the pre-TroopConnect system. |
 
 `migrate` also rewrites the `django.contrib.sites` row's domain from
 `SITE_DOMAIN` (`app/troopconnect/siteconfig.py`), so links in outgoing email
 point at the right host on a fresh install.
+
+---
+
+## 3a. `manage.py setup`
+
+`migrate` leaves an instance that can take a registration but is not yet a
+troop. `setup` is the rest of it, in one command, and it is meant to be run
+more than once:
+
+```bash
+docker compose exec web python manage.py setup --answers answers.json
+```
+
+| Step | What it does | `--no-…` |
+| --- | --- | --- |
+| `settings` | Fills the `TroopSettings` fields that are still at their default (§2). | — |
+| `preset` | Creates the branches and sections of a preset, and links the ladder. | `--no-preset` |
+| `school_years` | Creates the school year today falls in, and the next one, from the calendar helpers (§2). | `--no-school-years` |
+| `email_templates` | Writes the shipped email copy in every language (§2a). | `--no-email-templates` |
+| `site_pages` | Gives the homepage and the FAQ the markup the editor would seed them with, in every enabled language. | `--no-site-pages` |
+| `periodic_tasks` | Writes `settings.CELERY_BEAT_SCHEDULE` into the `django_celery_beat` tables, so the schedule is there — and editable — before beat's first start. `DatabaseScheduler` installs the same mapping itself on that first run, so this only moves the work earlier; the two cannot disagree because there is one mapping. | `--no-periodic-tasks` |
+| `admin` | Creates the first administrator: an `Account` on a `Person` holding the **Animateur** primary role and the **Admin** secondary one, with its `allauth` address marked verified — `ACCOUNT_EMAIL_VERIFICATION` is `mandatory`, so an unverified administrator could not log in. | `--no-admin` |
+
+**It fills, it never overwrites.** A `TroopSettings` field counts as missing
+while it holds its own default (`"Scouts"` for the name, `["fr"]` for the
+languages); a branch's ages and ladder link are missing while they are empty,
+and a name only where a language has none. A branch the troop has already
+stocked with sections keeps them, and `is_top` is written only on a branch the
+preset itself created — on an existing one, `False` is what the column holds
+and cannot be told apart from a decision. Running `setup` on an instance that
+has been in use for a year reports what it kept and writes nothing.
+
+**It is one transaction.** A step that cannot finish — a mistyped currency, a
+preset that will not load — rolls the whole run back rather than leaving a
+half-provisioned instance. `--dry-run` uses the same transaction and rolls it
+back on purpose, so it reports exactly what a real run would have written.
+
+The logic is in `app/members/setup.py`, in one function per step, because the
+first-run web wizard calls the same functions. The command is a shell around
+them: it reads the answers, prompts for what is missing, and prints the
+result.
+
+The beat schedule itself is declared once, as `CELERY_BEAT_SCHEDULE` in
+`troopconnect/settings.py`; the `periodic_tasks` step reads it rather than
+repeating it, and the test suite asserts that every task it names is one a
+worker actually registers.
+
+### Inputs
+
+Flags win over `--answers`, which wins over a prompt. With no terminal and
+`--noinput`, a value nobody supplied keeps its default.
+
+| Group | Flags |
+| --- | --- |
+| Organisation | `--unit-name`, `--short-name`, `--federation`, `--contact-email`, `--reply-to-email`, `--contact-phone`, `--footer-address`, `--privacy-policy` |
+| Locale | `--languages fr,nl`, `--default-language`, `--phone-region`, `--currency` |
+| Calendar | `--year-start 08-01`, `--age-reference 12-31`, `--passage-date 05-01`, `--passage-mode`, `--archive-retention-years`, `--top-branch-graduates-become-leaders` |
+| Administrator | `--admin-email`, `--admin-password`, `--admin-first-name`, `--admin-last-name`, `--no-admin-superuser` |
+| Which steps | the `--no-…` column above, plus `--preset` |
+| How | `--dry-run`, `--noinput` |
+
+`--answers` takes a JSON file, with every key optional:
+
+```json
+{
+  "settings": {"name": "Les Scouts de Limal", "enabled_languages": ["fr", "nl"]},
+  "preset": "les-scouts",
+  "steps": {"preset": true, "admin": false},
+  "admin": {"email": "chef@example.org", "password": "…",
+            "first_name": "Ada", "last_name": "Chef"}
+}
+```
+
+`settings` keys are `TroopSettings` field names, and anything else is refused
+rather than ignored. A translated field (`name`, `site_description`, …) takes
+either one string, written to every language, or an object keyed by language.
+`logo`, `favicon` and `last_passage_school_year` are refused: an answers file
+cannot carry an upload, and the marker is the passage's own bookkeeping.
+
+### Branch presets
+
+`--preset` takes the name of a preset shipped in `app/members/presets/`, or a
+path to a file in the same shape for a federation or a unit to contribute.
+
+| File | What it is |
+| --- | --- |
+| `les-scouts.json` | Les Scouts' four branches — Baladins (6-8), Louveteaux (8-12), Éclaireurs (12-16), Pionniers (16-18) — with the federation's names in French and Dutch and one section per branch. |
+| `preset.schema.json` | The JSON Schema every preset is validated against, shipped file or `--preset` path alike. |
+
+A branch carries `key`, `name` (per language, French required), the two age
+bounds, `promotes_to` (a key) and `is_top`; a section carries a name and the
+sex it takes (`M`, `F` or `B`). `app/members/presets/__init__.py` validates the
+file on load and reports *every* problem at once, naming the path into the
+file (`$.branches[2].promotes_to`) — it implements the subset of JSON Schema
+the schema uses rather than pulling in a schema library, and adds the checks a
+shape cannot express: that every `promotes_to` resolves, that the links do not
+loop, and that the ladder ends somewhere.
+
+The shipped preset names the federation's branches, never a unit's sections:
+a troop's own section names belong in the database it edits.
 
 ---
 
