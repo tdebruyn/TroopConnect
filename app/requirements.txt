@@ -73,6 +73,7 @@ sentry-sdk==2.70.0
 six==1.17.0
 sqlparse==0.6.0
 stack-data==0.6.3
+tblib==3.2.2
 traitlets==5.16.1
 typing-extensions==4.16.0
 tzdata==2026.4

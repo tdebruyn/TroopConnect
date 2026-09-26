@@ -29,6 +29,11 @@ docker compose -f compose.yml -f compose.dev.yml exec web python manage.py test 
 # slowest worker, not by the CPU. Each worker gets its own test database, and
 # its own cache (troopconnect/testcache.py) so the workers cannot see each
 # other's state.
+# A failing test is only reported in parallel mode because `tblib` is installed
+# (it is in app/requirements.txt). Django's parallel runner pickles each
+# failure's traceback across the process boundary and needs tblib's
+# pickling_support for that; without it the worker dies pickling and the parent
+# shows `TypeError: cannot pickle 'traceback' object` instead of the failure.
 docker compose -f compose.yml -f compose.dev.yml exec web python manage.py test tests --parallel 8
 # Run a single module, e.g. just the lint check:
 docker compose -f compose.yml -f compose.dev.yml exec web python manage.py test tests.test_lint
