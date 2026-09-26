@@ -1,8 +1,21 @@
 """Import data from the legacy djangoCMS-era SQLite database.
 
-The legacy schema (db21sv_20240520.sqlite) is organised around a ``famille``
-(household) entity that no longer exists in TroopConnect.  This command reads
-the SQLite file directly and rebuilds the data into the current models:
+One-off migration tool: it seeds TroopConnect from a dump of the previous site
+(``db21sv_20240520.sqlite``).  It is deliberately kept out of the Django apps
+(see README.md in this folder) so it is *not* installed as a ``manage.py``
+command and never ends up inside the Docker image.  Run it as a plain script,
+mounted into the web container:
+
+    docker compose -f docker-compose-local.yml run --rm \
+      -v "$PWD/niche-tools:/app/niche_tools" \
+      -v "$PWD/workspace/db21sv_20240520.sqlite:/data/legacy.sqlite:ro" \
+      web uv run python /app/niche_tools/import_legacy.py /data/legacy.sqlite
+
+Add ``--dry-run`` to report what would change and roll everything back.
+
+The legacy schema is organised around a ``famille`` (household) entity that no
+longer exists in TroopConnect.  This script reads the SQLite file directly and
+rebuilds the data into the current models:
 
     auth_user + accounts_myprofile + accounts_parent  ->  Account + Person (Parent)
     accounts_anime                                    ->  Person (Animé / Animateur)
@@ -14,28 +27,52 @@ the SQLite file directly and rebuilds the data into the current models:
     inscriptions_evenement                            ->  homepage.Event
     auth_user_groups                                  ->  PersonRole (secondary roles)
 
-Usage:
-    manage.py import_legacy /path/to/db21sv_20240520.sqlite
-    manage.py import_legacy /path/to/db21sv_20240520.sqlite --dry-run
-
 Designed for a freshly-migrated database (roles/branches/school years from
 migrations are reused via get_or_create).  The whole import runs inside a
 single transaction and is aborted (rolled back) on the first error.
 """
 
+
+import os
 import re
 import sqlite3
+import sys
 from collections import defaultdict
 from datetime import date, datetime
+from pathlib import Path
 
 import phonenumbers
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 from django.utils import timezone
 
-from finance.models import CotisationConfig, FeeRule, Payment
-from homepage.models import Event
-from members.models import (
+# --- Bootstrap Django -------------------------------------------------------
+# This is a plain script, not a management command, so nothing has set Django
+# up for us.  And because it is run by path, only its own folder lands on
+# sys.path — not the project root.  Both have to be fixed before the project
+# imports below resolve.
+_PROJECT_ROOTS = (
+    Path(__file__).resolve().parent.parent,  # this folder mounted at /app/niche_tools
+    Path(__file__).resolve().parent.parent / "app",  # normal checkout layout
+)
+for _root in _PROJECT_ROOTS:
+    if (_root / "manage.py").is_file():
+        sys.path.insert(0, str(_root))
+        break
+else:
+    raise SystemExit(
+        "Cannot find the Django project (a directory holding manage.py) in "
+        + " or ".join(str(root) for root in _PROJECT_ROOTS)
+        + '.  Mount this folder next to it, e.g. -v "$PWD/niche-tools:/app/niche_tools".'
+    )
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "troopconnect.settings")
+import django  # noqa: E402
+
+django.setup()
+
+from finance.models import CotisationConfig, FeeRule, Payment  # noqa: E402
+from homepage.models import Event  # noqa: E402
+from members.models import (  # noqa: E402
     Account,
     Branch,
     Enrollment,
@@ -100,7 +137,7 @@ GROUP_TO_ROLE = {
 # Only used for the late_deadline; the flat penalty amount is not converted.
 
 
-class Command(BaseCommand):
+class LegacyImporter(BaseCommand):
     help = "Import the legacy SQLite database into TroopConnect."
 
     def add_arguments(self, parser):
@@ -592,3 +629,23 @@ class Command(BaseCommand):
             _, created = PersonRole.objects.get_or_create(person=person, role=roles[role_short])
             if created:
                 stats["secondary_roles"] += 1
+
+
+def main(argv=None):
+    """Run the importer as a standalone script (see README.md).
+
+    Django is already bootstrapped by the block above, which runs on import.
+    Parsing and execution mirror what ``call_command`` does, minus the command
+    registry this script is no longer part of.
+    """
+    argv = sys.argv[1:] if argv is None else argv
+    importer = LegacyImporter()
+    parser = importer.create_parser(Path(sys.executable).name, Path(__file__).name)
+    try:
+        importer.execute(**vars(parser.parse_args(argv)))
+    except CommandError as exc:
+        raise SystemExit(f"{exc}") from exc
+
+
+if __name__ == "__main__":
+    main()
