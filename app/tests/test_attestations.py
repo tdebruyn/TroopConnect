@@ -8,6 +8,7 @@ from post_office.models import Email
 from pypdf import PdfReader, PdfWriter
 from pypdf.generic import DecodedStreamObject, NameObject
 
+from attestations import services
 from attestations.models import AttestationCampaign, AttestationItem
 from attestations.services import (
     build_signed_pdf,
@@ -405,6 +406,62 @@ class WizardFlowTest(AttestationDbTestBase):
         self.assertRedirects(
             response, reverse("attestations:step3", args=[campaign.pk])
         )
+
+
+class ProcessCampaignCarryOverTest(AttestationDbTestBase):
+    """Re-running the split must not throw away the operator's review work."""
+
+    def _campaign(self, num_pages=1, **kwargs):
+        defaults = {
+            "title": "Test",
+            "step": 5,
+            "created_by": self.animateur,
+            "name_page": 1,
+            "page_range_start": 1,
+            "page_range_end": 1,
+        }
+        defaults.update(kwargs)
+        campaign = AttestationCampaign.objects.create(**defaults)
+        campaign.documents.save("docs.pdf", ContentFile(_blank_pdf(num_pages)))
+        return campaign
+
+    def _choose_recipient(self, campaign, **ranges):
+        """Stand in for the operator picking a recipient on the review screen."""
+        item = campaign.items.get(**ranges)
+        item.matched_person = self.child
+        item.recipients = ["alice@test.com"]
+        item.status = AttestationItem.Status.READY
+        item.save()
+        return item
+
+    def test_unchanged_document_keeps_the_chosen_recipient(self):
+        campaign = self._campaign()
+        services.process_campaign(campaign)
+        self._choose_recipient(campaign, page_start=0, page_end=0)
+
+        services.process_campaign(campaign)
+
+        item = campaign.items.get()
+        self.assertEqual(item.matched_person, self.child)
+        self.assertEqual(item.recipients, ["alice@test.com"])
+        self.assertEqual(item.status, AttestationItem.Status.READY)
+
+    def test_resplit_document_is_matched_afresh(self):
+        campaign = self._campaign(num_pages=2)
+        services.process_campaign(campaign)
+        self._choose_recipient(campaign, page_start=0, page_end=0)
+
+        # One document per page becomes one document for the whole file, so
+        # nothing carries over and the (blank) page yields no match.
+        campaign.page_range_end = 2
+        campaign.save()
+        services.process_campaign(campaign)
+
+        item = campaign.items.get()
+        self.assertEqual((item.page_start, item.page_end), (0, 1))
+        self.assertIsNone(item.matched_person)
+        self.assertEqual(item.recipients, [])
+        self.assertEqual(item.status, AttestationItem.Status.PENDING)
 
 
 class SendFlowTest(AttestationDbTestBase):

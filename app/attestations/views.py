@@ -54,24 +54,64 @@ def index(request):
     return render(request, "attestations/index.html", {"campaigns": campaigns})
 
 
+def _refuse_sent(request, campaign):
+    """Redirect away from a sent campaign, or None when it may still be edited.
+
+    Once a campaign has gone out it is the record of what was actually sent, so
+    reopening a step would rewrite history rather than fix a mistake.
+    """
+    if campaign.status != AttestationCampaign.Status.SENT:
+        return None
+    messages.error(
+        request, _("A campaign that has been sent can no longer be changed.")
+    )
+    return redirect("attestations:review", pk=campaign.pk)
+
+
+def _anchor_text(campaign, lines):
+    """Form initial for step 3: whatever already sits at the stored anchor."""
+    if not campaign.name_anchor:
+        return {}
+    text = services.extract_field(lines, campaign.name_anchor)
+    return {"name_value": text} if text else {}
+
+
 @login_required
-def create(request):
-    """Step 1: name the campaign."""
+def step1(request, pk=None):
+    """Step 1: name the campaign — and rename it later, once one exists."""
     if not can_manage_unit(request.user):
         raise Http404
 
-    if request.method == "POST":
-        form = TitleForm(request.POST)
-        if form.is_valid():
-            campaign = form.save(commit=False)
-            campaign.created_by = getattr(request.user, "person", None)
-            campaign.step = 2
-            campaign.save()
-            return redirect("attestations:step2", pk=campaign.pk)
-    else:
-        form = TitleForm()
+    campaign = (
+        get_object_or_404(AttestationCampaign, pk=pk) if pk is not None else None
+    )
+    if campaign is not None:
+        refused = _refuse_sent(request, campaign)
+        if refused:
+            return refused
 
-    return render(request, "attestations/step1.html", {"form": form})
+    if request.method == "POST":
+        form = TitleForm(request.POST, instance=campaign)
+        if form.is_valid():
+            creating = campaign is None
+            campaign = form.save(commit=False)
+            if creating:
+                campaign.created_by = getattr(request.user, "person", None)
+            # A new campaign moves on to step 2; renaming an existing one
+            # changes nothing else, so it returns to wherever it had got to.
+            campaign.step = max(campaign.step, 2)
+            campaign.save()
+            if creating:
+                return redirect("attestations:step2", pk=campaign.pk)
+            return redirect(campaign.resume_url, pk=campaign.pk)
+    else:
+        form = TitleForm(instance=campaign)
+
+    return render(
+        request,
+        "attestations/step1.html",
+        {"form": form, "campaign": campaign},
+    )
 
 
 @login_required
@@ -81,12 +121,17 @@ def step2(request, pk):
         raise Http404
 
     campaign = get_object_or_404(AttestationCampaign, pk=pk)
+    refused = _refuse_sent(request, campaign)
+    if refused:
+        return refused
 
     if request.method == "POST":
         form = DocumentsForm(request.POST, request.FILES, instance=campaign)
         if form.is_valid():
             campaign = form.save(commit=False)
             campaign.step = 3
+            # Re-editing an earlier step invalidates the ones after it.
+            campaign.status = AttestationCampaign.Status.DRAFT
             campaign.save()
             return redirect("attestations:step3", pk=campaign.pk)
     else:
@@ -106,13 +151,15 @@ def step3(request, pk):
         raise Http404
 
     campaign = get_object_or_404(AttestationCampaign, pk=pk)
+    refused = _refuse_sent(request, campaign)
+    if refused:
+        return refused
+
+    lines = services.page_lines(campaign.documents.path, campaign.name_page - 1)
 
     if request.method == "POST":
         form = NameAnchorForm(request.POST)
         if form.is_valid():
-            lines = services.page_lines(
-                campaign.documents.path, campaign.name_page - 1
-            )
             name_anchor = services.locate_anchor(
                 form.cleaned_data["name_value"], lines
             )
@@ -125,12 +172,14 @@ def step3(request, pk):
             else:
                 campaign.name_anchor = name_anchor
                 campaign.step = 4
+                campaign.status = AttestationCampaign.Status.DRAFT
                 campaign.save()
                 return redirect("attestations:step4", pk=campaign.pk)
     else:
-        form = NameAnchorForm()
+        # Reopening this step should not mean retyping the name: offer back
+        # whatever already sits at the anchor we found last time.
+        form = NameAnchorForm(initial=_anchor_text(campaign, lines))
 
-    lines = services.page_lines(campaign.documents.path, campaign.name_page - 1)
     page_text = "\n".join(line["text"] for line in lines)
 
     return render(
@@ -151,6 +200,9 @@ def step4(request, pk):
         raise Http404
 
     campaign = get_object_or_404(AttestationCampaign, pk=pk)
+    refused = _refuse_sent(request, campaign)
+    if refused:
+        return refused
 
     if request.method == "POST":
         form = SignatureForm(request.POST, request.FILES, instance=campaign)

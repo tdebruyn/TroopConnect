@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-09-13 21:23+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect <noreply@troop.tomctl.be>\nLanguage-Team: fr <fr@li.org>\nLanguage: fr\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nProject-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-09-13 21:23+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect <noreply@troop.tomctl.be>\nLanguage-Team: fr <fr@li.org>\nLanguage: fr\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nProject-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-09-13 21:23+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect <noreply@troop.tomctl.be>\nLanguage-Team: fr <fr@li.org>\nLanguage: fr\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\n"
+msgstr "Project-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-09-13 21:23+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect <noreply@troop.tomctl.be>\nLanguage-Team: fr <fr@li.org>\nLanguage: fr\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nProject-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-09-13 21:23+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect <noreply@troop.tomctl.be>\nLanguage-Team: fr <fr@li.org>\nLanguage: fr\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nProject-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-09-13 21:23+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect <noreply@troop.tomctl.be>\nLanguage-Team: fr <fr@li.org>\nLanguage: fr\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nProject-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-09-13 21:23+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect <noreply@troop.tomctl.be>\nLanguage-Team: fr <fr@li.org>\nLanguage: fr\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\n"
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-09-13 21:23+0200\n"
@@ -330,6 +330,30 @@ msgid ""
 "a white background is fine, it is dropped when stamping. Drag the signature "
 "over the preview to position it."
 msgstr "Le PDF de signature doit avoir le même format de page que les documents (ex. A4) ; un fond blanc est accepté, il est supprimé lors de l'apposition. Faites glisser la signature sur l'aperçu pour la positionner."
+
+#: attestations/models.py
+msgid "Documents"
+msgstr "Documents"
+
+#: attestations/models.py
+msgid "Name anchor"
+msgstr "Position du nom"
+
+#: attestations/models.py
+msgid "Signature"
+msgstr "Signature"
+
+#: attestations/templates/attestations/_steps.html
+msgid "Steps"
+msgstr "Étapes"
+
+#: attestations/templates/attestations/step1.html
+msgid "Edit campaign"
+msgstr "Modifier la campagne"
+
+#: attestations/views.py
+msgid "A campaign that has been sent can no longer be changed."
+msgstr "Une campagne déjà envoyée ne peut plus être modifiée."
 
 #: attestations/templates/attestations/step4.html:16
 msgid "Preview"
@@ -2124,10 +2148,6 @@ msgstr "Gérer"
 
 #~ msgid "Extracted address"
 #~ msgstr "Adresse extraite"
-
-#~| msgid "My documents"
-#~ msgid "Documents"
-#~ msgstr "Mes documents"
 
 #~ msgid "Full fee (eldest child)"
 #~ msgstr "Cotisation complète (enfant aîné)"

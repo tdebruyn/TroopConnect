@@ -1,7 +1,18 @@
 from django.db import models
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 from members.models import Person
+
+# The wizard's steps in order: (number, url name, label). Step 1 doubles as the
+# rename screen once a campaign exists.
+WIZARD_STEPS = (
+    (1, "attestations:step1", _("Name")),
+    (2, "attestations:step2", _("Documents")),
+    (3, "attestations:step3", _("Name anchor")),
+    (4, "attestations:step4", _("Signature")),
+    (5, "attestations:review", _("Review")),
+)
 
 
 class AttestationCampaign(models.Model):
@@ -79,6 +90,27 @@ class AttestationCampaign(models.Model):
             4: "attestations:step4",
         }
         return mapping.get(self.step, "attestations:review")
+
+    def wizard_steps(self):
+        """The wizard steps, each with its URL and whether it can be reopened.
+
+        A campaign can be taken back to any step it already reached, but not
+        forward past where it got to: the later steps are built from the
+        earlier ones, so skipping ahead would leave them describing a document
+        that no longer exists. A campaign that has been sent is a record of what
+        went out, so it has no reopenable steps at all.
+        """
+        if self.status == self.Status.SENT:
+            return []
+        return [
+            {
+                "number": number,
+                "label": label,
+                "url": reverse(url_name, args=[self.pk]),
+                "open": number <= self.step,
+            }
+            for number, url_name, label in WIZARD_STEPS
+        ]
 
 
 class AttestationItem(models.Model):

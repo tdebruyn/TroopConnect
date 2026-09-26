@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-09-13 21:23+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect <noreply@troop.tomctl.be>\nLanguage-Team: nl <nl@li.org>\nLanguage: nl\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nProject-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-09-13 21:23+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect <noreply@troop.tomctl.be>\nLanguage-Team: nl <nl@li.org>\nLanguage: nl\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nProject-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-09-13 21:23+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect <noreply@troop.tomctl.be>\nLanguage-Team: nl <nl@li.org>\nLanguage: nl\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\n"
+msgstr "Project-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-09-13 21:23+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect <noreply@troop.tomctl.be>\nLanguage-Team: nl <nl@li.org>\nLanguage: nl\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nProject-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-09-13 21:23+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect <noreply@troop.tomctl.be>\nLanguage-Team: nl <nl@li.org>\nLanguage: nl\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nProject-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-09-13 21:23+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect <noreply@troop.tomctl.be>\nLanguage-Team: nl <nl@li.org>\nLanguage: nl\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nProject-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-09-13 21:23+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect <noreply@troop.tomctl.be>\nLanguage-Team: nl <nl@li.org>\nLanguage: nl\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\n"
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-09-13 21:23+0200\n"
@@ -330,6 +330,30 @@ msgid ""
 "a white background is fine, it is dropped when stamping. Drag the signature "
 "over the preview to position it."
 msgstr "De handtekening-PDF moet hetzelfde paginaformaat hebben als de documenten (bv. A4); een witte achtergrond is geen probleem, die wordt weggelaten bij het stempelen. Sleep de handtekening over de voorbeeldweergave om deze te positioneren."
+
+#: attestations/models.py
+msgid "Documents"
+msgstr "Documenten"
+
+#: attestations/models.py
+msgid "Name anchor"
+msgstr "Positie van de naam"
+
+#: attestations/models.py
+msgid "Signature"
+msgstr "Handtekening"
+
+#: attestations/templates/attestations/_steps.html
+msgid "Steps"
+msgstr "Stappen"
+
+#: attestations/templates/attestations/step1.html
+msgid "Edit campaign"
+msgstr "Campagne bewerken"
+
+#: attestations/views.py
+msgid "A campaign that has been sent can no longer be changed."
+msgstr "Een verzonden campagne kan niet meer worden gewijzigd."
 
 #: attestations/templates/attestations/step4.html:16
 msgid "Preview"
@@ -2123,10 +2147,6 @@ msgstr "Beheren"
 
 #~ msgid "Extracted address"
 #~ msgstr "Geëxtraheerd adres"
-
-#~| msgid "My documents"
-#~ msgid "Documents"
-#~ msgstr "Mijn documenten"
 
 #~ msgid "Full fee (eldest child)"
 #~ msgstr "Volledig lidgeld (oudste kind)"

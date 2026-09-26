@@ -684,6 +684,15 @@ TRANSLATIONS = {
         "Le PDF de signature doit avoir le même format de page que les documents (ex. A4) ; un fond blanc est accepté, il est supprimé lors de l'apposition. Faites glisser la signature sur l'aperçu pour la positionner.",
         "De handtekening-PDF moet hetzelfde paginaformaat hebben als de documenten (bv. A4); een witte achtergrond is geen probleem, die wordt weggelaten bij het stempelen. Sleep de handtekening over de voorbeeldweergave om deze te positioneren.",
     ),
+    "Documents": ("Documents", "Documenten"),
+    "Name anchor": ("Position du nom", "Positie van de naam"),
+    "Signature": ("Signature", "Handtekening"),
+    "Steps": ("Étapes", "Stappen"),
+    "Edit campaign": ("Modifier la campagne", "Campagne bewerken"),
+    "A campaign that has been sent can no longer be changed.": (
+        "Une campagne déjà envoyée ne peut plus être modifiée.",
+        "Een verzonden campagne kan niet meer worden gewijzigd.",
+    ),
     "Preview": ("Aperçu", "Voorbeeld"),
     "Review attestations": ("Vérifier les attestations", "Attesten controleren"),
     "Check who each document goes to, then send.": (

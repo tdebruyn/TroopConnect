@@ -19,7 +19,7 @@ from django.urls import reverse
 from post_office.models import Email
 
 from attestations.models import AttestationCampaign, AttestationItem
-from attestations.views import _resolve_placeholders
+from attestations.views import _anchor_text, _resolve_placeholders
 from members.models import Account, Role
 from members.permissions import can_manage_unit
 from tests.test_attestations import AttestationDbTestBase, _blank_pdf
@@ -228,6 +228,108 @@ class ReviewTest(AttestationViewTestBase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(list(response.context["items"]), list(campaign.items.all()))
         self.assertIn(self.child, response.context["persons"])
+
+
+class ReopenStepTest(AttestationViewTestBase):
+    """A finished campaign can be walked back into and its steps changed."""
+
+    def _finished(self, **kwargs):
+        defaults = {"step": 5, "status": AttestationCampaign.Status.READY}
+        defaults.update(kwargs)
+        campaign = self.make_campaign(**defaults)
+        campaign.signature.save("sig.pdf", ContentFile(_blank_pdf(1)))
+        campaign.name_anchor = [40, 780, 200, 800]
+        campaign.save()
+        return campaign
+
+    def _step_urls(self, campaign):
+        return [
+            reverse(f"attestations:{name}", args=[campaign.pk])
+            for name in ("step1", "step2", "step3", "step4")
+        ]
+
+    def test_review_links_back_to_every_reached_step(self):
+        campaign = self._finished()
+
+        response = self.client.get(reverse("attestations:review", args=[campaign.pk]))
+
+        for url in self._step_urls(campaign):
+            self.assertContains(response, f'href="{url}"')
+
+    def test_a_sent_campaign_offers_no_step_links(self):
+        campaign = self._finished(status=AttestationCampaign.Status.SENT)
+
+        response = self.client.get(reverse("attestations:review", args=[campaign.pk]))
+
+        for url in self._step_urls(campaign):
+            self.assertNotContains(response, f'href="{url}"')
+
+    def test_every_step_refuses_a_sent_campaign(self):
+        campaign = self._finished(status=AttestationCampaign.Status.SENT)
+
+        for name in ("step1", "step2", "step3", "step4"):
+            with self.subTest(step=name):
+                response = self.client.get(reverse(f"attestations:{name}",
+                                                   args=[campaign.pk]))
+                self.assertRedirects(
+                    response, reverse("attestations:review", args=[campaign.pk])
+                )
+
+    def test_step1_renames_an_existing_campaign(self):
+        campaign = self._finished()
+
+        response = self.client.post(
+            reverse("attestations:step1", args=[campaign.pk]),
+            {"title": "Attestations 2026"},
+        )
+
+        campaign.refresh_from_db()
+        self.assertEqual(campaign.title, "Attestations 2026")
+        # Renaming invalidates nothing, so the campaign stays where it was.
+        self.assertEqual(campaign.step, 5)
+        self.assertEqual(campaign.status, AttestationCampaign.Status.READY)
+        self.assertRedirects(
+            response, reverse("attestations:review", args=[campaign.pk])
+        )
+
+    def test_step1_edit_form_shows_the_current_title(self):
+        campaign = self._finished(title="Attestations 2025")
+
+        response = self.client.get(reverse("attestations:step1", args=[campaign.pk]))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Attestations 2025")
+
+    def test_editing_step2_recedes_the_wizard_and_the_status(self):
+        campaign = self._finished()
+
+        self.client.post(
+            reverse("attestations:step2", args=[campaign.pk]),
+            {
+                "documents": ContentFile(_blank_pdf(2), name="docs.pdf"),
+                "name_page": 1,
+                "page_range_start": 1,
+                "page_range_end": 1,
+            },
+        )
+
+        campaign.refresh_from_db()
+        self.assertEqual(campaign.step, 3)
+        self.assertEqual(campaign.status, AttestationCampaign.Status.DRAFT)
+
+    def test_step3_offers_the_name_it_already_found(self):
+        campaign = self._finished()
+        update = _anchor_text(
+            campaign,
+            [{"text": "Dupont Jean", "x0": 40, "y0": 780, "x1": 200, "y1": 800}],
+        )
+
+        self.assertEqual(update, {"name_value": "Dupont Jean"})
+
+    def test_step3_offers_nothing_before_an_anchor_exists(self):
+        campaign = self.make_campaign(step=3)
+
+        self.assertEqual(_anchor_text(campaign, []), {})
 
 
 class SendBranchingTest(AttestationViewTestBase):

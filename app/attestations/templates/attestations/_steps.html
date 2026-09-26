@@ -6,4 +6,21 @@
     <div class="progress" style="height: 6px;">
         <div class="progress-bar" role="progressbar" style="width: {% widthratio current 5 100 %}%;" aria-valuenow="{{ current }}" aria-valuemin="1" aria-valuemax="5"></div>
     </div>
+    {% if campaign and campaign.wizard_steps %}
+    <nav class="mt-2" aria-label="{% trans 'Steps' %}">
+        <ul class="nav nav-pills nav-fill small">
+            {% for step in campaign.wizard_steps %}
+            <li class="nav-item">
+                {% if step.open %}
+                    <a class="nav-link py-1 {% if step.number == current %}active{% endif %}"
+                       href="{{ step.url }}"
+                       {% if step.number == current %}aria-current="page"{% endif %}>{{ step.label }}</a>
+                {% else %}
+                    <span class="nav-link py-1 disabled" aria-disabled="true">{{ step.label }}</span>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+    </nav>
+    {% endif %}
 </div>

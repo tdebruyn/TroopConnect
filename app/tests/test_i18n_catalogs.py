@@ -31,6 +31,14 @@ NEW_STRINGS = [
         "fond blanc",
         "achtergrond",
     ),
+    ("Name anchor", "Position du nom", "Positie van de naam"),
+    ("Steps", "Étapes", "Stappen"),
+    ("Edit campaign", "Modifier la campagne", "Campagne bewerken"),
+    (
+        "A campaign that has been sent can no longer be changed.",
+        "déjà envoyée",
+        "verzonden",
+    ),
 ]
 
 

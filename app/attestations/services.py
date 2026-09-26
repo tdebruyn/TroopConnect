@@ -484,8 +484,14 @@ def build_signed_pdf(
 def process_campaign(campaign):
     """Split a campaign's PDF into AttestationItems (name/address/match/recipients).
 
-    Replaces any existing items for the campaign.
+    Replaces any existing items for the campaign — but an operator who reopens
+    an earlier step keeps the work they already did. An item whose page range
+    survives the re-split carries over its matched person, recipients and
+    status; only documents that are new or re-ranged are matched afresh.
     """
+    previous = {
+        (item.page_start, item.page_end): item for item in campaign.items.all()
+    }
     AttestationItem.objects.filter(campaign=campaign).delete()
 
     reader = PdfReader(campaign.documents.path)
@@ -506,8 +512,19 @@ def process_campaign(campaign):
             if campaign.address_anchor
             else ""
         )
-        person = matcher.match(name, address)
-        recipients = resolve_recipients(person)
+        carried = previous.get((start, end))
+        if carried is not None:
+            matched_person = carried.matched_person
+            recipients = carried.recipients
+            status = carried.status
+        else:
+            matched_person = matcher.match(name, address)
+            recipients = resolve_recipients(matched_person)
+            status = (
+                AttestationItem.Status.READY
+                if recipients
+                else AttestationItem.Status.PENDING
+            )
         items.append(
             AttestationItem(
                 campaign=campaign,
@@ -515,13 +532,9 @@ def process_campaign(campaign):
                 page_end=end,
                 extracted_name=name,
                 extracted_address=address,
-                matched_person=person,
+                matched_person=matched_person,
                 recipients=recipients,
-                status=(
-                    AttestationItem.Status.READY
-                    if recipients
-                    else AttestationItem.Status.PENDING
-                ),
+                status=status,
             )
         )
     AttestationItem.objects.bulk_create(items)

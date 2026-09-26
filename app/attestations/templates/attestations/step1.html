@@ -1,6 +1,6 @@
 {% extends "members/base.html" %}
 {% load i18n %}
-{% block hat_title %}{% trans "New attestation campaign" %}{% endblock hat_title %}
+{% block hat_title %}{% if campaign %}{% trans "Edit campaign" %}{% else %}{% trans "New attestation campaign" %}{% endif %}{% endblock hat_title %}
 {% block hat_text %}{% trans "Step 1: give this batch of attestations a name." %}{% endblock hat_text %}
 {% block subcontent %}
 {% include "attestations/_steps.html" with current=1 %}

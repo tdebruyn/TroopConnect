@@ -330,6 +330,30 @@ msgid ""
 "over the preview to position it."
 msgstr ""
 
+#: attestations/models.py
+msgid "Documents"
+msgstr ""
+
+#: attestations/models.py
+msgid "Name anchor"
+msgstr ""
+
+#: attestations/models.py
+msgid "Signature"
+msgstr ""
+
+#: attestations/templates/attestations/_steps.html
+msgid "Steps"
+msgstr ""
+
+#: attestations/templates/attestations/step1.html
+msgid "Edit campaign"
+msgstr ""
+
+#: attestations/views.py
+msgid "A campaign that has been sent can no longer be changed."
+msgstr ""
+
 #: attestations/templates/attestations/step4.html:16
 msgid "Preview"
 msgstr ""
