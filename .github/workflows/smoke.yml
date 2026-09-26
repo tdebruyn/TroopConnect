@@ -5,6 +5,11 @@ on:
     branches: [main]
   pull_request:
 
+# Building the image and curling the stack reads the repository and nothing
+# else, so the token is limited to that rather than left at the default.
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
