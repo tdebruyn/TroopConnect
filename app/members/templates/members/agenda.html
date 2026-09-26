@@ -1,0 +1,15 @@
+{% extends "members/base.html" %}
+{% load i18n %}
+{% block hat_title %}
+    {% trans "Agenda" %}
+{% endblock hat_title %}
+{% block hat_text %}
+    {% trans "What this section is doing, week by week." %}
+{% endblock hat_text %}
+{% block subcontent %}
+    {% if section %}
+        {% include "members/_agenda_grid.html" %}
+    {% else %}
+        <p class="text-muted">{% trans "You are not linked to any section this year." %}</p>
+    {% endif %}
+{% endblock subcontent %}

@@ -1,4 +1,7 @@
+import calendar
 import json
+from collections import defaultdict
+from datetime import date, timedelta
 from urllib.parse import urlencode
 
 from django.conf import settings
@@ -6,11 +9,13 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
+from django.db.models import Q
 from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.utils import formats, timezone
 from django.utils.translation import gettext as _
+from django.views.decorators.http import require_POST
 from django.views.generic import ListView, TemplateView, UpdateView
 from post_office.models import STATUS, Email
 
@@ -29,6 +34,7 @@ from .forms import (
     OnboardingForm,
     OrganisationSettingsForm,
     ProfileEditForm,
+    SectionEventForm,
 )
 from .mail import absolute_url, send_templated
 from .models import (
@@ -38,10 +44,18 @@ from .models import (
     ImportantDocument,
     Person,
     SchoolYear,
+    SectionEvent,
     TroopSettings,
     get_registration_admins,
 )
-from .permissions import can_delete_member, get_person, is_htmx
+from .modules import AGENDA, requires_module
+from .permissions import (
+    can_delete_member,
+    can_edit_section_agenda,
+    get_person,
+    is_htmx,
+    visible_sections,
+)
 from .tasks import run_passage
 
 
@@ -1009,3 +1023,260 @@ class PassageView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
                 },
             )
         return redirect("members:passage")
+
+
+# --- Section agenda ---------------------------------------------------------
+#
+# A month grid per section, with the chosen day's activities loaded into a
+# frame beneath it. Which sections a reader may open is
+# `permissions.visible_sections`; which one they may write to is
+# `permissions.can_edit_section_agenda`.
+
+
+def _selected_section(request, sections):
+    """The section this request is about, from ``?section=``.
+
+    Falls back to the first section the reader may see, so the page always has
+    something to show. Asking for a section they may not see is answered the
+    same way as asking for one that does not exist.
+    """
+    wanted = request.GET.get("section") or request.POST.get("section")
+    if wanted:
+        for section in sections:
+            if str(section.pk) == str(wanted):
+                return section
+        raise Http404
+    return sections[0] if sections else None
+
+
+def _selected_month(request):
+    """The first day of the month to display, from ``?month=YYYY-MM``."""
+    raw = request.GET.get("month")
+    if not raw:
+        return timezone.localdate().replace(day=1)
+    try:
+        year, month = (int(part) for part in raw.split("-", 1))
+        return date(year, month, 1)
+    except (TypeError, ValueError):
+        raise Http404 from None
+
+
+def _selected_day(request):
+    """The day the detail frame was asked for, from ``?date=``."""
+    raw = request.GET.get("date")
+    if not raw:
+        return timezone.localdate()
+    try:
+        return date.fromisoformat(raw)
+    except ValueError:
+        raise Http404 from None
+
+
+def _shift_month(month_start, months):
+    """`month_start` moved by `months`, always landing on the 1st."""
+    index = month_start.year * 12 + month_start.month - 1 + months
+    return date(index // 12, index % 12 + 1, 1)
+
+
+def _month_days(month_start):
+    """The six weeks of days the grid shows, as lists of `date`.
+
+    Always six, so that paging through the year does not make the grid grow and
+    shrink under the reader's cursor. Weeks run Monday to Sunday.
+    """
+    weeks = calendar.Calendar(firstweekday=0).monthdatescalendar(
+        month_start.year, month_start.month
+    )
+    while len(weeks) < 6:
+        weeks.append([day + timedelta(days=7) for day in weeks[-1]])
+    return weeks
+
+
+def _events_in(section, first_day, last_day):
+    """The section's activities touching the ``first_day``–``last_day`` range.
+
+    An activity belongs to a month when it *overlaps* it, not when it starts in
+    it: a week-end that began in September still has to appear in October's
+    grid.
+    """
+    return list(
+        SectionEvent.objects.filter(
+            section=section, start_date__lte=last_day
+        ).filter(
+            Q(end_date__gte=first_day)
+            | Q(end_date__isnull=True, start_date__gte=first_day)
+        )
+    )
+
+
+def _events_on(section, day):
+    """The section's activities covering `day`, in reading order."""
+    return (
+        SectionEvent.objects.filter(section=section, start_date__lte=day)
+        .filter(Q(end_date__gte=day) | Q(end_date__isnull=True, start_date=day))
+        .order_by("start_time", "title")
+    )
+
+
+def _agenda_scope(request):
+    """The reader's sections, the one in play, and whether they may write to it."""
+    sections = visible_sections(request.user)
+    section = _selected_section(request, sections)
+    return {
+        "sections": sections,
+        "section": section,
+        "can_edit": section is not None
+        and can_edit_section_agenda(request.user, section),
+    }
+
+
+def _grid_context(request):
+    """`_agenda_scope` plus the month of day cells it renders."""
+    context = _agenda_scope(request)
+    section = context["section"]
+    if section is None:
+        return context
+
+    month_start = _selected_month(request)
+    days = _month_days(month_start)
+    # One pass over the activities rather than a filter per cell: a week-end
+    # lands in several days of the grid at once.
+    by_day = defaultdict(list)
+    for event in _events_in(section, days[0][0], days[-1][-1]):
+        day = event.start_date
+        while day <= event.last_date:
+            by_day[day].append(event)
+            day += timedelta(days=1)
+
+    context.update(
+        {
+            "month_start": month_start,
+            "previous_month": _shift_month(month_start, -1),
+            "next_month": _shift_month(month_start, 1),
+            "today": timezone.localdate(),
+            "weeks": [
+                [
+                    {
+                        "date": day,
+                        "events": by_day.get(day, []),
+                        "in_month": day.month == month_start.month,
+                    }
+                    for day in week
+                ]
+                for week in days
+            ],
+        }
+    )
+    return context
+
+
+def _agenda_url(section, day=None):
+    """The agenda page for `section`, opened on the month `day` falls in."""
+    params = {"section": section.pk}
+    if day is not None:
+        params["month"] = f"{day.year:04d}-{day.month:02d}"
+    return f"{reverse('members:agenda')}?{urlencode(params)}"
+
+
+@login_required
+@requires_module(AGENDA)
+def agenda(request):
+    """The section agenda: a month grid, and a frame for the chosen day."""
+    return render(request, "members/agenda.html", _grid_context(request))
+
+
+@login_required
+@requires_module(AGENDA)
+def agenda_grid(request):
+    """Just the month grid, for the arrows and the section picker (HTMX)."""
+    context = _grid_context(request)
+    if context["section"] is None:
+        raise Http404
+    return render(request, "members/_agenda_grid.html", context)
+
+
+@login_required
+@requires_module(AGENDA)
+def agenda_day(request):
+    """The activities of one day, into the frame beneath the grid (HTMX)."""
+    context = _agenda_scope(request)
+    section = context["section"]
+    if section is None:
+        raise Http404
+    day = _selected_day(request)
+    context.update({"day": day, "events": _events_on(section, day)})
+    return render(request, "members/_agenda_day.html", context)
+
+
+@login_required
+@requires_module(AGENDA)
+def agenda_event_create(request):
+    """Add an activity to a section the user leads."""
+    sections = visible_sections(request.user)
+    section = _selected_section(request, sections)
+    if section is None or not can_edit_section_agenda(request.user, section):
+        raise Http404
+
+    if request.method == "POST":
+        form = SectionEventForm(request.POST, section=section)
+        if form.is_valid():
+            event = form.save()
+            messages.success(
+                request, _("The activity has been added to the agenda.")
+            )
+            return redirect(_agenda_url(section, event.start_date))
+    else:
+        form = SectionEventForm(section=section, initial=_prefilled_day(request))
+    return render(
+        request,
+        "members/agenda_event_form.html",
+        {"form": form, "section": section, "event": None},
+    )
+
+
+def _prefilled_day(request):
+    """A ``?date=`` on the URL prefills a new activity's first day."""
+    raw = request.GET.get("date")
+    if not raw:
+        return {}
+    try:
+        return {"start_date": date.fromisoformat(raw)}
+    except ValueError:
+        return {}
+
+
+@login_required
+@requires_module(AGENDA)
+def agenda_event_edit(request, pk):
+    """Edit one activity, if the user leads the section it belongs to."""
+    event = get_object_or_404(SectionEvent, pk=pk)
+    if not can_edit_section_agenda(request.user, event.section):
+        raise Http404
+
+    if request.method == "POST":
+        form = SectionEventForm(request.POST, instance=event, section=event.section)
+        if form.is_valid():
+            event = form.save()
+            messages.success(request, _("The activity has been updated."))
+            return redirect(_agenda_url(event.section, event.start_date))
+    else:
+        form = SectionEventForm(instance=event, section=event.section)
+    return render(
+        request,
+        "members/agenda_event_form.html",
+        {"form": form, "section": event.section, "event": event},
+    )
+
+
+@login_required
+@requires_module(AGENDA)
+@require_POST
+def agenda_event_delete(request, pk):
+    """Remove one activity, if the user leads the section it belongs to."""
+    event = get_object_or_404(SectionEvent, pk=pk)
+    if not can_edit_section_agenda(request.user, event.section):
+        raise Http404
+    section, day = event.section, event.start_date
+    event.delete()
+    messages.success(request, _("The activity has been removed from the agenda."))
+    return redirect(_agenda_url(section, day))

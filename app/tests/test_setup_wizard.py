@@ -301,7 +301,7 @@ class HappyPathTest(WizardTestCase):
         )
         responses["modules"] = self.client.post(
             reverse("setup:step", args=["modules"]),
-            {"fees_enabled": "on", "signing_enabled": "on", "public_agenda_enabled": "on"},
+            {"fees_enabled": "on", "signing_enabled": "on", "agenda_enabled": "on"},
         )
         responses["email"] = self.post_email()
         return responses

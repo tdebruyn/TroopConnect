@@ -8,7 +8,6 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from homepage.models import Event
 from members.mail import send_templated
 from members.models import (
     Enrollment,
@@ -17,6 +16,7 @@ from members.models import (
     Role,
     SchoolYear,
     Section,
+    SectionEvent,
 )
 from members.permissions import (
     ANIMATEUR,
@@ -435,11 +435,14 @@ def compose_message(request):
             )
 
             event_date = form.cleaned_data.get("event_date")
-            if event_date:
-                Event.objects.create(
+            # An agenda entry belongs to a section, so an agenda date on a
+            # message aimed at the whole troop (or at every animateur) has
+            # nowhere to land and is ignored.
+            if event_date and msg_section is not None:
+                SectionEvent.objects.create(
                     title=form.cleaned_data["subject"],
                     description=form.cleaned_data["body"],
-                    date=event_date,
+                    start_date=event_date,
                     section=msg_section,
                     created_from_message=msg,
                 )

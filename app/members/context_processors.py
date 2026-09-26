@@ -36,7 +36,7 @@ def contact_info(request):
         # the decorator that 404s the same module's URLs) cannot disagree.
         "fees_enabled": module_enabled(modules.FEES),
         "signing_enabled": module_enabled(modules.SIGNING),
-        "public_agenda_enabled": module_enabled(modules.AGENDA),
+        "agenda_enabled": module_enabled(modules.AGENDA),
         # Language selector support (set by AvailableLanguagesMiddleware).
         "available_languages": list(available),
         "current_language": translation.get_language(),

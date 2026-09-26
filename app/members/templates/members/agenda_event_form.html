@@ -1,0 +1,34 @@
+{% extends "members/base.html" %}
+{% load i18n %}
+{% block hat_title %}
+    {% if event %}
+        {% trans "Edit activity" %}
+    {% else %}
+        {% trans "New activity" %}
+    {% endif %}
+{% endblock hat_title %}
+{% block hat_text %}
+    {{ section.name }}
+{% endblock hat_text %}
+{% block subcontent %}
+    <form method="post" class="col-lg-8">
+        {% csrf_token %}
+        {# Carried in the body as well as the URL: a leader who leads two
+           sections must not have the entry filed under the other one. The
+           edit view ignores it and keeps the entry's own section. #}
+        <input type="hidden" name="section" value="{{ section.pk }}" />
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+        {% endif %}
+        {% for field in form %}
+            <div class="mb-3">
+                <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+                {% for error in field.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
+        <a class="btn btn-secondary" href="{% url 'members:agenda' %}?section={{ section.pk }}">{% trans "Cancel" %}</a>
+    </form>
+{% endblock subcontent %}

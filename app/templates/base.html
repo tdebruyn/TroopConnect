@@ -79,9 +79,9 @@
                                 </div>
                             </li>
                             {% module_enabled "agenda" as agenda_on %}
-                            {% if agenda_on %}
+                            {% if agenda_on and user.is_authenticated %}
                                 <li class="nav-item">
-                                    <a class="nav-link active" href="{% url 'agenda' %}">{% trans "Agenda" %}</a>
+                                    <a class="nav-link active" href="{% url 'members:agenda' %}">{% trans "Agenda" %}</a>
                                 </li>
                             {% endif %}
                             {% if user.is_staff or user_is_tresorier or user_can_send_all %}

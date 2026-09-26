@@ -87,7 +87,10 @@ class ComposeMessageForm(forms.Form):
         required=False,
         label=_("Date (agenda)"),
         widget=forms.DateInput(attrs={"type": "date", "class": "form-control"}),
-        help_text=_("Optional. If provided, an event will be added to the agenda."),
+        help_text=_(
+            "Optional, for a message sent to a section: the activity is added "
+            "to that section's agenda."
+        ),
     )
 
     def __init__(self, *args, **kwargs):

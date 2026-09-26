@@ -196,3 +196,58 @@ header.masthead {
     display: inline;
   }
 }
+
+/* Section agenda: the month grid.
+ *
+ * A day is one button filling its cell, so the whole cell is clickable rather
+ * than just the activity chips inside it. The chips carry their own background
+ * from the theme's palette (see SectionEvent.TYPE_CSS_CLASSES). */
+.agenda-grid td {
+  padding: 0;
+  vertical-align: top;
+  width: 14.28%;
+}
+
+.agenda-grid .agenda-day-button {
+  display: block;
+  width: 100%;
+  min-height: 6.5rem;
+  padding: 0.25rem 0.35rem;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  color: inherit;
+}
+
+.agenda-grid .agenda-day-button:hover,
+.agenda-grid .agenda-day-button:focus-visible {
+  background-color: rgba(var(--bs-primary-rgb), 0.07);
+}
+
+.agenda-grid .agenda-day-number {
+  display: block;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.agenda-grid .agenda-chip {
+  display: block;
+  margin-top: 0.15rem;
+  padding: 0.05rem 0.3rem;
+  border-radius: 0.2rem;
+  font-size: 0.78rem;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.agenda-grid .agenda-chip-time {
+  opacity: 0.85;
+}
+
+.agenda-grid .agenda-outside {
+  background-color: rgba(var(--bs-secondary-rgb), 0.05);
+}
+
+.agenda-grid .agenda-outside .agenda-day-number {
+  opacity: 0.45;
+}

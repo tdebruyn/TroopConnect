@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.test import Client
 
 from members.models import (
@@ -8,10 +10,13 @@ from members.models import (
     Role,
     SchoolYear,
     Section,
+    SectionEvent,
 )
 from messaging.forms import ComposeMessageForm
 from messaging.models import SectionMessage
 from tests.mail import MailTestCase
+
+from .base import TroopSettingsTestCase
 
 
 class ComposeRecipientAccumulationTest(MailTestCase):
@@ -360,3 +365,59 @@ class ComposeEmptyGroupTest(MailTestCase):
         html = response.content.decode()
         self.assertIn("Aucun destinataire trouvé.", html)
         self.assertNotIn("<table", html)
+
+
+class ComposeAgendaEntryTest(TroopSettingsTestCase, MailTestCase):
+    """A section message's optional date lands on that section's agenda.
+
+    The agenda entry belongs to a section, so a message aimed at the whole
+    troop has nowhere to put one and quietly does without.
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.client = Client()
+        self.current_year = SchoolYear.current()
+
+        self.section = Section.objects.create(name="Louveteaux")
+        self.staff_person = Person.objects.create(
+            first_name="Marie", last_name="Staff",
+            primary_role=Role.objects.get(short="p"), status="a",
+        )
+        self.staff_person.roles.add(Role.objects.get(short="ar"))
+        Account.objects.create_user(
+            email="staff@test.com", password="testpass", person=self.staff_person,
+        )
+        self.client.login(email="staff@test.com", password="testpass")
+
+    def send(self, group, **extra):
+        post = {
+            "recipient_group": group,
+            "section": str(self.section.pk),
+            "subject": "Grand jeu",
+            "body": "Rendez-vous au local",
+        }
+        post.update(extra)
+        return self.client.post("/messaging/compose/", post)
+
+    def test_a_date_on_a_section_message_adds_an_activity(self):
+        self.send("section_animateurs", event_date="2026-10-17")
+
+        event = SectionEvent.objects.get()
+        self.assertEqual(event.section, self.section)
+        self.assertEqual(event.title, "Grand jeu")
+        self.assertEqual(event.description, "Rendez-vous au local")
+        self.assertEqual(event.start_date, date(2026, 10, 17))
+        # No time to take from the form, and a meeting is the neutral type.
+        self.assertEqual(event.activity_type, SectionEvent.ActivityType.REUNION)
+        self.assertIsNone(event.start_time)
+
+    def test_no_date_means_no_activity(self):
+        self.send("section_animateurs")
+
+        self.assertFalse(SectionEvent.objects.exists())
+
+    def test_a_message_to_the_whole_troop_has_no_section_to_land_on(self):
+        self.send("all_animateurs", event_date="2026-10-17")
+
+        self.assertFalse(SectionEvent.objects.exists())

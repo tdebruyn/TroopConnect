@@ -1,20 +1,17 @@
 import json
 import re
-from datetime import timedelta
 
 from django.conf import settings
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core.exceptions import ValidationError
 from django.http import HttpResponseBadRequest, JsonResponse
 from django.template.loader import render_to_string
-from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import override
 from django.views import View
 from django.views.generic import TemplateView
 
-from homepage.models import Event, ImageAsset, SiteContent
-from members.modules import AGENDA, ModuleRequiredMixin
+from homepage.models import ImageAsset, SiteContent
 
 # Languages offered in the editor's language tabs (modeltranslation languages).
 EDITOR_LANGUAGES = settings.MODELTRANSLATION_LANGUAGES
@@ -155,21 +152,6 @@ class FAQ(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update(_edited_context(SiteContent.Page.FAQ))
-        return context
-
-
-class Agenda(ModuleRequiredMixin, TemplateView):
-    """The troop's public agenda. Hidden, not deleted, when switched off."""
-
-    template_name = "homepage/agenda.html"
-    required_module = AGENDA
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        today = timezone.now().date()
-        cutoff = today - timedelta(days=30)
-        # Show events from the last 30 days onwards (future + recent past)
-        context["events"] = Event.objects.filter(date__gte=cutoff).order_by("date")
         return context
 
 

@@ -16,6 +16,7 @@ from .models import (
     Person,
     SchoolYear,
     Section,
+    SectionEvent,
     TroopSettings,
 )
 
@@ -120,6 +121,21 @@ admin.site.register(Account, AccountAdmin)
 admin.site.register(SchoolYear)
 
 
+@admin.register(SectionEvent)
+class SectionEventAdmin(admin.ModelAdmin):
+    """The escape hatch for an agenda entry a leader can no longer fix.
+
+    Day-to-day editing happens on the section agenda itself, which is
+    restricted to that section's leaders; this is where a unit admin repairs an
+    entry after a leader leaves.
+    """
+
+    list_display = ("title", "start_date", "section", "activity_type")
+    list_filter = ("section", "activity_type", "start_date")
+    search_fields = ("title", "description")
+    date_hierarchy = "start_date"
+
+
 @admin.register(Section)
 class SectionAdmin(TranslationAdmin):
     list_display = ("name", "branch")
@@ -209,7 +225,7 @@ class TroopSettingsAdmin(TranslationAdmin):
         ),
         (
             _("Modules"),
-            {"fields": ("fees_enabled", "signing_enabled", "public_agenda_enabled")},
+            {"fields": ("fees_enabled", "signing_enabled", "agenda_enabled")},
         ),
         (
             _("Site information"),

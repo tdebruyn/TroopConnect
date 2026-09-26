@@ -1,13 +1,6 @@
 from django.contrib import admin
 
-from homepage.models import Event, ImageAsset, SiteContent
-
-
-@admin.register(Event)
-class EventAdmin(admin.ModelAdmin):
-    list_display = ("title", "date", "section", "created_at")
-    list_filter = ("section", "date")
-    search_fields = ("title", "description")
+from homepage.models import ImageAsset, SiteContent
 
 
 @admin.register(SiteContent)

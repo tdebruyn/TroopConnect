@@ -53,6 +53,22 @@ urlpatterns = [
     path("purge/<str:pk>", views.member_purge, name="member_purge"),
     path("documents/", views.DocumentListView.as_view(), name="documents"),
     path("mailqueue", views.MailQueueView.as_view(), name="mail_queue"),
+    # The section agenda. Readable by whoever is linked to the section; the
+    # writing views answer 404 unless the user leads it.
+    path("agenda/", views.agenda, name="agenda"),
+    path("agenda/grid/", views.agenda_grid, name="agenda_grid"),
+    path("agenda/day/", views.agenda_day, name="agenda_day"),
+    path("agenda/new/", views.agenda_event_create, name="agenda_event_create"),
+    path(
+        "agenda/<int:pk>/edit/",
+        views.agenda_event_edit,
+        name="agenda_event_edit",
+    ),
+    path(
+        "agenda/<int:pk>/delete/",
+        views.agenda_event_delete,
+        name="agenda_event_delete",
+    ),
     # The troop's own settings (name, languages, calendar, modules). Staff only.
     path("settings", views.TroopSettingsView.as_view(), name="troop_settings"),
     # The yearly section passage: when it runs, and the button to run it now.

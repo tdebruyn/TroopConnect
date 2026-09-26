@@ -10,6 +10,8 @@ The short-codes themselves are seeded in
 `members/migrations/0002_add_static_values.py`.
 """
 
+from django.db.models import Q
+
 # Primary roles (Role.is_primary is True).
 PARENT = "p"
 ANIMATEUR = "a"
@@ -96,6 +98,74 @@ def can_delete_member(user):
 def can_access_messaging(user):
     """Return True for unit admins and for section animateurs."""
     return can_manage_unit(user) or has_primary_role(user, (ANIMATEUR,))
+
+
+def visible_sections(user):
+    """The sections whose agenda ``user`` may read, in display order.
+
+    Everyone sees the sections they are personally connected to this school
+    year: the ones they are enrolled in (a child, an animateur) and the ones
+    their children are enrolled in (a parent). Unit admins see every section,
+    because "what is the Meute doing in October?" is a question the people
+    running the unit have to be able to answer — reading is all that buys them,
+    though; writing is :func:`can_edit_section_agenda`.
+
+    ``nav_sections`` in ``context_processors.py`` deliberately keeps its own
+    narrower staff-only rule rather than calling this: its dropdown links into
+    ``messaging:section_history``, which 404s for an animateur responsable who
+    is not on staff.
+    """
+    # Imported here, not at module level: this module is imported by settings
+    # checks and by the context processors, and staying model-free at import
+    # time is what keeps that free of cycles.
+    from .models import Enrollment, SchoolYear, Section
+
+    if can_manage_unit(user):
+        return (
+            Section.objects.select_related("branch").order_by("branch__name", "name")
+        )
+
+    person = get_person(user)
+    if person is None:
+        return Section.objects.none()
+
+    current_year = SchoolYear.current()
+    if current_year is None:
+        return Section.objects.none()
+
+    # Both sides of the link in one pass: `user` covers the person's own
+    # enrolments, `user__as_child__parent` the sections of their children.
+    enrolled = Enrollment.objects.filter(school_year=current_year).filter(
+        Q(user=person) | Q(user__as_child__parent=person)
+    )
+    return (
+        Section.objects.filter(pk__in=enrolled.values_list("section_id", flat=True))
+        .select_related("branch")
+        .order_by("branch__name", "name")
+    )
+
+
+def can_edit_section_agenda(user, section):
+    """True when ``user`` is one of ``section``'s leaders.
+
+    A leader both holds an animateur role *and* is enrolled in the section for
+    the current school year: the role says they are a leader, the enrolment
+    says which section they lead. Read-only for everyone else — including unit
+    admins, who may read every agenda but not write to one.
+    """
+    from .models import Enrollment, SchoolYear
+
+    if section is None or not has_primary_role(user, ANIMATEUR_ROLES):
+        return False
+    person = get_person(user)
+    if person is None:
+        return False
+    current_year = SchoolYear.current()
+    if current_year is None:
+        return False
+    return Enrollment.objects.filter(
+        user=person, section=section, school_year=current_year
+    ).exists()
 
 
 def is_htmx(request):

@@ -34,14 +34,14 @@ AGENDA = "agenda"
 MODULE_FIELDS = {
     FEES: "fees_enabled",
     SIGNING: "signing_enabled",
-    AGENDA: "public_agenda_enabled",
+    AGENDA: "agenda_enabled",
 }
 
 #: How each module is named to a human, in the 404 and in the admin.
 MODULE_LABELS = {
     FEES: _("membership fees"),
     SIGNING: _("document signing"),
-    AGENDA: _("the public agenda"),
+    AGENDA: _("the agenda"),
 }
 
 

@@ -17,6 +17,7 @@ from .models import (
     Role,
     SchoolYear,
     Section,
+    SectionEvent,
     TroopSettings,
 )
 from .modules import module_enabled
@@ -783,9 +784,65 @@ class ModuleSettingsForm(forms.ModelForm):
 
     class Meta:
         model = TroopSettings
-        fields = ("fees_enabled", "signing_enabled", "public_agenda_enabled")
+        fields = ("fees_enabled", "signing_enabled", "agenda_enabled")
         labels = {
             "fees_enabled": _("Membership fees"),
             "signing_enabled": _("Signature campaigns"),
-            "public_agenda_enabled": _("Public agenda"),
+            "agenda_enabled": _("Agenda"),
         }
+
+
+class SectionEventForm(forms.ModelForm):
+    """One activity on the agenda of the section its leader is editing.
+
+    ``section`` is not a field. The view decides which section is being written
+    to and passes it in, so a leader cannot name — or reach — a section they do
+    not lead by editing the POST body.
+    """
+
+    class Meta:
+        model = SectionEvent
+        fields = (
+            "activity_type",
+            "title",
+            "description",
+            "start_date",
+            "start_time",
+            "end_date",
+            "end_time",
+        )
+        widgets = {
+            "activity_type": forms.Select(attrs={"class": "form-select"}),
+            "title": forms.TextInput(attrs={"class": "form-control"}),
+            "description": forms.Textarea(attrs={"class": "form-control", "rows": 4}),
+            # The explicit formats matter: a date input only accepts an ISO
+            # value, and the localised default would render "26/09/2026" into a
+            # field the browser then shows as empty.
+            "start_date": forms.DateInput(
+                format="%Y-%m-%d", attrs={"type": "date", "class": "form-control"}
+            ),
+            "start_time": forms.TimeInput(
+                format="%H:%M", attrs={"type": "time", "class": "form-control"}
+            ),
+            "end_date": forms.DateInput(
+                format="%Y-%m-%d", attrs={"type": "date", "class": "form-control"}
+            ),
+            "end_time": forms.TimeInput(
+                format="%H:%M", attrs={"type": "time", "class": "form-control"}
+            ),
+        }
+
+    def __init__(self, *args, section=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.section = section
+        self.fields["end_date"].help_text = _(
+            "Leave empty for an activity that lasts a single day."
+        )
+
+    def save(self, commit=True):
+        event = super().save(commit=False)
+        if self.section is not None:
+            event.section = self.section
+        if commit:
+            event.save()
+        return event

@@ -112,7 +112,7 @@ class SettingsPageTest(StaffPageTestBase):
             {
                 "section": "modules",
                 "fees_enabled": "on",
-                "public_agenda_enabled": "on",
+                "agenda_enabled": "on",
             },
             HTTP_HX_REQUEST="true",
         )
@@ -320,18 +320,20 @@ class ModuleSwitchesTest(StaffPageTestBase):
 
     def test_the_agenda_entry_is_there_by_default(self):
         self.login_staff()
-        self.assertContains(self.client.get(reverse("homepage")), reverse("agenda"))
+        self.assertContains(
+            self.client.get(reverse("homepage")), reverse("members:agenda")
+        )
 
     def test_the_agenda_entry_disappears_when_the_module_is_off(self):
         troop = TroopSettings.get_settings()
-        troop.public_agenda_enabled = False
+        troop.agenda_enabled = False
         troop.save()
 
         self.login_staff()
         response = self.client.get(reverse("homepage"))
 
-        self.assertNotContains(response, reverse("agenda"))
-        self.assertFalse(response.context["public_agenda_enabled"])
+        self.assertNotContains(response, reverse("members:agenda"))
+        self.assertFalse(response.context["agenda_enabled"])
 
     def test_the_attestations_entry_disappears_when_the_module_is_off(self):
         troop = TroopSettings.get_settings()

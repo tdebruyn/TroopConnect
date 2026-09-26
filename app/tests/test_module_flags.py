@@ -1,11 +1,11 @@
 """The three module switches, enforced end to end.
 
-`fees_enabled`, `signing_enabled` and `public_agenda_enabled` used to be
-navigation switches: turning one off hid the menu entry and left the URLs
-answering, so a troop that does not use membership fees still served /finance/
-to anyone holding the treasurer role. These tests pin the whole switch — the
-URLs 404, the UI disappears, and what the module stores is left alone — and,
-just as importantly, that a module which is *on* is unaffected.
+`fees_enabled`, `signing_enabled` and `agenda_enabled` used to be navigation
+switches: turning one off hid the menu entry and left the URLs answering, so a
+troop that does not use membership fees still served /finance/ to anyone
+holding the treasurer role. These tests pin the whole switch — the URLs 404,
+the UI disappears, and what the module stores is left alone — and, just as
+importantly, that a module which is *on* is unaffected.
 
 The switch itself is one helper (`members.modules.module_enabled`), reached
 from views through `requires_module` / `ModuleRequiredMixin` and from templates
@@ -17,10 +17,17 @@ from django.urls import reverse
 from django.utils import timezone
 
 from attestations.models import AttestationCampaign
-from homepage.models import Event
 from members import modules
 from members.forms import AdminUserUpdateForm
-from members.models import Account, Person, PersonRole, Role, TroopSettings
+from members.models import (
+    Account,
+    Person,
+    PersonRole,
+    Role,
+    Section,
+    SectionEvent,
+    TroopSettings,
+)
 from members.permissions import TRESORIER
 
 from .base import TroopSettingsTestCase
@@ -264,42 +271,66 @@ class SigningModuleTest(ModuleTestBase):
         self.assertNotContains(self.client.get(reverse("homepage")), index)
 
 
-class PublicAgendaModuleTest(ModuleTestBase):
-    """public_agenda_enabled=False hides the agenda and keeps its events."""
+class AgendaModuleTest(ModuleTestBase):
+    """agenda_enabled=False closes every agenda URL and keeps its entries.
 
-    def setUp(self):
-        super().setUp()
-        self.event = Event.objects.create(title="Grand camp", date=timezone.now().date())
-        # The agenda is public: these tests are about the flag, not about roles.
-        self.client.logout()
+    The reader here is site staff, which is who the flag has to close the door
+    on: they can see every section, so nothing else would stop them.
+    """
 
-    def test_the_agenda_is_hidden_when_the_module_is_off(self):
-        self.set_flags(public_agenda_enabled=False)
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.section = Section.objects.create(name="Meute")
+        cls.event = SectionEvent.objects.create(
+            title="Grand camp",
+            section=cls.section,
+            start_date=timezone.now().date(),
+        )
 
-        self.assertEqual(self.client.get(reverse("agenda")).status_code, 404)
+    def test_every_url_is_closed_when_the_module_is_off(self):
+        self.set_flags(agenda_enabled=False)
 
-    def test_the_agenda_is_public_when_the_module_is_on(self):
-        response = self.client.get(reverse("agenda"))
+        for name in (
+            "members:agenda",
+            "members:agenda_grid",
+            "members:agenda_day",
+            "members:agenda_event_create",
+        ):
+            with self.subTest(url=name):
+                self.assertEqual(self.client.get(reverse(name)).status_code, 404)
+
+    def test_the_agenda_opens_when_the_module_is_on(self):
+        response = self.client.get(reverse("members:agenda"))
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Grand camp")
 
+    def test_an_anonymous_visitor_is_sent_to_the_login_page(self):
+        """The agenda is for members; the gate sits below @login_required, so
+        a stranger is not told anything about the section's plans."""
+        self.client.logout()
+
+        response = self.client.get(reverse("members:agenda"))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(reverse("account_login"), response["Location"])
+
     def test_the_events_are_kept_and_come_back(self):
-        self.set_flags(public_agenda_enabled=False)
-        self.assertEqual(self.client.get(reverse("agenda")).status_code, 404)
+        self.set_flags(agenda_enabled=False)
+        self.assertEqual(self.client.get(reverse("members:agenda")).status_code, 404)
 
-        self.assertTrue(Event.objects.filter(pk=self.event.pk).exists())
+        self.assertTrue(SectionEvent.objects.filter(pk=self.event.pk).exists())
 
-        self.set_flags(public_agenda_enabled=True)
+        self.set_flags(agenda_enabled=True)
 
-        self.assertContains(self.client.get(reverse("agenda")), "Grand camp")
+        self.assertContains(self.client.get(reverse("members:agenda")), "Grand camp")
 
     def test_the_nav_entry_follows_the_module(self):
-        self.login_staff()
-        agenda = reverse("agenda")
+        agenda = reverse("members:agenda")
         self.assertContains(self.client.get(reverse("homepage")), agenda)
 
-        self.set_flags(public_agenda_enabled=False)
+        self.set_flags(agenda_enabled=False)
 
         self.assertNotContains(self.client.get(reverse("homepage")), agenda)
 
@@ -334,13 +365,13 @@ class ModuleSwitchReachabilityTest(ModuleTestBase):
         self.set_flags(
             fees_enabled=False,
             signing_enabled=False,
-            public_agenda_enabled=False,
+            agenda_enabled=False,
         )
 
         response = self.client.get(reverse("members:troop_settings"))
 
         self.assertEqual(response.status_code, 200)
-        for field in ("fees_enabled", "signing_enabled", "public_agenda_enabled"):
+        for field in ("fees_enabled", "signing_enabled", "agenda_enabled"):
             with self.subTest(field=field):
                 self.assertContains(response, f'name="{field}"')
 
@@ -364,7 +395,7 @@ class ModuleFlagDefaultsTest(ModuleTestBase):
 
         self.assertTrue(troop.fees_enabled)
         self.assertTrue(troop.signing_enabled)
-        self.assertTrue(troop.public_agenda_enabled)
+        self.assertTrue(troop.agenda_enabled)
 
     def test_the_helper_agrees_with_the_model(self):
         for name, field in modules.MODULE_FIELDS.items():

@@ -170,7 +170,7 @@ again.
 | --- | --- | --- |
 | `fees_enabled` | `true` | The membership-fees module: `/finance/`, the price grid, recording payments, payment history, reminders, the Treasurer role in the member form, and the fee count on the member purge page. |
 | `signing_enabled` | `true` | The attestation (document signing) wizard, every step of it. |
-| `public_agenda_enabled` | `true` | The public agenda page. |
+| `agenda_enabled` | `true` | The section agenda: `/users/agenda/`, its month grid and day frame, and the write screens behind them. |
 
 A switch means the module is not installed as far as the troop is concerned:
 its URLs answer **404**, and the UI that belongs to it disappears from the
@@ -186,7 +186,7 @@ template and the navigation cannot disagree:
   uses), `ModuleRequiredMixin` with `required_module` on a class-based view;
 * `{% module_enabled "fees" as fees_on %}` in a template, from
   `members/templatetags/modules.py`;
-* `fees_enabled` / `signing_enabled` / `public_agenda_enabled` as context
+* `fees_enabled` / `signing_enabled` / `agenda_enabled` as context
   variables, from `members.context_processors.contact_info`.
 
 The settings page and the Django admin are deliberately **not** gated: a troop
@@ -525,7 +525,7 @@ stands. The progress list counts the seven steps between the gate and the end.
 | Languages and country | Enabled languages, default language, phone region, currency. | `LocaleSettingsForm` |
 | Sections | The branch and section editor, opening on the Les Scouts preset: rename a branch in every language the site offers, change its ages, add and remove sections. | `StructureForm` |
 | The scout year | Year start, age reference, passage day and mode, retention. | `CalendarSettingsForm` |
-| Modules | Membership fees, signing, public agenda. | `ModuleSettingsForm` |
+| Modules | Membership fees, signing, agenda. | `ModuleSettingsForm` |
 | Test email | One real message, sent synchronously through the instance's own backend. It must arrive: a wrong port or a rejected sender is shown with the mail server's own words, and the step can be retried. | `django.core.mail` |
 | Done | Where to go next. | — |
 

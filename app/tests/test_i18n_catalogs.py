@@ -133,7 +133,6 @@ NEW_STRINGS = [
     ("Phone country", "Pays des téléphones", "Land van telefoonnummers"),
     ("Currency", "Devise", "Munteenheid"),
     ("Enabled languages", "Langues actives", "Actieve talen"),
-    ("Public agenda", "Agenda public", "Openbare agenda"),
     ("Signature campaigns", "Campagnes de signatures", "Handtekeningcampagnes"),
     ("Automatic", "Automatique", "Automatisch"),
     ("Manual", "Manuel", "Handmatig"),
@@ -349,6 +348,72 @@ NEW_STRINGS = [
         "branch again when the preset is applied a second time.",
         "Identifiant stable",
         "Stabiele identificatie",
+    ),
+    # Section agenda, added with members.SectionEvent.
+    ("Meeting", "Réunion", "Vergadering"),
+    ("Special day", "Journée spéciale", "Speciale dag"),
+    # "Week-end" is deliberately absent: French uses the English word, so the
+    # "translated differs from source" half of this test cannot hold for it.
+    # Its Dutch msgstr ("Weekend") is in the catalog all the same.
+    ("Activity type", "Type d'activité", "Soort activiteit"),
+    ("Start date", "Date de début", "Startdatum"),
+    ("Start time", "Heure de début", "Starttijd"),
+    ("End date", "Date de fin", "Einddatum"),
+    ("End time", "Heure de fin", "Eindtijd"),
+    (
+        "Leave empty for an activity that lasts a single day.",
+        "Laissez vide",
+        "Laat leeg",
+    ),
+    (
+        "The end date cannot be before the start date.",
+        "ne peut pas précéder",
+        "kan niet vóór",
+    ),
+    (
+        "The end time cannot be before the start time.",
+        "ne peut pas précéder",
+        "kan niet vóór",
+    ),
+    (
+        "The activity has been added to the agenda.",
+        "ajoutée à l'agenda",
+        "toegevoegd aan de agenda",
+    ),
+    ("The activity has been updated.", "mise à jour", "bijgewerkt"),
+    (
+        "The activity has been removed from the agenda.",
+        "retirée de l'agenda",
+        "verwijderd uit de agenda",
+    ),
+    (
+        "What this section is doing, week by week.",
+        "semaine après semaine",
+        "week na week",
+    ),
+    (
+        "Pick a day to see what is on.",
+        "Choisissez un jour",
+        "Kies een dag",
+    ),
+    (
+        "You are not linked to any section this year.",
+        "aucune section cette année",
+        "geen enkele sectie gekoppeld",
+    ),
+    ("Previous month", "Mois précédent", "Vorige maand"),
+    ("Next month", "Mois suivant", "Volgende maand"),
+    ("Today", "Aujourd'hui", "Vandaag"),
+    ("Add an activity", "Ajouter une activité", "Activiteit toevoegen"),
+    ("Nothing planned that day.", "Rien de prévu", "Niets gepland"),
+    ("Edit activity", "Modifier l'activité", "Activiteit bewerken"),
+    ("New activity", "Nouvelle activité", "Nieuwe activiteit"),
+    ("Delete", "Supprimer", "Verwijderen"),
+    (
+        "Optional, for a message sent to a section: the activity is added "
+        "to that section's agenda.",
+        "ajoutée à l'agenda de cette section",
+        "toegevoegd aan de agenda van die sectie",
     ),
 ]
 

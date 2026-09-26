@@ -1,0 +1,48 @@
+{% load i18n %}
+{% comment %}
+One day's activities, swapped into `#agenda-day` when a day is clicked. The
+full activity — description included — is only ever rendered here, never in the
+grid, so the grid stays readable at a glance.
+{% endcomment %}
+<h3 class="h5">{{ day|date:"l j F Y" }}</h3>
+{% if events %}
+    <div class="list-group">
+        {% for event in events %}
+            <div class="list-group-item">
+                <div class="d-flex justify-content-between align-items-start gap-3">
+                    <div>
+                        <span class="badge {{ event.type_css_class }} text-white">{{ event.get_activity_type_display }}</span>
+                        <span class="fw-bold ms-2">{{ event.title }}</span>
+                        <div class="small text-muted">
+                            {% if event.is_multi_day %}
+                                {{ event.start_date|date:"j F Y" }} – {{ event.last_date|date:"j F Y" }}
+                            {% else %}
+                                {{ event.start_date|date:"j F Y" }}
+                            {% endif %}
+                            {% if event.time_range %}· {{ event.time_range }}{% endif %}
+                        </div>
+                        {% if event.description %}<p class="mb-0 mt-1">{{ event.description|linebreaksbr }}</p>{% endif %}
+                    </div>
+                    {% if can_edit %}
+                        <div class="text-nowrap">
+                            <a class="btn btn-sm btn-outline-secondary"
+                               href="{% url 'members:agenda_event_edit' event.pk %}">{% trans "Edit" %}</a>
+                            <form class="d-inline"
+                                  method="post"
+                                  action="{% url 'members:agenda_event_delete' event.pk %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-outline-danger">{% trans "Delete" %}</button>
+                            </form>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p class="text-muted">{% trans "Nothing planned that day." %}</p>
+{% endif %}
+{% if can_edit %}
+    <a class="btn btn-sm btn-primary mt-3"
+       href="{% url 'members:agenda_event_create' %}?section={{ section.pk }}&date={{ day|date:'Y-m-d' }}">{% trans "Add an activity" %}</a>
+{% endif %}

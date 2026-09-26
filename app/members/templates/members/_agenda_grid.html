@@ -1,0 +1,84 @@
+{% load i18n %}
+{% comment %}
+The month grid, on its own so the month arrows and the section picker can swap
+it through HTMX. Everything it links to carries a plain `href` as well, so the
+page still works with the swap taken away.
+{% endcomment %}
+<div id="agenda-grid">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+        {# The section being shown is always named, even when there is only one:
+           a reader whose children are in two sections needs to know which
+           calendar they are looking at. #}
+        <div class="btn-group btn-group-sm" role="group">
+            {% for candidate in sections %}
+                <a class="btn {% if candidate.pk == section.pk %}btn-primary{% else %}btn-outline-primary{% endif %}"
+                   href="{% url 'members:agenda' %}?section={{ candidate.pk }}">{{ candidate.name }}</a>
+            {% endfor %}
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <a class="btn btn-sm btn-outline-secondary"
+               aria-label="{% trans 'Previous month' %}"
+               title="{% trans 'Previous month' %}"
+               hx-get="{% url 'members:agenda_grid' %}?section={{ section.pk }}&month={{ previous_month|date:'Y-m' }}"
+               hx-target="#agenda-grid"
+               hx-swap="outerHTML"
+               href="{% url 'members:agenda' %}?section={{ section.pk }}&month={{ previous_month|date:'Y-m' }}">&lsaquo;</a>
+            <span class="fw-bold text-nowrap">{{ month_start|date:"F Y" }}</span>
+            <a class="btn btn-sm btn-outline-secondary"
+               aria-label="{% trans 'Next month' %}"
+               title="{% trans 'Next month' %}"
+               hx-get="{% url 'members:agenda_grid' %}?section={{ section.pk }}&month={{ next_month|date:'Y-m' }}"
+               hx-target="#agenda-grid"
+               hx-swap="outerHTML"
+               href="{% url 'members:agenda' %}?section={{ section.pk }}&month={{ next_month|date:'Y-m' }}">&rsaquo;</a>
+            <a class="btn btn-sm btn-outline-secondary"
+               hx-get="{% url 'members:agenda_grid' %}?section={{ section.pk }}"
+               hx-target="#agenda-grid"
+               hx-swap="outerHTML"
+               href="{% url 'members:agenda' %}?section={{ section.pk }}">{% trans "Today" %}</a>
+        </div>
+    </div>
+    {% if can_edit %}
+        <p class="mb-2">
+            <a class="btn btn-sm btn-primary"
+               href="{% url 'members:agenda_event_create' %}?section={{ section.pk }}">{% trans "Add an activity" %}</a>
+        </p>
+    {% endif %}
+    <div class="table-responsive">
+        <table class="table table-bordered agenda-grid mb-0">
+            <thead>
+                <tr>
+                    {% for day in weeks.0 %}<th scope="col">{{ day.date|date:"D" }}</th>{% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for week in weeks %}
+                    <tr>
+                        {% for day in week %}
+                            <td {% if not day.in_month %}class="agenda-outside"{% endif %}>
+                                <button type="button"
+                                        class="agenda-day-button"
+                                        hx-get="{% url 'members:agenda_day' %}?section={{ section.pk }}&date={{ day.date|date:'Y-m-d' }}"
+                                        hx-target="#agenda-day"
+                                        hx-swap="innerHTML">
+                                    <span class="agenda-day-number">{{ day.date|date:"j" }}</span>
+                                    {% for event in day.events %}
+                                        <span class="agenda-chip {{ event.type_css_class }} text-white">
+                                            {{ event.title }}
+                                            {% if event.time_range %}<span class="agenda-chip-time">{{ event.time_range }}</span>{% endif %}
+                                        </span>
+                                    {% endfor %}
+                                </button>
+                            </td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {# Inside the grid on purpose: turning a month over throws away the day
+       being shown, which would otherwise describe a month no longer on screen. #}
+    <div id="agenda-day" class="mt-4">
+        <p class="text-muted">{% trans "Pick a day to see what is on." %}</p>
+    </div>
+</div>

@@ -1933,10 +1933,6 @@ msgstr ""
 msgid "Date (agenda)"
 msgstr ""
 
-#: messaging/forms.py:90
-msgid "Optional. If provided, an event will be added to the agenda."
-msgstr ""
-
 #: messaging/models.py:46
 msgid "All users"
 msgstr ""
@@ -2322,10 +2318,6 @@ msgstr ""
 
 #: settings page (hand-added; see docs/dev/CONTRACT.md)
 msgid "The day a member's age is measured on."
-msgstr ""
-
-#: settings page (hand-added; see docs/dev/CONTRACT.md)
-msgid "Public agenda"
 msgstr ""
 
 #: settings page (hand-added; see docs/dev/CONTRACT.md)
@@ -2738,4 +2730,108 @@ msgstr ""
 
 #: members/wizard (hand-added; see docs/dev/CONTRACT.md)
 msgid "Stable identifier from a branch preset, used to recognise this branch again when the preset is applied a second time."
+msgstr ""
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "Meeting"
+msgstr ""
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "Special day"
+msgstr ""
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "Week-end"
+msgstr ""
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "Activity type"
+msgstr ""
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "Start date"
+msgstr ""
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "Start time"
+msgstr ""
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "End date"
+msgstr ""
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "End time"
+msgstr ""
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "Leave empty for an activity that lasts a single day."
+msgstr ""
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "The end date cannot be before the start date."
+msgstr ""
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "The end time cannot be before the start time."
+msgstr ""
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "The activity has been added to the agenda."
+msgstr ""
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "The activity has been updated."
+msgstr ""
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "The activity has been removed from the agenda."
+msgstr ""
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "What this section is doing, week by week."
+msgstr ""
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "Pick a day to see what is on."
+msgstr ""
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "You are not linked to any section this year."
+msgstr ""
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "Previous month"
+msgstr ""
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "Next month"
+msgstr ""
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "Today"
+msgstr ""
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "Add an activity"
+msgstr ""
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "Nothing planned that day."
+msgstr ""
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "Edit activity"
+msgstr ""
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "New activity"
+msgstr ""
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "Delete"
+msgstr ""
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "Optional, for a message sent to a section: the activity is added to that section's agenda."
 msgstr ""

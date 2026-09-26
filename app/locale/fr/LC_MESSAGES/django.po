@@ -1934,10 +1934,6 @@ msgstr "Pièce jointe (facultatif)"
 msgid "Date (agenda)"
 msgstr "Date (agenda)"
 
-#: messaging/forms.py:90
-msgid "Optional. If provided, an event will be added to the agenda."
-msgstr "Facultatif. Si renseigné, un événement sera ajouté à l'agenda."
-
 #: messaging/models.py:46
 msgid "All users"
 msgstr "Tous les utilisateurs"
@@ -2326,10 +2322,6 @@ msgstr "Conserver les membres archivés pendant (années)"
 #: settings page (hand-added; see docs/dev/CONTRACT.md)
 msgid "The day a member's age is measured on."
 msgstr "Le jour où l'âge d'un membre est mesuré."
-
-#: settings page (hand-added; see docs/dev/CONTRACT.md)
-msgid "Public agenda"
-msgstr "Agenda public"
 
 #: settings page (hand-added; see docs/dev/CONTRACT.md)
 msgid "Enter a three-letter currency code, e.g. EUR."
@@ -2898,3 +2890,107 @@ msgstr "Trop de codes erronés depuis cette adresse. Réessayez dans %(minutes)s
 #: members/wizard (hand-added; see docs/dev/CONTRACT.md)
 msgid "Stable identifier from a branch preset, used to recognise this branch again when the preset is applied a second time."
 msgstr "Identifiant stable issu d'un préréglage de branches, qui permet de reconnaître cette branche quand le préréglage est appliqué une seconde fois."
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "Meeting"
+msgstr "Réunion"
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "Special day"
+msgstr "Journée spéciale"
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "Week-end"
+msgstr "Week-end"
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "Activity type"
+msgstr "Type d'activité"
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "Start date"
+msgstr "Date de début"
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "Start time"
+msgstr "Heure de début"
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "End date"
+msgstr "Date de fin"
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "End time"
+msgstr "Heure de fin"
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "Leave empty for an activity that lasts a single day."
+msgstr "Laissez vide pour une activité d'un seul jour."
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "The end date cannot be before the start date."
+msgstr "La date de fin ne peut pas précéder la date de début."
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "The end time cannot be before the start time."
+msgstr "L'heure de fin ne peut pas précéder l'heure de début."
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "The activity has been added to the agenda."
+msgstr "L'activité a été ajoutée à l'agenda."
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "The activity has been updated."
+msgstr "L'activité a été mise à jour."
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "The activity has been removed from the agenda."
+msgstr "L'activité a été retirée de l'agenda."
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "What this section is doing, week by week."
+msgstr "Ce que fait cette section, semaine après semaine."
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "Pick a day to see what is on."
+msgstr "Choisissez un jour pour voir ce qui est prévu."
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "You are not linked to any section this year."
+msgstr "Vous n'êtes lié à aucune section cette année."
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "Previous month"
+msgstr "Mois précédent"
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "Next month"
+msgstr "Mois suivant"
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "Today"
+msgstr "Aujourd'hui"
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "Add an activity"
+msgstr "Ajouter une activité"
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "Nothing planned that day."
+msgstr "Rien de prévu ce jour-là."
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "Edit activity"
+msgstr "Modifier l'activité"
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "New activity"
+msgstr "Nouvelle activité"
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "Delete"
+msgstr "Supprimer"
+
+#: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "Optional, for a message sent to a section: the activity is added to that section's agenda."
+msgstr "Facultatif, pour un message envoyé à une section : l'activité est ajoutée à l'agenda de cette section."

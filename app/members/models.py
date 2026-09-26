@@ -608,6 +608,129 @@ class Enrollment(models.Model):
         return f"{self.user.first_name} - {self.section.name} ({self.school_year.year})"
 
 
+class SectionEvent(models.Model):
+    """One activity on one section's agenda, kept by that section's leaders.
+
+    Replaces the old ``homepage.Event``, which was a troop-wide public list: an
+    entry now belongs to exactly one section, carries its times and the kind of
+    activity the calendar colour-codes, and is readable only by the people
+    linked to that section (see ``members.permissions.visible_sections``).
+    """
+
+    class ActivityType(models.TextChoices):
+        REUNION = "reunion", _("Meeting")
+        JOURNEE = "journee", _("Special day")
+        WEEKEND = "weekend", _("Week-end")
+
+    #: Background colour per activity type, taken from the theme's own palette
+    #: so the agenda cannot drift away from the rest of the site. All three are
+    #: dark enough to carry white text and far enough apart in hue to be told
+    #: apart at a glance in a dense month grid.
+    TYPE_CSS_CLASSES = {
+        ActivityType.REUNION: "bg-ls-bleu-fonce",
+        ActivityType.JOURNEE: "bg-ls-vert-fonce",
+        ActivityType.WEEKEND: "bg-ls-prune",
+    }
+
+    section = models.ForeignKey(
+        Section,
+        on_delete=models.CASCADE,
+        related_name="agenda_events",
+        verbose_name=_("Section"),
+    )
+    activity_type = models.CharField(
+        max_length=10,
+        choices=ActivityType.choices,
+        default=ActivityType.REUNION,
+        verbose_name=_("Activity type"),
+    )
+    title = models.CharField(max_length=200, verbose_name=_("Title"))
+    description = models.TextField(blank=True, verbose_name=_("Description"))
+    start_date = models.DateField(verbose_name=_("Start date"))
+    start_time = models.TimeField(null=True, blank=True, verbose_name=_("Start time"))
+    end_date = models.DateField(
+        null=True,
+        blank=True,
+        verbose_name=_("End date"),
+        help_text=_("Leave empty for an activity that lasts a single day."),
+    )
+    end_time = models.TimeField(null=True, blank=True, verbose_name=_("End time"))
+    # Set when the entry was created from a section message's optional agenda
+    # date. The agenda does not depend on that message surviving.
+    created_from_message = models.ForeignKey(
+        "messaging.SectionMessage",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="created_event",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["start_date", "start_time", "title"]
+        constraints = [
+            # The form validates this too; the constraint is what stops a bad
+            # row arriving through the Django admin or a shell.
+            models.CheckConstraint(
+                condition=models.Q(end_date__isnull=True)
+                | models.Q(end_date__gte=models.F("start_date")),
+                name="agenda_event_ends_after_start",
+            ),
+        ]
+
+    def __str__(self):
+        return f"{self.title} ({self.start_date:%d/%m/%Y})"
+
+    def clean(self):
+        if self.start_date is None:
+            return
+        if self.end_date is not None and self.end_date < self.start_date:
+            raise ValidationError(
+                {"end_date": _("The end date cannot be before the start date.")}
+            )
+        same_day = self.end_date in (None, self.start_date)
+        if same_day and self.start_time and self.end_time:
+            if self.end_time < self.start_time:
+                raise ValidationError(
+                    {"end_time": _("The end time cannot be before the start time.")}
+                )
+
+    @property
+    def last_date(self):
+        """The final day the activity covers; `start_date` when it lasts one day."""
+        return self.end_date or self.start_date
+
+    @property
+    def is_multi_day(self):
+        return self.last_date > self.start_date
+
+    @property
+    def type_css_class(self):
+        return self.TYPE_CSS_CLASSES.get(self.activity_type, "")
+
+    @property
+    def time_range(self):
+        """The times to print under the title, e.g. ``10:00 – 16:00``.
+
+        Either end may be missing — a leader is not obliged to fix an end time,
+        and an entry created from a message carries no time at all — so this
+        degrades to whichever half is known rather than printing a bare dash.
+        """
+        if self.start_time and self.end_time:
+            if self.end_time == self.start_time:
+                return f"{self.start_time:%H:%M}"
+            return f"{self.start_time:%H:%M} – {self.end_time:%H:%M}"
+        if self.start_time:
+            return f"{self.start_time:%H:%M}"
+        if self.end_time:
+            return f"{self.end_time:%H:%M}"
+        return ""
+
+    def occurs_on(self, day):
+        """Whether the activity covers `day`; used to fill the month grid."""
+        return self.start_date <= day <= self.last_date
+
+
 def get_registration_admins():
     """Return the email addresses of the registration admins.
 
@@ -799,7 +922,7 @@ class TroopSettings(models.Model):
     # purpose, so a troop can always undo the switch.
     fees_enabled = models.BooleanField(default=True)
     signing_enabled = models.BooleanField(default=True)
-    public_agenda_enabled = models.BooleanField(default=True)
+    agenda_enabled = models.BooleanField(default=True)
 
     # --- Retained site content ---------------------------------------------
     site_description = models.TextField(
