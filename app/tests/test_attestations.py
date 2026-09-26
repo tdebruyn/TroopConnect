@@ -309,8 +309,8 @@ class MatchPersonTest(AttestationDbTestBase):
         self.assertEqual(match_person("Dupont Charlie"), self.child)
 
     def test_matches_accented_database_name_without_accent_in_document(self):
-        # Both tokens are accented in the database, so the old SQL prefilter
-        # (an icontains on the raw column) could never find this person.
+        # Both tokens are accented in the database, so a prefilter matching on
+        # the raw column could never find this person.
         Person.objects.create(
             first_name="Hélène", last_name="Lefèvre", primary_role=self.role_child, status="a"
         )
@@ -845,8 +845,8 @@ class ReviewFilterTest(AttestationDbTestBase):
         # The recipient pickers are wired for the type-to-filter combobox, which
         # enhances the <select> in place (the select still posts the person pk).
         self.assertContains(response, "person-select")
-        # The combobox script, not just its stylesheet: the <link> alone
-        # satisfied the previous bare "tom-select" match with the JS removed.
+        # Match the script tag, not just the stylesheet: a bare "tom-select"
+        # match also passes on the <link>.
         self.assertRegex(
             response.content.decode(),
             r'<script[^>]*src="[^"]*tom-select[^"]*\.js"',

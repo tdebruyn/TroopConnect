@@ -65,12 +65,10 @@ def nav_sections(request):
     if not current_year:
         return {"nav_sections": Section.objects.none()}
 
-    # Direct enrollments (animateurs and children)
     direct_ids = Enrollment.objects.filter(
         user=person, school_year=current_year
     ).values_list("section_id", flat=True)
 
-    # Sections where user is a parent of an enrolled child
     parent_ids = Enrollment.objects.filter(
         user__as_child__parent=person, school_year=current_year
     ).values_list("section_id", flat=True)

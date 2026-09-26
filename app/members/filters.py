@@ -29,7 +29,7 @@ class PersonFilter(django_filters.FilterSet):
         field_name="last_name", lookup_expr="icontains", label=_("Last name")
     )
     birth_year = django_filters.ChoiceFilter(
-        choices=[],  # Will be populated in __init__
+        choices=[],
         label=_("Birth year"),
         empty_label=_("Birth year"),
         method="filter_by_birth_year",
@@ -62,25 +62,19 @@ class PersonFilter(django_filters.FilterSet):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # Get current year for age calculations
         current_year = SchoolYear.current().name
 
-        # Get all branches ordered by age range
         branches = Branch.objects.all().order_by("min_age_dec_31")
 
-        # Generate birth year choices with branch information
         birth_year_choices = []
 
-        # Calculate the range of years to include (e.g., last 20 years)
         current_date = datetime.now().date()
-        start_year = current_date.year - 20  # Adjust range as needed
+        start_year = current_date.year - 20
         end_year = current_date.year
 
         for year in range(end_year, start_year, -1):
-            # Calculate age at December 31st of current year
             age_at_dec_31 = current_year - year
 
-            # Find which branch this age corresponds to
             matching_branch = None
             for branch in branches:
                 if (
@@ -91,7 +85,6 @@ class PersonFilter(django_filters.FilterSet):
                     matching_branch = branch
                     break
 
-            # Format the choice label
             if matching_branch:
                 label = f"{year} ({matching_branch.name})"
             else:
@@ -99,7 +92,6 @@ class PersonFilter(django_filters.FilterSet):
 
             birth_year_choices.append((year, label))
 
-        # Update the choices for the birth_year filter
         self.filters["birth_year"].extra["choices"] = birth_year_choices
 
     def filter_by_birth_year(self, queryset, name, value):
@@ -109,10 +101,8 @@ class PersonFilter(django_filters.FilterSet):
         if not value:
             return queryset
 
-        # Convert value to integer (it comes as string from the form)
         birth_year = int(value)
 
-        # Filter persons born in the selected year
         return queryset.filter(birthday__year=birth_year)
 
     def filter_by_role(self, queryset, field_name, value):
@@ -146,7 +136,6 @@ class PersonFilter(django_filters.FilterSet):
 
         The year filter only affects results when combined with section filter
         """
-        # When only year is selected without section, return all persons
         section_value = self.form.cleaned_data.get("section") if self.form else None
 
         if not section_value:

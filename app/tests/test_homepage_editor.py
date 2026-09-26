@@ -260,7 +260,7 @@ class WrapperSanitizerTest(HomePageEditorTestBase):
         self.assertEqual(content.html, "<div><h1>x</h1></div>")
 
     def test_render_strips_wrapper_from_legacy_saves(self):
-        # Content saved before sanitization existed still renders unwrapped.
+        # Content that predates the sanitizer still renders unwrapped.
         SiteContent.objects.create(
             page=SiteContent.Page.HOME,
             project_json="{}",

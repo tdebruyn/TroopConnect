@@ -38,14 +38,12 @@ class OnboardingMiddleware:
             and hasattr(request.user, "person")
             and request.user.person.status == "r"
         ):
-            # Check if we're not already on an exempt URL
             try:
                 url_name = request.resolver_match.url_name if request.resolver_match else None
             except Exception:
                 url_name = None
 
             if url_name not in self.EXEMPT_URL_NAMES:
-                # Also exempt static/media URLs and check path directly
                 onboarding_path = reverse("members:onboarding")
                 if (
                     not request.path.startswith(("/static/", "/media/", "/__debug__/", "/accounts/"))
@@ -102,8 +100,7 @@ class AvailableLanguagesMiddleware:
 
     @staticmethod
     def _available_languages():
-        # Local import to avoid a circular import at module load time
-        # (models imports nothing from middleware, but keep it lazy).
+        # Local import to avoid a circular import at module load time.
         from .models import TroopSettings
 
         available = list(TroopSettings.get_settings().enabled_languages or [])

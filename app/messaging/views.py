@@ -327,7 +327,6 @@ def _handle_attachment_and_docs(request, msg):
         msg.attachments.add(attachment_obj)
         email_attachments[attachment_obj.original_name] = attachment_obj.file
 
-    # Handle ImportantDocument checkboxes — append links to body
     selected_docs = []
     for key, _value in request.POST.items():
         if key.startswith("doc_"):
@@ -356,7 +355,6 @@ def compose_message(request):
     is_animateur = has_primary_role(request.user, (ANIMATEUR,))
     current_year = SchoolYear.current()
 
-    # Determine the animateur's section (if applicable)
     animateur_section = None
     if is_animateur and not can_send_all:
         enrollment = Enrollment.objects.filter(
@@ -367,7 +365,6 @@ def compose_message(request):
             return redirect("homepage")
         animateur_section = enrollment.section
 
-    # Handle HTMX request to load recipients
     if request.method == "POST" and request.POST.get("hx_load_recipients"):
         group = request.POST.get("recipient_group")
         section_id = request.POST.get("section")
@@ -402,7 +399,6 @@ def compose_message(request):
             {"recipients": recipients, "loaded_groups": tokens},
         )
 
-    # Handle form submission (send message)
     if request.method == "POST":
         form = ComposeMessageForm(request.POST, request.FILES)
         if form.is_valid():
@@ -428,7 +424,6 @@ def compose_message(request):
                 animateur_section if (is_animateur and not can_send_all) else None,
             )
 
-            # The message is filed under the currently selected section (if any)
             msg_section = section if group in SECTION_GROUPS else None
 
             msg = SectionMessage.objects.create(
@@ -439,7 +434,6 @@ def compose_message(request):
                 body=form.cleaned_data["body"],
             )
 
-            # Create agenda event if a date was provided
             event_date = form.cleaned_data.get("event_date")
             if event_date:
                 Event.objects.create(
@@ -495,7 +489,6 @@ def compose_message(request):
     else:
         form = ComposeMessageForm()
 
-    # For animateurs, filter section field to their own section
     if is_animateur and not can_send_all:
         form.fields["section"].queryset = Section.objects.filter(pk=animateur_section.pk)
         form.fields["section"].initial = animateur_section

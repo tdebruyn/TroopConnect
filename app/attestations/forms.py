@@ -115,9 +115,8 @@ class SignatureForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # ``send`` reads campaign.signature.path for every item, so a campaign
-        # that reached the end without a signature would raise at the last
-        # step. The model field stays blank=True/null=True for rows created
-        # before this wizard existed; the form is where it must be enforced.
+        # that reached the end without a signature would raise at the last step.
+        # The model field is nullable, so the form is where it must be enforced.
         self.fields["signature"].required = True
 
     def clean(self):

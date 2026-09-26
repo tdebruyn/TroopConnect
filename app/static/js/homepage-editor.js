@@ -68,8 +68,8 @@
     }
 
     /* Blocks (left panel) — a compact set covering text, images, colors,
-     * fonts, sizing: everything the superuser asked for. Bootstrap classes
-     * are used directly since the canvas loads the site's Bootstrap 5.
+     * fonts and sizing. Bootstrap classes are used directly since the canvas
+     * loads the site's Bootstrap 5.
      */
     function troopconnectBlocks(editor) {
         var bm = editor.BlockManager;

@@ -107,8 +107,7 @@ class PristineEmailTest(TroopSettingsTestCase, MailTestCase):
         email = Email.objects.latest("created")
         link = f"https://{domain}/users/adminupdate/42"
 
-        # Without the scheme the link is not clickable in a mail client, which
-        # is what a bare Site.domain produced.
+        # Without the scheme a mail client cannot make the link clickable.
         self.assertIn(link, email.message)
         self.assertIn(link, email.html_message)
 
@@ -265,8 +264,8 @@ class SeedingTest(TestCase):
         )
 
     def test_it_removes_a_seeded_row_in_a_language_we_no_longer_use(self):
-        # post_office's default language is "", which is what these were once
-        # seeded under; nothing looks them up now.
+        # post_office's default language is "", and nothing looks these rows up
+        # under it.
         EmailTemplate.objects.create(
             name="section_message",
             language="",

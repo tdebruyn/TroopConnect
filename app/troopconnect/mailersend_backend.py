@@ -58,13 +58,11 @@ class MailerSendBackend(BaseEmailBackend):
         if message.reply_to:
             payload["reply_to"] = [{"email": addr} for addr in message.reply_to]
 
-        # Build body
         if message.content_subtype == "html":
             payload["html"] = message.body
         else:
             payload["text"] = message.body
 
-        # Handle multipart (both text and html)
         if hasattr(message, "alternatives") and message.alternatives:
             for content, mimetype in message.alternatives:
                 if mimetype == "text/html":
@@ -72,7 +70,6 @@ class MailerSendBackend(BaseEmailBackend):
                 elif mimetype == "text/plain":
                     payload["text"] = content
 
-        # Handle attachments
         if message.attachments:
             payload["attachments"] = []
             for attachment in message.attachments:

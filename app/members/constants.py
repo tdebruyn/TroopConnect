@@ -19,22 +19,6 @@ DEFAULT_LOGO = "images/troop/mini-logo-moutons.png"
 # the fields and nothing else.
 TROOP_SETTINGS_CACHE_KEY = "members.TroopSettings"
 
-# # Role names
-# PARENT_ROLE = "p"
-# ANIMATOR_ROLE = "a"
-# ACTIVE_PARENT_ROLE = "pa"
-# RESPONSIBLE_ANIMATOR_ROLE = "ar"
-# CHILD_ROLE = "e"
-
-# # Role labels
-# ROLE_LABELS = {
-#     PARENT_ROLE: _("Parent"),
-#     ANIMATOR_ROLE: _("Animateur"),
-#     ACTIVE_PARENT_ROLE: _("Parent actif"),
-#     RESPONSIBLE_ANIMATOR_ROLE: _("Animateur responsable"),
-#     CHILD_ROLE: _("Animé"),
-# }
-
 # Role choices for forms
 ROLE_CHOICES = [
     ("p", _("Parent")),

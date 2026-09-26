@@ -54,7 +54,6 @@ def billing_overview(request):
     for balance in balances:
         balance["person"] = persons.get(balance["person_id"])
 
-    # Split into children and animateurs, using the shared role short-codes.
     children_balances = [
         balance
         for balance in balances
@@ -67,7 +66,6 @@ def billing_overview(request):
         and balance["person"].primary_role.short in ANIMATEUR_ROLES
     ]
 
-    # Build the price grid for display.
     ranks = [FeeRule.Rank.FIRST, FeeRule.Rank.SECOND, FeeRule.Rank.THIRD]
     child_by_branch = {}
     branch_order = []

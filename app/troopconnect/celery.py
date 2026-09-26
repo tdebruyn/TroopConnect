@@ -26,8 +26,3 @@ def run_create_year_on_startup(sender=None, **kwargs):
     from members.tasks import create_year_task
 
     create_year_task.delay()
-
-
-# @app.task(bind=True)
-# def debug_task(self):
-#     print(f"Request: {self.request!r}")
