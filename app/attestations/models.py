@@ -138,6 +138,23 @@ class AttestationItem(models.Model):
         blank=True,
         related_name="attestation_items",
     )
+    # A likely match the exact rule could not confirm. Proposed during review,
+    # never sent to on its own: ``matched_person`` stays empty until someone
+    # accepts the suggestion (by picking the person) or rejects it, which is
+    # what ``suggestion_dismissed`` records.
+    suggested_person = models.ForeignKey(
+        Person,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="attestation_suggestions",
+    )
+    match_score = models.FloatField(
+        null=True,
+        blank=True,
+        help_text=_("How close the extracted name was, 0..1 (suggestions only)."),
+    )
+    suggestion_dismissed = models.BooleanField(default=False)
     recipients = models.JSONField(default=list)
     status = models.CharField(
         max_length=10, choices=Status.choices, default=Status.PENDING
@@ -151,6 +168,19 @@ class AttestationItem(models.Model):
 
     def __str__(self):
         return f"{self.campaign} — pp. {self.page_start + 1}–{self.page_end + 1}"
+
+    @property
+    def has_suggestion(self):
+        """Whether a probable match is still waiting for a decision.
+
+        False once the suggestion has been accepted (``matched_person`` is then
+        set) or rejected, in which case the item is an ordinary "not found".
+        """
+        return bool(
+            self.matched_person_id is None
+            and self.suggested_person_id
+            and not self.suggestion_dismissed
+        )
 
     @property
     def filename(self):

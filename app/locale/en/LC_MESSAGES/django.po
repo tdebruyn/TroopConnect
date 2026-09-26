@@ -254,6 +254,33 @@ msgstr ""
 msgid "No documents found."
 msgstr ""
 
+#: attestations/templates/attestations/review.html:27
+#, python-format
+msgid "To confirm (%(count)s)"
+msgstr ""
+
+#: attestations/templates/attestations/review.html:34
+msgid ""
+"Documents whose name is close to someone in the database. Confirm the match, "
+"or reject it and pick the recipient yourself."
+msgstr ""
+
+#: attestations/templates/attestations/review.html:78
+msgid "No probable match is waiting for a decision."
+msgstr ""
+
+#: attestations/templates/attestations/_review_row.html:22
+msgid "Probable match"
+msgstr ""
+
+#: attestations/templates/attestations/_review_row.html:29
+msgid "Not this person"
+msgstr ""
+
+#: attestations/templates/attestations/_review_row.html:45
+msgid "if confirmed"
+msgstr ""
+
 #: attestations/templates/attestations/review.html:81 members/constants.py:29
 #: members/forms.py:28 members/forms.py:43 members/forms.py:377
 #: members/forms.py:404 messaging/templates/messaging/compose_all.html:54

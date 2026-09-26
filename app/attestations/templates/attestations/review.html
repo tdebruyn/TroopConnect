@@ -19,22 +19,28 @@
 <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
     <div class="btn-group btn-group-sm" role="group" aria-label="{% trans "Recipient filter" %}">
         <a href="{% url 'attestations:review' campaign.pk %}"
-           class="btn {% if unmatched_only %}btn-outline-primary{% else %}btn-primary{% endif %}">
+           class="btn {% if filter_name == 'all' %}btn-primary{% else %}btn-outline-primary{% endif %}">
             {% blocktranslate with count=total_count %}All ({{ count }}){% endblocktranslate %}
         </a>
-        <a href="{% url 'attestations:review' campaign.pk %}?unmatched_only=1"
-           class="btn {% if unmatched_only %}btn-primary{% else %}btn-outline-primary{% endif %}">
+        <a href="{% url 'attestations:review' campaign.pk %}?filter=suggested"
+           class="btn {% if filter_name == 'suggested' %}btn-primary{% else %}btn-outline-primary{% endif %}">
+            {% blocktranslate with count=suggested_count %}To confirm ({{ count }}){% endblocktranslate %}
+        </a>
+        <a href="{% url 'attestations:review' campaign.pk %}?filter=unmatched"
+           class="btn {% if filter_name == 'unmatched' %}btn-primary{% else %}btn-outline-primary{% endif %}">
             {% blocktranslate with count=unmatched_count %}Not found ({{ count }}){% endblocktranslate %}
         </a>
     </div>
-    {% if unmatched_count %}
+    {% if filter_name == 'suggested' %}
+        <span class="text-muted small">{% trans "Documents whose name is close to someone in the database. Confirm the match, or reject it and pick the recipient yourself." %}</span>
+    {% elif filter_name == 'unmatched' %}
         <span class="text-muted small">{% trans "Documents whose recipient could not be found automatically." %}</span>
     {% endif %}
 </div>
 
 <form method="post" action="{% url 'attestations:send' campaign.pk %}">
     {% csrf_token %}
-    {% if unmatched_only %}<input type="hidden" name="unmatched_only" value="1">{% endif %}
+    {% if filter_name != 'all' %}<input type="hidden" name="filter" value="{{ filter_name }}">{% endif %}
     <div class="table-responsive mb-4">
         <table class="table table-sm align-middle">
             <thead>
@@ -48,31 +54,13 @@
             </thead>
             <tbody>
                 {% for item in items %}
-                <tr class="{% if not item.matched_person %}table-warning{% endif %}">
-                    <td>{{ item.page_start|add:"1" }}–{{ item.page_end|add:"1" }}</td>
-                    <td>{{ item.extracted_name|default:"—" }}</td>
-                    <td style="min-width: 16rem;">
-                        <select name="person_{{ item.pk }}" class="form-select form-select-sm person-select">
-                            <option value="">{% trans "— no match —" %}</option>
-                            {% for person in persons %}
-                                <option value="{{ person.pk }}" {% if person.pk == item.matched_person_id %}selected{% endif %}>{{ person }} ({{ person.primary_role }})</option>
-                            {% endfor %}
-                        </select>
-                        {% if not item.matched_person %}
-                            <span class="badge text-bg-warning mt-1">{% trans "Not found" %}</span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% for email in item.recipients %}{{ email }}{% if not forloop.last %}, {% endif %}{% empty %}<span class="text-danger">{% trans "No recipient" %}</span>{% endfor %}
-                    </td>
-                    <td>
-                        <input type="checkbox" name="skip_{{ item.pk }}" class="form-check-input">
-                    </td>
-                </tr>
+                    {% include "attestations/_review_row.html" %}
                 {% empty %}
                 <tr>
                     <td colspan="5">
-                        {% if unmatched_only %}
+                        {% if filter_name == 'suggested' %}
+                            {% trans "No probable match is waiting for a decision." %}
+                        {% elif filter_name == 'unmatched' %}
                             {% trans "Every document has a recipient." %}
                         {% else %}
                             {% trans "No documents found." %}
@@ -113,18 +101,30 @@
         // the form posts exactly as before; if the CDN is unreachable the plain
         // select remains fully usable.
         if (typeof TomSelect === 'undefined') return;
-        document.querySelectorAll('select.person-select').forEach(function (el) {
-            new TomSelect(el, {
-                maxOptions: 200,
-                // No allowEmptyOption: it makes Tom Select treat the empty
-                // <option> as a selected item, so every unmatched row showed
-                // "— no match —" as if it were a filled-in value. Leaving it out
-                // keeps the field empty, and the clear button (which we hide
-                // while nothing is selected) goes back to no recipient.
-                placeholder: '',
-                plugins: ['clear_button'],
+
+        function enhanceAll() {
+            document.querySelectorAll('select.person-select').forEach(function (el) {
+                // Tom Select flags the select it has already taken over, which
+                // is how a row swapped back in by htmx is told apart from one
+                // that is still a plain select.
+                if (el.tomselect) return;
+                new TomSelect(el, {
+                    maxOptions: 200,
+                    // No allowEmptyOption: it makes Tom Select treat the empty
+                    // <option> as a selected item, so every unmatched row showed
+                    // "— no match —" as if it were a filled-in value. Leaving it
+                    // out keeps the field empty, and the clear button (which we
+                    // hide while nothing is selected) goes back to no recipient.
+                    placeholder: '',
+                    plugins: ['clear_button'],
+                });
             });
-        });
+        }
+
+        enhanceAll();
+        // Accepting or rejecting a suggestion replaces its row, whose select
+        // has to be enhanced in turn.
+        document.body.addEventListener('htmx:afterSwap', enhanceAll);
     })();
 </script>
 {% endblock subcontent %}

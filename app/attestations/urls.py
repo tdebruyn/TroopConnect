@@ -12,5 +12,15 @@ urlpatterns = [
     path("<int:pk>/step3/", views.step3, name="step3"),
     path("<int:pk>/step4/", views.step4, name="step4"),
     path("<int:pk>/review/", views.review, name="review"),
+    path(
+        "<int:pk>/suggestion/<int:item_pk>/accept/",
+        views.accept_suggestion,
+        name="accept_suggestion",
+    ),
+    path(
+        "<int:pk>/suggestion/<int:item_pk>/dismiss/",
+        views.dismiss_suggestion,
+        name="dismiss_suggestion",
+    ),
     path("<int:pk>/send/", views.send, name="send"),
 ]

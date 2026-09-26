@@ -8,6 +8,7 @@ from django.db.models import Count, Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.http import require_POST
 from post_office import mail
 from pypdf import PdfReader
 
@@ -238,25 +239,59 @@ def review(request, pk):
     return _render_review(request, campaign, SendForm())
 
 
-def _unmatched_only(request):
-    """Whether the 'recipient not found' filter is on.
+# The three ways a document's recipient can have turned out, which the review
+# page filters on: everything, the suggestions waiting for a decision, and the
+# documents for which no recipient was found at all.
+FILTER_ALL = "all"
+FILTER_SUGGESTED = "suggested"
+FILTER_UNMATCHED = "unmatched"
+FILTERS = (FILTER_ALL, FILTER_SUGGESTED, FILTER_UNMATCHED)
+
+# No confirmed recipient yet...
+_UNMATCHED = Q(matched_person__isnull=True)
+# ...but the name was close enough to propose one, and nobody has decided yet.
+_SUGGESTED = _UNMATCHED & Q(suggested_person__isnull=False, suggestion_dismissed=False)
+# ...and nothing to propose, or the suggestion was rejected. Both go through the
+# same "search the whole database" fallback.
+_UNRESOLVED = _UNMATCHED & (Q(suggested_person__isnull=True) | Q(suggestion_dismissed=True))
+
+
+def _review_filter(request):
+    """Which rows the review table shows.
 
     Read from POST as well as GET so the filter survives a send that comes back
     with an invalid email form.
     """
-    value = request.POST.get("unmatched_only")
-    if value is None:
-        value = request.GET.get("unmatched_only")
-    return value in ("1", "on", "true")
+    value = request.POST.get("filter") or request.GET.get("filter")
+    return value if value in FILTERS else FILTER_ALL
+
+
+def _annotate_suggestions(items):
+    """Attach ``suggested_emails`` to the rows of the review table.
+
+    Confirming a suggestion sends to the recipients resolved from that person,
+    so showing them up front says whether accepting it is worth anything.
+    """
+    for item in items:
+        item.suggested_emails = (
+            services.resolve_recipients(item.suggested_person)
+            if item.has_suggestion
+            else []
+        )
+    return items
 
 
 def _render_review(request, campaign, form):
-    unmatched_only = _unmatched_only(request)
+    filter_name = _review_filter(request)
 
-    items = campaign.items.select_related("matched_person")
-    unmatched_items = campaign.items.filter(matched_person__isnull=True)
-    if unmatched_only:
-        items = unmatched_items
+    items = campaign.items.select_related(
+        "matched_person", "suggested_person__primary_role"
+    )
+    if filter_name == FILTER_SUGGESTED:
+        items = items.filter(_SUGGESTED)
+    elif filter_name == FILTER_UNMATCHED:
+        items = items.filter(_UNRESOLVED)
+    _annotate_suggestions(items)
 
     persons = (
         Person.objects.filter(status="a")
@@ -271,11 +306,77 @@ def _render_review(request, campaign, form):
             "items": items,
             "persons": persons,
             "form": form,
-            "unmatched_only": unmatched_only,
+            "filter_name": filter_name,
             "total_count": campaign.items.count(),
-            "unmatched_count": unmatched_items.count(),
+            "suggested_count": campaign.items.filter(_SUGGESTED).count(),
+            "unmatched_count": campaign.items.filter(_UNRESOLVED).count(),
         },
     )
+
+
+def _suggestion_item(request, pk, item_pk):
+    """The item a suggestion action applies to, once the caller is authorised."""
+    if not can_manage_unit(request.user):
+        raise Http404
+    campaign = get_object_or_404(AttestationCampaign, pk=pk)
+    return get_object_or_404(AttestationItem, pk=item_pk, campaign=campaign)
+
+
+def _render_row(request, item):
+    """Re-render one review row, the HTMX response to a suggestion decision.
+
+    The whole row is swapped rather than a fragment of it: confirming fills in
+    the recipient picker and the addresses, and rejecting hides the proposal,
+    so every cell the decision touches has to be redrawn.
+    """
+    item = AttestationItem.objects.select_related(
+        "matched_person", "suggested_person__primary_role", "campaign"
+    ).get(pk=item.pk)
+    _annotate_suggestions([item])
+    persons = (
+        Person.objects.filter(status="a")
+        .select_related("primary_role")
+        .order_by("last_name", "first_name")
+    )
+    return render(
+        request,
+        "attestations/_review_row.html",
+        {"campaign": item.campaign, "item": item, "persons": persons},
+    )
+
+
+@login_required
+@require_POST
+def accept_suggestion(request, pk, item_pk):
+    """Confirm a probable match: it becomes the document's recipient.
+
+    Nothing is sent here — the item is left ready, and sending re-resolves the
+    recipients from the selected person as it does for a match found outright.
+    """
+    item = _suggestion_item(request, pk, item_pk)
+    item.matched_person = item.suggested_person
+    item.recipients = services.resolve_recipients(item.matched_person)
+    item.status = (
+        AttestationItem.Status.READY
+        if item.recipients
+        else AttestationItem.Status.PENDING
+    )
+    item.save(update_fields=["matched_person", "recipients", "status"])
+    return _render_row(request, item)
+
+
+@login_required
+@require_POST
+def dismiss_suggestion(request, pk, item_pk):
+    """Reject a probable match: the row falls back to the plain "not found".
+
+    The suggestion is kept on the item for the record, but no longer offered —
+    the operator searches the whole database from the (now empty) picker.
+    """
+    item = _suggestion_item(request, pk, item_pk)
+    item.suggestion_dismissed = True
+    item.save(update_fields=["suggestion_dismissed"])
+    return _render_row(request, item)
 
 
 @login_required

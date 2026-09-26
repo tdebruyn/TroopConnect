@@ -8,6 +8,7 @@ is stamped through a soft mask that drops its white paper (see
 ``build_signed_pdf``).
 """
 
+import difflib
 import re
 from io import BytesIO
 
@@ -199,6 +200,69 @@ def _all_tokens_found(source, target, max_typos=_MAX_TYPOS):
     return True
 
 
+def _similarity(a, b):
+    """How alike two tokens are, 0..1 (``difflib`` ratio, order-sensitive)."""
+    return difflib.SequenceMatcher(None, a, b).ratio()
+
+
+# A suggestion is a near-miss of the exact rule above: every token of one name
+# must have a counterpart in the other at least this similar, and the names as
+# a whole must score at least that well. Looser than this and the operator
+# would be confirming noise rather than being saved a search.
+_FUZZY_MIN_PAIR = 0.75
+_FUZZY_MIN_SCORE = 0.8
+# ...and the runner-up has to be clearly worse, so that a coin flip between two
+# similar people is never presented as a likely match.
+_FUZZY_MIN_MARGIN = 0.1
+
+
+def _covered_by(source, target):
+    """Average similarity of the pairs covering ``source``, else ``None``.
+
+    Each source token is paired with the most similar unused target token;
+    ``None`` is returned as soon as one of them has no counterpart close
+    enough, since two names sharing only one of their words are not the same
+    person.
+    """
+    remaining = list(target)
+    ratios = []
+    for token in source:
+        if not remaining:
+            return None
+        best = max(remaining, key=lambda other: _similarity(token, other))
+        ratio = _similarity(token, best)
+        if ratio < _FUZZY_MIN_PAIR:
+            return None
+        remaining.remove(best)
+        ratios.append(ratio)
+    return sum(ratios) / len(ratios)
+
+
+def _fuzzy_score(name_tokens, person_tokens):
+    """How close two names are, or ``None`` when they are not close enough.
+
+    As in the exact rule either name may carry extra tokens — a document often
+    spells out a middle name the database does not hold — so a full cover in
+    either direction counts, and the score is the average similarity of the
+    pairs that cover it. A one-token name is never scored: "Dupont" alone would
+    otherwise point at every Dupont in the unit.
+    """
+    if len(name_tokens) < 2 or not person_tokens:
+        return None
+    covers = [
+        cover
+        for cover in (
+            _covered_by(name_tokens, person_tokens),
+            _covered_by(person_tokens, name_tokens),
+        )
+        if cover is not None
+    ]
+    if not covers:
+        return None
+    score = max(covers)
+    return score if score >= _FUZZY_MIN_SCORE else None
+
+
 def _names_match(name_tokens, person_tokens):
     """Whether an extracted name and a person's name refer to the same name.
 
@@ -265,6 +329,29 @@ class PersonMatcher:
                 return address_matches[0]
         return None
 
+    def suggest(self, name):
+        """The most likely Person for a name the exact rule could not resolve.
+
+        Returns ``(person, score)``, the score being 0..1, or ``None`` when no
+        name is close enough — or when the two best candidates are too close to
+        each other to choose between, which is left to the operator. A
+        suggestion is only ever a proposal: nothing is sent on its strength
+        until someone confirms it during review.
+        """
+        tokens = _name_tokens(name)
+        scored = [
+            (person, score)
+            for person, person_tokens in self._entries
+            if (score := _fuzzy_score(tokens, person_tokens)) is not None
+        ]
+        if not scored:
+            return None
+        scored.sort(key=lambda pair: -pair[1])
+        best_person, best_score = scored[0]
+        if len(scored) > 1 and best_score - scored[1][1] < _FUZZY_MIN_MARGIN:
+            return None
+        return best_person, best_score
+
 
 def candidate_persons(name):
     """The persons matching ``name``; kept for callers needing the raw list."""
@@ -276,6 +363,13 @@ def match_person(name, address=None, matcher=None):
     if matcher is None:
         matcher = PersonMatcher()
     return matcher.match(name, address)
+
+
+def suggest_person(name, matcher=None):
+    """Return ``(person, score)`` for a likely, but unconfirmed, match."""
+    if matcher is None:
+        matcher = PersonMatcher()
+    return matcher.suggest(name)
 
 
 def resolve_recipients(person):
@@ -486,8 +580,9 @@ def process_campaign(campaign):
 
     Replaces any existing items for the campaign — but an operator who reopens
     an earlier step keeps the work they already did. An item whose page range
-    survives the re-split carries over its matched person, recipients and
-    status; only documents that are new or re-ranged are matched afresh.
+    survives the re-split carries over its matched person, recipients, status
+    and whatever was decided about a suggestion; only documents that are new or
+    re-ranged are matched afresh.
     """
     previous = {
         (item.page_start, item.page_end): item for item in campaign.items.all()
@@ -515,10 +610,17 @@ def process_campaign(campaign):
         carried = previous.get((start, end))
         if carried is not None:
             matched_person = carried.matched_person
+            suggested_person = carried.suggested_person
+            match_score = carried.match_score
+            suggestion_dismissed = carried.suggestion_dismissed
             recipients = carried.recipients
             status = carried.status
         else:
             matched_person = matcher.match(name, address)
+            suggestion = matcher.suggest(name) if matched_person is None else None
+            suggested_person = suggestion[0] if suggestion else None
+            match_score = suggestion[1] if suggestion else None
+            suggestion_dismissed = False
             recipients = resolve_recipients(matched_person)
             status = (
                 AttestationItem.Status.READY
@@ -533,6 +635,9 @@ def process_campaign(campaign):
                 extracted_name=name,
                 extracted_address=address,
                 matched_person=matched_person,
+                suggested_person=suggested_person,
+                match_score=match_score,
+                suggestion_dismissed=suggestion_dismissed,
                 recipients=recipients,
                 status=status,
             )
