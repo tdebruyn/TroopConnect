@@ -49,6 +49,27 @@ _FAQ_MASTHEAD_RE = re.compile(r"<header class=\"masthead\">.*?</header>", re.DOT
 _FAQ_EMPTIED_CONTAINER_RE = re.compile(r"<div class=\"container row\">\s*</div>")
 
 
+# The home snippet used to wrap the hero in a Bootstrap grid div. The hero is
+# an ordinary block now: inside that div the full-bleed photo would be inset by
+# the grid's gutters, and the card would be laid out as a flex item. Pages saved
+# before the change are unwrapped at render and at save, the way the FAQ
+# masthead is — so they look right before anyone edits them again.
+#
+# Deliberately narrow: the div must hold the hero and nothing else, which is
+# what the old snippet produced. Anything else is left alone.
+_HERO_ROW_RE = re.compile(
+    r'<div class="container row">\s*(<header class="masthead">.*?</header>)\s*</div>',
+    re.DOTALL,
+)
+
+
+def _unwrap_legacy_hero(html):
+    """Lift the hero out of the grid div the old home snippet wrapped it in."""
+    if not html:
+        return html
+    return _HERO_ROW_RE.sub(r"\1", html)
+
+
 def _strip_legacy_faq_header(html):
     """Drop the pre-banner masthead card (and its emptied wrapper) from FAQ HTML."""
     if not html:
@@ -67,12 +88,32 @@ def _sanitize_html(html):
     return html.strip()
 
 
+def _page_has_content(page):
+    """Whether one saved GrapesJS page holds components.
+
+    GrapesJS 0.23 keeps a page's component tree on its frame — the saved
+    project looks like ``{"pages": [{"frames": [{"component": {...}}]}]}``.
+    Reading ``page["components"]`` instead, as this used to, finds nothing on
+    real project data: every saved page was treated as empty, so the editor
+    quietly threw away what had been saved and re-seeded the default look —
+    and the next save then wrote that default back over the stored content.
+    """
+    if not isinstance(page, dict):
+        return False
+    if page.get("component"):
+        return True  # project data that carries the tree on the page itself
+    frames = page.get("frames")
+    return isinstance(frames, list) and any(
+        isinstance(frame, dict) and frame.get("component") for frame in frames
+    )
+
+
 def _has_content(project_json):
     """Whether a saved project actually holds editable content.
 
-    An empty project ({"pages": []} or pages without components — e.g. from
-    an abandoned editor session) must seed the canvas with the current page
-    look instead of loading a blank project.
+    An empty project ({"pages": []}, or pages whose frames carry nothing —
+    e.g. from an abandoned editor session) must seed the canvas with the
+    current page look instead of loading a blank project.
     """
     if not project_json:
         return False
@@ -83,7 +124,7 @@ def _has_content(project_json):
     pages = project.get("pages") if isinstance(project, dict) else None
     if not isinstance(pages, list):
         return False
-    return any(page.get("component") or page.get("components") for page in pages)
+    return any(_page_has_content(page) for page in pages)
 
 
 def _sanitize_css(css):
@@ -132,6 +173,7 @@ def _edited_context(page):
     # when the current language was never edited. Sanitizing at render as well
     # as at save, so already-stored content is corrected at display time too.
     html = _sanitize_html(content.html)
+    html = _unwrap_legacy_hero(html)
     if page == SiteContent.Page.FAQ:
         html = _strip_legacy_faq_header(html)
     return {
@@ -202,6 +244,12 @@ class HomePageEditorView(UserPassesTestMixin, TemplateView):
             project_json = content.project_json if content else None
             if _has_content(project_json):
                 seed_html = None
+                # Hand the template a parsed object: json_script encodes what it
+                # is given, so passing the stored JSON *string* would ship a
+                # JSON-encoded string to the editor, and GrapesJS treats a
+                # string project as "load from that storage key" — it clears
+                # the canvas and finds nothing, leaving a blank editor.
+                project_json = json.loads(project_json)
             else:
                 # Seed the canvas with the default look, translated for the
                 # editor language.
@@ -262,6 +310,7 @@ class HomePageEditorSaveView(UserPassesTestMixin, View):
         # TextField holds real JSON (str(dict) would store a Python repr).
         project = data.get("project")
         html = _sanitize_html(data.get("html"))
+        html = _unwrap_legacy_hero(html)
         css = _sanitize_css(data.get("css"))
         if page == SiteContent.Page.FAQ:
             html = _strip_legacy_faq_header(html)
