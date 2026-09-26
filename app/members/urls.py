@@ -55,4 +55,6 @@ urlpatterns = [
     path("mailqueue", views.MailQueueView.as_view(), name="mail_queue"),
     # The troop's own settings (name, languages, calendar, modules). Staff only.
     path("settings", views.TroopSettingsView.as_view(), name="troop_settings"),
+    # The yearly section passage: when it runs, and the button to run it now.
+    path("passage", views.PassageView.as_view(), name="passage"),
 ]

@@ -53,7 +53,9 @@ class PassageTestBase(TroopSettingsTestCase):
             },
         )
 
-        # Branches: Baladins (6-9), Louveteaux (10-12), Pionniers (13-17)
+        # Branches: Baladins (6-9), Louveteaux (10-12), Pionniers (13-17), and
+        # the ladder that links them — which the passage follows, rather than
+        # working the order out from the ages.
         self.branch_young = Branch.objects.create(
             name="Baladins", min_age_dec_31=6, max_age_dec_31=9,
         )
@@ -62,6 +64,13 @@ class PassageTestBase(TroopSettingsTestCase):
         )
         self.branch_old = Branch.objects.create(
             name="Pionniers", min_age_dec_31=13, max_age_dec_31=17,
+        )
+        self.branch_young.promotes_to = self.branch_mid
+        self.branch_mid.promotes_to = self.branch_old
+        self.branch_old.is_top = True
+        Branch.objects.bulk_update(
+            [self.branch_young, self.branch_mid, self.branch_old],
+            ["promotes_to", "is_top"],
         )
 
         # Sections (one per branch)

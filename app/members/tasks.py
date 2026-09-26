@@ -14,7 +14,8 @@ logger = get_task_logger(__name__)
 # self-guards with a date gate + an idempotency marker, so it only actually
 # promotes children once per target school year — and if the trigger day was
 # missed, it performs the passage at the next Celery start instead. Setting
-# passage_mode to "manual" switches the automatic run off entirely.
+# passage_mode to "manual" switches the automatic run off entirely; staff then
+# run the same code on demand from the passage page.
 
 
 def _today():
@@ -60,11 +61,35 @@ def create_year_task():
         logger.info(f"School year {next_start_year} already exists")
 
 
-@shared_task(name="run_passage")
-def run_passage():
+def _place(child, school_year, section):
+    """Enrol the child in ``section`` for ``school_year``.
+
+    Also forgets the two things that belonged to an earlier decision: the
+    "needs review" flag and the manual override that has now been applied.
     """
-    Automated Passage task — promotes active Animé (children) into their next
-    section/branch for the upcoming school year.
+    from .models import Enrollment
+
+    Enrollment.objects.update_or_create(
+        user=child,
+        school_year=school_year,
+        defaults={"section": section},
+    )
+    child.next_section = None
+    child.passage_review = ""
+    child.save(update_fields=["next_section", "passage_review"])
+
+
+def _flag(child, reason):
+    """Mark the child as needing a human decision, leaving them where they are."""
+    child.passage_review = reason
+    child.save(update_fields=["passage_review"])
+
+
+@shared_task(name="run_passage")
+def run_passage(force=False):
+    """
+    Passage task — moves active Animé (children) into their next section for
+    the upcoming school year.
 
     Scheduled DAILY (not once a year). Celery beat's catch-up is unreliable for
     yearly tasks, and a worker outage on the trigger day would otherwise skip
@@ -82,62 +107,81 @@ def run_passage():
          Celery comes back, the daily tick sees the marker unset for the
          current target year and performs the passage exactly once.
 
-    A troop that would rather move children up by hand sets
-    ``passage_mode`` to ``manual``, which switches this task off entirely.
+    A troop that would rather move children up by hand sets ``passage_mode`` to
+    ``manual``, which switches the automatic run off entirely; staff then run
+    the same code on demand from the passage page, which passes ``force``.
 
-    Promotion logic per active child:
-      - If Person.next_section is set, use that override (then clear it).
-      - Otherwise compute the age on the troop's age reference day (Dec 31 by
-        default) of the next school year — that day pinned *inside* that
-        school year, exactly as ``Person.age_on_dec_31`` does it:
-        * exceeding the current Branch max age → next Branch (ordered by
-          min_age_dec_31); with several sections, the alphabetically first.
-        * exceeding the oldest Branch → switch role to Animateur and remove
-          ParentChild links (out of household billing).
+    ``force=True`` skips the three automatic guards below. They exist to stop
+    the *daily* task acting too early or twice, not to overrule someone who has
+    just pressed the button. The marker is still written, so forcing a run does
+    not make the nightly one repeat it.
+
+    Where each member goes:
+      - ``Person.next_section`` wins: that is the troop's own decision for that
+        member, and it is consumed as it is applied.
+      - Otherwise the current branch decides. While the member still fits it —
+        within its ``max_age_dec_31`` on the troop's age reference day — they
+        stay in their section. A branch that sets no maximum age keeps them.
+      - When they have outgrown it, the branch's ``promotes_to`` names where
+        they go. That link is data, so branches may be renamed, reordered or
+        given a shape that is not a single age ladder without touching this
+        code.
+      - A branch with no ``promotes_to``: the top of the ladder (``is_top``)
+        graduates its members out of the sections — to animators, unless the
+        troop asked to review them — while any other branch cannot be followed
+        at all, so its members are flagged for review rather than moved
+        somewhere arbitrary.
+      - The section found in the target branch has to suit the member: a
+        section declaring a sex takes only members of that sex, and a member
+        whose own sex is unknown is only placed in a mixed section.
+
+    Anything the task cannot decide sets ``Person.passage_review`` with the
+    reason and leaves the member alone. Flagged members are listed on the staff
+    passage page, and the next run reconsiders them — as does a
+    ``next_section`` override set by hand in the meantime.
     """
     from .models import (
         PASSAGE_MODE_MANUAL,
-        Branch,
         Enrollment,
         ParentChild,
         Person,
         Role,
         SchoolYear,
-        Section,
         TroopSettings,
     )
 
     troop = TroopSettings.get_settings()
 
-    # --- Guard 0: the troop may run the passage by hand --------------------
-    if troop.passage_mode == PASSAGE_MODE_MANUAL:
-        logger.info("Passage mode is manual; the task leaves the passage alone")
-        return
+    # --- Guards 0-2: what keeps the *daily* run in check -------------------
+    if not force:
+        if troop.passage_mode == PASSAGE_MODE_MANUAL:
+            logger.info("Passage mode is manual; the task leaves the passage alone")
+            return
 
     target_year = SchoolYear.next_school_year()
     if not target_year:
         logger.error("No next school year found. Create it first.")
         return
 
-    # --- Guard 1: date gate ------------------------------------------------
-    # Only run on/after the configured passage day for the target year. The
-    # gate is day-granular, so compare dates; the helper is what knows the
-    # passage day is the one in the target year's start calendar year.
-    today = _today()
-    trigger = troop.passage_datetime(target_year).date()
-    if today < trigger:
-        logger.info(
-            f"Passage not due yet (today {today} < {trigger} for "
-            f"school year {target_year.name}); skipping"
-        )
-        return
+    if not force:
+        # Guard 1: date gate. Only run on/after the configured passage day for
+        # the target year; the gate is day-granular, and the helper is what
+        # knows the passage day is the one in that year's start calendar year.
+        today = _today()
+        trigger = troop.passage_datetime(target_year).date()
+        if today < trigger:
+            logger.info(
+                f"Passage not due yet (today {today} < {trigger} for "
+                f"school year {target_year.name}); skipping"
+            )
+            return
 
-    # --- Guard 2: marker gate (idempotency / catch-up) ---------------------
-    if troop.last_passage_school_year == target_year.name:
-        logger.info(
-            f"Passage already applied for school year {target_year.name}; skipping"
-        )
-        return
+        # Guard 2: marker gate (idempotency / catch-up).
+        if troop.last_passage_school_year == target_year.name:
+            logger.info(
+                f"Passage already applied for school year {target_year.name}; skipping"
+            )
+            return
 
     current_year = SchoolYear.current()
 
@@ -148,30 +192,18 @@ def run_passage():
         primary_role=role_anime, status="a"
     ).select_related("primary_role")
 
-    branches = list(Branch.objects.order_by("min_age_dec_31"))
-    if not branches:
-        logger.warning("No branches defined. Passage skipped.")
-        return
-
     promoted = 0
     aged_out = 0
+    flagged = 0
 
     for child in children:
         if not child.birthday:
             logger.warning(f"Skipping {child}: no birthday set")
             continue
 
-        age_at_reference = troop.age_at_reference(child, target_year)
-
-        # Manual override
+        # --- The troop's own decision for this member, if there is one -----
         if child.next_section:
-            Enrollment.objects.update_or_create(
-                user=child,
-                school_year=target_year,
-                defaults={"section": child.next_section},
-            )
-            child.next_section = None
-            child.save(update_fields=["next_section"])
+            _place(child, target_year, child.next_section)
             promoted += 1
             continue
 
@@ -180,52 +212,53 @@ def run_passage():
             school_year=current_year,
         ).select_related("section__branch").first()
 
-        if not current_enrollment:
-            logger.warning(f"Skipping {child}: no enrollment for current year")
+        if not current_enrollment or not current_enrollment.section.branch:
+            logger.warning(f"Skipping {child}: no branch enrolled for the current year")
             continue
 
         current_branch = current_enrollment.section.branch
+        age_at_reference = troop.age_at_reference(child, target_year)
 
-        # Child still fits in current branch → stay in the same section
+        # Still within the branch's age range → they stay where they are. A
+        # branch that declares no maximum age has not said they outgrew it.
         if (
-            current_branch.max_age_dec_31 is not None
-            and age_at_reference <= current_branch.max_age_dec_31
+            current_branch.max_age_dec_31 is None
+            or age_at_reference <= current_branch.max_age_dec_31
         ):
-            Enrollment.objects.update_or_create(
-                user=child,
-                school_year=target_year,
-                defaults={"section": current_enrollment.section},
-            )
+            _place(child, target_year, current_enrollment.section)
             continue
 
-        # Find the branch matching the child's age
-        target_branch = None
-        for branch in branches:
-            if branch.min_age_dec_31 is not None and branch.max_age_dec_31 is not None:
-                if branch.min_age_dec_31 <= age_at_reference <= branch.max_age_dec_31:
-                    target_branch = branch
-                    break
+        next_branch = current_branch.promotes_to
+        if next_branch is None:
+            if not current_branch.is_top:
+                _flag(child, Person.PassageReview.NO_NEXT_BRANCH)
+                flagged += 1
+                logger.warning(f"{child}: {current_branch} has no next branch")
+                continue
 
-        if target_branch is None:
-            # Child exceeds all branches → age out to Animateur
+            if not troop.top_branch_graduates_become_leaders:
+                _flag(child, Person.PassageReview.GRADUATION)
+                flagged += 1
+                logger.info(f"{child} graduated from {current_branch}; flagged")
+                continue
+
+            # Out of the ladder for good: animators are no longer billed as
+            # part of a household, so the parent links go too.
             child.primary_role = role_animateur
             child.save(update_fields=["primary_role"])
             ParentChild.objects.filter(child=child).delete()
             aged_out += 1
-            logger.info(f"{child} aged out → Animateur")
+            logger.info(f"{child} graduated → Animateur")
             continue
 
-        # Assign the alphabetically first section in the target branch
-        target_section = Section.objects.filter(branch=target_branch).order_by("name").first()
-        if not target_section:
-            logger.warning(f"No section found for branch {target_branch}")
+        target_section = next_branch.section_for(child.sex)
+        if target_section is None:
+            _flag(child, Person.PassageReview.NO_SECTION)
+            flagged += 1
+            logger.warning(f"{child}: no {next_branch} section suits them")
             continue
 
-        Enrollment.objects.update_or_create(
-            user=child,
-            school_year=target_year,
-            defaults={"section": target_section},
-        )
+        _place(child, target_year, target_section)
         promoted += 1
         logger.info(f"{child} → {target_section}")
 
@@ -233,8 +266,11 @@ def run_passage():
     troop.last_passage_school_year = target_year.name
     troop.save(update_fields=["last_passage_school_year"])
 
-    logger.info(f"Passage complete: {promoted} promoted, {aged_out} aged out")
-    return {"promoted": promoted, "aged_out": aged_out}
+    logger.info(
+        f"Passage complete: {promoted} promoted, {aged_out} graduated, "
+        f"{flagged} flagged for review"
+    )
+    return {"promoted": promoted, "aged_out": aged_out, "flagged": flagged}
 
 
 @shared_task(name="notify_upcoming_deletion")

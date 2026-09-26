@@ -82,6 +82,7 @@
                                     <div class="dropdown-menu dropdown-menu-dark">
                                         {% if user.is_staff %}
                                             <a class="dropdown-item" href="{% url 'members:admin_list' %}">{% trans "Member management" %}</a>
+                                            <a class="dropdown-item" href="{% url 'members:passage' %}">{% trans "Section passage" %}</a>
                                             <a class="dropdown-item" href="{% url 'members:troop_settings' %}">{% trans "Settings" %}</a>
                                         {% endif %}
                                         {% if user_is_tresorier and fees_enabled %}

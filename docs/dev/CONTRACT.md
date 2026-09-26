@@ -123,7 +123,8 @@ set: the defaults are what a troop that has configured nothing gets.
 | `year_start_month`, `year_start_day` | First day of the scout year (default 1 August). Used when a `SchoolYear` row is created and when `create_year_task` decides which year "today" belongs to. |
 | `age_reference_month`, `age_reference_day` | The day a member's age is measured on (default 31 December). Read through `TroopSettings.age_at_reference`, which the passage task, the member list's branch check and `Person.age_on_dec_31` all share. The `Branch.min_age_dec_31`/`max_age_dec_31` columns keep names that predate this setting; they mean "age at the reference day". |
 | `passage_month`, `passage_day` | The day the section passage falls due (default 1 May), i.e. in the *start* calendar year of the school year it prepares. |
-| `passage_mode` | `auto` (default) runs `run_passage` on that day; `manual` switches the automatic run off so the passage is done by hand. |
+| `passage_mode` | `auto` (default) runs `run_passage` on that day; `manual` switches the automatic run off and leaves it to the staff button on `/users/passage`. Either way the button runs the same code, with the guards skipped. |
+| `top_branch_graduates_become_leaders` | `true` (default): members who leave the last branch become animators. `false`: they are flagged for review instead, and nothing about them is changed until staff decide. |
 | `archive_retention_years` | How long an archived member is kept before `delete_archived_users` may discard them (default 5). `notify_upcoming_deletion` warns a month before. The unit is 365-day years, not calendar years. |
 
 These six fields are read only through the `TroopSettings` calendar helpers —
@@ -134,6 +135,30 @@ than re-deriving a date from the month/day pair, so that changing a calendar
 setting moves every calculation with it. The age reference day is pinned to
 whichever calendar year places it *inside* the school year, so 31 December means
 31 December of a September-starting year, not of the year before it.
+
+### The branch ladder
+
+`Branch` carries the shape of a troop's sections, and the passage follows it
+instead of inferring anything from names or ages:
+
+| Field | Purpose |
+| --- | --- |
+| `promotes_to` | The branch a member moves into when they outgrow this one. `null` means the passage cannot follow it. |
+| `is_top` | Marks the last branch of the ladder: members who outgrow it leave it for good. |
+| `min_age_dec_31` / `max_age_dec_31` | Only used to decide *when* someone has outgrown their branch. A branch with no maximum age keeps its members. |
+
+A branch added after the ladder migration starts unlinked, so its members are
+flagged for review rather than moved somewhere arbitrary. Both fields are
+editable on the branch's admin page, which is the only place a troop has to
+touch to reshape the ladder.
+
+When the passage cannot place a member — no next branch, no section that suits
+them, or the last branch with the graduation toggle off — it sets
+`Person.passage_review` with the reason, leaves the member alone, and lists them
+on `/users/passage`. Staff answer the question by setting the member's section
+for the coming year by hand (the "Section <year>" field on the member's admin
+page), which clears the flag, or by fixing the branch and running the passage
+again.
 
 ### Modules
 

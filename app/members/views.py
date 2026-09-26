@@ -33,6 +33,7 @@ from .forms import (
 )
 from .mail import absolute_url, send_templated
 from .models import (
+    PASSAGE_MODE_MANUAL,
     Account,
     Enrollment,
     ImportantDocument,
@@ -42,6 +43,7 @@ from .models import (
     get_registration_admins,
 )
 from .permissions import can_delete_member, get_person, is_htmx
+from .tasks import run_passage
 
 
 class Login(TemplateView):
@@ -970,3 +972,60 @@ class TroopSettingsView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
         return self.render_to_response(
             self.get_context_data(bound_key=key, bound_form=form)
         )
+
+
+class PassageView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
+    """Staff page for the yearly passage: when it runs, and who it could not place.
+
+    The automatic run answers to the troop's calendar and ``passage_mode``; this
+    page is the manual counterpart. Its button calls the very same task the
+    nightly run does, with ``force=True``, so the two cannot drift apart — a
+    forced run skips the guards that exist to stop the *daily* task acting early
+    or twice, and still records the marker so the nightly task will not repeat
+    the work.
+    """
+
+    template_name = "members/passage.html"
+
+    def test_func(self):
+        return self.request.user.is_staff
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        troop = TroopSettings.get_settings()
+        context["target_year"] = SchoolYear.next_school_year()
+        context["automatic"] = troop.passage_mode != PASSAGE_MODE_MANUAL
+        # Formatted here rather than in the template: a date filter cannot be
+        # used inside a blocktranslate block.
+        context["next_due"] = formats.date_format(
+            troop.next_passage_datetime(), "j F Y"
+        )
+        context["last_run_year"] = troop.last_passage_school_year
+        context["flagged"] = Person.objects.exclude(passage_review="").order_by(
+            "last_name", "first_name"
+        )
+        return context
+
+    def post(self, request, *args, **kwargs):
+        result = run_passage(force=True)
+        if result is None:
+            messages.error(
+                request,
+                _(
+                    "The passage did not run: there is no coming school year yet."
+                ),
+            )
+        else:
+            messages.success(
+                request,
+                _(
+                    "Passage done: %(promoted)s placed, %(graduated)s graduated, "
+                    "%(flagged)s waiting for a decision."
+                )
+                % {
+                    "promoted": result["promoted"],
+                    "graduated": result["aged_out"],
+                    "flagged": result["flagged"],
+                },
+            )
+        return redirect("members:passage")

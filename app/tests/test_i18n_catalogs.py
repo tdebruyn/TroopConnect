@@ -147,6 +147,45 @@ NEW_STRINGS = [
         "code pays",
         "landcode",
     ),
+    # Section passage: the staff page and the flags it raises.
+    ("Section passage", "Passage de section", "Overgang van afdeling"),
+    ("Run the passage now", "Lancer le passage", "overgang uitvoeren"),
+    ("Waiting for a decision", "attente d'une décision", "Wacht op een beslissing"),
+    ("Nobody is waiting for a decision.", "Personne", "Niemand"),
+    ("To review", "examiner", "bekijken"),
+    (
+        "The passage did not run: there is no coming school year yet.",
+        "année scolaire à venir",
+        "komende scoutjaar",
+    ),
+    (
+        "Passage done: %(promoted)s placed, %(graduated)s graduated, "
+        "%(flagged)s waiting for a decision.",
+        "Passage effectué",
+        "Overgang uitgevoerd",
+    ),
+    ("No section fits — choose one", "Aucune section", "Geen enkele sectie"),
+    (
+        "The branch has no next branch set",
+        "branche suivante",
+        "volgende afdeling",
+    ),
+    (
+        "Leaving the last branch — decide what comes next",
+        "dernière branche",
+        "laatste afdeling",
+    ),
+    (
+        "Members who leave the last branch become animators. Turn this off to "
+        "be asked about each of them instead.",
+        "deviennent animateurs",
+        "worden animator",
+    ),
+    (
+        "The section passage is waiting for a decision: %(reason)s",
+        "attend une décision",
+        "wacht op een beslissing",
+    ),
 ]
 
 

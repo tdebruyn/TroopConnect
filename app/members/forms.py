@@ -203,6 +203,11 @@ class AdminUserUpdateForm(forms.ModelForm):
                     school_year=self.next_year,
                     defaults={"section": next_section},
                 )
+                # Choosing their section by hand is exactly the decision the
+                # passage was asking for, so the flag it left is answered.
+                if person.passage_review:
+                    person.passage_review = ""
+                    person.save(update_fields=["passage_review"])
             elif self.next_year:
                 # Remove enrollment if section is cleared
                 Enrollment.objects.filter(
@@ -737,6 +742,7 @@ class CalendarSettingsForm(forms.ModelForm):
             "passage_month",
             "passage_day",
             "passage_mode",
+            "top_branch_graduates_become_leaders",
             "archive_retention_years",
         )
         labels = {
@@ -747,6 +753,9 @@ class CalendarSettingsForm(forms.ModelForm):
             "passage_month": _("Section passage — month"),
             "passage_day": _("Section passage — day"),
             "passage_mode": _("Section passage runs"),
+            "top_branch_graduates_become_leaders": _(
+                "Members leaving the last branch become animators"
+            ),
             "archive_retention_years": _("Keep archived members for (years)"),
         }
         help_texts = {

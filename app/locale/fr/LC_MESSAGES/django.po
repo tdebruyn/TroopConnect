@@ -2548,3 +2548,131 @@ msgstr ""
 #~ msgid "Languages shown to users in the site language selector."
 #~ msgstr ""
 #~ "Langues proposées aux utilisateurs dans le sélecteur de langue du site."
+
+# --- Section passage: the configurable branch ladder ---
+# Added by hand; covered by tests/test_i18n_catalogs.py.
+#: members/templates/members/passage.html
+msgid "Section passage"
+msgstr "Passage de section"
+
+#: members/templates/members/passage.html
+msgid "Move members into their section for the coming year."
+msgstr "Placer les membres dans leur section pour l'année à venir."
+
+#: members/templates/members/passage.html
+msgid "Coming school year"
+msgstr "Année scolaire à venir"
+
+#: members/templates/members/passage.html
+msgid "Not created yet"
+msgstr "Pas encore créée"
+
+#: members/templates/members/passage.html
+msgid "Automatic run"
+msgstr "Exécution automatique"
+
+#: members/templates/members/passage.html
+msgid "On"
+msgstr "Activée"
+
+#: members/templates/members/passage.html
+msgid "Off"
+msgstr "Désactivée"
+
+#: members/templates/members/passage.html
+#, python-format
+msgid "Due on %(date)s"
+msgstr "Prévue le %(date)s"
+
+#: members/templates/members/passage.html
+msgid "Last run prepared"
+msgstr "Dernière préparation"
+
+#: members/templates/members/passage.html
+msgid "Never"
+msgstr "Jamais"
+
+#: members/templates/members/passage.html
+msgid "The passage places every participant in their next section. Running it "
+"again is safe: members already placed stay where they are, and the choices "
+"made by hand are kept."
+msgstr "Le passage de section place chaque animé dans sa section suivante. Le relancer ne pose aucun problème : les membres déjà placés restent où ils sont et les choix faits à la main sont conservés."
+
+#: members/templates/members/passage.html
+msgid "Run the passage now"
+msgstr "Lancer le passage maintenant"
+
+#: members/templates/members/passage.html
+msgid "Waiting for a decision"
+msgstr "En attente d'une décision"
+
+#: members/templates/members/passage.html
+msgid "The passage could not place these members on its own. Give each one a "
+"section for the coming year, or fix their branch, then run the passage "
+"again."
+msgstr "Le passage n'a pas pu placer ces membres automatiquement. Attribuez à chacun une section pour l'année à venir, ou corrigez leur branche, puis relancez le passage."
+
+#: members/templates/members/passage.html
+msgid "Reason"
+msgstr "Raison"
+
+#: members/templates/members/passage.html
+msgid "Open"
+msgstr "Ouvrir"
+
+#: members/templates/members/passage.html
+msgid "Nobody is waiting for a decision."
+msgstr "Personne n'attend de décision."
+
+#: members/views.py
+msgid "The passage did not run: there is no coming school year yet."
+msgstr "Le passage n'a pas été lancé : l'année scolaire à venir n'existe pas encore."
+
+#: members/views.py
+#, python-format
+msgid "Passage done: %(promoted)s placed, %(graduated)s graduated, %(flagged)s "
+"waiting for a decision."
+msgstr "Passage effectué : %(promoted)s placés, %(graduated)s sortis, %(flagged)s en attente d'une décision."
+
+#: members/models.py
+msgid "No section fits — choose one"
+msgstr "Aucune section ne convient — à choisir"
+
+#: members/models.py
+msgid "The branch has no next branch set"
+msgstr "La branche n'a pas de branche suivante"
+
+#: members/models.py
+msgid "Leaving the last branch — decide what comes next"
+msgstr "Quitte la dernière branche — à décider"
+
+#: members/models.py
+msgid "Set by the passage when it cannot place a member on its own; cleared as "
+"soon as one is placed."
+msgstr "Placé par le passage lorsqu'il ne peut pas attribuer un membre automatiquement ; effacé dès qu'un membre est placé."
+
+#: members/models.py
+msgid "The branch members move into when they outgrow this one."
+msgstr "La branche vers laquelle les membres passent lorsqu'ils dépassent celle-ci."
+
+#: members/models.py
+msgid "The last branch of the ladder: members who outgrow it leave it for good."
+msgstr "La dernière branche de l'échelle : les membres qui la dépassent la quittent définitivement."
+
+#: members/models.py
+msgid "Members who leave the last branch become animators. Turn this off to be "
+"asked about each of them instead."
+msgstr "Les membres qui quittent la dernière branche deviennent animateurs. Désactivez cette option pour être consulté pour chacun d'eux."
+
+#: members/forms.py
+msgid "Members leaving the last branch become animators"
+msgstr "Les membres quittant la dernière branche deviennent animateurs"
+
+#: members/templates/members/admin_list.html
+msgid "To review"
+msgstr "À examiner"
+
+#: members/templates/members/admin_update.html
+#, python-format
+msgid "The section passage is waiting for a decision: %(reason)s"
+msgstr "Le passage de section attend une décision : %(reason)s"

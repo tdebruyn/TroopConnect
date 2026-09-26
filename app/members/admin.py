@@ -132,7 +132,9 @@ class SectionAdmin(TranslationAdmin):
 
 @admin.register(Branch)
 class BranchAdmin(TranslationAdmin):
-    list_display = ("name",)
+    # `promotes_to` / `is_top` are the ladder the passage walks: the columns are
+    # here so a troop can see and change its shape without reading the code.
+    list_display = ("name", "min_age_dec_31", "max_age_dec_31", "promotes_to", "is_top")
     search_fields = ("name",)
 
 
@@ -193,6 +195,7 @@ class TroopSettingsAdmin(TranslationAdmin):
                     "passage_month",
                     "passage_day",
                     "passage_mode",
+                    "top_branch_graduates_become_leaders",
                     "archive_retention_years",
                 )
             },

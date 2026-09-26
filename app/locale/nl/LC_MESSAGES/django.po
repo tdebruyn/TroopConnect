@@ -2545,3 +2545,131 @@ msgstr ""
 #~ msgstr ""
 #~ "Talen die beschikbaar zijn voor gebruikers in de taalkiezer van de "
 #~ "website."
+
+# --- Section passage: the configurable branch ladder ---
+# Added by hand; covered by tests/test_i18n_catalogs.py.
+#: members/templates/members/passage.html
+msgid "Section passage"
+msgstr "Overgang van afdeling"
+
+#: members/templates/members/passage.html
+msgid "Move members into their section for the coming year."
+msgstr "Zet de leden in hun sectie voor het komende jaar."
+
+#: members/templates/members/passage.html
+msgid "Coming school year"
+msgstr "Komend scoutjaar"
+
+#: members/templates/members/passage.html
+msgid "Not created yet"
+msgstr "Nog niet aangemaakt"
+
+#: members/templates/members/passage.html
+msgid "Automatic run"
+msgstr "Automatische uitvoering"
+
+#: members/templates/members/passage.html
+msgid "On"
+msgstr "Aan"
+
+#: members/templates/members/passage.html
+msgid "Off"
+msgstr "Uit"
+
+#: members/templates/members/passage.html
+#, python-format
+msgid "Due on %(date)s"
+msgstr "Voorzien op %(date)s"
+
+#: members/templates/members/passage.html
+msgid "Last run prepared"
+msgstr "Laatste voorbereiding"
+
+#: members/templates/members/passage.html
+msgid "Never"
+msgstr "Nooit"
+
+#: members/templates/members/passage.html
+msgid "The passage places every participant in their next section. Running it "
+"again is safe: members already placed stay where they are, and the choices "
+"made by hand are kept."
+msgstr "De overgang plaatst elk lid in de volgende sectie. Opnieuw uitvoeren is veilig: leden die al geplaatst zijn blijven staan en handmatige keuzes blijven behouden."
+
+#: members/templates/members/passage.html
+msgid "Run the passage now"
+msgstr "Nu de overgang uitvoeren"
+
+#: members/templates/members/passage.html
+msgid "Waiting for a decision"
+msgstr "Wacht op een beslissing"
+
+#: members/templates/members/passage.html
+msgid "The passage could not place these members on its own. Give each one a "
+"section for the coming year, or fix their branch, then run the passage "
+"again."
+msgstr "De overgang kon deze leden niet automatisch plaatsen. Geef elk een sectie voor het komende jaar, of corrigeer hun afdeling, en voer de overgang opnieuw uit."
+
+#: members/templates/members/passage.html
+msgid "Reason"
+msgstr "Reden"
+
+#: members/templates/members/passage.html
+msgid "Open"
+msgstr "Openen"
+
+#: members/templates/members/passage.html
+msgid "Nobody is waiting for a decision."
+msgstr "Niemand wacht op een beslissing."
+
+#: members/views.py
+msgid "The passage did not run: there is no coming school year yet."
+msgstr "De overgang is niet uitgevoerd: het komende scoutjaar bestaat nog niet."
+
+#: members/views.py
+#, python-format
+msgid "Passage done: %(promoted)s placed, %(graduated)s graduated, %(flagged)s "
+"waiting for a decision."
+msgstr "Overgang uitgevoerd: %(promoted)s geplaatst, %(graduated)s uitgestroomd, %(flagged)s wachten op een beslissing."
+
+#: members/models.py
+msgid "No section fits — choose one"
+msgstr "Geen enkele sectie past — kies er een"
+
+#: members/models.py
+msgid "The branch has no next branch set"
+msgstr "De afdeling heeft geen volgende afdeling"
+
+#: members/models.py
+msgid "Leaving the last branch — decide what comes next"
+msgstr "Verlaat de laatste afdeling — te beslissen"
+
+#: members/models.py
+msgid "Set by the passage when it cannot place a member on its own; cleared as "
+"soon as one is placed."
+msgstr "Ingesteld door de overgang wanneer een lid niet automatisch geplaatst kan worden; gewist zodra een lid geplaatst is."
+
+#: members/models.py
+msgid "The branch members move into when they outgrow this one."
+msgstr "De afdeling waar leden naartoe gaan als ze deze ontgroeien."
+
+#: members/models.py
+msgid "The last branch of the ladder: members who outgrow it leave it for good."
+msgstr "De laatste afdeling van de ladder: leden die ze ontgroeien verlaten ze definitief."
+
+#: members/models.py
+msgid "Members who leave the last branch become animators. Turn this off to be "
+"asked about each of them instead."
+msgstr "Leden die de laatste afdeling verlaten worden animator. Schakel dit uit om voor elk van hen bevraagd te worden."
+
+#: members/forms.py
+msgid "Members leaving the last branch become animators"
+msgstr "Leden die de laatste afdeling verlaten worden animator"
+
+#: members/templates/members/admin_list.html
+msgid "To review"
+msgstr "Te bekijken"
+
+#: members/templates/members/admin_update.html
+#, python-format
+msgid "The section passage is waiting for a decision: %(reason)s"
+msgstr "De overgang wacht op een beslissing: %(reason)s"

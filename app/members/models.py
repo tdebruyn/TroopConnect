@@ -179,6 +179,24 @@ class Person(models.Model):
         help_text=_("Manual override for passage: section assigned the following year"),
     )
 
+    class PassageReview(models.TextChoices):
+        """Why the passage could not place this member automatically."""
+
+        NO_SECTION = "no_section", _("No section fits — choose one")
+        NO_NEXT_BRANCH = "no_next_branch", _("The branch has no next branch set")
+        GRADUATION = "graduation", _("Leaving the last branch — decide what comes next")
+
+    passage_review = models.CharField(
+        max_length=20,
+        choices=PassageReview.choices,
+        blank=True,
+        default="",
+        help_text=_(
+            "Set by the passage when it cannot place a member on its own; "
+            "cleared as soon as one is placed."
+        ),
+    )
+
     parents = models.ManyToManyField(
         "self",
         through="ParentChild",
@@ -738,12 +756,42 @@ class Branch(models.Model):
         ),
     )
 
+    # The passage follows this link rather than an age ladder, so a troop is
+    # free to order, rename or fork its branches however it likes. Both fields
+    # are set for the ladder a troop already had by the migration that
+    # introduces them; a branch added afterwards starts unlinked (and its
+    # members are flagged for review rather than moved somewhere arbitrary).
+    promotes_to = models.ForeignKey(
+        "self",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="promoted_from",
+        help_text=_("The branch members move into when they outgrow this one."),
+    )
+    is_top = models.BooleanField(
+        default=False,
+        help_text=_(
+            "The last branch of the ladder: members who outgrow it leave it for good."
+        ),
+    )
+
     def __str__(self):
         return _("%(name)s (%(min)s-%(max)s years old)") % {
             "name": self.name,
             "min": self.min_age_dec_31,
             "max": self.max_age_dec_31,
         }
+
+    def section_for(self, sex):
+        """The section of this branch to place someone of ``sex`` in, or None.
+
+        None means nobody in this branch can take them: every section it has is
+        meant for other people.
+        """
+        return (
+            Section.compatible_with(sex).filter(branch=self).order_by("name").first()
+        )
 
 
 class Section(models.Model):
@@ -758,6 +806,28 @@ class Section(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.branch})"
+
+    @classmethod
+    def compatible_with(cls, sex):
+        """The sections open to someone of ``sex``.
+
+        A section that declares BOTH — or that declares nothing at all, which
+        is the other way a troop says "this one is mixed" — takes anyone. A
+        section declaring a sex takes only that one, and a member whose own sex
+        is unknown is only ever placed in a mixed section.
+
+        A classmethod rather than a queryset method on purpose: modeltranslation
+        replaces ``Section.objects`` with its own manager, so anything hanging
+        off the manager itself would not survive.
+        """
+        mixed = (
+            models.Q(sex__isnull=True)
+            | models.Q(sex="")
+            | models.Q(sex=cls.Sex.BOTH)
+        )
+        if sex:
+            return cls.objects.filter(mixed | models.Q(sex=sex))
+        return cls.objects.filter(mixed)
 
 
 class Enrollment(models.Model):
@@ -909,6 +979,18 @@ class TroopSettings(models.Model):
         help_text=_(
             "Automatic runs the passage on the date above; manual leaves it to "
             "whoever presses the button."
+        ),
+    )
+
+    # What happens to members who leave the last branch. Becoming an animator
+    # is right for a troop whose oldest members routinely stay on as staff;
+    # a troop that would rather look at each one turns this off and gets them
+    # flagged for review instead.
+    top_branch_graduates_become_leaders = models.BooleanField(
+        default=True,
+        help_text=_(
+            "Members who leave the last branch become animators. Turn this off "
+            "to be asked about each of them instead."
         ),
     )
 

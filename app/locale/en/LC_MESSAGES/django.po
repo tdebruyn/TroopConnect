@@ -2393,3 +2393,131 @@ msgid ""
 "Best regards,\n"
 "The treasurer"
 msgstr ""
+
+# --- Section passage: the configurable branch ladder ---
+# Added by hand; covered by tests/test_i18n_catalogs.py.
+#: members/templates/members/passage.html
+msgid "Section passage"
+msgstr ""
+
+#: members/templates/members/passage.html
+msgid "Move members into their section for the coming year."
+msgstr ""
+
+#: members/templates/members/passage.html
+msgid "Coming school year"
+msgstr ""
+
+#: members/templates/members/passage.html
+msgid "Not created yet"
+msgstr ""
+
+#: members/templates/members/passage.html
+msgid "Automatic run"
+msgstr ""
+
+#: members/templates/members/passage.html
+msgid "On"
+msgstr ""
+
+#: members/templates/members/passage.html
+msgid "Off"
+msgstr ""
+
+#: members/templates/members/passage.html
+#, python-format
+msgid "Due on %(date)s"
+msgstr ""
+
+#: members/templates/members/passage.html
+msgid "Last run prepared"
+msgstr ""
+
+#: members/templates/members/passage.html
+msgid "Never"
+msgstr ""
+
+#: members/templates/members/passage.html
+msgid "The passage places every participant in their next section. Running it "
+"again is safe: members already placed stay where they are, and the choices "
+"made by hand are kept."
+msgstr ""
+
+#: members/templates/members/passage.html
+msgid "Run the passage now"
+msgstr ""
+
+#: members/templates/members/passage.html
+msgid "Waiting for a decision"
+msgstr ""
+
+#: members/templates/members/passage.html
+msgid "The passage could not place these members on its own. Give each one a "
+"section for the coming year, or fix their branch, then run the passage "
+"again."
+msgstr ""
+
+#: members/templates/members/passage.html
+msgid "Reason"
+msgstr ""
+
+#: members/templates/members/passage.html
+msgid "Open"
+msgstr ""
+
+#: members/templates/members/passage.html
+msgid "Nobody is waiting for a decision."
+msgstr ""
+
+#: members/views.py
+msgid "The passage did not run: there is no coming school year yet."
+msgstr ""
+
+#: members/views.py
+#, python-format
+msgid "Passage done: %(promoted)s placed, %(graduated)s graduated, %(flagged)s "
+"waiting for a decision."
+msgstr ""
+
+#: members/models.py
+msgid "No section fits — choose one"
+msgstr ""
+
+#: members/models.py
+msgid "The branch has no next branch set"
+msgstr ""
+
+#: members/models.py
+msgid "Leaving the last branch — decide what comes next"
+msgstr ""
+
+#: members/models.py
+msgid "Set by the passage when it cannot place a member on its own; cleared as "
+"soon as one is placed."
+msgstr ""
+
+#: members/models.py
+msgid "The branch members move into when they outgrow this one."
+msgstr ""
+
+#: members/models.py
+msgid "The last branch of the ladder: members who outgrow it leave it for good."
+msgstr ""
+
+#: members/models.py
+msgid "Members who leave the last branch become animators. Turn this off to be "
+"asked about each of them instead."
+msgstr ""
+
+#: members/forms.py
+msgid "Members leaving the last branch become animators"
+msgstr ""
+
+#: members/templates/members/admin_list.html
+msgid "To review"
+msgstr ""
+
+#: members/templates/members/admin_update.html
+#, python-format
+msgid "The section passage is waiting for a decision: %(reason)s"
+msgstr ""

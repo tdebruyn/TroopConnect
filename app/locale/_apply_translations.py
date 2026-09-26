@@ -730,6 +730,123 @@ TRANSLATIONS = {
         "Elk document heeft een ontvanger.",
     ),
 
+    # --- Section passage: the configurable branch ladder ---
+    'Section passage': (
+        'Passage de section',
+        'Overgang van afdeling',
+    ),
+    'Move members into their section for the coming year.': (
+        "Placer les membres dans leur section pour l'année à venir.",
+        'Zet de leden in hun sectie voor het komende jaar.',
+    ),
+    'Coming school year': (
+        'Année scolaire à venir',
+        'Komend scoutjaar',
+    ),
+    'Not created yet': (
+        'Pas encore créée',
+        'Nog niet aangemaakt',
+    ),
+    'Automatic run': (
+        'Exécution automatique',
+        'Automatische uitvoering',
+    ),
+    'On': (
+        'Activée',
+        'Aan',
+    ),
+    'Off': (
+        'Désactivée',
+        'Uit',
+    ),
+    'Due on %(date)s': (
+        'Prévue le %(date)s',
+        'Voorzien op %(date)s',
+    ),
+    'Last run prepared': (
+        'Dernière préparation',
+        'Laatste voorbereiding',
+    ),
+    'Never': (
+        'Jamais',
+        'Nooit',
+    ),
+    'The passage places every participant in their next section. Running it again is safe: members already placed stay where they are, and the choices made by hand are kept.': (
+        'Le passage de section place chaque animé dans sa section suivante. Le relancer ne pose aucun problème : les membres déjà placés restent où ils sont et les choix faits à la main sont conservés.',
+        'De overgang plaatst elk lid in de volgende sectie. Opnieuw uitvoeren is veilig: leden die al geplaatst zijn blijven staan en handmatige keuzes blijven behouden.',
+    ),
+    'Run the passage now': (
+        'Lancer le passage maintenant',
+        'Nu de overgang uitvoeren',
+    ),
+    'Waiting for a decision': (
+        "En attente d'une décision",
+        'Wacht op een beslissing',
+    ),
+    'The passage could not place these members on its own. Give each one a section for the coming year, or fix their branch, then run the passage again.': (
+        "Le passage n'a pas pu placer ces membres automatiquement. Attribuez à chacun une section pour l'année à venir, ou corrigez leur branche, puis relancez le passage.",
+        'De overgang kon deze leden niet automatisch plaatsen. Geef elk een sectie voor het komende jaar, of corrigeer hun afdeling, en voer de overgang opnieuw uit.',
+    ),
+    'Reason': (
+        'Raison',
+        'Reden',
+    ),
+    'Open': (
+        'Ouvrir',
+        'Openen',
+    ),
+    'Nobody is waiting for a decision.': (
+        "Personne n'attend de décision.",
+        'Niemand wacht op een beslissing.',
+    ),
+    'The passage did not run: there is no coming school year yet.': (
+        "Le passage n'a pas été lancé : l'année scolaire à venir n'existe pas encore.",
+        'De overgang is niet uitgevoerd: het komende scoutjaar bestaat nog niet.',
+    ),
+    'Passage done: %(promoted)s placed, %(graduated)s graduated, %(flagged)s waiting for a decision.': (
+        "Passage effectué : %(promoted)s placés, %(graduated)s sortis, %(flagged)s en attente d'une décision.",
+        'Overgang uitgevoerd: %(promoted)s geplaatst, %(graduated)s uitgestroomd, %(flagged)s wachten op een beslissing.',
+    ),
+    'No section fits — choose one': (
+        'Aucune section ne convient — à choisir',
+        'Geen enkele sectie past — kies er een',
+    ),
+    'The branch has no next branch set': (
+        "La branche n'a pas de branche suivante",
+        'De afdeling heeft geen volgende afdeling',
+    ),
+    'Leaving the last branch — decide what comes next': (
+        'Quitte la dernière branche — à décider',
+        'Verlaat de laatste afdeling — te beslissen',
+    ),
+    'Set by the passage when it cannot place a member on its own; cleared as soon as one is placed.': (
+        "Placé par le passage lorsqu'il ne peut pas attribuer un membre automatiquement ; effacé dès qu'un membre est placé.",
+        'Ingesteld door de overgang wanneer een lid niet automatisch geplaatst kan worden; gewist zodra een lid geplaatst is.',
+    ),
+    'The branch members move into when they outgrow this one.': (
+        "La branche vers laquelle les membres passent lorsqu'ils dépassent celle-ci.",
+        'De afdeling waar leden naartoe gaan als ze deze ontgroeien.',
+    ),
+    'The last branch of the ladder: members who outgrow it leave it for good.': (
+        "La dernière branche de l'échelle : les membres qui la dépassent la quittent définitivement.",
+        'De laatste afdeling van de ladder: leden die ze ontgroeien verlaten ze definitief.',
+    ),
+    'Members who leave the last branch become animators. Turn this off to be asked about each of them instead.': (
+        "Les membres qui quittent la dernière branche deviennent animateurs. Désactivez cette option pour être consulté pour chacun d'eux.",
+        'Leden die de laatste afdeling verlaten worden animator. Schakel dit uit om voor elk van hen bevraagd te worden.',
+    ),
+    'Members leaving the last branch become animators': (
+        'Les membres quittant la dernière branche deviennent animateurs',
+        'Leden die de laatste afdeling verlaten worden animator',
+    ),
+    'To review': (
+        'À examiner',
+        'Te bekijken',
+    ),
+    'The section passage is waiting for a decision: %(reason)s': (
+        'Le passage de section attend une décision : %(reason)s',
+        'De overgang wacht op een beslissing: %(reason)s',
+    ),
 }
 
 
