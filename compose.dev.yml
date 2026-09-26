@@ -1,0 +1,62 @@
+# Development overlay. Builds the image from source instead of pulling a
+# release, mounts the working copy, and runs Django's development server.
+#
+#   cp .env.example .env
+#   docker compose -f compose.yml -f compose.dev.yml up --build
+#
+# Then http://localhost:8000. Caddy is not started (see the profile at the
+# bottom), because the web service publishes its own port over plain HTTP.
+#
+# scripts/dev-*.sh wrap this for you.
+
+# Tagged separately from the release image so a local build never shadows
+# ghcr.io/tdebruyn/troopconnect.
+x-dev: &dev
+  image: troopconnect-dev:local
+  build:
+    context: .
+    dockerfile: app/Dockerfile.dev
+
+services:
+  init:
+    <<: *dev
+
+  web:
+    <<: *dev
+    command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+    environment:
+      DJANGO_DEBUG: "1"
+      SITE_DOMAIN: localhost
+      EMAIL_URL: console://
+      DEFAULT_FROM_EMAIL: dev@localhost
+      ACME_EMAIL: dev@localhost
+    ports:
+      - "8000:8000"
+    volumes:
+      # The working copy, over the image's copy of it.
+      - ./app:/app
+
+  worker:
+    <<: *dev
+    volumes:
+      - ./app:/app
+
+  beat:
+    <<: *dev
+    volumes:
+      - ./app:/app
+
+  db:
+    # Published so psql and GUI clients can reach it.
+    ports:
+      - "5432:5432"
+
+  redis:
+    ports:
+      - "6379:6379"
+
+  caddy:
+    # Not needed locally, and it would want ports 80/443 and a real
+    # certificate for SITE_DOMAIN. Start it explicitly with
+    # `--profile caddy` if you want to exercise the proxy.
+    profiles: ["caddy"]

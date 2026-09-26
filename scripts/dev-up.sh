@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Start the local TroopConnect backend (postgres, redis, web, celery, celery-beat)
+# Start the local TroopConnect backend (db, redis, web, worker, beat)
 # and wait until it is actually serving requests.
 #
 # Usage:
@@ -9,14 +9,14 @@
 #   scripts/dev-up.sh --foreground run attached, Ctrl-C to stop
 #
 # Environment overrides:
-#   COMPOSE_FILE   compose file to use (default: docker-compose-local.yml)
+#   COMPOSE_FILE   compose file to use (default: compose.dev.yml)
 #   BASE_URL       URL polled for readiness (default: http://localhost:8000)
 #   START_TIMEOUT  seconds to wait for readiness (default: 90)
 
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-COMPOSE_FILE="${COMPOSE_FILE:-docker-compose-local.yml}"
+COMPOSE_FILE="${COMPOSE_FILE:-compose.dev.yml}"
 BASE_URL="${BASE_URL:-http://localhost:8000}"
 BASE_URL="${BASE_URL%/}"
 START_TIMEOUT="${START_TIMEOUT:-90}"
@@ -28,7 +28,8 @@ case "$COMPOSE_FILE" in
 esac
 # --project-directory follows the compose file so the Docker project (and its
 # ports/volumes) is the same no matter which worktree this script is run from.
-COMPOSE=(docker compose -f "$COMPOSE_PATH" --project-directory "$(dirname "$COMPOSE_PATH")")
+# compose.yml supplies the services; the overlay builds them locally.
+COMPOSE=(docker compose -f "$ROOT_DIR/compose.yml" -f "$COMPOSE_PATH" --project-directory "$ROOT_DIR")
 
 BUILD=0
 RUN_MIGRATIONS=0
@@ -76,8 +77,8 @@ fi
 wait_for_postgres() {
     local deadline=$((SECONDS + START_TIMEOUT))
     printf 'Waiting for postgres'
-    while ! "${COMPOSE[@]}" exec -T postgres pg_isready -q >/dev/null 2>&1; do
-        [ "$SECONDS" -lt "$deadline" ] || { printf '\n'; die "postgres not ready after ${START_TIMEOUT}s"; }
+    while ! "${COMPOSE[@]}" exec -T db pg_isready -q >/dev/null 2>&1; do
+        [ "$SECONDS" -lt "$deadline" ] || { printf '\n'; die "database not ready after ${START_TIMEOUT}s"; }
         printf '.'
         sleep 1
     done

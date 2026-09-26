@@ -1,0 +1,31 @@
+# Non-secret deployment configuration.
+#
+# Every key here becomes an UPPERCASE environment variable in the .env the
+# playbook writes on the server (site_domain -> SITE_DOMAIN). Secrets belong in
+# vault.yml instead -- see clear-vault.yml for the list of keys.
+
+# Domain this instance is served from. Both this and acme_email are required;
+# Django refuses to start without them.
+site_domain: troop.yourdomain.com
+
+# Contact address for Let's Encrypt (used by Caddy and by the mail server).
+acme_email: yourname@yourdomain.com
+
+# Address the troop's email is sent from. Must be one your mail provider lets
+# you send as.
+default_from_email: inscriptions@yourdomain.com
+
+# Where outgoing mail goes. Schemes: smtp://, smtp+tls://, smtp+ssl://,
+# console://.
+email_url: "smtp+tls://user:password@mail.yourdomain.com:587"
+
+# PostgreSQL role the app connects with. The password lives in vault.yml.
+postgres_user: troopconnect
+
+# Mail server hostname, used for its certificate and by the mail forwarder.
+mailserver: mail.yourdomain.com
+
+# Forwarding rules for simple-mail-forwarder: "destination:source".
+smf_config: "yourname@yourdomain.com:youremail@yourmailprovider.com"
+
+ssh_port: 22

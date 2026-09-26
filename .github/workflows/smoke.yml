@@ -1,0 +1,116 @@
+name: smoke
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  smoke:
+    name: Bring the stack up, then restart it
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      # Built rather than pulled, and tagged as the 0.x release compose.yml
+      # asks for when TC_VERSION is unset -- so this has to pass before the
+      # release workflow has ever published an image.
+      - name: Build the image
+        run: |
+          docker build \
+            --file app/Dockerfile.prod \
+            --tag ghcr.io/tdebruyn/troopconnect:0 \
+            --build-arg TC_APP_VERSION=smoke \
+            .
+
+      # Deliberately through .env.example, because that is the documented way
+      # to install an instance: if the file stops working, so does this.
+      - name: Write .env from .env.example
+        run: |
+          cp .env.example .env
+          sed -i \
+            -e 's|^SITE_DOMAIN=.*|SITE_DOMAIN=localhost|' \
+            -e 's|^EMAIL_URL=.*|EMAIL_URL=console://|' \
+            -e 's|^DEFAULT_FROM_EMAIL=.*|DEFAULT_FROM_EMAIL=smoke@example.org|' \
+            -e 's|^ACME_EMAIL=.*|ACME_EMAIL=smoke@example.org|' \
+            .env
+          # POSTGRES_PASSWORD is left unset on purpose: generating it is part
+          # of what this checks.
+
+      - name: Start on empty volumes
+        run: docker compose up --detach
+
+      - name: Wait for /healthz
+        run: |
+          for attempt in $(seq 1 60); do
+            # --insecure because Caddy issues its own certificate for
+            # localhost; the path through the proxy is the one a user takes.
+            if curl --silent --fail --insecure https://localhost/healthz; then
+              echo
+              echo "Ready after ${attempt} attempt(s)."
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "Never became ready. Logs:" >&2
+          docker compose logs >&2
+          exit 1
+
+      - name: The pages answer
+        run: |
+          for path in / /accounts/login/; do
+            code=$(curl --silent --output /dev/null --write-out '%{http_code}' --insecure "https://localhost${path}")
+            echo "${path} -> ${code}"
+            [ "$code" = "200" ] || exit 1
+          done
+
+      - name: The secrets are where they belong
+        run: |
+          docker compose exec -T web cat /data/secrets/secret_key > /dev/null
+
+          mode=$(docker compose exec -T web stat -c '%a' /data/secrets/secret_key)
+          echo "secret_key mode: ${mode}"
+          [ "$mode" = "600" ] || exit 1
+
+          # The database has no use for the key that signs every session, so
+          # it must not be able to see it.
+          if docker compose exec -T db ls /data/secrets > /dev/null 2>&1; then
+            echo "the database container can see the secret key volume" >&2
+            exit 1
+          fi
+
+          docker compose exec -T db cat /data/db-secrets/postgres_password > /dev/null
+          echo "the database sees its own password and nothing else"
+
+      # The point of the volumes: a restart must keep the database it
+      # initialised, the password it was initialised with, and the key that
+      # signs existing sessions.
+      - name: Restart on the existing volumes
+        run: |
+          before=$(docker compose exec -T web cat /data/secrets/secret_key)
+
+          docker compose down
+          docker compose up --detach
+
+          for attempt in $(seq 1 60); do
+            if curl --silent --fail --insecure https://localhost/healthz; then
+              break
+            fi
+            [ "$attempt" -eq 60 ] && { echo "never came back up" >&2; docker compose logs >&2; exit 1; }
+            sleep 5
+          done
+
+          after=$(docker compose exec -T web cat /data/secrets/secret_key)
+          [ "$before" = "$after" ] || { echo "the secret key was regenerated" >&2; exit 1; }
+
+          curl --silent --fail --insecure --output /dev/null https://localhost/
+          echo "Restarted on the same volumes, with the same secrets."
+
+      - name: Logs on failure
+        if: failure()
+        run: docker compose logs --tail 200

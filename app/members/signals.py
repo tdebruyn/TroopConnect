@@ -1,9 +1,8 @@
 from django.conf import settings
-from django.contrib.sites.models import Site
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from post_office import mail
 
+from .mail import absolute_url, send_templated
 from .models import Person, get_registration_admins
 
 
@@ -27,15 +26,14 @@ def notify_admins_on_profile_save(sender, instance, created, **kwargs):
     if not recipients:
         return
 
-    mail.send(
+    send_templated(
         recipients=recipients,
-        sender="MS_M3qCdl@tomctl.be",
         template="new_child_staff",
         # Staff notifications are sent in the site default language.
         language=settings.LANGUAGE_CODE,
         context={
             "first_name": instance.first_name,
             "last_name": instance.last_name,
-            "url": f"{Site.objects.get_current()}/users/adminupdate/{instance.id}",
+            "url": absolute_url(f"/users/adminupdate/{instance.id}"),
         },
     )

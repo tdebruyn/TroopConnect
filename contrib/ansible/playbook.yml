@@ -1,0 +1,30 @@
+- name: Deploy app
+  hosts: all
+  vars_files:
+    - config.yml
+    - vault.yml
+  pre_tasks:
+    # config.yml and vault.yml keys become UPPERCASE environment variables
+    # (site_domain -> SITE_DOMAIN). This is the same file a self-hoster writes
+    # by hand from .env.example.
+    - name: Create .env content from vars
+      set_fact:
+        env_lines: |
+          {% for key, value in vars.items() if key not in ['ansible_facts', 'inventory_hostname', 'group_names', 'groups', 'hostvars', 'play_hosts', 'ansible_playbook_python', 'playbook_dir', 'role_names'] and value is string %}
+          {{ key | upper }}={{ value }}
+          {% endfor %}
+
+    # It lives next to the compose file rather than in /tmp: docker-compose
+    # reads it both for ${...} interpolation and as the container environment,
+    # so it has to still be there when the stack restarts.
+    - name: Write .env on remote
+      ansible.builtin.copy:
+        dest: "{{ project_dir }}/.env"
+        content: "{{ env_lines }}"
+        mode: "0600"
+      no_log: true
+
+  roles:
+    - { role: infra, tags: ["infra"] }
+    - { role: mailforwarder, tags: ["mailforwarder"] }
+    - { role: troopconnect, tags: ["troopconnect"] }

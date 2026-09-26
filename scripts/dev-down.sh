@@ -10,12 +10,12 @@
 # Flags: -v/--volumes, -i/--images, -a/--all, -y/--yes (skip confirmation), -h/--help
 #
 # Environment overrides:
-#   COMPOSE_FILE   compose file to use (default: docker-compose-local.yml)
+#   COMPOSE_FILE   compose file to use (default: compose.dev.yml)
 
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-COMPOSE_FILE="${COMPOSE_FILE:-docker-compose-local.yml}"
+COMPOSE_FILE="${COMPOSE_FILE:-compose.dev.yml}"
 
 # Resolve relative to the repo root, but honour an absolute COMPOSE_FILE.
 case "$COMPOSE_FILE" in
@@ -24,7 +24,8 @@ case "$COMPOSE_FILE" in
 esac
 # --project-directory follows the compose file so the Docker project (and its
 # ports/volumes) is the same no matter which worktree this script is run from.
-COMPOSE=(docker compose -f "$COMPOSE_PATH" --project-directory "$(dirname "$COMPOSE_PATH")")
+# compose.yml supplies the services; the overlay builds them locally.
+COMPOSE=(docker compose -f "$ROOT_DIR/compose.yml" -f "$COMPOSE_PATH" --project-directory "$ROOT_DIR")
 
 VOLUMES=0
 IMAGES=0
@@ -54,7 +55,8 @@ command -v docker >/dev/null 2>&1 || die "docker is not installed or not on PATH
 [ -f "$COMPOSE_PATH" ] || die "compose file not found: $COMPOSE_FILE"
 
 if [ "$VOLUMES" -eq 1 ] && [ "$ASSUME_YES" -eq 0 ]; then
-    say "This deletes the local postgres volume: all local database content is lost."
+    say "This deletes every local volume: the database, uploads, and the"
+    say "generated secrets. All local data is lost."
     printf 'Type "yes" to continue: '
     read -r reply || reply=""
     [ "$reply" = "yes" ] || die "aborted — nothing was stopped"
@@ -67,8 +69,8 @@ say "Stopping backend from ${COMPOSE_FILE}"
 "${COMPOSE[@]}" "${down_args[@]}"
 
 if [ "$IMAGES" -eq 1 ]; then
-    say "Removing the built dev image (troopconnect-dev:latest)"
-    docker image rm troopconnect-dev:latest || say "Image not found, skipping."
+    say "Removing the built dev image (troopconnect-dev:local)"
+    docker image rm troopconnect-dev:local || say "Image not found, skipping."
 fi
 
 say "Backend stopped."

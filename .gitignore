@@ -11,7 +11,6 @@ dump.rdb
 config.yml
 .settings.json
 .env
-Caddyfile
 __pypackages__
 .python-version
 node_modules/
@@ -20,3 +19,6 @@ playwright-report/
 
 # Runtime uploads (user attachments, email attachments)
 app/media/
+# MEDIA_ROOT and STATIC_ROOT (what the media/static volumes are mounted over)
+app/mediafiles/
+app/staticfiles/

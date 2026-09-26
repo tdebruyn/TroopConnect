@@ -1,0 +1,40 @@
+# Caddy configuration for TroopConnect.
+#
+# Caddy substitutes {$SITE_DOMAIN} and {$ACME_EMAIL} from its environment, so
+# this file is identical for every troop. Both are set in .env.
+#
+#   SITE_DOMAIN   the domain this instance is served from; Caddy obtains and
+#                 renews the TLS certificate for it
+#   ACME_EMAIL    where Let's Encrypt sends expiry warnings
+
+{
+	email {$ACME_EMAIL}
+}
+
+{$SITE_DOMAIN} {
+	encode zstd gzip
+
+	log {
+		format console {
+			time_format iso8601
+		}
+	}
+
+	# Uploads and collected static files come straight off their volumes
+	# rather than going through Django.
+	handle_path /static/* {
+		uri strip_prefix /static
+		root * /vol/static
+		file_server
+	}
+
+	handle_path /media/* {
+		uri strip_prefix /media
+		root * /vol/media
+		file_server
+	}
+
+	# Everything else is the application. Caddy passes the original Host
+	# header through and sets X-Forwarded-For/Proto itself.
+	reverse_proxy web:9000
+}

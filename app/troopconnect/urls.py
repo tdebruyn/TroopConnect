@@ -20,7 +20,12 @@ from django.urls import include, path
 from django.views.i18n import set_language
 from django_ses.views import SESEventWebhookView
 
+from troopconnect.health import healthz
+
 urlpatterns = [
+    # No trailing slash: this is aimed at machines, and a redirect would only
+    # give the healthcheck one more thing to follow.
+    path("healthz", healthz, name="healthz"),
     path("i18n/setlang/", set_language, name="set_language"),
     path("admin/ses/", include("django_ses.urls")),
     path("admin/", admin.site.urls),
@@ -29,12 +34,15 @@ urlpatterns = [
     path("messaging/", include("messaging.urls", namespace="messaging")),
     path("finance/", include("finance.urls", namespace="finance")),
     path("attestations/", include("attestations.urls", namespace="attestations")),
-    path("__debug__/", include("debug_toolbar.urls")),
     path(
         "ses/event-webhook/", SESEventWebhookView.as_view(), name="handle-event-webhook"
     ),
     path("accounts/", include("allauth.urls")),
 ]
+
+# django-debug-toolbar is only installed (see settings.DEBUG) in debug mode.
+if "debug_toolbar" in settings.INSTALLED_APPS:
+    urlpatterns += [path("__debug__/", include("debug_toolbar.urls"))]
 
 if getattr(settings, "SERVE_MEDIA_LOCALLY", False):
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

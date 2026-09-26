@@ -5,9 +5,9 @@ the (escaped) msgid text, preserving all comments/flags/references. Re-running
 makemessages later merges cleanly; re-running this reapplies the dict.
 
 Run:
-    docker compose -f docker-compose-local.yml exec -T web \
+    docker compose -f compose.yml -f compose.dev.yml exec -T web \
         env APPLY_LIST=1 python /app/locale/_apply_translations.py   # list keys
-    docker compose -f docker-compose-local.yml exec -T web \
+    docker compose -f compose.yml -f compose.dev.yml exec -T web \
         python /app/locale/_apply_translations.py                    # apply
 """
 import os
@@ -775,7 +775,7 @@ def _rewrite(path, lang):
             meta = {
                 "Language": lang,
                 "Language-Team": f"{lang} <{lang}@li.org>",
-                "Last-Translator": "TroopConnect <noreply@troop.tomctl.be>",
+                "Last-Translator": "TroopConnect",
                 "PO-Revision-Date": "2026-07-24 00:00+0200",
                 "Content-Type": "text/plain; charset=UTF-8",
             }

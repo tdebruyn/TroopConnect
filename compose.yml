@@ -1,0 +1,210 @@
+# TroopConnect.
+#
+# The whole installation is this file and a .env beside it:
+#
+#   cp .env.example .env     # fill in the four required values
+#   docker compose up -d
+#
+# Only `caddy` publishes ports. Every other service is reachable only from the
+# compose network, by service name, so the database and Redis are never
+# exposed to the host or the internet.
+#
+# For development, overlay compose.dev.yml, which builds the image locally:
+#
+#   docker compose -f compose.yml -f compose.dev.yml up --build
+
+# Published by the image workflow. Versions are 0.Y.Z until 1.0, so the default
+# tracks the 0.x line; it becomes 1 at the 1.0 release. Pin an exact release
+# with TC_VERSION=0.4.2.
+x-image: &app-image ghcr.io/tdebruyn/troopconnect:${TC_VERSION:-0}
+
+# Both secrets are read from files rather than from the environment. They live
+# in separate volumes because the database has no business reading the key that
+# signs every session: db_secrets is mounted into the database, app_secrets is
+# not. See app/entrypoint.sh.
+x-secret-paths: &secret-paths
+  SECRET_KEY_FILE: /data/secrets/secret_key
+  POSTGRES_PASSWORD_FILE: /data/db-secrets/postgres_password
+
+services:
+  # Creates the two secrets and exits. The database reads its password from the
+  # file, so it has to exist before either db or the application starts. Safe to
+  # re-run: an existing file is never overwritten.
+  init:
+    image: *app-image
+    restart: "no"
+    env_file:
+      - .env
+    command: ["init-secrets"]
+    environment:
+      <<: *secret-paths
+    volumes:
+      - app_secrets:/data/secrets
+      - db_secrets:/data/db-secrets
+
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-troopconnect}
+      POSTGRES_DB: ${POSTGRES_DB:-troopconnect}
+      # Only the _FILE form: the Postgres image refuses to start if both
+      # POSTGRES_PASSWORD and POSTGRES_PASSWORD_FILE are set.
+      POSTGRES_PASSWORD_FILE: /data/db-secrets/postgres_password
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      # Read-only, and the only secret this container can see.
+      - db_secrets:/data/db-secrets:ro
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U ${POSTGRES_USER:-troopconnect} -d ${POSTGRES_DB:-troopconnect}
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    depends_on:
+      init:
+        condition: service_completed_successfully
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  web:
+    image: *app-image
+    restart: unless-stopped
+    env_file:
+      - .env
+    command:
+      - gunicorn
+      - troopconnect.wsgi:application
+      - --bind=0.0.0.0:9000
+      - --workers=4
+      - --timeout=120
+    environment:
+      <<: *secret-paths
+      POSTGRES_HOST: db
+      POSTGRES_USER: ${POSTGRES_USER:-troopconnect}
+      POSTGRES_DB: ${POSTGRES_DB:-troopconnect}
+      REDIS_URL: redis://redis:6379/0
+      # The web service is the only one that migrates and collects static
+      # files. See app/entrypoint.sh.
+      RUN_MIGRATIONS: "1"
+    volumes:
+      - app_secrets:/data/secrets
+      - db_secrets:/data/db-secrets:ro
+      - media:/app/mediafiles
+      - static:/app/staticfiles
+    healthcheck:
+      # Readiness, not liveness: it answers 503 until the database and the
+      # cache both respond. See app/healthcheck.py.
+      test: ["CMD", "python", "healthcheck.py"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      # The entrypoint waits for the database and runs migrate and collectstatic
+      # before Gunicorn starts; failures in here do not count against it.
+      start_period: 60s
+    depends_on:
+      init:
+        condition: service_completed_successfully
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  worker:
+    image: *app-image
+    restart: unless-stopped
+    env_file:
+      - .env
+    command: ["celery", "-A", "troopconnect", "worker", "-l", "INFO"]
+    environment:
+      <<: *secret-paths
+      POSTGRES_HOST: db
+      POSTGRES_USER: ${POSTGRES_USER:-troopconnect}
+      POSTGRES_DB: ${POSTGRES_DB:-troopconnect}
+      REDIS_URL: redis://redis:6379/0
+    volumes:
+      # Needed to read the attachments on queued mail.
+      - app_secrets:/data/secrets
+      - db_secrets:/data/db-secrets:ro
+      - media:/app/mediafiles
+    depends_on:
+      init:
+        condition: service_completed_successfully
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  beat:
+    image: *app-image
+    restart: unless-stopped
+    env_file:
+      - .env
+    command:
+      - celery
+      - -A
+      - troopconnect
+      - beat
+      - -l
+      - INFO
+      - --scheduler=django_celery_beat.schedulers:DatabaseScheduler
+    environment:
+      <<: *secret-paths
+      POSTGRES_HOST: db
+      POSTGRES_USER: ${POSTGRES_USER:-troopconnect}
+      POSTGRES_DB: ${POSTGRES_DB:-troopconnect}
+      REDIS_URL: redis://redis:6379/0
+    volumes:
+      - app_secrets:/data/secrets
+      - db_secrets:/data/db-secrets:ro
+      - media:/app/mediafiles
+    depends_on:
+      init:
+        condition: service_completed_successfully
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    environment:
+      SITE_DOMAIN: ${SITE_DOMAIN:?SITE_DOMAIN must be set in .env}
+      ACME_EMAIL: ${ACME_EMAIL:?ACME_EMAIL must be set in .env}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - static:/vol/static:ro
+      - media:/vol/media:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      web:
+        condition: service_healthy
+
+volumes:
+  # Database files.
+  db_data:
+  # The Django SECRET_KEY. Mounted into the application services only.
+  app_secrets:
+  # The generated database password. Mounted into db as well, read-only.
+  db_secrets:
+  # User uploads (attachments, photos, generated PDFs).
+  media:
+  # collectstatic output.
+  static:
+  # TLS certificates and Caddy's autosaved configuration.
+  caddy_data:
+  caddy_config:

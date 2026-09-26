@@ -14,12 +14,12 @@
 #   scripts/dev-migrate.sh -- <extra args>    pass extra args to `manage.py migrate`
 #
 # Environment overrides:
-#   COMPOSE_FILE   compose file to use (default: docker-compose-local.yml)
+#   COMPOSE_FILE   compose file to use (default: compose.dev.yml)
 
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-COMPOSE_FILE="${COMPOSE_FILE:-docker-compose-local.yml}"
+COMPOSE_FILE="${COMPOSE_FILE:-compose.dev.yml}"
 
 # Resolve relative to the repo root, but honour an absolute COMPOSE_FILE.
 case "$COMPOSE_FILE" in
@@ -28,8 +28,9 @@ case "$COMPOSE_FILE" in
 esac
 # --project-directory follows the compose file so the Docker project (and its
 # ports/volumes) is the same no matter which worktree this script is run from.
-COMPOSE=(docker compose -f "$COMPOSE_PATH" --project-directory "$(dirname "$COMPOSE_PATH")")
-MANAGE=(uv run /app/manage.py)
+# compose.yml supplies the services; the overlay builds them locally.
+COMPOSE=(docker compose -f "$ROOT_DIR/compose.yml" -f "$COMPOSE_PATH" --project-directory "$ROOT_DIR")
+MANAGE=(python /app/manage.py)
 
 MAKEMIGRATIONS=0
 MAKEMIGRATIONS_APP=""

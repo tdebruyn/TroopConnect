@@ -1,19 +1,23 @@
 FROM python:3.13-alpine
 
+# Which release this is, supplied by the image workflow and baked in so a
+# running container can be asked. "dev" for a local build. Read by
+# troopconnect.settings as TC_APP_VERSION.
+ARG TC_APP_VERSION=dev
+ENV TC_APP_VERSION=$TC_APP_VERSION
+
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV DJANGO_SETTINGS_MODULE=troopconnect.settings
-ENV DEBUG=False
 
 # Set work directory
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    libpq-dev \
-    && rm -rf /var/lib/apt/lists/*
+# System dependencies. This is an Alpine base, so packages come from apk, and
+# psycopg's wheel (psycopg-binary) already bundles libpq. gettext stays because
+# `manage.py compilemessages` needs it when a troop regenerates translations.
+RUN apk add --no-cache gettext
 
 # Install Python dependencies
 COPY app/requirements.txt .
@@ -26,4 +30,8 @@ COPY app/ .
 # Expose port for Gunicorn
 EXPOSE 9000
 
-CMD ["/app/entrypoint.sh"]
+# The entrypoint generates the secrets, waits for the database, and (only for
+# the web service, which sets RUN_MIGRATIONS) migrates and collects static
+# files. Nothing here is privileged; the stack is driven by compose.yml.
+ENTRYPOINT ["/app/entrypoint.sh"]
+CMD ["gunicorn", "troopconnect.wsgi:application", "--bind=0.0.0.0:9000", "--workers=4", "--timeout=120"]
