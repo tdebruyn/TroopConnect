@@ -1,9 +1,21 @@
+/* Our own styling.
+ *
+ * Loaded *after* the vendored Les Scouts theme
+ * (`static/vendor/template-unite/css/base.css`), which is the design and stays
+ * untouched — see that directory's README. Anything this project wants to say
+ * on top of the theme goes here, never there, so a theme upgrade is a clean
+ * diff and our deviations are all in one file.
+ *
+ * Keep this file small. A rule that merely repeats one the theme already
+ * states is a liability: the theme can change under it and our copy would win.
+ */
+
 header.masthead {
   padding-top: 10.5rem;
   padding-bottom: 6rem;
   text-align: center;
   color: #fff;
-  background-image: url("../images/illustrations/brouettes.jpg");
+  background-image: url("../images/troop/brouettes.jpg");
   background-repeat: no-repeat;
   background-attachment: scroll;
   background-position: center center;

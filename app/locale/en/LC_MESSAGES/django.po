@@ -2521,3 +2521,21 @@ msgstr ""
 #, python-format
 msgid "The section passage is waiting for a decision: %(reason)s"
 msgstr ""
+
+#: members/forms.py
+msgid "Logo"
+msgstr ""
+
+#: members/forms.py
+msgid "Favicon"
+msgstr ""
+
+#: members/models.py
+msgid ""
+"Shown in the site header and in outgoing email. Leave empty to use the "
+"default Les Scouts mark."
+msgstr ""
+
+#: members/models.py
+msgid "The small icon browsers show for the site. Leave empty for no icon."
+msgstr ""

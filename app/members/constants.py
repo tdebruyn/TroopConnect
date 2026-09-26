@@ -1,5 +1,15 @@
 from django.utils.translation import gettext_lazy as _
 
+# What the site header and the emails show when a troop has uploaded no logo of
+# its own. A path into the static files, next to the theme rather than inside
+# it: the vendored Les Scouts theme deliberately carries no unit's mark.
+#
+# Lives here and not on ``TroopSettings`` so that the migration which copies it
+# into the troop's own uploads can import it — a historical model from
+# ``apps.get_model`` carries its fields and nothing else, so a class attribute
+# there would be invisible to it.
+DEFAULT_LOGO = "images/troop/mini-logo-moutons.png"
+
 # # Role names
 # PARENT_ROLE = "p"
 # ANIMATOR_ROLE = "a"

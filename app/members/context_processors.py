@@ -20,6 +20,11 @@ def contact_info(request):
         "site_name": troop_settings.name,
         "site_description": troop_settings.site_description,
         "site_keywords": troop_settings.site_keywords,
+        # Resolved here rather than in each template: a template that reached
+        # for ``troop_settings.logo.url`` would render nothing at all when the
+        # field is empty, which is the normal case.
+        "logo_url": troop_settings.logo_url(),
+        "favicon_url": troop_settings.favicon_url(),
         "registration_open": troop_settings.registration_open,
         "registration_message": troop_settings.registration_message,
         "photo_consent_text": troop_settings.photo_consent_text,

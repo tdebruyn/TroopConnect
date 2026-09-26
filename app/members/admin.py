@@ -174,6 +174,10 @@ class TroopSettingsAdmin(TranslationAdmin):
             },
         ),
         (
+            _("Branding"),
+            {"fields": ("logo", "favicon")},
+        ),
+        (
             _("Locale"),
             {
                 "fields": (

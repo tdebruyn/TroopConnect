@@ -2410,6 +2410,28 @@ msgstr ""
 "Cordialement,\n"
 "Le trésorier"
 
+#: members/forms.py
+msgid "Logo"
+msgstr "Logo"
+
+#: members/forms.py
+msgid "Favicon"
+msgstr "Favicon"
+
+#: members/models.py
+msgid ""
+"Shown in the site header and in outgoing email. Leave empty to use the "
+"default Les Scouts mark."
+msgstr ""
+"Affiché dans l'en-tête du site et dans les e-mails sortants. Laissez vide "
+"pour utiliser le logo Les Scouts par défaut."
+
+#: members/models.py
+msgid "The small icon browsers show for the site. Leave empty for no icon."
+msgstr ""
+"La petite icône que les navigateurs affichent pour le site. Laissez vide "
+"pour ne pas en afficher."
+
 #~ msgid "Configure attestation"
 #~ msgstr "Configurer l'attestation"
 

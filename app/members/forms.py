@@ -724,6 +724,8 @@ class OrganisationSettingsForm(forms.ModelForm):
             "contact_phone",
             "footer_address",
             "privacy_policy",
+            "logo",
+            "favicon",
         )
         labels = {
             "name": _("Unit name"),
@@ -734,6 +736,14 @@ class OrganisationSettingsForm(forms.ModelForm):
             "contact_phone": _("Public phone"),
             "footer_address": _("Address shown in the footer"),
             "privacy_policy": _("Privacy policy"),
+            "logo": _("Logo"),
+            "favicon": _("Favicon"),
+        }
+        # The two help texts come from the model, so the admin and this page
+        # cannot drift apart. Only the file-picker hint is added here.
+        widgets = {
+            "logo": forms.ClearableFileInput(attrs={"accept": "image/*"}),
+            "favicon": forms.ClearableFileInput(attrs={"accept": "image/*"}),
         }
         help_texts = {
             "short_name": _("Used where the full name does not fit. Empty uses the full name."),

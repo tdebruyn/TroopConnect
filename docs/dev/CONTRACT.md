@@ -106,6 +106,8 @@ set: the defaults are what a troop that has configured nothing gets.
 | `reply_to_email` | Where answers to automated mail should go. Empty means "reply to the sender" (`DEFAULT_FROM_EMAIL`). |
 | `footer_address` | Postal address shown in the footer. Formerly `contact_address`. |
 | `privacy_policy` | A URL or a block of text, whichever the troop has. `privacy_policy_url()` returns the value when it is a link and `""` otherwise, so a template can test before rendering an `<a href>`. |
+| `logo` | The unit's own mark, an upload in the media storage. Shown in the site header and at the top of every HTML email. Read it through `logo_url()`, never `.logo.url`: empty falls back to the mark shipped with the application (`members.constants.DEFAULT_LOGO`, `static/images/troop/mini-logo-moutons.png`), so the header always has something to show. |
+| `favicon` | The icon browsers show for the site, also an upload. `favicon_url()` returns `""` when there is none, and the template then renders no `<link rel="icon">` at all — a browser's own behaviour is the honest default for an icon nobody chose. |
 
 ### Locale
 
@@ -206,6 +208,47 @@ survives an unrelated edit of that member.
 
 ---
 
+## 2b. Branding and the vendored theme
+
+The design is Les Scouts'; the identity is the troop's. Those are kept apart
+in the file layout, so that a theme upgrade is a diff against a known commit
+rather than a hunt for local edits.
+
+| Path | Whose | Rule |
+| --- | --- | --- |
+| `app/static/vendor/template-unite/` | Les Scouts asbl | **Never edited.** Byte-identical to the commit recorded in that directory's `README.md`. `css/` + `scss/` + `fonts/` + `images/` are upstream's, in upstream's layout, because `css/base.css` addresses its assets relatively. |
+| `app/static/css/troopconnect.css` | ours | Every styling deviation from the theme. Loaded *after* the theme, so ours wins. |
+| `app/static/images/troop/` | ours | The mark the header falls back to, and our own illustration. |
+| `app/static/js/` | ours | Dialog, toast, homepage editor. |
+
+`templates/base.html` loads `<link>` tags in that order — theme, then override.
+Reversing them, or editing anything under `vendor/`, defeats the arrangement.
+
+**Licence.** Upstream `template-unite` is MIT, © 2022 Les Scouts asbl (a copy
+travels in `app/static/vendor/template-unite/LICENSE.md`). MIT is permissive
+and compatible with this project's AGPL-3.0: the theme may be redistributed
+inside an AGPL-3.0 work as long as the MIT notice goes with it, which is why
+that file is vendored rather than summarised. The theme's fonts and images are
+covered by the same licence. Nothing here is copyleft-incompatible, and nothing
+in this project is relicensed by it.
+
+**Updating the theme.** Pick the upstream commit, replace the vendored files
+byte for byte, update the table in the vendor `README.md`, then check that
+`troopconnect.css` still overrides what it means to — a theme upgrade can
+rename the class an override targets. The steps are in the vendor `README.md`.
+
+**Per-branch marks.** The theme ships a mark for each of the five branches and
+a "topping" decoration family to match, keyed `f`/`federation`, `b`/`baladins`,
+`l`/`louveteaux`, `e`/`eclaireurs`, `p`/`pionniers` (see `scss/_ls-variables.scss`).
+They stay in the vendor directory, unrenamed, and **nothing selects them yet**:
+`members.Branch` has no field naming one of these keys, and no template renders
+a branch mark. Wiring that up — a `Branch` key field, and choosing between the
+theme's mark and an uploaded override — is a feature to add, not a
+configuration to set. `TroopSettings.logo` deliberately covers only the unit
+as a whole and does not stand in for them.
+
+---
+
 ## 2a. What a freshly migrated database contains
 
 `migrate` against an empty database leaves the instance able to take its first
@@ -216,6 +259,11 @@ registration, with nothing seeded by hand:
 | The `django.contrib.sites` row for `SITE_ID` | Migration `members/0021` | `troopconnect/siteconfig.py`, on every `migrate`: rewrites its `domain` from `SITE_DOMAIN` |
 | The email templates, in `fr`, `nl` and `en` | Migration `members/0021`, from `members/email_templates.py` | — |
 | The `TroopSettings` row, with generic defaults | Migration `members/0025` | The staff settings page, `/users/settings` |
+
+Nothing is uploaded, so the row's `logo` and `favicon` stay empty on a fresh
+install and the header falls back to the mark shipped with the application.
+Migration `members/0029`, which gives an instance already in use a copy of that
+mark, deliberately does nothing on a database with no members — see below.
 
 `django.contrib.sites` ships no data of its own, so without that migration
 `Site.objects.get_current()` raises `DoesNotExist` and the first registration
@@ -231,6 +279,19 @@ screen. That helper also builds absolute URLs from the Site row, sets
 `Reply-To` from `reply_to_email` when the troop has one, and resolves the
 language to one templates actually exist in, so a parent whose
 `preferred_language` is `nl` or `en` gets an email rather than a lookup failure.
+
+Each HTML body opens with the troop's logo. `send_templated` supplies
+`logo_url` as an absolute URL built the same way as every other link, and
+`members.email_templates` puts `{{ logo_url }}` at the top of the body (see
+`LOGO_HTML`) rather than repeating the markup in fifteen places. An instance
+that has uploaded no logo gets the shipped mark, so the tag never renders an
+empty `<img>`.
+
+Migration `members/0029` gives an instance that was *already in use* — one
+holding at least one member — its own copy of the mark it was already showing,
+moved out of the static files and into the media storage, so the troop owns the
+file and can replace it. A database with no members is a fresh install: it is
+left on the shipped fallback, which is the same image.
 
 Changing or adding copy means editing `members/email_templates.py` and running
 `makemigrations` for a new seeding migration that calls

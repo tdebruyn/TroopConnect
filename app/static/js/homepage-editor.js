@@ -118,11 +118,13 @@
         });
     }
 
-    // Mirror the real front-end styles inside the canvas for fidelity.
+    // Mirror the real front-end styles inside the canvas for fidelity, in the
+    // same order base.html loads them: theme first, our overrides after.
     var canvasStyles = [
         "https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/css/bootstrap.min.css",
         "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css",
-        "/static/css/fede.css",
+        "/static/vendor/template-unite/css/base.css",
+        "/static/css/troopconnect.css",
         "/static/fontawesomefree/css/all.min.css",
     ];
 

@@ -186,6 +186,18 @@ NEW_STRINGS = [
         "attend une décision",
         "wacht op een beslissing",
     ),
+    # Branding: the logo and favicon uploads on the settings page.
+    (
+        "Shown in the site header and in outgoing email. Leave empty to use the "
+        "default Les Scouts mark.",
+        "en-tête",
+        "siteheader",
+    ),
+    (
+        "The small icon browsers show for the site. Leave empty for no icon.",
+        "icône",
+        "pictogram",
+    ),
 ]
 
 

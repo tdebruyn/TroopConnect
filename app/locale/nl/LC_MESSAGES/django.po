@@ -2407,6 +2407,28 @@ msgstr ""
 "Met vriendelijke groet,\n"
 "De penningmeester"
 
+#: members/forms.py
+msgid "Logo"
+msgstr "Logo"
+
+#: members/forms.py
+msgid "Favicon"
+msgstr "Favicon"
+
+#: members/models.py
+msgid ""
+"Shown in the site header and in outgoing email. Leave empty to use the "
+"default Les Scouts mark."
+msgstr ""
+"Getoond in de siteheader en in uitgaande e-mails. Laat leeg om het "
+"standaardlogo van Les Scouts te gebruiken."
+
+#: members/models.py
+msgid "The small icon browsers show for the site. Leave empty for no icon."
+msgstr ""
+"Het kleine pictogram dat browsers voor de site tonen. Laat leeg voor geen "
+"pictogram."
+
 #~ msgid "Configure attestation"
 #~ msgstr "Attestatie configureren"
 

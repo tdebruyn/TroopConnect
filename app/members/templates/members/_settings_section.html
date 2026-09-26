@@ -16,9 +16,17 @@
     {% for error in section.form.non_field_errors %}
       <div class="alert alert-danger py-2" role="alert">{{ error }}</div>
     {% endfor %}
+    {% comment %}
+      enctype and hx-encoding are both needed: the organisation section carries
+      the logo and favicon uploads, and HTMX needs to be told to post the body
+      as multipart rather than urlencoded. Without either, the file fields come
+      back empty and the images are silently dropped.
+    {% endcomment %}
     <form hx-post="{% url 'members:troop_settings' %}"
           hx-target="#settings-{{ section.key }}"
-          hx-swap="outerHTML">
+          hx-swap="outerHTML"
+          enctype="multipart/form-data"
+          hx-encoding="multipart/form-data">
       {% csrf_token %}
       <input type="hidden" name="section" value="{{ section.key }}" />
       {% for field in section.form %}

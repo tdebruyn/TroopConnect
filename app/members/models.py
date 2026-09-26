@@ -16,9 +16,11 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
+from django.templatetags.static import static
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+from .constants import DEFAULT_LOGO
 from .phone import TroopPhoneNumberField
 
 # class CustomAccountManager(BaseUserManager):
@@ -912,6 +914,32 @@ class TroopSettings(models.Model):
         ),
     )
 
+    # --- Branding ----------------------------------------------------------
+    # The unit's own mark. Uploads, not files shipped with the image: the
+    # design stays the federation's (see
+    # app/static/vendor/template-unite/README.md) and the identity is the
+    # troop's, which is the line this project draws everywhere else. Both are
+    # optional — an empty logo falls back to the mark shipped with the
+    # application, so an instance that configures nothing still has one. Read
+    # them through `logo_url`/`favicon_url`, never the field: the fallback
+    # lives there.
+    logo = models.ImageField(
+        upload_to="troop/",
+        blank=True,
+        help_text=_(
+            "Shown in the site header and in outgoing email. "
+            "Leave empty to use the default Les Scouts mark."
+        ),
+    )
+    favicon = models.ImageField(
+        upload_to="troop/",
+        blank=True,
+        help_text=_(
+            "The small icon browsers show for the site. "
+            "Leave empty for no icon."
+        ),
+    )
+
     # --- Locale ------------------------------------------------------------
     # Languages enabled on the site. With more than one, a language selector is
     # shown to users; with exactly one, the site is locked to that language.
@@ -1106,6 +1134,41 @@ class TroopSettings(models.Model):
         if policy.startswith(("http://", "https://")):
             return policy
         return ""
+
+    # --- Branding ----------------------------------------------------------
+
+    def logo_url(self):
+        """The unit's logo: the uploaded file, or the built-in default.
+
+        Never returns "" — the header always has something to show, so a troop
+        that has uploaded nothing looks the same as before this field existed.
+        """
+        return self._upload_url(self.logo) or static(DEFAULT_LOGO)
+
+    def favicon_url(self):
+        """The site icon, or "" when the troop has not chosen one.
+
+        Empty is the honest answer: there is no default favicon to fall back
+        to, and a site with no ``<link rel="icon">`` gets the browser's own
+        behaviour, which is what it had before this field existed.
+        """
+        return self._upload_url(self.favicon)
+
+    @staticmethod
+    def _upload_url(field):
+        """``field``'s URL, or "" when it holds no file.
+
+        A ``FieldFile`` whose row was written by a migration that has since
+        moved the file on disk raises ``ValueError`` rather than returning a
+        broken URL, so an unreadable upload degrades to the fallback instead of
+        taking the page down with it.
+        """
+        if not field:
+            return ""
+        try:
+            return field.url
+        except ValueError:
+            return ""
 
     # --- Calendar ----------------------------------------------------------
     # Every school-year, age-reference and retention date the application

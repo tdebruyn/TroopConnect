@@ -26,8 +26,17 @@
         <link href="{% static 'fontawesomefree/css/solid.css' %}"
               rel="stylesheet"
               type="text/css">
-        <link rel="stylesheet" href="{% static 'css/fede.css' %}" />
-        {% comment %} <link rel="stylesheet" href="{% static 'css/base.css' %}" /> {% endcomment %}
+        {% comment %}
+            The Les Scouts theme, vendored byte-identical and never edited here,
+            then our own overrides on top. The order matters: ours wins.
+            See app/static/vendor/template-unite/README.md.
+        {% endcomment %}
+        <link rel="stylesheet"
+              href="{% static 'vendor/template-unite/css/base.css' %}" />
+        <link rel="stylesheet" href="{% static 'css/troopconnect.css' %}" />
+        {% if favicon_url %}
+            <link rel="icon" href="{{ favicon_url }}" />
+        {% endif %}
         {% block header %}
         {% endblock header %}
     </head>
@@ -44,10 +53,10 @@
                     <a class="navbar-brand d-flex align-items-center"
                        href="{% url 'homepage' %}"
                        target="_top"><span style="margin-right: 0px;padding-right: 15px;text-align: right;">
-                        <img src="{% static '/images/logos/mini-logo-moutons.png' %}"
-                             alt=""
-                             width="84"
-                             height="93" />
+                        <img src="{{ logo_url }}"
+                             alt="{{ site_name }}"
+                             style="height: 93px;
+                                    width: auto" />
                     {{ site_name }}</span></a>
                     <button class="navbar-toggler"
                             data-bs-toggle="collapse"

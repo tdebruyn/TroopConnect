@@ -39,6 +39,16 @@ _BUTTON = (
     "text-decoration: none; border-radius: 5px;"
 )
 
+# The troop's own mark, at the top of every HTML body. `logo_url` is filled in
+# by members.mail.send_templated and is always an absolute URL — a mail client
+# has no page to resolve a relative path against. A troop that has uploaded no
+# logo still gets one: send_templated falls back to the mark shipped with the
+# application, so this never renders an empty <img>.
+LOGO_HTML = (
+    '<p><img src="{{ logo_url }}" alt="{{ troop_name }}" '
+    'style="max-width: 220px; height: auto;"></p>'
+)
+
 TEMPLATES = {
     "new_child_staff": {
         "fr": {
@@ -413,10 +423,32 @@ def rows():
 
     post_office resolves a template by the exact pair ``(name, language)``, so
     every language a caller might ask for needs its own row.
+
+    The logo is added here rather than written into each body above: it is the
+    one part of an HTML body that is the same everywhere, and keeping it in one
+    place is what lets :func:`without_logo` undo it exactly.
     """
     for name, by_language in TEMPLATES.items():
         for language in LANGUAGES:
-            yield name, language, by_language[language]
+            fields = dict(by_language[language])
+            fields["html_content"] = with_logo(fields["html_content"])
+            yield name, language, fields
+
+
+def with_logo(html_content):
+    """``html_content`` with the troop's logo at the top of it."""
+    return LOGO_HTML + html_content
+
+
+def without_logo(html_content):
+    """``html_content`` with the logo taken back off, if it has one.
+
+    Used by the migration that added the logo to recognise a body nobody has
+    edited since: such a body is exactly the canonical copy *without* the logo,
+    so a body that differs — because an administrator rewrote it — does not
+    match and is left alone.
+    """
+    return html_content.removeprefix(LOGO_HTML)
 
 
 def _canonical_pairs():

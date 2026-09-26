@@ -50,6 +50,7 @@ pathspec==1.1.1
 pdfminer-six==20260107
 pexpect==4.9.0
 phonenumbers==9.0.40
+pillow==12.3.0
 prompt-toolkit==3.0.53
 psutil==7.2.2
 psycopg==3.3.6

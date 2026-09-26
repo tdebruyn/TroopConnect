@@ -33,6 +33,17 @@ def troop_name(language=None):
         return TroopSettings.get_settings().name
 
 
+def troop_logo_url():
+    """Absolute URL of the troop's logo, for the HTML bodies.
+
+    Absolute because a mail client has no page to resolve a relative path
+    against. Falls back to the mark shipped with the application, so every
+    template can rely on it existing — see
+    :meth:`members.models.TroopSettings.logo_url`.
+    """
+    return absolute_url(TroopSettings.get_settings().logo_url())
+
+
 def absolute_url(path):
     """Build an absolute URL for ``path`` from the current Site row.
 
@@ -69,7 +80,8 @@ def resolve_language(language):
 def send_templated(*, template, recipients, context=None, language=None, **options):
     """``post_office.mail.send`` with the troop's own context filled in.
 
-    Adds ``troop_name`` to the context, picks a language templates exist in,
+    Adds ``troop_name`` and the absolute ``logo_url`` to the context, picks a
+    language templates exist in,
     defaults the sender to ``DEFAULT_FROM_EMAIL`` and the ``Reply-To`` to the
     troop's own reply-to address when it has one, so callers pass only what is
     specific to the message.
@@ -90,6 +102,10 @@ def send_templated(*, template, recipients, context=None, language=None, **optio
         template=template,
         recipients=recipients,
         language=resolved,
-        context={"troop_name": troop_name(resolved), **(context or {})},
+        context={
+            "troop_name": troop_name(resolved),
+            "logo_url": troop_logo_url(),
+            **(context or {}),
+        },
         **options,
     )

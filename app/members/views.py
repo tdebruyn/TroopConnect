@@ -942,7 +942,12 @@ class TroopSettingsView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
         if form_class is None:
             return HttpResponseBadRequest(_("Unknown settings section."))
 
-        form = form_class(request.POST, instance=TroopSettings.get_settings())
+        # request.FILES as well as request.POST: the organisation section
+        # carries the logo and favicon uploads, and a bound ModelForm that is
+        # not handed the files treats an unchanged upload as "cleared".
+        form = form_class(
+            request.POST, request.FILES, instance=TroopSettings.get_settings()
+        )
 
         if form.is_valid():
             form.save()
