@@ -98,6 +98,28 @@ collects static files.
 Ansible automation lives in `contrib/ansible/`. It is community-maintained and
 unsupported; see its README before relying on it.
 
+## Comment Style
+
+Comments explain **why**, never **what** — the code already says what it does.
+Write one when it records something the code cannot show: a hidden constraint, a
+workaround and what it works around, a subtle invariant a future edit could
+break, or why the obvious alternative was rejected.
+
+Delete one that:
+
+- restates the next line (`# Build body`, `# Apply late penalty`)
+- is dead code parked as a comment — git holds it, and a commented-out copy only
+  reads to whoever saw the draft it came from
+- refers to an earlier version of the code (`no longer`, `used to`, `previously`,
+  `the old code`) instead of stating the current invariant
+- assumes the reader watched the conversation that produced it
+
+Keep functional directives — `# noqa`, `# type: ignore`, `# pragma: no cover`
+are code, often the only reason a lint run passes.
+
+The `TroopSettings` field docs in `members/models.py` are the reference standard:
+each says what the field decides, not what it stores.
+
 ## Important Notes
 - Test suite lives in `app/tests/` (plus per-app `tests.py` for `finance`/`homepage`). `manage.py test tests` also runs a ruff lint check (`tests/test_lint.py`); linter config is `app/ruff.toml`.
 - No CI/CD pipelines configured.
