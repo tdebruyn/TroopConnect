@@ -1,0 +1,75 @@
+{% extends "members/base.html" %}
+{% load i18n money %}
+{% block hat_title %}{% trans "Households" %}{% endblock hat_title %}
+{% block hat_text %}{% trans "Treasurer — billing groups" %}{% endblock hat_text %}
+{% block subcontent %}
+    <p class="text-muted">
+        {% trans "Fees are billed per household: members sharing an address are billed together, eldest first. Create a household here only when that guess is wrong — to bill members at different addresses together, or to split one out of their family." %}
+    </p>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">{% trans "Add a household" %}</div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="input-group">
+                            {{ form.name }}
+                            <button type="submit" class="btn btn-primary">{% trans "Create" %}</button>
+                        </div>
+                        {% for error in form.name.errors %}<div class="text-danger">{{ error }}</div>{% endfor %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <h5>{% blocktranslate with count=rows|length %}Households ({{ count }}){% endblocktranslate %}</h5>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>{% trans "Household" %}</th>
+                <th>{% trans "Members" %}</th>
+                {% if school_year %}
+                    <th>{% trans "Due" %}</th>
+                    <th>{% trans "Paid" %}</th>
+                    <th>{% trans "Balance" %}</th>
+                {% endif %}
+                <th>{% trans "Action" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in rows %}
+                <tr>
+                    <td>
+                        <a href="{% url 'finance:household_detail' pk=row.household.pk %}">{{ row.household.name }}</a>
+                    </td>
+                    <td>
+                        {% for member in row.members %}
+                            {{ member }}{% if not forloop.last %}, {% endif %}
+                        {% empty %}
+                            <span class="text-muted">{% trans "No member" %}</span>
+                        {% endfor %}
+                    </td>
+                    {% if school_year %}
+                        {% if row.summary %}
+                            <td>{{ row.summary.due |money }}</td>
+                            <td>{{ row.summary.paid |money }}</td>
+                            <td>{{ row.summary.balance |money }}</td>
+                        {% else %}
+                            <td colspan="3" class="text-muted">{% trans "Nobody enrolled this year." %}</td>
+                        {% endif %}
+                    {% endif %}
+                    <td>
+                        <a href="{% url 'finance:household_detail' pk=row.household.pk %}"
+                           class="btn btn-sm btn-outline-primary">{% trans "Manage" %}</a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="6">{% trans "No household defined — every member is billed by address." %}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{% url 'finance:billing' %}" class="btn btn-secondary">{% trans "Back to fees" %}</a>
+{% endblock subcontent %}

@@ -119,13 +119,21 @@
     }
 
     // Mirror the real front-end styles inside the canvas for fidelity, in the
-    // same order base.html loads them: theme first, our overrides after.
+    // same order base.html loads them: theme first, our overrides after, then
+    // the canvas-only sheet.
+    //
+    // The Bootstrap path has to match base.html exactly. jsdelivr resolves the
+    // path literally, so without the /dist/ segment it answers 404 ("Couldn't
+    // find the requested file /css/bootstrap.min.css in bootstrap") and the
+    // canvas silently gets no Bootstrap at all — no grid, no .card, and the
+    // hero's white-on-white card text disappears.
     var canvasStyles = [
-        "https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/css/bootstrap.min.css",
+        "https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css",
         "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css",
+        "/static/fontawesomefree/css/all.min.css",
         "/static/vendor/template-unite/css/base.css",
         "/static/css/troopconnect.css",
-        "/static/fontawesomefree/css/all.min.css",
+        "/static/css/editor-canvas.css",
     ];
 
     var editor = grapesjs.init({
@@ -176,11 +184,118 @@
         },
     });
 
-    if (projectData) {
-        editor.on("load", function () {
-            editor.loadProjectData(projectData);
+    /* --- The shape of the page ------------------------------------------
+     *
+     * The canvas is always: the hero, then the content area, and nothing else
+     * at the top level.
+     *
+     * The hero comes from the page snippet and is not meant to be edited here
+     * — its text is placeholder copy. It is locked, so it cannot be selected,
+     * dragged, dropped into, copied or deleted.
+     *
+     * Everything else belongs in the content area below it. Pages saved before
+     * that area existed — including the markup the old snippet shipped, which
+     * wrapped the hero in a Bootstrap grid div — are repaired on load, so they
+     * keep working and pick up the new structure the next time they are saved.
+     */
+    var HERO_SELECTOR = "header.masthead";
+    var CONTENT_SELECTOR = ".tc-page-content";
+    var CONTENT_MARKUP = '<main class="tc-page-content"></main>';
+
+    function lock(component) {
+        component.set({
+            draggable: false,
+            droppable: false,
+            removable: false,
+            copyable: false,
+            selectable: false,
+            hoverable: false,
+            editable: false,
         });
+        component.components().forEach(lock);
     }
+
+    var normalizing = false;
+
+    function normalizeCanvas() {
+        if (normalizing) {
+            return;
+        }
+        normalizing = true;
+        try {
+            var wrapper = editor.getWrapper();
+            var hero = wrapper && wrapper.find(HERO_SELECTOR)[0];
+            if (!hero) {
+                // Nothing to anchor on: a page whose hero was replaced by hand
+                // is left exactly as it is.
+                return;
+            }
+
+            // Lift the hero out of the grid div the old snippet wrapped it in,
+            // keeping whatever else lived there.
+            var parent = hero.parent();
+            if (parent && parent !== wrapper) {
+                var strays = [];
+                parent.components().forEach(function (component) {
+                    if (component !== hero) {
+                        strays.push(component);
+                    }
+                });
+                hero.move(wrapper, { at: 0 });
+                strays.forEach(function (component) {
+                    component.move(wrapper);
+                });
+                if (!parent.components().length) {
+                    parent.remove();
+                }
+            } else if (wrapper.components().indexOf(hero) !== 0) {
+                hero.move(wrapper, { at: 0 });
+            }
+
+            var content = wrapper.find(CONTENT_SELECTOR)[0];
+            if (!content) {
+                content = wrapper.append(CONTENT_MARKUP)[0];
+            }
+
+            // Anything that is not the hero or the content area goes inside
+            // the content area. That is what rescues blocks older versions of
+            // this editor dropped at the top of the body, where they piled up
+            // behind the hero instead of landing where they were dropped.
+            wrapper.components().forEach(function (component) {
+                if (component !== hero && component !== content) {
+                    content.append(component);
+                }
+            });
+
+            lock(hero);
+        } catch (err) {
+            // Loading a project rebuilds the canvas in the background, so a
+            // pass can land on a half-built tree and throw. This runs again —
+            // see the schedule below, and the 'update' hook after it — so a
+            // failed pass is not worth reporting.
+        } finally {
+            normalizing = false;
+        }
+    }
+
+    editor.on("load", function () {
+        if (projectData) {
+            editor.loadProjectData(projectData);
+        }
+        // GrapesJS 0.23 has no event that says "the loaded project is on
+        // screen" (`canvas:frame:load` never fires, and a project load does
+        // not emit `update`), so settle the canvas on a schedule instead. The
+        // later passes matter on a slow connection, where the rebuilt frame
+        // is still fetching its stylesheets. Each pass is a no-op once the
+        // tree is already canonical.
+        [0, 50, 250, 700, 1500].forEach(function (delay) {
+            window.setTimeout(normalizeCanvas, delay);
+        });
+    });
+
+    // Dropping a block anywhere but the content area (the strip above the hero,
+    // the hero itself) is corrected as soon as the change lands.
+    editor.on("update", normalizeCanvas);
 
     // Open the Blocks panel by default so the drag-and-drop library is
     // visible immediately (GrapesJS defaults to a hidden left panel).

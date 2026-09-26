@@ -10,23 +10,36 @@
  * states is a liability: the theme can change under it and our copy would win.
  */
 
+/* The site navbar is a fixed 110px tall — base.html sets that height inline on
+   .navbar, and only there. The hero sits directly underneath it. In px, not
+   rem: the navbar's own 110px does not follow the root font size, so this must
+   not either. */
+:root {
+  --site-navbar-height: 110px;
+}
+
+/* The homepage hero: the unit's photo, with the presentation card on it.
+ *
+ * It has to stay an ordinary block. It used to be `position: absolute` at the
+ * top of the page, `z-index: -1`, in a box 100px tall — smaller than its own
+ * padding, so really 10.5rem + 6rem tall. That took it out of the flow
+ * entirely: the element wrapping it collapsed to zero height. On the public
+ * page anything added after the hero then started at the top of the document,
+ * behind the photo; in the homepage editor every dropped block landed there
+ * instead of where it was dropped.
+ *
+ * The paddings put the card back where it has always been — 3.625rem below the
+ * navbar, i.e. 168px down the page — and the background offset shows the same
+ * band of the photo as the old top-anchored 264px-tall box did. */
 header.masthead {
-  padding-top: 10.5rem;
-  padding-bottom: 6rem;
+  padding: 3.625rem 0.75rem 0.5rem;
   text-align: center;
   color: #fff;
   background-image: url("../images/troop/brouettes.jpg");
   background-repeat: no-repeat;
   background-attachment: scroll;
-  background-position: center center;
+  background-position: center calc(-1 * var(--site-navbar-height));
   background-size: cover;
-  background-position: top;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100px;
-  z-index: -1;
 }
 
 .navbar {
@@ -250,4 +263,10 @@ header.masthead {
 
 .agenda-grid .agenda-outside .agenda-day-number {
   opacity: 0.45;
+}
+
+/* The household column in the member list shows a free-text address when the
+   household is inferred, so it needs a ceiling of its own to stay one line. */
+.household-cell {
+  max-width: 16rem;
 }

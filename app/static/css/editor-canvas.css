@@ -1,0 +1,30 @@
+/* Styles for the homepage editor's canvas only.
+ *
+ * homepage-editor.js lists this file in canvas.styles, so it is loaded into the
+ * editing frame and never by the public site — everything here is a difference
+ * between the two on purpose.
+ */
+
+/* The area below the hero that blocks are dropped into. It is empty until
+ * something is put in it, and an empty element has no height: without a floor
+ * the drop zone collapses to a hairline and is almost impossible to aim at.
+ *
+ * On the public site this class carries no styling at all, so an untouched
+ * content area takes up no space and the page looks as it did before. */
+.tc-page-content {
+  min-height: 60vh;
+}
+
+/* Marks the empty area so it is obvious where content goes. Matches only while
+ * nothing has been dropped in. */
+.tc-page-content:empty {
+  outline: 1px dashed rgba(170, 170, 170, 0.7);
+  outline-offset: -2px;
+}
+
+/* The hero is fixed content — homepage-editor.js locks its components — but
+ * GrapesJS still draws its badges over it. Dim them so the hero reads as
+ * background rather than as something to edit. */
+.gjs-locked {
+  opacity: 1;
+}

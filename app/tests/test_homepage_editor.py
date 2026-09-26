@@ -2,9 +2,11 @@ import json
 import re
 import shutil
 import tempfile
+from pathlib import Path
 
+from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import TestCase
+from django.test import SimpleTestCase, TestCase
 from django.urls import reverse
 from django.utils.translation import override
 
@@ -109,16 +111,51 @@ class EditorPageAccessTest(HomePageEditorTestBase):
         response = self.client.get(reverse("homepage_editor"))
         self.assertContains(response, "Description principale")
 
-    def test_project_with_components_is_loaded(self):
+    def test_project_with_frames_is_loaded(self):
+        # GrapesJS 0.23 keeps a page's component tree on its frame. Looking for
+        # it on the page itself, as this used to, found nothing in real project
+        # data: every saved page was treated as empty and re-seeded, and the
+        # next save wrote that default back over the stored content.
         SiteContent.objects.create(
             page=SiteContent.Page.HOME,
-            project_json='{"pages": [{"component": true}]}',
+            project_json='{"pages": [{"frames": [{"component": {"type": "wrapper"}}]}]}',
         )
         self.client.force_login(self.superuser)
         response = self.client.get(reverse("homepage_editor"))
         # The saved project ships to the editor; no seed markup is injected.
         self.assertContains(response, "project-json")
         self.assertNotContains(response, "Description principale")
+
+    def test_project_with_empty_frames_seeds_default_content(self):
+        # An abandoned session can leave a page whose frame holds nothing.
+        SiteContent.objects.create(
+            page=SiteContent.Page.HOME,
+            project_json='{"pages": [{"frames": [{"component": null}]}]}',
+        )
+        self.client.force_login(self.superuser)
+        response = self.client.get(reverse("homepage_editor"))
+        self.assertContains(response, "Description principale")
+
+    def test_project_ships_as_an_object_not_a_json_string(self):
+        # json_script encodes whatever it is handed. Passing it the stored JSON
+        # *string* shipped a JSON-encoded string, and GrapesJS reads a string
+        # project as a storage key: it cleared the canvas, found nothing, and
+        # left a blank editor.
+        SiteContent.objects.create(
+            page=SiteContent.Page.HOME,
+            project_json='{"pages": [{"frames": [{"component": {"type": "wrapper"}}]}]}',
+        )
+        self.client.force_login(self.superuser)
+        response = self.client.get(reverse("homepage_editor"))
+        match = re.search(
+            r'<script id="project-json" type="application/json">(.*?)</script>',
+            response.content.decode(),
+            re.DOTALL,
+        )
+        self.assertIsNotNone(match, "the editor shipped no project-json")
+        project = json.loads(match.group(1))
+        self.assertIsInstance(project, dict)
+        self.assertIn("pages", project)
 
 
 class EditorSaveTest(HomePageEditorTestBase):
@@ -353,6 +390,100 @@ class LegacyFaqHeaderTest(HomePageEditorTestBase):
         )
         response = self.client.get(reverse("homepage"))
         self.assertContains(response, "masthead")
+
+
+class LegacyHomeHeroTest(HomePageEditorTestBase):
+    """The home hero used to be wrapped in a Bootstrap grid div.
+
+    The hero is an ordinary block now. Left inside that div the full-bleed
+    photo would be inset by the grid's gutters and the card laid out as a flex
+    item, so saved content is unwrapped at render and at save — the same
+    treatment the FAQ masthead gets.
+    """
+
+    LEGACY_HOME_HTML = (
+        '<div class="container row"><header class="masthead"><div class="card">'
+        "<h2>Description principale</h2></div></header></div>"
+        '<section class="py-4"><h1>Bloc ajouté</h1></section>'
+    )
+
+    def test_render_unwraps_legacy_hero(self):
+        SiteContent.objects.create(
+            page=SiteContent.Page.HOME,
+            project_json="{}",
+            html=self.LEGACY_HOME_HTML,
+        )
+        response = self.client.get(reverse("homepage"))
+        self.assertContains(response, "<h1>Bloc ajouté</h1>")
+        self.assertContains(response, "masthead")
+        self.assertNotContains(response, '<div class="container row">')
+
+    def test_save_unwraps_legacy_hero(self):
+        self.client.force_login(self.superuser)
+        self._save(self.client, "home", "fr", self.LEGACY_HOME_HTML)
+        content = SiteContent.get_content(SiteContent.Page.HOME)
+        self.assertEqual(
+            content.html,
+            '<header class="masthead"><div class="card"><h2>Description principale'
+            '</h2></div></header><section class="py-4"><h1>Bloc ajouté</h1></section>',
+        )
+
+    def test_row_without_a_hero_is_left_alone(self):
+        SiteContent.objects.create(
+            page=SiteContent.Page.HOME,
+            project_json="{}",
+            html='<div class="container row"><p>Texte</p></div>',
+        )
+        response = self.client.get(reverse("homepage"))
+        self.assertContains(response, '<div class="container row"><p>Texte</p></div>')
+
+
+class HomeSeedStructureTest(HomePageEditorTestBase):
+    """The default home page is a hero, then the area blocks are dropped into.
+
+    The content area is what makes the space under the hero droppable: without
+    it the only drop target on the canvas is the body itself.
+    """
+
+    def test_default_page_has_a_content_area_after_the_hero(self):
+        page = self.client.get(reverse("homepage")).content.decode()
+        hero_at = page.find('class="masthead"')
+        content_at = page.find('<main class="tc-page-content"')
+        self.assertNotEqual(hero_at, -1, "the default home page has no hero")
+        self.assertNotEqual(content_at, -1, "the default home page has no content area")
+        self.assertGreater(content_at, hero_at)
+
+    def test_editor_seed_has_the_content_area(self):
+        self.client.force_login(self.superuser)
+        response = self.client.get(reverse("homepage_editor"))
+        self.assertContains(response, '<main class="tc-page-content">')
+
+
+class EditorCanvasStylesTest(SimpleTestCase):
+    """The canvas must load the same assets as the site.
+
+    jsdelivr resolves its paths literally, so a canvas stylesheet URL that does
+    not match base.html answers 404. That failure is silent — the editor simply
+    renders without Bootstrap, which is how the hero's card came to show white
+    text on a white background — so it is worth a test rather than a close eye.
+    """
+
+    def test_canvas_uses_the_same_bootstrap_css_as_the_site(self):
+        base = (Path(settings.BASE_DIR) / "templates" / "base.html").read_text(
+            encoding="utf-8"
+        )
+        editor = (Path(settings.BASE_DIR) / "static" / "js" / "homepage-editor.js").read_text(
+            encoding="utf-8"
+        )
+        site_urls = re.findall(
+            r"https://cdn\.jsdelivr\.net/npm/bootstrap@[\d.]+/[^\"']*bootstrap\.min\.css",
+            base,
+        )
+        self.assertTrue(site_urls, "base.html no longer loads Bootstrap CSS")
+        for url in site_urls:
+            self.assertIn(
+                url, editor, "the editor canvas loads a different Bootstrap URL"
+            )
 
 
 class NavbarBrandLinkTest(HomePageEditorTestBase):

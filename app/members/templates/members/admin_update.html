@@ -132,6 +132,48 @@
         </div>
     </form>
     <div class="alert-danger">{{ form.errors }}</div>
+    {% if household_enabled %}
+        <hr class="hr" />
+        <div class="container">
+            <p class="h4">{% trans "Household" %}</p>
+            <p class="text-muted">
+                {% if household_explicit %}
+                    {% blocktranslate with name=household_explicit.name %}Billed in the household “{{ name }}”. Fees are split with the members below, eldest first.{% endblocktranslate %}
+                {% else %}
+                    {% if household_school_year %}
+                        {% trans "No household set, so one is inferred from the address: the members below share it and are billed together, eldest first." %}
+                    {% else %}
+                        {% trans "No household set, so one is inferred from the address." %}
+                    {% endif %}
+                {% endif %}
+            </p>
+            {% if household_others %}
+                <p>
+                    {% for other in household_others %}
+                        <a href="{% url 'members:admin_update' pk=other.pk %}">{{ other }}</a>{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                </p>
+            {% elif not household_group %}
+                <p class="text-muted">
+                    {% trans "Nobody with this member is billed this year — a household only counts members enrolled in the current school year." %}
+                </p>
+            {% endif %}
+            <form method="post" action="{% url 'finance:assign_household' %}" class="row g-2 align-items-center">
+                {% csrf_token %}
+                {{ household_form.person_id }}
+                <input type="hidden" name="next" value="{{ request.get_full_path }}" />
+                <div class="col-md-5">
+                    {{ household_form.household }}
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
+                </div>
+            </form>
+            <p class="mt-2">
+                <a href="{% url 'finance:households' %}">{% trans "Manage households" %}</a>
+            </p>
+        </div>
+    {% endif %}
     <hr class="hr" />
     <div class="container">
         {% if children %}

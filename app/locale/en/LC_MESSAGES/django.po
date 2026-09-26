@@ -2829,9 +2829,260 @@ msgid "New activity"
 msgstr ""
 
 #: section agenda (hand-added; see docs/dev/CONTRACT.md)
+msgid "Optional, for a message sent to a section: the activity is added to that section's agenda."
+msgstr ""
+
+#: finance/forms.py:145 finance/models.py:150
+#: finance/templates/finance/billing_overview.html:79
+#: finance/templates/finance/household_list.html:30
+#: members/templates/members/admin_update.html:139 members/views.py:230
+msgid "Household"
+msgstr ""
+
+#: finance/models.py:151 finance/templates/finance/billing_overview.html:8
+#: finance/templates/finance/billing_overview.html:72
+#: finance/templates/finance/household_list.html:3
+msgid "Households"
+msgstr ""
+
+#: finance/forms.py:146
+msgid "Inferred from address"
+msgstr ""
+
+#: members/templates/members/admin_list.html:118
+msgid "Inferred from the address"
+msgstr ""
+
+#: finance/models.py:178
+msgid "Household member"
+msgstr ""
+
+#: finance/models.py:179
+msgid "Household members"
+msgstr ""
+
+#: finance/models.py:217
+msgid "Household adjustment"
+msgstr ""
+
+#: finance/models.py:218
+msgid "Household adjustments"
+msgstr ""
+
+#: finance/models.py:137
+msgid "A name the treasurer recognises, e.g. “Famille Dupont”"
+msgstr ""
+
+#: finance/models.py:203
+msgid "Negative writes off, positive adds to what is owed"
+msgstr ""
+
+#: finance/forms.py:195
+msgid "Negative writes off, positive adds to what the household owes"
+msgstr ""
+
+#: finance/forms.py:201
+msgid "An adjustment of zero changes nothing."
+msgstr ""
+
+#: finance/templates/finance/billing_overview.html:80
+#: finance/templates/finance/household_detail.html:44
+#: finance/templates/finance/household_list.html:31
+#: members/templates/members/setup/_step_done.html:15
+msgid "Members"
+msgstr ""
+
+#: finance/templates/finance/billing_overview.html:81
+msgid "Fees"
+msgstr ""
+
+#: finance/templates/finance/billing_overview.html:82
+#: finance/templates/finance/billing_overview.html:127
+#: finance/templates/finance/billing_overview.html:167
+#: finance/templates/finance/household_detail.html:52
+msgid "Adjustment"
+msgstr ""
+
+#: finance/templates/finance/household_detail.html:126
+msgid "Adjustments"
+msgstr ""
+
+#: finance/templates/finance/household_detail.html:138
+#: finance/templates/finance/payment_history.html:45
+msgid "Author"
+msgstr ""
+
+#: finance/templates/finance/household_detail.html:50
+msgid "Rank"
+msgstr ""
+
+#: finance/templates/finance/household_detail.html:71
+msgid "Not billed"
+msgstr ""
+
+#: finance/templates/finance/household_detail.html:4
+msgid "Treasurer — household"
+msgstr ""
+
+#: finance/templates/finance/household_list.html:4
+msgid "Treasurer — billing groups"
+msgstr ""
+
+#: finance/templates/finance/household_list.html:12
+msgid "Add a household"
+msgstr ""
+
+#: finance/templates/finance/household_detail.html:25
+msgid "Add a member"
+msgstr ""
+
+#: finance/templates/finance/household_detail.html:166
+msgid "Add an adjustment"
+msgstr ""
+
+#: finance/templates/finance/household_detail.html:32
+#: finance/templates/finance/household_detail.html:194
+msgid "Add"
+msgstr ""
+
+#: finance/templates/finance/household_list.html:18
+msgid "Create"
+msgstr ""
+
+#: finance/templates/finance/household_detail.html:16
+msgid "Rename"
+msgstr ""
+
+#: finance/templates/finance/household_detail.html:153
 msgid "Delete"
 msgstr ""
 
-#: section agenda (hand-added; see docs/dev/CONTRACT.md)
-msgid "Optional, for a message sent to a section: the activity is added to that section's agenda."
+#: finance/templates/finance/household_detail.html:206
+msgid "Delete this household"
+msgstr ""
+
+#: finance/templates/finance/household_detail.html:208
+msgid "Back to households"
+msgstr ""
+
+#: finance/templates/finance/household_list.html:74
+msgid "Back to fees"
+msgstr ""
+
+#: members/templates/members/admin_update.html:174
+msgid "Manage households"
+msgstr ""
+
+#: finance/templates/finance/household_detail.html:104
+msgid "Billed by address again"
+msgstr ""
+
+#: finance/templates/finance/household_list.html:50
+msgid "No member"
+msgstr ""
+
+#: finance/templates/finance/household_detail.html:112
+msgid "No member in this household yet."
+msgstr ""
+
+#: finance/templates/finance/household_detail.html:159
+msgid "No adjustment."
+msgstr ""
+
+#: finance/templates/finance/household_list.html:59
+msgid "Nobody enrolled this year."
+msgstr ""
+
+#: finance/templates/finance/household_list.html:69
+msgid "No household defined — every member is billed by address."
+msgstr ""
+
+#: members/templates/members/admin_update.html:147
+msgid "No household set, so one is inferred from the address."
+msgstr ""
+
+#: finance/templates/finance/household_detail.html:35
+msgid "A member can only be in one household: adding them here takes them out of any other."
+msgstr ""
+
+#: finance/templates/finance/household_list.html:7
+msgid "Fees are billed per household: members sharing an address are billed together, eldest first. Create a household here only when that guess is wrong — to bill members at different addresses together, or to split one out of their family."
+msgstr ""
+
+#: finance/templates/finance/billing_overview.html:74
+msgid "Members sharing an address are billed together, unless a household below says otherwise. The adjustment column is the manual correction added to that household's fees."
+msgstr ""
+
+#: finance/templates/finance/household_detail.html:122
+msgid "Only the members enrolled this school year are billed, ranked by age within this household. A member enrolled under a different address is not billed here."
+msgstr ""
+
+#: finance/templates/finance/household_detail.html:204
+msgid "Deleting the household does not touch its members: they go back to being billed by address. Its adjustment lines are deleted with it."
+msgstr ""
+
+#: members/templates/members/admin_update.html:159
+msgid "Nobody with this member is billed this year — a household only counts members enrolled in the current school year."
+msgstr ""
+
+#: members/templates/members/admin_update.html:145
+msgid "No household set, so one is inferred from the address: the members below share it and are billed together, eldest first."
+msgstr ""
+
+#: members/templates/members/admin_update.html:142
+#, python-format
+msgid "Billed in the household “%(name)s”. Fees are split with the members below, eldest first."
+msgstr ""
+
+#: finance/templates/finance/household_detail.html:120
+#, python-format
+msgid "How %(year)s is billed"
+msgstr ""
+
+#: finance/templates/finance/household_detail.html:129
+#, python-format
+msgid "This household owes %(amount)s in adjustments for %(year)s, but nobody from it is enrolled that year, so the amount is not being applied to anyone's balance."
+msgstr ""
+
+#: finance/templates/finance/payment_history.html:38
+#, python-format
+msgid "Household adjustments — %(name)s"
+msgstr ""
+
+#: finance/views.py:370
+#, python-format
+msgid "Household “%(name)s” created."
+msgstr ""
+
+#: finance/views.py:427
+#, python-format
+msgid "Household renamed to “%(name)s”."
+msgstr ""
+
+#: finance/views.py:439 finance/views.py:551
+#, python-format
+msgid "%(person)s is now billed with “%(household)s”."
+msgstr ""
+
+#: finance/views.py:451
+#, python-format
+msgid "Adjustment of %(amount)s recorded for “%(household)s”."
+msgstr ""
+
+#: finance/views.py:530
+msgid "Could not change the household."
+msgstr ""
+
+#: finance/views.py:543
+#, python-format
+msgid "%(person)s is billed by address again."
+msgstr ""
+
+#: finance/views.py:571
+#, python-format
+msgid "Household “%(name)s” deleted. Its members are billed by address again."
+msgstr ""
+
+#: finance/views.py:590
+msgid "Adjustment deleted."
 msgstr ""

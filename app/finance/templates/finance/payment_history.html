@@ -32,6 +32,30 @@
         {% else %}
         <p class="text-muted">{% trans "No payment recorded." %}</p>
         {% endif %}
+
+        {% if adjustments %}
+        <h6 class="mt-4">
+            {% blocktranslate with name=household.name %}Household adjustments — {{ name }}{% endblocktranslate %}
+        </h6>
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                    <th>{% trans "Amount" %}</th>
+                    <th>{% trans "Reason" %}</th>
+                    <th>{% trans "Author" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for adjustment in adjustments %}
+                <tr>
+                    <td>{{ adjustment.amount |money }}</td>
+                    <td>{{ adjustment.reason }}</td>
+                    <td>{{ adjustment.author|default:"—" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
