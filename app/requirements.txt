@@ -44,7 +44,7 @@ json5==0.15.0
 kombu==5.6.2
 matplotlib-inline==0.2.2
 nh3==0.3.7
-oauthlib==3.3.1
+oauthlib==4.0.0
 openpyxl==3.1.5
 packaging==26.3
 parso==0.8.7
