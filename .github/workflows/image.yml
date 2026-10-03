@@ -20,7 +20,7 @@ jobs:
       packages: write
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       # arm64 is emulated on the amd64 runner, so this is built for both only
       # when the result is actually published.
