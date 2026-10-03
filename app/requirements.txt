@@ -12,7 +12,7 @@ click==8.5.0
 click-didyoumean==0.3.1
 click-plugins==1.1.1.2
 click-repl==0.4.0
-cron-descriptor==1.4.5
+cron-descriptor==2.1.1
 cryptography==50.0.1
 cssbeautifier==2.0.3
 django==6.1.1
