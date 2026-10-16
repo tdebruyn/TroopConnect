@@ -443,6 +443,12 @@ width of the container at 15% over `paper`.
   names it and the two can never disagree about which branch is which. Four
   fixed stops in CSS could not do that: a troop that renames, re-ages or drops a
   branch reshapes both from the same data.
+- **It runs past what stands on it.** The two ends reach 4rem beyond the
+  container the words are set in and let go as they go. A ground whose edge is
+  the same line as the first letter of the question is not a ground, it is a
+  box: the question, the rail and the answer band all sit inside the colour,
+  with colour to spare. Only the two ends — widening the whole row would move
+  the boundaries between the columns, and those are the rail's own boundaries.
 - **It dissolves at every edge.** In at the top and out at the bottom, so the
   desk rises out of the troop's photograph and settles back into the page; in
   at the left and the right, so it arrives out of the page rather than starting

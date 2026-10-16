@@ -378,9 +378,11 @@ header.masthead .card {
 
 .desk {
   /* Positioned and isolated so the field below can sit at `z-index: -1`
-     without escaping behind the page. */
+     without escaping behind the page. Clipped because that field runs wider
+     than the container the words are set in. */
   position: relative;
   isolation: isolate;
+  overflow: hidden;
   padding: 2.75rem 0 1.25rem;
 }
 
@@ -388,12 +390,9 @@ header.masthead .card {
    branch's own charter colour, as wide as the branch is long — the rail's
    proportion drawn once more behind it.
 
-   Each column lets go of its own edges rather than ending on one, so the four
-   blend where they meet instead of banding, and the ground begins and ends in
-   the page rather than at the container's left and right. Dark enough to be
-   seen as a colour of paper, light enough that a year chip still reads as a
-   sheet lying on it; the white chips are what the whole band is measured
-   against.
+   Dark enough to be seen as a colour of paper, light enough that a year chip
+   still reads as a sheet lying on it; the white chips are what the whole band
+   is measured against.
 
    The columns carry the rail's own 2px gap, so a colour and the segment in
    front of it can never disagree about where one branch stops.
@@ -405,19 +404,14 @@ header.masthead .card {
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  /* The whole ground lets go at the left and the right, so it arrives out of
-     the page rather than starting at a container's edge — a rectangle of
-     colour floating under the photograph would be a second band, and the band
-     this page already has is the troop's own. */
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+  --desk-field-bleed: 4rem;
 }
 
-/* The same letting-go at the top and the bottom: the field rises out of the
+/* The letting-go is at the top and the bottom, on the container so its fades
+   are measured against the desk's own height: the field rises out of the
    troop's photograph and settles back into the page, and the desk never ends
-   on a strip of colour that the page below it then has to start from. Its
-   height is the desk's, not the field's, so the two fades are measured against
-   the band the reader actually sees. */
+   on a strip of colour that the page below it then has to start from. The
+   left and the right are the end columns' own business, below. */
 .desk-field .container {
   height: 100%;
   -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 22%, #000 64%, transparent 96%);
@@ -436,7 +430,42 @@ header.masthead .card {
   /* A branch no preset made has no charter colour, and mixing one out of
      nothing is how it gets none — the rail's bar and the answer band go plain
      for that same branch. */
-  background-color: color-mix(in srgb, var(--branch, transparent) 15%, transparent);
+  --field-tint: color-mix(in srgb, var(--branch, transparent) 15%, transparent);
+  background-color: var(--field-tint);
+}
+
+/* The two ends run on past the container the words are set in, and let go as
+   they go. A ground whose edge is the same line as the first letter of what
+   stands on it is not a ground, it is a box: the question, the rail and the
+   answer band all have to sit inside the colour, with colour to spare.
+
+   The two ends only. Widening the whole row would move the boundaries between
+   the columns, and those are the rail's own boundaries — the one thing this
+   drawing may not lose. So the ends take the extra width and nothing in
+   between moves. */
+.desk-field-col:first-child,
+.desk-field-col:last-child {
+  position: relative;
+}
+
+.desk-field-col:first-child::before,
+.desk-field-col:last-child::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: var(--desk-field-bleed);
+  pointer-events: none;
+}
+
+.desk-field-col:first-child::before {
+  right: 100%;
+  background-image: linear-gradient(90deg, transparent, var(--field-tint));
+}
+
+.desk-field-col:last-child::after {
+  left: 100%;
+  background-image: linear-gradient(90deg, var(--field-tint), transparent);
 }
 
 .desk-question {
