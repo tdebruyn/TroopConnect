@@ -544,7 +544,31 @@ body {
      line, the way the answer band goes plain for that same branch. */
   background-color: var(--branch, #dee2e6);
   transform-origin: left center;
-  animation: desk-segment-grow 0.8s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  /* The rail is one twelve-year line, so it is drawn as one: the segments lay
+     themselves down in the order they are read, youngest branch first, which is
+     the order the journey inside the row actually runs. */
+  animation: desk-segment-grow 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+/* What makes four bars a line rather than four blocks. Held to 80ms a step and
+   capped at the fourth, so a unit running more branches than the preset takes
+   the last step together instead of pushing the draw past the 800ms an authored
+   entrance is allowed. Stacked, the same delay moves down the column, which is
+   the direction the rail is read in there. */
+.desk-segment:nth-child(2) .desk-segment-bar {
+  animation-delay: 80ms;
+}
+
+.desk-segment:nth-child(3) .desk-segment-bar {
+  animation-delay: 160ms;
+}
+
+.desk-segment:nth-child(4) .desk-segment-bar {
+  animation-delay: 240ms;
+}
+
+.desk-segment:nth-child(n + 5) .desk-segment-bar {
+  animation-delay: 320ms;
 }
 
 .desk-segment-head {
@@ -703,12 +727,6 @@ body {
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .desk-segment-bar {
-    animation: none;
-  }
-}
-
 /* Chips keep one size whatever their segment holds, so a two-year branch reads
    as the same control as a four-year one rather than as two wide buttons. */
 .desk-years {
@@ -800,6 +818,12 @@ body {
   justify-content: space-between;
   gap: 1.5rem;
   padding: 1.75rem 2rem;
+  /* It lands on the ground rather than being revealed with it, on both states
+     of the band: the answer is set down on the branch, which is the one thing
+     this band is a picture of. It follows the ground's own descent from the
+     rail above, so the two read as one gesture rather than as two items. */
+  animation: desk-answer-sheet 0.34s cubic-bezier(0.16, 1, 0.3, 1) 90ms
+    backwards;
 }
 
 /* The branch's charter colour as the ground, carrying the branch's own topping
@@ -817,8 +841,22 @@ body {
      is to be the branch's ground and to hold the sheet off the page; past about
      this much it stops being a frame and starts being a fourth surface. */
   padding: 0.75rem;
-  background-color: var(--branch);
   border: 0;
+  /* Painted rather than filled, so the ground can lay itself down out of the
+     rail above instead of having been there all along: the branch's colour as a
+     background image growing down from the band's top edge.
+
+     An image and not a clip path, because the sheet inside has to land *on* the
+     colour rather than be cut off by it — and not a `scaleY` on the band, which
+     would squash the sheet with it. Painted on the band's own box and not a
+     positioned child, because a ground that carries no data does not need an
+     element the way the desk field's columns do. */
+  background-color: transparent;
+  background-image: linear-gradient(var(--branch), var(--branch));
+  background-repeat: no-repeat;
+  background-position: top;
+  background-size: 100% 100%;
+  animation: desk-answer-field 0.3s cubic-bezier(0.16, 1, 0.3, 1) backwards;
 }
 
 /* The topping is the theme's, drawn as an absolutely positioned pseudo-element
@@ -835,6 +873,49 @@ body {
   padding: 1.75rem 2rem;
   background-color: #fff;
   border-radius: 0.25rem;
+}
+
+/* Both keyframes state only where the thing comes *from*, never where it ends
+   up: the resting state stays the element's own rule. An animation that never
+   runs — a browser without them, or the reduced-motion block below — therefore
+   leaves the band and its sheet exactly as designed, rather than half-arrived
+   or invisible. */
+@keyframes desk-answer-field {
+  from {
+    background-size: 100% 0;
+  }
+}
+
+@keyframes desk-answer-sheet {
+  from {
+    opacity: 0;
+    transform: translateY(-0.5rem);
+  }
+}
+
+/* The desk's motion, in one place so the whole of it can be read at once: what
+   the rail draws, what the ground lays down, and what the sheet lands from are
+   all above, and all of them stop here. Nothing is left moving — but the state
+   change still registers, because the band arrives as one object instead of
+   arriving in silence. The chip the parent touched and the segment above it are
+   already confirmed in their own colour by then, so the desk never answers a
+   choice with nothing. */
+@media (prefers-reduced-motion: reduce) {
+  .desk-segment-bar,
+  .desk-answer-paper {
+    animation: none;
+  }
+
+  .desk-answer,
+  .desk-answer-branch {
+    animation: desk-answer-arrive 0.2s ease-out backwards;
+  }
+}
+
+@keyframes desk-answer-arrive {
+  from {
+    opacity: 0;
+  }
 }
 
 .desk-answer-label {

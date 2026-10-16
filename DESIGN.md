@@ -54,6 +54,12 @@ spacing:
   md: "1rem"
   lg: "1.5rem"
   xl: "3rem"
+motion:
+  settle: "cubic-bezier(0.16, 1, 0.3, 1)"
+  feedback: "150ms ease-in-out"
+  ground: "300ms"
+  sheet: "340ms, 90ms delay"
+  draw: "500ms, 80ms a segment"
 components:
   button-primary:
     backgroundColor: "{colors.charter-blue-deep}"
@@ -393,6 +399,57 @@ flag silhouette, repeated as a background image at 10% opacity behind a coloured
 band (`.bg-topping-federation` with `.bg-topping-opacity-10`). It is a watermark,
 not a texture — it never carries meaning, never appears at full strength, and
 never appears on a white surface.
+
+## Motion
+
+**An entrance says where a thing came from, and there is one of them.** The
+system moves to explain — a line drawn in the order it is read, a ground laid
+down under the sheet that lands on it — and then it stops. A reader who is
+working is never made to wait for the page to finish introducing itself.
+
+The desk is the only surface with an authored entrance, and the reason is the
+one the whole page rests on: it is the only thing the visitor operates before
+they have any reason to believe the page is for them. Everywhere else the
+system is quiet — a transition on hover or focus, a chip acknowledging the
+touch — and that is all of it. There is no second entrance, no scroll reveal,
+and no animation on a surface the reader is not already looking at.
+
+### The two beats
+
+- **The rail draws left to right.** One segment per branch, laid down in the
+  order they are read — youngest branch first. The row is a twelve-year journey,
+  so it draws in the order a journey runs, and the 80ms step between segments is
+  what makes four bars read as one line rather than four things appearing at
+  once. Stacked, the same step moves down the column, which is the direction the
+  rail is read in there.
+- **The band lays its ground down, then lands its sheet.** The branch's colour
+  grows out of the band's top edge — out of the rail above it — and the paper
+  carrying the answer settles onto it. Ground first, then paper, because that is
+  what the band *is*: a sheet of paper lying on a branch's colour, and the one
+  place the palette is spent at field scale.
+
+On first paint the two run together as one sequence, the rail drawing while the
+answer's sheet lands. On a swap — a year picked — only the band's beat replays,
+because only the band changed; the rail is not rebuilt, so it is not redrawn.
+
+### Named Rules
+
+**The One-Entrance Rule.** One surface gets an authored entrance, and it is the
+one the visitor operates. Everything else acknowledges a state change and stops.
+A page of staggered section reveals is not this system.
+
+**The Finish-Without-It Rule.** Every keyframe states only where the thing comes
+*from*; the resting state is always the element's own rule, never the
+animation's end frame. An animation that never runs — a browser without them, or
+a reader who has asked for less motion — therefore delivers the finished design
+rather than half of it. Nothing is ever hidden waiting for script.
+
+**The Reduced-Motion Rule.** `prefers-reduced-motion: reduce` removes the
+distance and keeps the arrival. The rail is simply already drawn, and the band
+appears as one object, colour and sheet together, in a 200ms fade — the state
+change still registers, and nothing moves. The chip and the segment a parent
+touched were already confirmed in their own colour by then, so no choice is ever
+answered with silence.
 
 ## Components
 
