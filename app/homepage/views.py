@@ -345,15 +345,20 @@ def _desk_rows(school_year):
         min_age_dec_31__isnull=False, max_age_dec_31__isnull=False
     ).order_by("min_age_dec_31", "name")
 
-    # A branch holds ages [min, max): a child joins it at `min_age_dec_31` and
-    # leaves when they reach `max_age_dec_31`. Treating `max` as inclusive
-    # instead hands two branches the same child at every boundary — the shipped
-    # preset's 6-8 and 8-12 both claim an eight-year-old — which is what the
-    # troop's own ranges (6-8, 8-12, 12-16, 16-18) tile cleanly only without.
+    # Both bounds are ages a member can have: a branch holds
+    # [min_age_dec_31, max_age_dec_31]. That is how `Person.age_fits_branch`
+    # and the passage task read them, so the desk cannot disagree with the
+    # enrolment logic about where a child belongs.
+    #
+    # It is also why the ranges a troop configures have to be the *effective*
+    # ones — 6-7, 8-11, 12-15, 16-17 for the federation's four — rather than
+    # the ages they are advertised as. A troop whose Baladins say 6-8 gives an
+    # eight-year-old to Baladins and, if its Louveteaux start at 8, to
+    # Louveteaux as well.
     by_year = {}
     for branch in branches:
         for year in range(
-            reference_year - branch.max_age_dec_31 + 1,
+            reference_year - branch.max_age_dec_31,
             reference_year - branch.min_age_dec_31 + 1,
         ):
             by_year.setdefault(year, branch)
@@ -382,11 +387,11 @@ def _desk_answer(rows, requested, school_year):
     """The branch a birth year lands in, or None when it lands in no branch.
 
     Carries the scout years the child would spend there: a branch holds ages
-    [min, max), and the age is the one they have on the troop's reference day,
-    so in the year starting ``Y`` it is ``Y - birth_year`` and they are in the
-    branch while ``birth_year + min <= Y <= birth_year + max - 1``. Years
-    already behind us are cut, because a parent is asking where to register,
-    not where the child would have been.
+    [min, max] inclusive, and the age is the one they have on the troop's
+    reference day, so in the year starting ``Y`` it is ``Y - birth_year`` and
+    they are in the branch while ``birth_year + min <= Y <= birth_year + max``.
+    Years already behind us are cut, because a parent is asking where to
+    register, not where the child would have been.
     """
     if not requested or not requested.isdigit():
         return None
@@ -395,7 +400,7 @@ def _desk_answer(rows, requested, school_year):
         if row_year != year:
             continue
         first = max(school_year.name, year + branch.min_age_dec_31)
-        last = year + branch.max_age_dec_31 - 1
+        last = year + branch.max_age_dec_31
         return {
             "year": year,
             "branch": branch,

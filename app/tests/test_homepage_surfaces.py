@@ -62,18 +62,15 @@ class DeskTestBase(TroopSettingsTestCase):
 class DeskRowsTest(DeskTestBase):
     """The age range read backwards, which is the whole rule behind the desk."""
 
-    def test_a_branch_holds_its_ages_up_to_but_not_including_its_maximum(self):
-        """A child joins at `min` and leaves when they reach `max`.
-
-        Inclusive at the top instead would give an eight-year-old to both
-        Baladins and Louveteaux, which is exactly the ambiguity the troop's own
-        ranges have to be read without.
-        """
+    def test_both_ages_a_branch_declares_are_ages_it_takes(self):
+        """The bounds are inclusive, which is what `Person.age_fits_branch`
+        and the passage task read them as — the desk cannot disagree with the
+        enrolment logic about where a child belongs."""
         years = {year for year, branch in _desk_rows(self.school_year)
                  if branch.pk == self.baladins.pk}
         self.assertEqual(
             years,
-            set(range(self.reference_year - 7, self.reference_year - 6 + 1)),
+            set(range(self.reference_year - 8, self.reference_year - 6 + 1)),
         )
 
     def test_the_years_run_oldest_child_to_youngest(self):
@@ -81,7 +78,7 @@ class DeskRowsTest(DeskTestBase):
         years = [year for year, _branch in _desk_rows(self.school_year)]
         self.assertEqual(years, sorted(years))
         self.assertEqual(
-            years[0], self.reference_year - self.louveteaux.max_age_dec_31 + 1
+            years[0], self.reference_year - self.louveteaux.max_age_dec_31
         )
         self.assertEqual(years[-1], self.reference_year - self.baladins.min_age_dec_31)
 
@@ -95,10 +92,13 @@ class DeskRowsTest(DeskTestBase):
 class FederationMappingTest(TroopSettingsTestCase):
     """The birth years the shipped preset's branches cover, for 2026-2027.
 
-    Pinned to the numbers the user gave when they reported the desk's mapping
-    as wrong: the Pionniers are born in 2009 and 2010, the Baladins in 2019 and
-    2020. Read with an inclusive maximum instead, every branch gains the year
-    below it and one child fits two branches.
+    Pinned to the numbers the user gave: the Pionniers are born in 2009 and
+    2010, the Baladins in 2019 and 2020.
+
+    The ranges below are the *effective* ones the corrected database holds —
+    6-7, 8-11, 12-15, 16-17 — not the ages the branches are advertised as. A
+    branch whose maximum is an age it does not take hands that child to the
+    next branch as well.
     """
 
     @classmethod
@@ -108,10 +108,10 @@ class FederationMappingTest(TroopSettingsTestCase):
             cls.school_year
         ).year
         for name, low, high in (
-            ("Baladins", 6, 8),
-            ("Louveteaux", 8, 12),
-            ("Éclaireurs", 12, 16),
-            ("Pionniers", 16, 18),
+            ("Baladins", 6, 7),
+            ("Louveteaux", 8, 11),
+            ("Éclaireurs", 12, 15),
+            ("Pionniers", 16, 17),
         ):
             Branch.objects.create(
                 name=name,
@@ -164,6 +164,33 @@ class FederationMappingTest(TroopSettingsTestCase):
         self.assertEqual(answer["branch"].name, "Louveteaux")
         self.assertEqual(answer["first_year"], "2026-2027", "not 2023-2024")
 
+    def test_the_desk_agrees_with_the_apps_own_branch_check(self):
+        """Every year the desk gives a branch must be an age that branch takes.
+
+        The desk and `Person.age_fits_branch` read the same two columns, and
+        they disagreed only while a branch's maximum was an age it did not
+        take. Checked at three birthdays a year, because the age is measured on
+        the troop's reference day and a January child is not a December one.
+        """
+        role = Role.objects.get(short="e")
+        settings = TroopSettings.get_settings()
+        for year, branch in _desk_rows(self.school_year):
+            for month, day in ((1, 15), (6, 15), (12, 15)):
+                age = settings.age_at_reference(
+                    Person(
+                        first_name="x", last_name="y", primary_role=role,
+                        status="a", birthday=date(year, month, day),
+                    ),
+                    self.school_year,
+                )
+                with self.subTest(year=year, birthday=f"{month:02d}-{day:02d}"):
+                    self.assertTrue(
+                        branch.min_age_dec_31 <= age <= branch.max_age_dec_31,
+                        f"{year} -> {branch.name}, but the child is {age} and "
+                        f"that branch takes {branch.min_age_dec_31} to "
+                        f"{branch.max_age_dec_31}",
+                    )
+
     def test_every_year_lands_in_exactly_one_branch(self):
         """No gaps and no overlaps, which is the whole point of the rule."""
         rows = _desk_rows(self.school_year)
@@ -200,9 +227,9 @@ class PublicHomepageTest(DeskTestBase):
         Branch.objects.create(
             name="Meute", key="louveteaux", min_age_dec_31=8, max_age_dec_31=12
         )
-        # Age 8 is only this branch's — Baladins stops at 7 and the fixture's
-        # Louveteaux starts at 9 — so no overlap can decide the answer.
-        response = self.client.get("/", {"annee": self.reference_year - 8})
+        # Age 12 is only this branch's: the fixture's Baladins stops at 8 and
+        # its Louveteaux start at 9, so no overlap can decide the answer.
+        response = self.client.get("/", {"annee": self.reference_year - 12})
         self.assertContains(response, "Meute")
         self.assertContains(response, "--branch: #296f52")
 
@@ -217,7 +244,7 @@ class PublicHomepageTest(DeskTestBase):
         Branch.objects.create(
             name="Maison", key="maison", min_age_dec_31=8, max_age_dec_31=12
         )
-        response = self.client.get("/", {"annee": self.reference_year - 8})
+        response = self.client.get("/", {"annee": self.reference_year - 12})
         self.assertContains(response, "Maison")
         self.assertNotContains(response, "--branch")
 
