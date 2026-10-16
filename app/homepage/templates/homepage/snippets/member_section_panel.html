@@ -52,15 +52,19 @@
 
     <footer class="member-panel-foot">
         {% comment %}
-            Leading a section and reading its agenda are different rights — a
-            unit admin reads every agenda and leads none — so the write link is
-            only offered where it would not answer 404.
+            No permission check: a section panel is only built for a section
+            this reader leads (see _member_context), so being on the page at
+            all is the right to write to it. A unit admin, who reads every
+            agenda and leads none, gets no section panels and so no link.
         {% endcomment %}
-        {% if agenda_enabled and panel.can_edit %}
+        {% if agenda_enabled %}
             <a class="btn btn-outline-primary btn-sm" href="{% url 'members:agenda_event_create' %}?section={{ panel.section.pk }}">
                 {% trans "Add an activity" %}
             </a>
         {% endif %}
+        <a class="btn btn-outline-primary btn-sm" href="{% url 'messaging:section_history' section_id=panel.section.pk %}">
+            {% trans "Messages" %}
+        </a>
         <a class="btn btn-outline-primary btn-sm" href="{% url 'messaging:compose' %}">
             {% trans "Send a message" %}
         </a>

@@ -593,6 +593,64 @@ header.masthead {
 }
 
 /* ---------------------------------------------------------------------------
+   The reader's other tools.
+
+   A list of named destinations, not a row of cards: these are links, and the
+   page's job is to make one of them findable in a second. The groups are what
+   a reader answers for — their children, their sections, the unit.
+--------------------------------------------------------------------------- */
+
+.member-tools {
+  margin-top: 2.5rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid #dee2e6;
+}
+
+.member-tools-title {
+  font-size: 1.375rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  margin: 0 0 1.25rem;
+}
+
+.member-tools-groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(15rem, 100%), 1fr));
+  gap: 1.75rem 2rem;
+}
+
+.member-tools-group-title {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #5d666e;
+  margin: 0 0 0.75rem;
+}
+
+.member-tools-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.member-tool {
+  display: block;
+  padding: 0.4rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #0a4275;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.member-tool:hover,
+.member-tool:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+/* ---------------------------------------------------------------------------
    Hardening: the input this UI does not get to choose.
 
    A person's name may be 150 characters and an activity's title 200, and both

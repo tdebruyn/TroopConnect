@@ -24,6 +24,7 @@ from members.models import (
     Section,
     TroopSettings,
 )
+from members.permissions import visible_sections
 from tests.base import TroopSettingsTestCase
 from tests.test_finance import FinanceTestBase
 
@@ -358,11 +359,12 @@ class MemberHomepageTest(DeskTestBase):
         self.assertIn('h1 class="h2"', body, "the band's heading was not promoted")
         self.assertIn('h2 class="desk-question"', body, "the desk is not a subheading")
 
-    def test_a_unit_admin_is_not_offered_a_write_they_cannot_make(self):
-        """`can_edit_section_agenda` is read-only for unit admins.
+    def test_a_unit_admin_gets_no_section_panels(self):
+        """Their page is their tools, not a wall of sections.
 
-        They read every agenda and lead none, so the link would answer 404 for
-        exactly the reader who is shown the most panels.
+        `can_edit_section_agenda` is read-only for unit admins: they read every
+        agenda and lead none, so a panel per section said nothing about their
+        work and the write link on each answered 404.
         """
         person = Person.objects.create(
             first_name="Ad", last_name="Min",
@@ -375,8 +377,17 @@ class MemberHomepageTest(DeskTestBase):
         self.client.force_login(account)
 
         body = self.client.get("/").content.decode()
-        self.assertIn("member-panel", body, "the admin should still see the sections")
+        self.assertNotIn("member-panel", body)
         self.assertNotIn(reverse("members:agenda_event_create"), body)
+        self.assertIn("member-tool", body, "the tools are what carries the page")
+        self.assertNotIn("member-empty", body, "an admin is not missing anything")
+
+    def test_a_sections_own_leader_gets_its_panel(self):
+        account = self.make_leader("leads@test.com", self.section)
+        self.client.force_login(account)
+        body = self.client.get("/").content.decode()
+        self.assertIn("member-panel", body)
+        self.assertIn(self.section.name, body)
 
     def test_a_sections_own_leader_is_offered_the_write(self):
         person = Person.objects.create(
@@ -394,6 +405,92 @@ class MemberHomepageTest(DeskTestBase):
             reverse("members:agenda_event_create"),
             self.client.get("/").content.decode(),
         )
+
+    def make_leader(self, email, *sections):
+        person = Person.objects.create(
+            first_name="Lea", last_name="Leader",
+            primary_role=self.leader_role, status="a",
+        )
+        account = Account.objects.create_user(
+            email=email, password="testpass", person=person,
+        )
+        for section in sections:
+            Enrollment.objects.create(
+                user=person, section=section, school_year=self.school_year,
+            )
+        return account
+
+    def make_staff(self, email):
+        person = Person.objects.create(
+            first_name="Sta", last_name="Ff",
+            primary_role=self.parent_role, status="a",
+        )
+        account = Account.objects.create_user(
+            email=email, password="testpass", person=person, is_staff=True,
+        )
+        return account
+
+    def test_the_header_carries_no_menu_for_a_member(self):
+        """Their tools are on the page; a link in both is two things to keep."""
+        account = self.make_parent("nomenu@test.com", self.make_child("Ana"))
+        self.client.force_login(account)
+        self.assertNotContains(self.client.get("/"), "navbar-nav")
+
+    def test_a_visitor_still_gets_the_public_navigation(self):
+        self.assertContains(self.client.get("/"), "navbar-nav")
+
+    def test_a_parent_is_offered_their_own_tools_and_not_the_units(self):
+        account = self.make_parent("tools@test.com", self.make_child("Ana", self.baladins))
+        self.client.force_login(account)
+        body = self.client.get("/").content.decode()
+        self.assertIn(reverse("members:add_new_child"), body)
+        self.assertNotIn(reverse("members:admin_list"), body)
+        self.assertNotIn(reverse("members:troop_settings"), body)
+
+    def test_a_leader_is_offered_the_section_tools(self):
+        account = self.make_leader("leadertools@test.com", self.section)
+        self.client.force_login(account)
+        body = self.client.get("/").content.decode()
+        self.assertIn(reverse("messaging:compose"), body)
+        self.assertIn(reverse("messaging:animateur_history"), body)
+        self.assertNotIn(reverse("members:troop_settings"), body)
+
+    def test_a_unit_admin_is_offered_the_administration_tools(self):
+        account = self.make_staff("stafftools@test.com")
+        self.client.force_login(account)
+        body = self.client.get("/").content.decode()
+        for name in ("members:admin_list", "members:passage",
+                     "members:member_import", "members:troop_settings",
+                     "members:mail_queue"):
+            self.assertIn(reverse(name), body, name)
+
+    def test_every_tool_link_answers_for_every_role(self):
+        """The hub promises each destination, and three dead ones have shipped.
+
+        Checked for all three readers, because a link can answer for one role
+        and 404 for another — which is exactly how the Pay button and "Add an
+        activity" went wrong.
+        """
+        from homepage.views import _member_tools
+
+        child = self.make_child("Ana", self.baladins)
+        readers = {
+            "parent": (self.make_parent("ans-parent@test.com", child), child.parents.first()),
+            "leader": (self.make_leader("ans-leader@test.com", self.section), None),
+            "staff": (self.make_staff("ans-staff@test.com"), None),
+        }
+        for role, (account, person) in readers.items():
+            person = person or account.person
+            children = list(Person.objects.filter(as_child__parent=person))
+            sections = list(visible_sections(account))
+            for group in _member_tools(account, person, sections, children):
+                for label, url in group["items"]:
+                    with self.subTest(role=role, tool=label):
+                        self.client.force_login(account)
+                        self.assertEqual(
+                            self.client.get(url).status_code, 200,
+                            f"{role}: {label} -> {url} did not answer",
+                        )
 
     def test_a_member_with_nothing_attached_gets_an_explanation(self):
         person = Person.objects.create(

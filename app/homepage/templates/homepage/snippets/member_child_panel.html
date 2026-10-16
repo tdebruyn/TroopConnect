@@ -64,6 +64,15 @@
                 {% trans "Report an absence" %}
             </a>
         {% endif %}
+        {% comment %}
+            What the section's leaders sent the family. This was the header's
+            Sections dropdown until the header stopped carrying one.
+        {% endcomment %}
+        {% if panel.section %}
+            <a class="btn btn-outline-primary btn-sm" href="{% url 'messaging:section_history' section_id=panel.section.pk %}">
+                {% trans "Messages" %}
+            </a>
+        {% endif %}
         <a class="btn btn-outline-primary btn-sm" href="{% url 'members:edit_child' pk=panel.person.pk %}">
             {% trans "Edit details" %}
         </a>

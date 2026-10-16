@@ -88,18 +88,21 @@ class MessagingPermissionTest(TestCase):
     def test_animateur_history_shows_compose_button(self):
         """The history page itself offers a way to compose.
 
-        Counted rather than asserted by label: base.html renders "Envoyer un
-        message" in the nav dropdown for anyone who can compose, so asserting
-        the label passed even with the page's own button deleted.
+        Counted rather than asserted by label. The count used to be two — the
+        page's own button plus base.html's nav dropdown — which is why it was
+        counted at all: asserting the label passed even with the page's button
+        deleted. The header no longer carries a menu for a signed-in reader,
+        so the page's button is now the only one, and the count says so.
         """
         self.client.login(email="anim@test.com", password="testpass")
         response = self.client.get("/messaging/history/")
         html = response.content.decode()
-        # one link from the nav dropdown, one from the page body
-        self.assertEqual(html.count(reverse("messaging:compose")), 2)
+        self.assertEqual(html.count(reverse("messaging:compose")), 1)
 
     def test_staff_history_shows_compose_button(self):
+        """Same as the animateur's: the page's own button, and only it now
+        that the header carries no menu for a signed-in reader."""
         self.client.login(email="staff@test.com", password="testpass")
         response = self.client.get("/messaging/history/")
         html = response.content.decode()
-        self.assertEqual(html.count(reverse("messaging:compose")), 2)
+        self.assertEqual(html.count(reverse("messaging:compose")), 1)

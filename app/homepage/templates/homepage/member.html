@@ -79,10 +79,33 @@
                     {% endif %}
                 {% endfor %}
             </div>
-        {% else %}
+        {% elif member_show_empty %}
             <p class="member-empty text-muted">
                 {% trans "Nothing is attached to your account yet. Your unit's leaders can link your children to it." %}
             </p>
+        {% endif %}
+
+        {% comment %}
+            The reader's other tools. The header no longer carries a menu, so
+            this is where everything lives — see homepage.views._member_tools
+            for what appears for which role, and why.
+        {% endcomment %}
+        {% if member_tools %}
+            <section class="member-tools" aria-labelledby="member-tools-title">
+                <h2 class="member-tools-title" id="member-tools-title">{% trans "Your tools" %}</h2>
+                <div class="member-tools-groups">
+                    {% for group in member_tools %}
+                        <div class="member-tools-group">
+                            <h3 class="member-tools-group-title">{{ group.title }}</h3>
+                            <ul class="member-tools-list">
+                                {% for label, url in group.items %}
+                                    <li><a class="member-tool" href="{{ url }}">{{ label }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
         {% endif %}
     </main>
 {% endblock content %}

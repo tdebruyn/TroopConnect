@@ -9,6 +9,7 @@ from django.db.models import Count
 from django.http import HttpResponseBadRequest, JsonResponse
 from django.shortcuts import render
 from django.template.loader import render_to_string
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import override
@@ -29,7 +30,9 @@ from members.models import (
 from members.modules import module_enabled
 from members.permissions import (
     ANIMATEUR_ROLES,
+    PARENT,
     can_access_finance,
+    can_access_messaging,
     can_edit_section_agenda,
     can_manage_unit,
     get_person,
@@ -493,14 +496,95 @@ def _siblings_are_discounted(school_year):
     )
 
 
+def _member_tools(user, person, sections, children):
+    """The groups of links the reader's own tools are made of.
+
+    Built here rather than in the template, because every entry is a promise
+    that the page it points at will answer: each is gated on the same predicate
+    its view enforces. Three dead links have shipped from this file already —
+    the Pay button, "Add an activity", and both of them for the same reason —
+    so the rule is that a link and its gate live in one place.
+
+    This is why the header no longer carries a menu for a signed-in reader: the
+    page is the menu, and a link that appears in both would be two places to
+    keep honest.
+    """
+    groups = []
+
+    parent_items = []
+    if module_enabled(modules.AGENDA):
+        parent_items.append((_("Agenda"), reverse("members:agenda")))
+    # No entry for the children list itself: `members:child_list` renders an
+    # HTMX fragment and answers 400 to a plain request, and the panels above
+    # are that list anyway.
+    parent_items += [
+        (_("Add a child"), reverse("members:add_new_child")),
+        (_("Link a child with a key"), reverse("members:add_key_child")),
+    ]
+    if person is not None and (children or has_primary_role(user, (PARENT,))):
+        groups.append({"title": _("Your children"), "items": parent_items})
+
+    if sections:
+        section_items = []
+        if can_access_messaging(user):
+            section_items += [
+                (_("Send a message"), reverse("messaging:compose")),
+                (_("Message history"), reverse("messaging:animateur_history")),
+            ]
+        if module_enabled(modules.AGENDA):
+            section_items.append((_("Section agendas"), reverse("members:agenda")))
+        if section_items:
+            groups.append({"title": _("Your sections"), "items": section_items})
+
+    unit_items = []
+    if user.is_staff:
+        unit_items += [
+            (_("Member management"), reverse("members:admin_list")),
+            (_("Section passage"), reverse("members:passage")),
+            (_("Import and export"), reverse("members:member_import")),
+            (_("Settings"), reverse("members:troop_settings")),
+            (_("Email queue"), reverse("members:mail_queue")),
+        ]
+    if can_access_finance(user) and module_enabled(modules.FEES):
+        unit_items.append((_("Membership fees"), reverse("finance:billing")))
+    if can_manage_unit(user) and module_enabled(modules.SIGNING):
+        unit_items.append((_("Attestations"), reverse("attestations:index")))
+    if unit_items:
+        groups.append({"title": _("The unit"), "items": unit_items})
+
+    groups.append(
+        {
+            "title": _("Your account"),
+            "items": [
+                (_("My profile"), reverse("members:profile", kwargs={"pk": user.pk})),
+                (_("My documents"), reverse("members:documents")),
+            ],
+        }
+    )
+    groups.append(
+        {
+            "title": _("The unit's page"),
+            "items": [
+                (_("Our unit"), reverse("unit_page")),
+                (_("FAQ"), reverse("faq")),
+            ],
+        }
+    )
+    return groups
+
+
 def _member_context(user):
     """What a signed-in reader sees on ``/``, by role.
 
-    The panel's subject follows the reader — a parent's children, a section
-    leader's sections, every section for the people running the unit — while the
-    panel itself stays the same shape, so the page is predictable whatever the
-    role. A reader who is both a parent and a leader gets both groups, children
-    first, rather than one silently winning.
+    The panel's subject follows the reader — a parent's children, a leader's own
+    sections — while the panel itself stays the same shape, so the page is
+    predictable whatever the role. A reader who is both a parent and a leader
+    gets both groups, children first, rather than one silently winning.
+
+    A panel is a thing the reader *answers for*, not a thing they may read. That
+    is why the unit's staff get no section panels: they can read every agenda,
+    but leading none of them made their page a wall of sections that said
+    nothing about their work. Their page is their tools.
     """
     person = get_person(user)
     school_year = SchoolYear.current()
@@ -513,10 +597,11 @@ def _member_context(user):
     # reading visible_sections for them would hand back their children's
     # sections and give every parent a leader's panels.
     leads = can_manage_unit(user) or has_primary_role(user, ANIMATEUR_ROLES)
-    sections = list(visible_sections(user)) if leads else []
+    readable = list(visible_sections(user)) if leads else []
+    led = [section for section in readable if can_edit_section_agenda(user, section)]
 
     events = _upcoming_events(
-        [child.get_section() for child in children if child.get_section()] + sections
+        [child.get_section() for child in children if child.get_section()] + led
     )
     absences = _absence_counts(list(events.values()))
 
@@ -534,16 +619,16 @@ def _member_context(user):
             }
         )
 
-    if sections:
+    if led:
         sizes = {
             row["section_id"]: row["n"]
             for row in Enrollment.objects.filter(
-                school_year=school_year, section__in=sections
+                school_year=school_year, section__in=led
             )
             .values("section_id")
             .annotate(n=Count("id"))
         }
-        for section in sections:
+        for section in led:
             event = events.get(section.pk)
             panels.append(
                 {
@@ -552,21 +637,24 @@ def _member_context(user):
                     "event": event,
                     "absences": absences.get(event.pk, 0) if event else 0,
                     "members": sizes.get(section.pk, 0),
-                    # Read and write are different rights here: a unit admin
-                    # reads every agenda and leads none, so the write link
-                    # would 404 for exactly the reader with the most sections.
-                    "can_edit": can_edit_section_agenda(user, section),
                 }
             )
 
     return {
         "member_panels": panels,
+        "member_tools": _member_tools(user, person, readable, children),
         # A reader who answers for sections gets the unit's heading whether or
         # not they also have children: "Your children" over a list of sections
         # would be a lie, and a leader with no section yet is still a leader.
         "member_heading": _("Your unit") if leads else _("Your children"),
         "member_children": sum(1 for panel in panels if panel["kind"] == "child"),
-        "member_sections": sum(1 for panel in panels if panel["kind"] == "section"),
+        "member_sections": len(led),
+        # The empty state explains an empty account to a family. A reader whose
+        # page is their tools is not missing anything, so it is not shown to
+        # them — it would tell an administrator their unit is not attached.
+        "member_show_empty": (
+            not panels and not children and not (user.is_staff or can_manage_unit(user))
+        ),
         # The treasurer's screens 404 for everyone else, so a parent who is not
         # one must not be handed a Pay button that dead-ends.
         "member_can_pay": can_access_finance(user),

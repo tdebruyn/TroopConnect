@@ -64,89 +64,16 @@
                         <span class="visually-hidden">{% trans "Toggle navigation" %}</span><span class="navbar-toggler-icon"></span>
                     </button>
                     <div id="navcol-1" class="collapse navbar-collapse">
-                        <ul class="navbar-nav me-auto">
-                            {% comment %}
-                                Only when there is something in it: a visitor has
-                                no sections, and a dropdown that opens onto
-                                "No section" is a dead end on the one page
-                                strangers actually read.
-                            {% endcomment %}
-                            {% if nav_sections %}
-                                <li class="nav-item dropdown d-xxl-flex align-items-xxl-center">
-                                    <a class="dropdown-toggle nav-link active"
-                                       aria-expanded="false"
-                                       data-bs-toggle="dropdown"
-                                       href="#">{% trans "Sections" %}</a>
-                                    <div class="dropdown-menu dropdown-menu-dark">
-                                        {% for section in nav_sections %}
-                                            <a class="dropdown-item" href="{% url 'messaging:section_history' section_id=section.pk %}">{{ section.name }}</a>
-                                        {% endfor %}
-                                    </div>
-                                </li>
-                            {% endif %}
-                            {% module_enabled "agenda" as agenda_on %}
-                            {% if agenda_on and user.is_authenticated %}
-                                <li class="nav-item">
-                                    <a class="nav-link active" href="{% url 'members:agenda' %}">{% trans "Agenda" %}</a>
-                                </li>
-                            {% endif %}
-                            {% if user.is_staff or user_is_tresorier or user_can_send_all %}
-                                <li class="nav-item dropdown">
-                                    <a class="dropdown-toggle nav-link active"
-                                       aria-expanded="false"
-                                       data-bs-toggle="dropdown"
-                                       href="#">{% trans "Administration" %}</a>
-                                    <div class="dropdown-menu dropdown-menu-dark">
-                                        {% if user.is_staff %}
-                                            <a class="dropdown-item" href="{% url 'members:admin_list' %}">{% trans "Member management" %}</a>
-                                            <a class="dropdown-item" href="{% url 'members:passage' %}">{% trans "Section passage" %}</a>
-                                            <a class="dropdown-item" href="{% url 'members:member_import' %}">{% trans "Import and export" %}</a>
-                                            <a class="dropdown-item" href="{% url 'members:troop_settings' %}">{% trans "Settings" %}</a>
-                                        {% endif %}
-                                        {% module_enabled "fees" as fees_on %}
-                                        {% if user_is_tresorier and fees_on %}
-                                            <a class="dropdown-item" href="{% url 'finance:billing' %}">{% trans "Membership fees" %}</a>
-                                        {% endif %}
-                                        {% if user_can_send_all %}
-                                            <a class="dropdown-item" href="{% url 'messaging:compose' %}">{% trans "Send a message" %}</a>
-                                            <a class="dropdown-item" href="{% url 'messaging:animateur_history' %}">{% trans "Message history" %}</a>
-                                            {% module_enabled "signing" as signing_on %}
-                                            {% if signing_on %}
-                                                <a class="dropdown-item" href="{% url 'attestations:index' %}">{% trans "Attestations" %}</a>
-                                            {% endif %}
-                                        {% endif %}
-                                    </div>
-                                </li>
-                            {% endif %}
-                            {% if user_is_animateur %}
-                                <li class="nav-item dropdown">
-                                    <a class="dropdown-toggle nav-link active"
-                                       aria-expanded="false"
-                                       data-bs-toggle="dropdown"
-                                       href="#">{% trans "Animator tools" %}</a>
-                                    <div class="dropdown-menu dropdown-menu-dark">
-                                        <a class="dropdown-item" href="{% url 'messaging:compose' %}">{% trans "Send a message" %}</a>
-                                        <a class="dropdown-item" href="{% url 'messaging:animateur_history' %}">{% trans "Message history" %}</a>
-                                    </div>
-                                </li>
-                            {% endif %}
-                            {% if user.is_authenticated %}
-                                {% comment %}
-                                    `/` is the tool for anyone signed in, so the
-                                    troop's own page needs a way in from here —
-                                    otherwise a member can never see the page
-                                    their unit writes.
-                                {% endcomment %}
-                                <li class="nav-item">
-                                    <a class="nav-link active" href="{% url 'unit_page' %}">{% trans "Our unit" %}</a>
-                                </li>
-                            {% endif %}
-                            <li class="nav-item">
-                                <a class="nav-link active" href="{% url 'faq' %}">{% trans "FAQ" %}</a>
-                            </li>
-                        </ul>
+                        {% comment %}
+                            A reader who is signed in gets no menu here. Their
+                            tools are on the page at `/`, and a link kept in
+                            both places is two things to keep honest. What
+                            stays is what a page cannot carry for itself: the
+                            account, and the language beside it.
+                        {% endcomment %}
                         {% if user.is_authenticated %}
-                            <div class="btn-group">
+                            <div class="btn-group ms-auto">
+
                                 <a role="button"
                                    class="btn btn-info"
                                    href="{% url 'members:profile' user.id %}">{{ user }}</a>
@@ -192,7 +119,31 @@
                                 </ul>
                             </div>
                         {% else %}
-                            <a class="nav-link" href="{% url 'account_signup' %}">{% trans "Sign up" %}</a>
+                            <ul class="navbar-nav me-auto">
+                                {% comment %}
+                                    Only when there is something in it: a
+                                    visitor has no sections, and a dropdown
+                                    that opens onto "No section" is a dead end
+                                    on the one page strangers actually read.
+                                {% endcomment %}
+                                {% if nav_sections %}
+                                    <li class="nav-item dropdown d-xxl-flex align-items-xxl-center">
+                                        <a class="dropdown-toggle nav-link active"
+                                           aria-expanded="false"
+                                           data-bs-toggle="dropdown"
+                                           href="#">{% trans "Sections" %}</a>
+                                        <div class="dropdown-menu dropdown-menu-dark">
+                                            {% for section in nav_sections %}
+                                                <a class="dropdown-item" href="{% url 'messaging:section_history' section_id=section.pk %}">{{ section.name }}</a>
+                                            {% endfor %}
+                                        </div>
+                                    </li>
+                                {% endif %}
+                                <li class="nav-item">
+                                    <a class="nav-link active" href="{% url 'faq' %}">{% trans "FAQ" %}</a>
+                                </li>
+                            </ul>
+<a class="nav-link" href="{% url 'account_signup' %}">{% trans "Sign up" %}</a>
                             <a class="btn btn-info" role="button" href="{% url 'account_login' %}">{% trans "Log in" %}</a>
                         {% endif %}
                         {% if show_language_selector %}

@@ -3701,3 +3701,27 @@ msgid "They would be there from school year %(first)s to %(last)s."
 msgid_plural "They would be there from school year %(first)s to %(last)s."
 msgstr[0] "Il ou elle y serait de l'année scolaire %(first)s à %(last)s."
 msgstr[1] "Il ou elle y serait de l'année scolaire %(first)s à %(last)s."
+
+msgid "Your tools"
+msgstr "Vos outils"
+
+msgid "Your sections"
+msgstr "Vos sections"
+
+msgid "Your account"
+msgstr "Votre compte"
+
+msgid "The unit's page"
+msgstr "La page de l'unité"
+
+msgid "My children"
+msgstr "Mes enfants"
+
+msgid "Add a child"
+msgstr "Ajouter un enfant"
+
+msgid "Link a child with a key"
+msgstr "Lier un enfant avec une clé"
+
+msgid "Section agendas"
+msgstr "Agendas de section"

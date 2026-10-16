@@ -28,6 +28,24 @@ Next activity per section, absence state, the household's balance and its
 billing rule, the member's file state. All already held by the instance:
 `Enrollment`, `SectionEvent`, `Absence`, the finance models, `TroopSettings`.
 
+## The page is the menu
+
+Decided by the user after the first build. The reader's tools live on this page,
+grouped by what they answer for, and the header carries **no menu** for anyone
+signed in — the brand (which returns here), the account and the language are all
+that remain. A link kept in both places is two things to keep honest, and two of
+this session's dead links were exactly that: a destination whose gate had moved.
+
+Two rules follow, and they are the reason the code looks the way it does:
+
+- **A link appears only where its view would answer.** `_member_tools` gates
+  every entry on the same predicate its view enforces, and a test fetches each
+  one for each role rather than trusting the list.
+- **A panel is a thing the reader answers for, not a thing they may read.** The
+  unit's staff can read every agenda and lead none, so they get no section
+  panels at all — their page is their tools. Whether the header carries the
+  menu is not a matter of taste: it is the same rule applied to the header.
+
 ## Constraints
 
 Fees are billed per **household**, not per child — the eldest pays full and
