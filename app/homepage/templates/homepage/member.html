@@ -10,17 +10,19 @@
 {% endcomment %}
 {% block content %}
     <main class="container member-page">
-        <h1 class="member-title">{{ member_heading }}</h1>
-        {% if member_panels %}
-            <p class="member-summary">
+        <header class="member-head">
+            <h1 class="member-title">{{ member_heading }}</h1>
+            {% if member_panels %}
+                <p class="member-summary">
                 {% if member_sections %}
                     {% blocktranslate count counter=member_sections %}{{ counter }} section you answer for.{% plural %}{{ counter }} sections you answer for.{% endblocktranslate %}
                 {% endif %}
                 {% if member_children %}
                     {% blocktranslate count counter=member_children %}{{ counter }} child linked to your account.{% plural %}{{ counter }} children linked to your account.{% endblocktranslate %}
-                {% endif %}
-            </p>
-        {% endif %}
+                    {% endif %}
+                </p>
+            {% endif %}
+        </header>
 
         {% if member_dues %}
             <section class="member-house{% if member_dues.late %} member-house-late{% endif %}">

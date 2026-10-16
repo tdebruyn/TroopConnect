@@ -331,7 +331,8 @@ header.masthead {
   align-items: center;
   justify-content: space-between;
   gap: 1.5rem;
-  margin-top: 2.125rem;
+  /* The same interval the year chips use: both are steps in one sequence. */
+  margin-top: 2rem;
   padding: 1.75rem 2rem;
   background-color: #fff;
   border: 1px solid #dee2e6;
@@ -430,11 +431,19 @@ header.masthead {
   padding-bottom: 3rem;
 }
 
+/* The title and its one-line summary are one thought, so they stay tight; the
+   block they make is separated from what follows by the header's own margin.
+   `-0.75rem` used to pull the summary up under the title instead, which left
+   the summary touching the household band at exactly 0px. */
+.member-head {
+  margin-bottom: 1.5rem;
+}
+
 .member-title {
   font-size: 2.125rem;
   font-weight: 800;
   letter-spacing: -0.01em;
-  margin-bottom: 1.25rem;
+  margin: 0;
 }
 
 .member-house {
@@ -486,7 +495,7 @@ header.masthead {
 }
 
 .member-summary {
-  margin: -0.75rem 0 0;
+  margin: 0.375rem 0 0;
   font-size: 1.0625rem;
   color: #5d666e;
 }
@@ -613,10 +622,22 @@ header.masthead {
   margin: 0 0 1.25rem;
 }
 
+/* A labelled row per group, not a grid of equal tracks. The groups hold two
+   to seven links; equal tracks made every row as tall as the largest group and
+   left the short ones standing in voids — a third of the page, at a squint.
+   Here each row is only as tall as its own content, and the titles share a
+   left edge to scan down. */
 .member-tools-groups {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(15rem, 100%), 1fr));
-  gap: 1.75rem 2rem;
+  grid-template-columns: 10rem 1fr;
+  row-gap: 0.9rem;
+  column-gap: 1.5rem;
+}
+
+/* The group wrapper carries no box of its own, so its title and its list
+   become the row's two cells. */
+.member-tools-group {
+  display: contents;
 }
 
 .member-tools-group-title {
@@ -625,18 +646,22 @@ header.masthead {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: #5d666e;
-  margin: 0 0 0.75rem;
+  /* Optically level with the first line of the links beside it. */
+  margin: 0.3rem 0 0;
 }
 
 .member-tools-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.1rem 1.4rem;
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
 .member-tool {
-  display: block;
-  padding: 0.4rem 0;
+  display: inline-block;
+  padding: 0.35rem 0;
   font-size: 1rem;
   font-weight: 600;
   color: #0a4275;
@@ -700,6 +725,15 @@ header.masthead {
 @media (max-width: 575.98px) {
   .member-facts {
     grid-template-columns: 1fr;
+  }
+
+  .member-tools-groups {
+    grid-template-columns: 1fr;
+    row-gap: 0.35rem;
+  }
+
+  .member-tools-group-title {
+    margin-top: 1.1rem;
   }
 
   .member-facts dt {

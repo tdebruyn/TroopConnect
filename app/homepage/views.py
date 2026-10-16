@@ -496,7 +496,7 @@ def _siblings_are_discounted(school_year):
     )
 
 
-def _member_tools(user, person, sections, children):
+def _member_tools(user, person, sections, children, leads):
     """The groups of links the reader's own tools are made of.
 
     Built here rather than in the template, because every entry is a promise
@@ -511,6 +511,22 @@ def _member_tools(user, person, sections, children):
     """
     groups = []
 
+    # Which group leads. A reader's page should open on their own work: a staff
+    # page that starts with "Your children" makes an administrator scroll past
+    # a group that is not their job, and the header no longer offers a way
+    # around it.
+    if user.is_staff or can_manage_unit(user):
+        leading = "unit"
+    elif leads:
+        leading = "sections"
+    else:
+        leading = "children"
+
+    def priority(kind):
+        if kind == leading:
+            return 0
+        return 2 if kind in ("account", "site") else 1
+
     parent_items = []
     if module_enabled(modules.AGENDA):
         parent_items.append((_("Agenda"), reverse("members:agenda")))
@@ -522,7 +538,13 @@ def _member_tools(user, person, sections, children):
         (_("Link a child with a key"), reverse("members:add_key_child")),
     ]
     if person is not None and (children or has_primary_role(user, (PARENT,))):
-        groups.append({"title": _("Your children"), "items": parent_items})
+        groups.append(
+            {
+                "title": _("Your children"),
+                "items": parent_items,
+                "priority": priority("children"),
+            }
+        )
 
     if sections:
         section_items = []
@@ -534,7 +556,13 @@ def _member_tools(user, person, sections, children):
         if module_enabled(modules.AGENDA):
             section_items.append((_("Section agendas"), reverse("members:agenda")))
         if section_items:
-            groups.append({"title": _("Your sections"), "items": section_items})
+            groups.append(
+                {
+                    "title": _("Your sections"),
+                    "items": section_items,
+                    "priority": priority("sections"),
+                }
+            )
 
     unit_items = []
     if user.is_staff:
@@ -550,10 +578,13 @@ def _member_tools(user, person, sections, children):
     if can_manage_unit(user) and module_enabled(modules.SIGNING):
         unit_items.append((_("Attestations"), reverse("attestations:index")))
     if unit_items:
-        groups.append({"title": _("The unit"), "items": unit_items})
+        groups.append(
+            {"title": _("The unit"), "items": unit_items, "priority": priority("unit")}
+        )
 
     groups.append(
         {
+            "priority": priority("account"),
             "title": _("Your account"),
             "items": [
                 (_("My profile"), reverse("members:profile", kwargs={"pk": user.pk})),
@@ -563,6 +594,7 @@ def _member_tools(user, person, sections, children):
     )
     groups.append(
         {
+            "priority": priority("site"),
             "title": _("The unit's page"),
             "items": [
                 (_("Our unit"), reverse("unit_page")),
@@ -570,7 +602,8 @@ def _member_tools(user, person, sections, children):
             ],
         }
     )
-    return groups
+    # A stable sort: groups of equal standing keep the order they are built in.
+    return sorted(groups, key=lambda group: group["priority"])
 
 
 def _member_context(user):
@@ -642,7 +675,7 @@ def _member_context(user):
 
     return {
         "member_panels": panels,
-        "member_tools": _member_tools(user, person, readable, children),
+        "member_tools": _member_tools(user, person, readable, children, leads),
         # A reader who answers for sections gets the unit's heading whether or
         # not they also have children: "Your children" over a list of sections
         # would be a lie, and a leader with no section yet is still a leader.

@@ -24,7 +24,12 @@ from members.models import (
     Section,
     TroopSettings,
 )
-from members.permissions import visible_sections
+from members.permissions import (
+    ANIMATEUR_ROLES,
+    can_manage_unit,
+    has_primary_role,
+    visible_sections,
+)
 from tests.base import TroopSettingsTestCase
 from tests.test_finance import FinanceTestBase
 
@@ -483,7 +488,8 @@ class MemberHomepageTest(DeskTestBase):
             person = person or account.person
             children = list(Person.objects.filter(as_child__parent=person))
             sections = list(visible_sections(account))
-            for group in _member_tools(account, person, sections, children):
+            leads = can_manage_unit(account) or has_primary_role(account, ANIMATEUR_ROLES)
+            for group in _member_tools(account, person, sections, children, leads):
                 for label, url in group["items"]:
                     with self.subTest(role=role, tool=label):
                         self.client.force_login(account)
