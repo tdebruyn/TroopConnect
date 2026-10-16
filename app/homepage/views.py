@@ -316,10 +316,15 @@ def _desk_rows(school_year):
         min_age_dec_31__isnull=False, max_age_dec_31__isnull=False
     ).order_by("min_age_dec_31", "name")
 
+    # A branch holds ages [min, max): a child joins it at `min_age_dec_31` and
+    # leaves when they reach `max_age_dec_31`. Treating `max` as inclusive
+    # instead hands two branches the same child at every boundary — the shipped
+    # preset's 6-8 and 8-12 both claim an eight-year-old — which is what the
+    # troop's own ranges (6-8, 8-12, 12-16, 16-18) tile cleanly only without.
     by_year = {}
     for branch in branches:
         for year in range(
-            reference_year - branch.max_age_dec_31,
+            reference_year - branch.max_age_dec_31 + 1,
             reference_year - branch.min_age_dec_31 + 1,
         ):
             by_year.setdefault(year, branch)

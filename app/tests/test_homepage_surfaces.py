@@ -56,25 +56,84 @@ class DeskTestBase(TroopSettingsTestCase):
 class DeskRowsTest(DeskTestBase):
     """The age range read backwards, which is the whole rule behind the desk."""
 
-    def test_a_branch_covers_its_own_age_range(self):
+    def test_a_branch_holds_its_ages_up_to_but_not_including_its_maximum(self):
+        """A child joins at `min` and leaves when they reach `max`.
+
+        Inclusive at the top instead would give an eight-year-old to both
+        Baladins and Louveteaux, which is exactly the ambiguity the troop's own
+        ranges have to be read without.
+        """
         years = {year for year, branch in _desk_rows(self.school_year)
                  if branch.pk == self.baladins.pk}
         self.assertEqual(
             years,
-            set(range(self.reference_year - 8, self.reference_year - 6 + 1)),
+            set(range(self.reference_year - 7, self.reference_year - 6 + 1)),
         )
 
     def test_the_years_run_oldest_child_to_youngest(self):
         """The desk reads left to right as the ages do."""
         years = [year for year, _branch in _desk_rows(self.school_year)]
         self.assertEqual(years, sorted(years))
-        self.assertEqual(years[0], self.reference_year - self.louveteaux.max_age_dec_31)
+        self.assertEqual(
+            years[0], self.reference_year - self.louveteaux.max_age_dec_31 + 1
+        )
         self.assertEqual(years[-1], self.reference_year - self.baladins.min_age_dec_31)
 
     def test_a_branch_without_ages_is_skipped(self):
         Branch.objects.create(name="Sans âges")
         self.assertNotIn(
             "Sans âges", {branch.name for _year, branch in _desk_rows(self.school_year)}
+        )
+
+
+class FederationMappingTest(TroopSettingsTestCase):
+    """The birth years the shipped preset's branches cover, for 2026-2027.
+
+    Pinned to the numbers the user gave when they reported the desk's mapping
+    as wrong: the Pionniers are born in 2009 and 2010, the Baladins in 2019 and
+    2020. Read with an inclusive maximum instead, every branch gains the year
+    below it and one child fits two branches.
+    """
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.school_year = SchoolYear.current()
+        cls.reference_year = TroopSettings.get_settings().age_reference_date(
+            cls.school_year
+        ).year
+        for name, low, high in (
+            ("Baladins", 6, 8),
+            ("Louveteaux", 8, 12),
+            ("Éclaireurs", 12, 16),
+            ("Pionniers", 16, 18),
+        ):
+            Branch.objects.create(
+                name=name,
+                key=name.lower(),
+                min_age_dec_31=low,
+                max_age_dec_31=high,
+            )
+
+    def years_of(self, name):
+        return sorted(
+            year for year, branch in _desk_rows(self.school_year)
+            if branch.name == name
+        )
+
+    def test_the_baladins_are_the_two_youngest_years(self):
+        self.assertEqual(self.years_of("Baladins"), [self.reference_year - 7,
+                                                     self.reference_year - 6])
+
+    def test_the_pionniers_are_the_two_oldest_years(self):
+        self.assertEqual(self.years_of("Pionniers"), [self.reference_year - 17,
+                                                      self.reference_year - 16])
+
+    def test_every_year_lands_in_exactly_one_branch(self):
+        """No gaps and no overlaps, which is the whole point of the rule."""
+        rows = _desk_rows(self.school_year)
+        self.assertEqual(
+            [year for year, _ in rows],
+            list(range(self.reference_year - 17, self.reference_year - 6 + 1)),
         )
 
 
@@ -105,9 +164,9 @@ class PublicHomepageTest(DeskTestBase):
         Branch.objects.create(
             name="Meute", key="louveteaux", min_age_dec_31=8, max_age_dec_31=12
         )
-        # Age 12 is only this branch's, so the overlap with the others cannot
-        # decide the answer.
-        response = self.client.get("/", {"annee": self.reference_year - 12})
+        # Age 8 is only this branch's — Baladins stops at 7 and the fixture's
+        # Louveteaux starts at 9 — so no overlap can decide the answer.
+        response = self.client.get("/", {"annee": self.reference_year - 8})
         self.assertContains(response, "Meute")
         self.assertContains(response, "--branch: #296f52")
 
@@ -122,7 +181,7 @@ class PublicHomepageTest(DeskTestBase):
         Branch.objects.create(
             name="Maison", key="maison", min_age_dec_31=8, max_age_dec_31=12
         )
-        response = self.client.get("/", {"annee": self.reference_year - 12})
+        response = self.client.get("/", {"annee": self.reference_year - 8})
         self.assertContains(response, "Maison")
         self.assertNotContains(response, "--branch")
 
