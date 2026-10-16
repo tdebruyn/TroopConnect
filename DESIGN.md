@@ -12,8 +12,7 @@ colors:
   charter-slate: "#809aaf"
   charter-sky: "#15adea"
   paper: "#f2f5f8"
-  home-ink: "#052039"
-  home-muted-on-ink: "#a6b8c8"
+  home-ground: "#dde5ec"
   white: "#ffffff"
   border: "#dee2e6"
   border-input: "#ced4da"
@@ -145,7 +144,7 @@ and the logo it uploads.
 - A sky-blue banner with the federation flag behind it as the recurring page opener
 - Thin 1px lines and soft 0.25rem corners; depth by border, not by shadow
 - Paper-filled fields on a paper-coloured page, separated by a border and a blue focus halo
-- The public homepage's dark half: the unit's photograph going down into the federation's ink, the desk written on it, and one white band where the page comes back into the light
+- The homepage's desk standing on the four branches' colours, at the one place the page spends them
 - Two shells: the site (fixed 110px navbar) and the first-run wizard (its own page, same theme)
 
 ## Colors
@@ -153,14 +152,6 @@ and the logo it uploads.
 Flat charter inks on a pale blue-grey paper — saturated and confident in small
 areas, nearly monochrome over most of the screen. Every colour here is the
 federation's; none was chosen by this project.
-
-The public homepage is the one surface that inverts them. It runs from the
-troop's own photograph down into `home-ink`, writes the whole desk on that dark,
-and comes back into `white` at the single moment it asks the visitor to act. The
-inversion is not a theme and not a second palette: it is the same charter ink,
-taken to the depth a page needs to carry four branch colours and white type at
-once, and it stops at the desk. Every other page — and everything below the desk
-on this one — is still paper.
 
 ### Primary
 - **Charter Blue Deep** (#0a4275): The ink. Body text, every heading, links, the
@@ -192,20 +183,15 @@ on this one — is still paper.
 - **Paper** (#f2f5f8): The page background *and* the fill of every text field.
   Fields are not white — they sit on the page as slightly darker wells defined by
   their border. This is the single most distinctive thing about the form layer.
-- **Home Ink** (#052039, `color-mix(in srgb, #0a4275 30%, #03101c)`): The dark
-  half of the public page, and one colour doing three jobs: the troop's
-  photograph goes down into it, the desk is written on it, and the four branches
-  are stated against it. It is *derived* rather than picked, so it moves with
-  the ink it is mixed from, and it exists only on `/` — no members page sees it.
-  Taken down to near-black rather than left at the charter blue, and that is a
-  measurement and not a mood: Éclaireurs is #004f9f, and on any lighter ground
-  the branch whose colour is *itself* a dark blue has nowhere to stand.
-- **Muted on Ink** (#a6b8c8): The muted voice on the dark half. On a dark ground
-  the ladder inverts — a muted voice is one *dimmer* than white rather than
-  darker than paper — so this is a light slate and not a grey. It is measured
-  against the lightest thing it can land on, which is the Baladins room at the
-  strength the desk field lays down, and it is a step lighter than the first
-  value that passed so the margin is not a hair's breadth (worst case 4.95:1).
+- **Home Ground** (#dde5ec, `color-mix(in srgb, #0a4275 9%, #f2f5f8)`): The
+  opening ground of the public page, and one colour doing two jobs: the troop's
+  photograph settles into it, and the four branches' tints are read through it.
+  It is *derived* rather than picked, so it moves with the ink it is mixed from,
+  and it exists only at the top of `/` — no members page ever sees it.
+  It is the desk field's base, so the four tints are *darker* than they were
+  over bare `paper` — 15% of a saturated hue over a darker base — and darker
+  ground costs dark text its margin. `muted-on-field` was re-measured and moved
+  a step down for exactly that reason; see its entry below.
 - **White** (#ffffff): Cards, dropdowns, modals, the navbar's overlay surfaces.
   Nothing else is white.
 - **Border** (#dee2e6): Structural lines — wizard branches, the agenda grid,
@@ -264,22 +250,6 @@ never configures it. A troop owns its name, its logo, its favicon, its branches
 and its content — it does not own colour. A "match my logo" or theme-picker
 feature is a departure from this system, not a refinement of it.
 
-**The Strength-Follows-the-Ground Rule.** A charter colour is stated at the
-strength its ground allows, and the light and the dark halves state the same
-colour by opposite moves: on paper a branch is a 15% veil with its rule at full
-strength, on the ink it is a 30% mix with its rule lifted toward white. Neither
-is the branch's colour, and that is the point — a colour is not misrepresented
-by being drawn for its ground, and the alternative is a branch whose rule is
-invisible on the room it names. `Éclaireurs` at #004f9f is why this is a rule
-rather than a preference: it is a dark blue, so on any light-handed dark ground
-it has nowhere to stand.
-
-**The True-Colour Rule.** Each branch's actual colour appears at full strength in
-exactly one place on the page: the answer band's ground, at the moment the page
-names a branch. The rail states a branch; the answer shows it. A page that spent
-the true colour in both places would have nothing left to say when it finally
-names the one the child is going into.
-
 **The Charter-Only Rule.** A new state gets a colour from this list or it gets
 no colour. Charter hues may carry meaning only through an explicit mapping —
 today that is the agenda's three activity types (`charter-blue-deep` reunion,
@@ -287,11 +257,11 @@ today that is the agenda's three activity types (`charter-blue-deep` reunion,
 or reaching for a Bootstrap default that the theme did not override.
 
 **The Shared Ground Rule.** The hero band and the desk are two elements of one
-field. The photograph's descent ends on `home-ink` and the desk *begins* on it,
-with no gap between them, and that is what makes the join invisible. Changing
-one without the other puts a seam across the top of the public page — and it
-lands at exactly the height where the photograph stops, which is the most
-visible line the page could have. Both read the one `--home-ink` in `:root`
+field. The band's settle ends on `home-ground` and the desk *begins* on it, with
+no gap between them, and that is what makes the join invisible. Changing one
+without the other puts a seam across the top of the public page — and it lands
+at exactly the height where the photograph stops, which is the most visible
+line the page could have. Both read it from the one `--home-ground` in `:root`
 because the two elements are siblings and neither owns it.
 
 ## Typography
@@ -601,18 +571,10 @@ members page opens with it: a charter sky band carrying the federation flag at
   `backdrop-filter` and not `filter`, which is the load-bearing choice: a
   `filter` would blur or dim the band and every word in it, while a backdrop
   filter acts on what is *behind* the layer and leaves the type sharp.
-- **The band goes down into the ink, and that is the page's one long movement.**
-  The photograph keeps its own light at the top — where the bar is and where
-  nothing has to be read — and then gives way downwards to `home-ink`, which is
-  the colour the desk begins on. A straight ramp between two colours reads as a
-  gradient lying on a photograph; this one turns late, so the ground arrives
-  instead of fading. It scales with the window, because at phone widths the band
-  is most of the first screen already.
-- **It is a descent, not a wash, and the difference is where the dark is spent.**
-  The band's own layer over the picture is a trace of ink and nothing more,
-  deepest at the top where the bar's glass sits on it. Everything below that is
-  the descent, and the descent ends where the photograph ends: it covers the
-  band's whole foot, measured from the same padding the words clear.
+- **The settle is deliberately short.** A dissolve is a band of the troop's own
+  picture given up to a flat colour, and the deeper it runs the more the
+  photograph reads as washed out rather than as handed over. It scales with the
+  window, because at phone widths the band is most of the first screen already.
 - **The band's words are one centred column of left-aligned type.** A unit's
   description runs to whatever length its troop wrote; past two lines a centred
   block stops being read as one statement and starts being read as a shape. The
@@ -623,37 +585,12 @@ members page opens with it: a charter sky band carrying the federation flag at
   There is no desk below the hero there to hand over to, so the release fades to
   the page colour the blocks are dropped onto instead.
 
-### Desk
-
-The public page's dark half. The desk — the question, the rail, the years, the
-closing note — is written on `home-ink`, and it is the only place in the product
-where white type is the ordinary voice rather than the exception.
-
-- **It is dark because of what it holds, not for effect.** Four branch colours
-  and the copy that names them have to sit together and stay legible; on paper
-  they can be read but not *stated*, because Éclaireurs is a dark blue and a
-  tint of it over a light ground is a tint of almost nothing. Taken onto the ink
-  the same four colours are stated by being deepened, and the words are white.
-- **The ink holds to the closing note and then returns to paper inside the desk's
-  own foot.** The page comes back to light *after* the desk has finished saying
-  what it has to say, so the section below begins on the page's own colour
-  rather than on a half-lit one. The foot is the slack that return is spent in;
-  without it the return would run under the note.
-- **Its voice is white, and the ladder of muted voices is the one built for this
-  ground.** `Muted on Ink` is a light slate rather than a grey, and the branch
-  the answer names is marked by weight *and* by going to full white, because on
-  the ink the muted rung is already light enough to read as emphasis it does not
-  mean.
-
 ### Desk Field
 
 The ground the enrolment desk stands on, and the first thing the public page
 says before it says anything in words: the four branches as four columns, each
 as wide as its branch is long and in that branch's own colour, laid across the
-width of the container. On the ink each column is its branch's colour *mixed
-into* the ink at 30%; on paper the same drawing would be a 15% veil over the
-ground. Both are the branch stated at the strength its ground allows — see the
-Strength-Follows-the-Ground Rule.
+width of the container at 15% over the home ground.
 
 - **It is the rail's drawing at a second strength.** Same colours, same
   proportions, but **no gap**: the columns meet. The rail keeps its 2px gap —
@@ -750,12 +687,9 @@ the youngest child to the oldest.
 - **A segment is as long as its branch is.** `flex: <age range> 1 0`, so the
   four of them read as one twelve-year journey rather than as four equal blocks,
   and a troop that re-ages a branch reshapes the rail without anyone editing it.
-- **Each segment's rule states its branch, and the field fills the room it
-  occupies** — the same colour at the two strengths its ground allows. On the ink
-  the rule is *lifted* toward white and the room is the colour mixed *into* the
-  ink, which is what stops a branch's rule from being drawn on a room of almost
-  exactly its own colour. Together with the answer band's ground at full
-  strength, that is the whole of the page's colour: stated twice, shown once.
+- **Each segment's rule is its branch's colour at full strength**, and the desk
+  field behind it is the same colour at 15% — the rail states which branch, the
+  field fills the room it occupies.
 - **A name stands inside its own colour.** Side by side, every segment but the
   first holds a 2rem gutter under its rule, so no branch's name is written on
   the seam where its colour begins — on the seam it reads as spilling over the
@@ -780,17 +714,10 @@ the youngest child to the oldest.
   The fade-in is short, because the branch's name has to keep standing in its
   colour: this is an arrival, not a gradient the words are laid across.
 
-**The Never-On-The-Field Rule.** Copy is never set *on* a charter field *at full
-strength*. White type fails AA on the Baladins blue and dark type fails on the
-other three, so the paper goes between them every time. The field may carry
-meaning; it may not carry words.
-
-A field at the strength a dark ground allows is a different thing and is not
-covered by this rule: the desk field's rooms are a 30% mix into the ink, dark
-enough that the question and the branch names stand on them in white at 10:1 or
-better. The rule is about full strength, which is where the two colours collide —
-and on this page full strength is spent in one place only, the answer band's
-ground.
+**The Never-On-The-Field Rule.** Copy is never set *on* a charter field. White
+type fails AA on the Baladins blue and dark type fails on the other three, so
+the paper goes between them every time. The field may carry meaning; it may not
+carry words.
 
 A **tint** of a branch colour is not that field. At the 15% the desk field lays
 down, the page's own ink and the `muted-on-field` rung both clear AA on all four
@@ -926,10 +853,6 @@ cell per day.
   HTMX view targets it.
 - **Don't** add a page that has to be read on hover to be understood — nothing in
   this system depends on pointer state to be legible.
-- **Don't** leave an inherited colour on a heading on a dark ground. The theme
-  gives every heading the charter ink through its *own* rule, which a colour set
-  on the container behind it cannot reach — so a white section with a navy
-  question in it looks like a bug in the section and is a rule in the theme.
 - **Don't** put a mask or a clip on a container whose children are meant to paint
   outside it. Both clip to the element's own border box, so a fade that lives one
   level too deep cuts off exactly the overflow it was placed to soften — the desk
