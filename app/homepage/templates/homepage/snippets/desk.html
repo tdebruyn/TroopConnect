@@ -12,7 +12,14 @@
 <section class="desk{% if not registration_open %} desk-closed{% endif %}">
     <div class="container">
         <div class="desk-inner">
-            <h1 class="desk-question">{% trans "What year was your child born?" %}</h1>
+            {% comment %}
+                The unit's band is the page's h1 when it is there, so this
+                question is a subheading; without one it is the page's title.
+                The class carries the size either way.
+            {% endcomment %}
+            {% if hero_html %}<h2 class="desk-question">{% else %}<h1 class="desk-question">{% endif %}
+                {% trans "What year was your child born?" %}
+            {% if hero_html %}</h2>{% else %}</h1>{% endif %}
 
             {% if desk_rows %}
                 <div class="desk-years" role="group" aria-label="{% trans "Year of birth" %}">
@@ -23,10 +30,12 @@
                            hx-target="#desk-answer"
                            hx-swap="innerHTML"
                            hx-push-url="true"
+                           hx-sync="this:replace"
                            {% if desk_answer.year == year %}aria-current="true"{% endif %}>{{ year }}</a>
                     {% endfor %}
                 </div>
-                <div id="desk-answer">
+                {# The swap replaces this region, so it has to announce itself. #}
+                <div id="desk-answer" aria-live="polite" aria-atomic="true">
                     {% include "homepage/snippets/desk_answer.html" %}
                 </div>
                 {% comment %}

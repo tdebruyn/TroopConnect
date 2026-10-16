@@ -51,7 +51,12 @@
     {% endif %}
 
     <footer class="member-panel-foot">
-        {% if agenda_enabled %}
+        {% comment %}
+            Leading a section and reading its agenda are different rights — a
+            unit admin reads every agenda and leads none — so the write link is
+            only offered where it would not answer 404.
+        {% endcomment %}
+        {% if agenda_enabled and panel.can_edit %}
             <a class="btn btn-outline-primary btn-sm" href="{% url 'members:agenda_event_create' %}?section={{ panel.section.pk }}">
                 {% trans "Add an activity" %}
             </a>

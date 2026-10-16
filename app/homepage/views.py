@@ -30,6 +30,7 @@ from members.modules import module_enabled
 from members.permissions import (
     ANIMATEUR_ROLES,
     can_access_finance,
+    can_edit_section_agenda,
     can_manage_unit,
     get_person,
     has_primary_role,
@@ -105,6 +106,11 @@ def _split_hero(html):
     homepage adds — the enrolment desk included — while remaining inside the
     content the editor owns and locks. Splitting it here is what lets the desk
     sit under the unit's own opening without the editor losing the hero.
+
+    The band's own heading is promoted to the page's ``h1``, because a heading
+    above the desk's question would otherwise leave the outline starting at
+    level two. It keeps the ``h2`` class, so it still looks exactly as the
+    troop's page drew it — only the level changes.
     """
     if not html:
         return "", html
@@ -115,7 +121,27 @@ def _split_hero(html):
     if close == -1:
         return "", html
     end = close + len(_MASTHEAD_CLOSE)
-    return html[start:end], (html[:start] + html[end:]).strip()
+    hero = _promote_heading(html[start:end])
+    return hero, (html[:start] + html[end:]).strip()
+
+
+# A heading element, its attributes (quote-aware so `>` inside one cannot end
+# the tag early) and its content, back-referenced so the pair matches.
+_HEADING_RE = re.compile(
+    r"<h([1-6])((?:[^>\"']|\"[^\"]*\"|'[^']*')*)>(.*?)</h\1>",
+    re.IGNORECASE | re.DOTALL,
+)
+
+
+def _promote_heading(html):
+    """Rewrite the first heading in `html` as an ``h1``, style untouched."""
+    def swap(match):
+        attrs = match.group(2)
+        if "class=" not in attrs:
+            attrs = ' class="h2"' + attrs
+        return f"<h1{attrs}>{match.group(3)}</h1>"
+
+    return _HEADING_RE.sub(swap, html, count=1)
 
 
 def _back_over_blanks(html, pos):
@@ -526,6 +552,10 @@ def _member_context(user):
                     "event": event,
                     "absences": absences.get(event.pk, 0) if event else 0,
                     "members": sizes.get(section.pk, 0),
+                    # Read and write are different rights here: a unit admin
+                    # reads every agenda and leads none, so the write link
+                    # would 404 for exactly the reader with the most sections.
+                    "can_edit": can_edit_section_agenda(user, section),
                 }
             )
 

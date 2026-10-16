@@ -352,6 +352,49 @@ class MemberHomepageTest(DeskTestBase):
 
         self.assertNotContains(self.client.get("/"), reverse("members:agenda"))
 
+    def test_the_units_band_becomes_the_pages_h1(self):
+        """A heading above the desk would otherwise start the page at level 2."""
+        body = self.client.get("/").content.decode()
+        self.assertIn('h1 class="h2"', body, "the band's heading was not promoted")
+        self.assertIn('h2 class="desk-question"', body, "the desk is not a subheading")
+
+    def test_a_unit_admin_is_not_offered_a_write_they_cannot_make(self):
+        """`can_edit_section_agenda` is read-only for unit admins.
+
+        They read every agenda and lead none, so the link would answer 404 for
+        exactly the reader who is shown the most panels.
+        """
+        person = Person.objects.create(
+            first_name="Ad", last_name="Min",
+            primary_role=self.parent_role, status="a",
+        )
+        person.roles.add(Role.objects.get(short="ad"))
+        account = Account.objects.create_user(
+            email="admin@test.com", password="testpass", person=person,
+        )
+        self.client.force_login(account)
+
+        body = self.client.get("/").content.decode()
+        self.assertIn("member-panel", body, "the admin should still see the sections")
+        self.assertNotIn(reverse("members:agenda_event_create"), body)
+
+    def test_a_sections_own_leader_is_offered_the_write(self):
+        person = Person.objects.create(
+            first_name="Lea", last_name="Leader",
+            primary_role=self.leader_role, status="a",
+        )
+        account = Account.objects.create_user(
+            email="lea@test.com", password="testpass", person=person,
+        )
+        Enrollment.objects.create(
+            user=person, section=self.section, school_year=self.school_year,
+        )
+        self.client.force_login(account)
+        self.assertIn(
+            reverse("members:agenda_event_create"),
+            self.client.get("/").content.decode(),
+        )
+
     def test_a_member_with_nothing_attached_gets_an_explanation(self):
         person = Person.objects.create(
             first_name="Nou", last_name="Veau",

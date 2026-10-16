@@ -506,6 +506,9 @@ header.masthead {
 }
 
 .member-avatar {
+  /* Without this a long name shrinks it: a flex item may go below its width,
+     and a circle that is narrower than it is tall reads as a smudge. */
+  flex: none;
   width: 3.375rem;
   height: 3.375rem;
   border-radius: 50%;
@@ -587,6 +590,40 @@ header.masthead {
 .member-empty {
   color: #5d666e;
   font-size: 1.0625rem;
+}
+
+/* ---------------------------------------------------------------------------
+   Hardening: the input this UI does not get to choose.
+
+   A person's name may be 150 characters and an activity's title 200, and both
+   land in a panel that cannot truncate them without losing the one thing the
+   reader came for.
+--------------------------------------------------------------------------- */
+
+/* The theme whitens every link inside a coloured band with `!important`, which
+   beats `.btn-info`'s own black text and leaves the navbar's login button and
+   user chip at 3.39:1 on their teal — below AA. Black is what the theme meant
+   for them, and this selector is narrower, so it wins. */
+.navbar .btn-info {
+  color: #000 !important;
+}
+
+.member-panel-name,
+.member-panel-meta,
+.member-facts dd,
+.member-house-note,
+.member-house-amount,
+.member-summary {
+  overflow-wrap: anywhere;
+}
+
+/* A grid or flex child is as wide as its content by default, so a long name
+   would push the row past the panel instead of wrapping inside it. */
+.member-facts,
+.member-house-grow,
+.member-panel-head > div,
+.desk-answer-text {
+  min-width: 0;
 }
 
 @media (max-width: 767.98px) {

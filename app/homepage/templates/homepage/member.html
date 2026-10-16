@@ -9,7 +9,7 @@
   the decisions are there, not here.
 {% endcomment %}
 {% block content %}
-    <div class="container member-page">
+    <main class="container member-page">
         <h1 class="member-title">{{ member_heading }}</h1>
         {% if member_panels %}
             <p class="member-summary">
@@ -84,5 +84,5 @@
                 {% trans "Nothing is attached to your account yet. Your unit's leaders can link your children to it." %}
             </p>
         {% endif %}
-    </div>
+    </main>
 {% endblock content %}
