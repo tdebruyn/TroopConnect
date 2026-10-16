@@ -1,0 +1,48 @@
+{% load i18n %}
+{% comment %}
+  Where the unit meets, under the desk.
+
+  The desk says which branch a child would join; this says where to turn up,
+  which is the other half of the same decision. It is also the thing the page
+  could not say at all until now: the address sat on the settings row, edited
+  on the staff page, and was rendered by no template anywhere.
+
+  Every part stands on its own. A troop that has named its hall but uploaded no
+  picture gets the name and the address; one that has filled in nothing gets no
+  band at all, rather than an empty frame where a map should be.
+
+  The map is the troop's own upload and not an embed, which is a deployment
+  decision rather than a design one: a live map has every visitor's browser
+  call a map service from the unit's own page, and the keyed ones would make
+  each troop open an account with that service before its homepage worked.
+  What the page owes a parent is directions, so it gives them as a link they
+  choose to follow.
+{% endcomment %}
+{% if unit_address or meeting_place %}
+    <section class="place">
+        <div class="container">
+            <h2 class="place-title">{% trans "Where to find us" %}</h2>
+            <div class="place-body">
+                <div class="place-text">
+                    {% if meeting_place %}
+                        <p class="place-name">{{ meeting_place }}</p>
+                    {% endif %}
+                    {% if unit_address %}
+                        <p class="place-address">{{ unit_address|linebreaksbr }}</p>
+                    {% endif %}
+                    {% if unit_address_url %}
+                        <p class="place-directions">
+                            <a href="{{ unit_address_url }}" target="_blank" rel="noopener">{% trans "Directions" %}</a>
+                        </p>
+                    {% endif %}
+                </div>
+                {% if unit_map_url %}
+                    <div class="place-map">
+                        <img src="{{ unit_map_url }}"
+                             alt="{% trans 'A map of where the unit meets' %}" />
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+{% endif %}

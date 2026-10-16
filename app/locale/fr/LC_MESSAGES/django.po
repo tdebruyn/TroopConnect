@@ -3618,6 +3618,9 @@ msgstr "Aucune branche de cette unité ne prend un enfant né en %(year)s. Véri
 
 msgid "%(min)s to %(max)s years"
 msgstr "%(min)s à %(max)s ans"
+msgid "The method, the values and the educational ambition are the same in every branch — what changes with age is the way they are lived."
+msgstr "La méthode, les valeurs et l'ambition éducative sont les mêmes dans chaque branche — c'est la façon de les vivre qui change avec l'âge."
+
 
 msgid "%(branch)s: year of birth"
 msgstr "%(branch)s : année de naissance"
@@ -3747,3 +3750,24 @@ msgstr "Lier un enfant avec une clé"
 
 msgid "Section agendas"
 msgstr "Agendas de section"
+
+msgid "Where to find us"
+msgstr "Où nous trouver"
+
+msgid "Directions"
+msgstr "Itinéraire"
+
+msgid "A map of where the unit meets"
+msgstr "Un plan de l'endroit où l'unité se réunit"
+
+msgid "Meeting place"
+msgstr "Lieu de réunion"
+
+msgid "Map of the meeting place"
+msgstr "Plan du lieu de réunion"
+
+msgid "What the unit calls the place it meets, if it calls it anything. Shown above the address on the homepage."
+msgstr "Le nom que l'unité donne au lieu où elle se réunit, si elle en donne un. Affiché au-dessus de l'adresse sur la page d'accueil."
+
+msgid "A picture of where the unit meets, shown beside the address on the homepage. Leave empty to show the address on its own."
+msgstr "Une image de l'endroit où l'unité se réunit, affichée à côté de l'adresse sur la page d'accueil. Laissez vide pour n'afficher que l'adresse."

@@ -3615,6 +3615,9 @@ msgstr "Geen enkele tak van deze eenheid neemt een kind geboren in %(year)s. Con
 
 msgid "%(min)s to %(max)s years"
 msgstr "%(min)s tot %(max)s jaar"
+msgid "The method, the values and the educational ambition are the same in every branch — what changes with age is the way they are lived."
+msgstr "De methode, de waarden en de educatieve ambitie zijn in elke tak dezelfde — wat met de leeftijd verandert, is de manier waarop ze worden beleefd."
+
 
 msgid "%(branch)s: year of birth"
 msgstr "%(branch)s: geboortejaar"
@@ -3744,3 +3747,24 @@ msgstr "Een kind koppelen met een sleutel"
 
 msgid "Section agendas"
 msgstr "Sectieagenda's"
+
+msgid "Where to find us"
+msgstr "Waar je ons vindt"
+
+msgid "Directions"
+msgstr "Route"
+
+msgid "A map of where the unit meets"
+msgstr "Een kaart van waar de eenheid samenkomt"
+
+msgid "Meeting place"
+msgstr "Ontmoetingsplaats"
+
+msgid "Map of the meeting place"
+msgstr "Kaart van de ontmoetingsplaats"
+
+msgid "What the unit calls the place it meets, if it calls it anything. Shown above the address on the homepage."
+msgstr "De naam die de eenheid geeft aan de plaats waar ze samenkomt, als ze er een geeft. Wordt boven het adres op de startpagina getoond."
+
+msgid "A picture of where the unit meets, shown beside the address on the homepage. Leave empty to show the address on its own."
+msgstr "Een afbeelding van waar de eenheid samenkomt, naast het adres op de startpagina. Laat leeg om alleen het adres te tonen."

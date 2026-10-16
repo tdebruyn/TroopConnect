@@ -13,7 +13,12 @@ from django.urls import reverse
 
 from finance.models import FeeRule
 from homepage.models import SiteContent
-from homepage.views import _desk_rows, _household_dues, _siblings_are_discounted
+from homepage.views import (
+    _desk_groups,
+    _desk_rows,
+    _household_dues,
+    _siblings_are_discounted,
+)
 from members.models import (
     Account,
     Branch,
@@ -74,14 +79,28 @@ class DeskRowsTest(DeskTestBase):
             set(range(self.reference_year - 8, self.reference_year - 6 + 1)),
         )
 
-    def test_the_years_run_oldest_child_to_youngest(self):
-        """The desk reads left to right as the ages do."""
+    def test_the_rows_run_oldest_child_first(self):
+        """``_desk_rows`` sorts ascending, which is the order the grouping
+        below consumes and un-sorts again for the rail."""
         years = [year for year, _branch in _desk_rows(self.school_year)]
         self.assertEqual(years, sorted(years))
         self.assertEqual(
             years[0], self.reference_year - self.louveteaux.max_age_dec_31
         )
         self.assertEqual(years[-1], self.reference_year - self.baladins.min_age_dec_31)
+
+    def test_each_branch_runs_its_youngest_year_to_its_oldest(self):
+        """The rail draws a branch's years the way it draws the branches, so
+        the line reads as one journey rather than restarting at every
+        segment."""
+        groups = _desk_groups(_desk_rows(self.school_year))
+        for group in groups:
+            years = group["years"]
+            self.assertEqual(years, sorted(years, reverse=True), group["branch"].name)
+        # Read across the segments it is then one descending run, which is the
+        # point: each branch carries on where the one before it left off.
+        line = [year for group in groups for year in group["years"]]
+        self.assertEqual(line, sorted(line, reverse=True))
 
     def test_a_branch_without_ages_is_skipped(self):
         Branch.objects.create(name="Sans âges")
@@ -679,3 +698,75 @@ class MemberDuesTest(FinanceTestBase):
 
         self.client.force_login(self.parent1_account)
         self.assertContains(self.client.get("/"), "member-house-late")
+
+
+class PlaceBandTest(TroopSettingsTestCase):
+    """Where the unit meets, under the desk.
+
+    This band is the only place the unit's address reaches a page at all: it
+    was stored on the settings row and rendered by no template before it.
+    """
+
+    def test_absent_until_the_unit_says_where_it_meets(self):
+        """No empty frame where a map should be."""
+        troop = TroopSettings.get_settings()
+        troop.footer_address = ""
+        troop.meeting_place = ""
+        troop.save()
+
+        response = self.client.get("/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, "place-title")
+
+    def test_names_the_place_and_the_address(self):
+        troop = TroopSettings.get_settings()
+        troop.meeting_place = "Par delà l'eau"
+        troop.footer_address = "Rue Achille Bauduin 89\n1300 Limal"
+        troop.save()
+
+        response = self.client.get("/")
+
+        self.assertContains(response, "place-title")
+        # The apostrophe is escaped in the response, so the assertion stops
+        # short of it rather than pinning the escaping.
+        self.assertContains(response, "Par delà l")
+        self.assertContains(response, "Rue Achille Bauduin 89")
+        self.assertContains(response, "1300 Limal")
+
+    def test_directions_are_a_link_the_reader_chooses_to_follow(self):
+        """The page must not call a map service on its own: the address goes
+        into a query, and the request happens when a reader clicks it."""
+        troop = TroopSettings.get_settings()
+        troop.footer_address = "Rue Achille Bauduin 89\n1300 Limal"
+        troop.save()
+
+        response = self.client.get("/")
+
+        self.assertContains(response, "openstreetmap.org/search?query=")
+        # Collapsed onto one line, which is what a query wants.
+        self.assertContains(
+            response, "query=Rue%20Achille%20Bauduin%2089%201300%20Limal"
+        )
+
+    def test_no_map_image_until_one_is_uploaded(self):
+        troop = TroopSettings.get_settings()
+        troop.footer_address = "Rue Achille Bauduin 89"
+        troop.save()
+
+        response = self.client.get("/")
+
+        self.assertContains(response, "place-address")
+        self.assertNotContains(response, "place-map")
+
+    def test_the_unit_page_carries_no_place_band(self):
+        """The troop's own page is at `/unite/`; the band belongs to the
+        visitor's page, like the desk it sits under."""
+        troop = TroopSettings.get_settings()
+        troop.footer_address = "Rue Achille Bauduin 89"
+        troop.save()
+
+        response = self.client.get("/unite/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, "place-title")

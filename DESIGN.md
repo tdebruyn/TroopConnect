@@ -17,6 +17,7 @@ colors:
   border-input: "#ced4da"
   muted: "#6c757d"
   muted-on-paper: "#5d666e"
+  muted-on-field: "#555f68"
 typography:
   display:
     fontFamily: "Muli, sans-serif"
@@ -122,12 +123,13 @@ because the theme can move under it and the local copy would win.
 The result is deliberately unglamorous and consistently so. Density follows the
 task rather than the brand: a settings page is a stack of cards, a member list is
 a striped table, a form is one labelled field per block. The federation shows up
-in flat charter colour and in bold Muli — and, in two places, at field scale
-rather than as an accent: the banner's flag silhouette behind a page title, and
-the enrolment desk's answer, which takes the matched branch's own colour as its
-ground. There is no troop-level colour, no theme picker, no second accent: the
-palette is the federation's, and the unit's identity is carried by its name and
-the logo it uploads.
+in flat charter colour and in bold Muli — and, in three places, at field scale
+rather than as an accent: the banner's flag silhouette behind a page title, the
+ground the enrolment desk stands on, which is the four branches drawn as four
+columns, and the desk's answer, which takes the matched branch's own colour as
+its ground. There is no troop-level colour, no theme picker, no second accent:
+the palette is the federation's, and the unit's identity is carried by its name
+and the logo it uploads.
 
 **Key Characteristics:**
 - Bootstrap's own primitives, used as intended, restyled only where a task needs it
@@ -135,6 +137,7 @@ the logo it uploads.
 - A sky-blue banner with the federation flag behind it as the recurring page opener
 - Thin 1px lines and soft 0.25rem corners; depth by border, not by shadow
 - Paper-filled fields on a paper-coloured page, separated by a border and a blue focus halo
+- The homepage's desk standing on the four branches' colours, at the one place the page spends them
 - Two shells: the site (fixed 110px navbar) and the first-run wizard (its own page, same theme)
 
 ## Colors
@@ -185,6 +188,30 @@ federation's; none was chosen by this project.
   theme's muted is drawn for white cards and measures 4.29:1 on `paper`, which
   fails AA by a margin thin enough that it would pass unnoticed — so text on the
   paper ground uses this instead, one step darker.
+- **Muted on Field** (#555f68): The third rung, for the same voice on a coloured
+  ground. `muted-on-paper` clears AA on `paper` with room to spare, and a branch
+  tint under it spends most of that room: on the three darker branch colours it
+  measures 4.16–4.35:1, which is a failure thin enough to pass unnoticed for the
+  same reason the theme's muted did. One step darker again, and it clears AA on
+  every branch tint the desk field can lay down (worst case 4.63:1) as well as on
+  `paper` (5.95:1).
+
+### Branches
+
+The federation draws a colour for each branch, and they are a fourth family
+apart from the charter inks above: `BRANCH_COLOURS` in `homepage/views.py` maps
+`Branch.key` — the preset slug, not the name a troop gives it — to the theme's
+own branch colour.
+
+- **Baladins** #00a0de, **Louveteaux** #296f52, **Éclaireurs** #004f9f,
+  **Pionniers** #d51317.
+
+They are spent on the homepage, where the branches are the subject, and in five
+strengths of one idea: the desk field's columns at 15%, the rail's 4px rules at
+full, the year chips' rings and fills at full and 32%, and the answer band's
+ground at full. A branch no preset made has no colour and gets none: a made-up
+one would claim a meaning it does not carry, so its rule is the structural line,
+its column is nothing, and its answer band is the plain outlined one.
 
 ### Named Rules
 
@@ -337,14 +364,18 @@ size of the thing rather than a fixed scale.
 Almost every line is 1px, at three values: `#ced4da` for input borders, 12.5%
 black for card and dropdown outlines, `#dee2e6` for structural borders and the
 agenda grid. A thicker rule is reserved for stating *which* thing you are
-looking at, and there are exactly two in the codebase: the first-run wizard
+looking at, and there are exactly three in the codebase: the first-run wizard
 marks a step's summary and a structure block's nesting with 3px `border-left`
-accents (`--bs-primary`, `--bs-border-color`). Both are state, not decoration,
-and neither is a pattern to extend to a card that has no state to state.
+accents (`--bs-primary`, `--bs-border-color`), and the branch rail heads each
+segment with a 4px rule in that branch's own charter colour. All three are
+state, not decoration, and none is a pattern to extend to a card that has no
+state to state.
 
-The enrolment desk was the third until the desk was rebuilt: it marked its
-branch with a 4px rule. It no longer does. The branch now takes the Answer
-Band's full field, and the card the answer came from is marked by weight.
+The rail's 4px rule is where the desk's colour scale starts: 4px at full
+strength saying which branch, the column behind it at 15% filling the room the
+branch occupies, the year chip ringed at full over a 32% fill once it is chosen,
+and the answer band's ground at full. One colour, five strengths, and the
+strength tracks how close the visitor is to it.
 
 Circular forms appear exactly once, in the wizard's progress markers, where the
 shape is doing semantic work (done / current / pending) rather than decoration.
@@ -400,6 +431,32 @@ members page opens with it: a charter sky band carrying the federation flag at
   editor holds it in place as the anchor it repairs the rest of the canvas
   around, so it may not be dragged, removed or copied — only edited into.
 
+### Desk Field
+
+The ground the enrolment desk stands on, and the first thing the public page
+says before it says anything in words: the four branches as four columns, each
+as wide as its branch is long and in that branch's own colour, laid across the
+width of the container at 15% over `paper`.
+
+- **It is the rail's drawing at a second strength.** Same colours, same
+  proportions, same 2px gap, so a column stands exactly behind the segment that
+  names it and the two can never disagree about which branch is which. Four
+  fixed stops in CSS could not do that: a troop that renames, re-ages or drops a
+  branch reshapes both from the same data.
+- **It dissolves at every edge.** In at the top and out at the bottom, so the
+  desk rises out of the troop's photograph and settles back into the page; in
+  at the left and the right, so it arrives out of the page rather than starting
+  at a container's edge. The edges *between* the columns stay crisp — a blend
+  there would be a second colour that no branch owns.
+- **It is for a wide screen.** Stacked, a column per branch is a column four
+  page-halves wide and the rail has stopped being a row, so the tint moves onto
+  the segment itself: the branch's colour runs out from behind its own bar and
+  thins under its own years. The same statement, said in the direction the page
+  is now laid out.
+- **It carries no words and says nothing.** `aria-hidden`, decorative, and
+  read as the page's own colour: the question, the branch names and the years
+  sit on it in ink that was measured against it.
+
 ### Answer Band
 
 The enrolment desk's answer, and the second use of the band device the Banner
@@ -425,28 +482,47 @@ palette is spent at field scale rather than as an accent.
   sign-up, and a line under it says what the step actually is: an account
   first, the child after it.
 
-### Branch cards
+### Branch rail
 
-The desk's choice: one card per branch, the branch's name and age range in the
-heading and that branch's birth years beneath it.
+The desk's choice: one segment per branch, the branch's name and age range at
+its head and that branch's birth years beneath it, the whole run ordered from
+the youngest child to the oldest.
 
-- **Why cards and not a row of years.** A parent knows how old their child is
+- **Why segments and not a row of years.** A parent knows how old their child is
   and mostly does not know which branch a name refers to, so the age range is
   the way in and the branch name is what they leave with — four ranges to scan
   rather than twelve years differing only in their last digit.
 - **The year stays the selector.** The branch is the answer, never a choice:
   nobody is asked to pick "Éclaireurs" by name.
-- **The card the answer came from** is marked by weight, the same device the
-  legend it replaced used — never by a second colour.
-- **Four across, then two, then one.** Four only where a card is wide enough to
-  hold four years on one line (1200px and up); they pair up between 768 and
-  1199, and take the full width below that. A chip keeps one size whatever its
-  card holds, so a two-year branch reads as the same control as a four-year one.
+- **A segment is as long as its branch is.** `flex: <age range> 1 0`, so the
+  four of them read as one twelve-year journey rather than as four equal blocks,
+  and a troop that re-ages a branch reshapes the rail without anyone editing it.
+- **Each segment's rule is its branch's colour at full strength**, and the desk
+  field behind it is the same colour at 15% — the rail states which branch, the
+  field fills the room it occupies.
+- **The chosen year wears its branch**: a 2px ring in the branch's colour at
+  full strength over a fill of that colour laid into paper at 32%. It is how the
+  row says which branch the visitor has just landed in before the answer band
+  says it in words. Hover carries the same colour in the halo; focus keeps the
+  charter-blue ring, because chrome that changes colour from control to control
+  is chrome a keyboard reader has to re-find.
+- **Side by side, then stacked.** A row only while every segment can hold the
+  years it owns on one line (992px and up); below that they stack and the tints
+  move onto the segments. A chip keeps one size whatever its segment holds, so a
+  two-year branch reads as the same control as a four-year one.
 
 **The Never-On-The-Field Rule.** Copy is never set *on* a charter field. White
 type fails AA on the Baladins blue and dark type fails on the other three, so
 the paper goes between them every time. The field may carry meaning; it may not
 carry words.
+
+A **tint** of a branch colour is not that field. At the 15% the desk field lays
+down, the page's own ink and the `muted-on-field` rung both clear AA on all four
+branch colours, which is what lets the question and the branch names stand on
+it. The line is where the ground stops being paper with a colour in it and
+starts being the colour: past that, the paper has to come back between the two.
+A tint is measured, not eyeballed — the four branches differ enough that one
+rung of the muted ladder passes on Baladins and fails on the other three.
 
 ### Cards / Containers
 - **Corner Style:** 0.25rem, outlined in 12.5% black, no shadow.

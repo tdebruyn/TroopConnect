@@ -345,3 +345,77 @@ class ModuleSwitchesTest(StaffPageTestBase):
         response = self.client.get(reverse("homepage"))
 
         self.assertNotContains(response, reverse("attestations:index"))
+
+
+class SiteFooterTest(TroopSettingsTestCase):
+    """Where four settings that had no home finally reach a page.
+
+    The address, the phone, the legal line and the social accounts were all
+    editable — and all rendered by nothing — until the footer existed. This
+    asserts the values arrive, not the sentences around them: the source
+    strings are English while a French instance renders the catalogue.
+    """
+
+    def _troop(self, **fields):
+        troop = TroopSettings.get_settings()
+        for name, value in fields.items():
+            setattr(troop, name, value)
+        troop.save()
+        return troop
+
+    def test_it_carries_what_the_troop_stored(self):
+        self._troop(
+            name="Les Scouts de Limal",
+            federation="Les Scouts Baden Powel de Belgique",
+            footer_address="Rue Achille Bauduin 89\n1300 Limal",
+            contact_email="contact@example.org",
+            contact_phone="010 41 12 34",
+        )
+
+        response = self.client.get(reverse("homepage"))
+
+        self.assertContains(response, "site-footer")
+        self.assertContains(response, "Les Scouts de Limal")
+        self.assertContains(response, "Les Scouts Baden Powel de Belgique")
+        self.assertContains(response, "Rue Achille Bauduin 89")
+        self.assertContains(response, "1300 Limal")
+        self.assertContains(response, "contact@example.org")
+        # Linked, and the number is bare inside the URI.
+        self.assertContains(response, "tel:010411234")
+
+    def test_the_legal_line_is_a_link_when_the_troop_stored_a_url(self):
+        self._troop(privacy_policy="https://example.org/privacy")
+
+        response = self.client.get(reverse("homepage"))
+
+        self.assertContains(response, 'href="https://example.org/privacy"')
+        self.assertNotContains(response, "footer-legal")
+
+    def test_the_legal_line_is_the_words_when_the_troop_wrote_them(self):
+        """The field holds a URL or a policy, and the footer shows whichever
+        it was given rather than a link to nothing."""
+        self._troop(privacy_policy="Nous ne gardons que ce qu'il faut.")
+
+        response = self.client.get(reverse("homepage"))
+
+        self.assertContains(response, "footer-legal")
+        self.assertContains(response, "Nous ne gardons")
+        self.assertNotContains(response, "Privacy policy")
+
+    def test_social_accounts_appear_only_when_the_troop_has_them(self):
+        self._troop(facebook_url="", instagram_url="")
+
+        response = self.client.get(reverse("homepage"))
+
+        self.assertNotContains(response, "facebook.com")
+        self.assertNotContains(response, "Instagram")
+
+    def test_it_is_on_pages_other_than_the_homepage(self):
+        """A footer is the site's steady strip, so it is not per-page."""
+        self._troop(contact_email="contact@example.org")
+
+        response = self.client.get(reverse("faq"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "site-footer")
+        self.assertContains(response, "contact@example.org")

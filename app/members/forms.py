@@ -699,6 +699,11 @@ class OrganisationSettingsForm(forms.ModelForm):
             "reply_to_email",
             "contact_phone",
             "footer_address",
+            # Kept with the address rather than down with the images: all
+            # three answer "where does the unit meet", and that is the
+            # question someone editing this page has in mind.
+            "meeting_place",
+            "map_image",
             "privacy_policy",
             "logo",
             "favicon",
@@ -711,6 +716,8 @@ class OrganisationSettingsForm(forms.ModelForm):
             "reply_to_email": _("Reply-to address"),
             "contact_phone": _("Public phone"),
             "footer_address": _("Address shown in the footer"),
+            "meeting_place": _("Meeting place"),
+            "map_image": _("Map of the meeting place"),
             "privacy_policy": _("Privacy policy"),
             "logo": _("Logo"),
             "favicon": _("Favicon"),

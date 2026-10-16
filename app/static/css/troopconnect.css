@@ -28,26 +28,41 @@
  * behind the photo; in the homepage editor every dropped block landed there
  * instead of where it was dropped.
  *
- * The paddings put the card back where it has always been — 3.625rem below the
- * navbar, i.e. 168px down the page — and the background offset shows the same
- * band of the photo as the old top-anchored 264px-tall box did. */
+ * The photograph now starts at the very top of the page and runs up behind the
+ * navbar — the band the theme's own `-110px` background offset was always
+ * pointing at. It gets there by a negative top margin rather than by leaving
+ * the flow: the shell needs the hero in flow (see above), so this is a pull,
+ * not a position. The margin and the padding are one movement — the band grows
+ * by exactly the height the navbar occupies, so the card still lands 168px
+ * down the page and nothing below the hero shifts.
+ *
+ * The homepage editor's frame loads this file and has no navbar; it undoes the
+ * pull in `editor-canvas.css`, where that difference belongs. */
 header.masthead {
-  padding: 3.625rem 0.75rem 0.5rem;
+  margin-top: calc(-1 * var(--site-navbar-height));
+  padding: calc(var(--site-navbar-height) + 3.625rem) 0.75rem 0.5rem;
   text-align: center;
   color: #fff;
   background-image: url("../images/troop/brouettes.jpg");
   background-repeat: no-repeat;
   background-attachment: scroll;
-  background-position: center calc(-1 * var(--site-navbar-height));
+  background-position: center;
   background-size: cover;
 }
 
 /* The band's card carries the troop's heading and description as the card's
    own children, and `.card` has no inset of its own: without this the words
    sit on the card's border. Fixed here rather than in the markup so pages
-   saved before the seed changed get the inset too. */
+   saved before the seed changed get the inset too.
+
+   Left short of opaque so the troop's own photograph reads through it as a
+   ground rather than being hidden behind a white rectangle. The words stay a
+   translation of a mostly-white sheet under dark charter ink, so the contrast
+   they need survives at any alpha short of fully clear — the transparency is
+   the troop's photograph showing, never the reader's legibility leaving. */
 header.masthead .card {
   padding: 1rem 1.25rem;
+  background-color: rgba(255, 255, 255, 0.85);
 }
 
 .navbar {
@@ -79,6 +94,80 @@ header.masthead .card {
   background-color: transparent;
   border: 0;
   font-size: 1em;
+}
+
+/* ---------------------------------------------------------------------------
+   The site footer (base.html), on every page.
+
+   Chrome, so it stays quiet: a 1px structural rule above it, the page's own
+   ground beneath it, and one step down in type. It is deliberately not a
+   charter field — the Banner owns the coloured band, and DESIGN.md spends it
+   behind a page title and nowhere else — and it carries no card, because the
+   page is flat and the footer is part of the page rather than a thing on it.
+--------------------------------------------------------------------------- */
+
+.site-footer {
+  margin-top: 3rem;
+  padding: 2rem 0 2.5rem;
+  border-top: 1px solid #dee2e6;
+  font-size: 0.9375rem;
+  color: #5d666e;
+}
+
+/* Who, then what. Two columns where there is room; stacked where there is
+   not, because a phone footer read as two squeezed columns is worse than a
+   long one. */
+.footer-body {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+.footer-name {
+  margin: 0;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: #0a4275;
+}
+
+.footer-federation,
+.footer-address {
+  margin: 0.375rem 0 0;
+  line-height: 1.5;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.footer-links a {
+  color: #0a4275;
+}
+
+.footer-legal {
+  max-width: 70ch;
+  margin: 1.5rem 0 0;
+  line-height: 1.5;
+}
+
+.footer-copyright {
+  margin: 1.5rem 0 0;
+  padding-top: 1rem;
+  border-top: 1px solid #dee2e6;
+  font-size: 0.8125rem;
+}
+
+@media (min-width: 768px) {
+  .footer-body {
+    grid-template-columns: 1fr auto;
+    align-items: start;
+    gap: 2rem;
+  }
 }
 
 /* ---------------------------------------------------------------------------
@@ -288,11 +377,70 @@ header.masthead .card {
 --------------------------------------------------------------------------- */
 
 .desk {
+  /* Positioned and isolated so the field below can sit at `z-index: -1`
+     without escaping behind the page. */
+  position: relative;
+  isolation: isolate;
   padding: 2.75rem 0 1.25rem;
 }
 
+/* The desk stands on the branches themselves: one column per branch, in that
+   branch's own charter colour, as wide as the branch is long — the rail's
+   proportion drawn once more behind it.
+
+   Each column lets go of its own edges rather than ending on one, so the four
+   blend where they meet instead of banding, and the ground begins and ends in
+   the page rather than at the container's left and right. Dark enough to be
+   seen as a colour of paper, light enough that a year chip still reads as a
+   sheet lying on it; the white chips are what the whole band is measured
+   against.
+
+   The columns carry the rail's own 2px gap, so a colour and the segment in
+   front of it can never disagree about where one branch stops.
+
+   Decorative: it is `aria-hidden` in the markup and says nothing the rail does
+   not already say in words. */
+.desk-field {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  /* The whole ground lets go at the left and the right, so it arrives out of
+     the page rather than starting at a container's edge — a rectangle of
+     colour floating under the photograph would be a second band, and the band
+     this page already has is the troop's own. */
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+}
+
+/* The same letting-go at the top and the bottom: the field rises out of the
+   troop's photograph and settles back into the page, and the desk never ends
+   on a strip of colour that the page below it then has to start from. Its
+   height is the desk's, not the field's, so the two fades are measured against
+   the band the reader actually sees. */
+.desk-field .container {
+  height: 100%;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 22%, #000 64%, transparent 96%);
+  mask-image: linear-gradient(180deg, transparent 0, #000 22%, #000 64%, transparent 96%);
+}
+
+.desk-field-row {
+  display: flex;
+  column-gap: 2px;
+  height: 100%;
+}
+
+.desk-field-col {
+  flex: var(--span, 1) 1 0;
+  min-width: 0;
+  /* A branch no preset made has no charter colour, and mixing one out of
+     nothing is how it gets none — the rail's bar and the answer band go plain
+     for that same branch. */
+  background-color: color-mix(in srgb, var(--branch, transparent) 15%, transparent);
+}
+
 .desk-question {
-  font-size: 3rem;
+  font-size: 2.5rem;
   font-weight: 800;
   line-height: 1.1;
   letter-spacing: -0.02em;
@@ -302,55 +450,176 @@ header.masthead .card {
   text-wrap: balance;
 }
 
-/* One card per branch. The cards do the grouping the flat year row could not:
-   each names a branch and the ages it takes, and holds the years that land in
-   it, so the first question a parent answers is one they can answer.
+/* One segment per branch, as long as the branch is: the four spans of the
+   scout journey drawn as a single line, so the years a child spends in each
+   one are legible before a single year is read.
 
-   Four across only where a card is wide enough to hold four years on one
-   line; below that they pair up, and on a phone each takes the full width. */
-.desk-branches {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0.75rem;
-  margin-top: 2rem;
+   The segment carries the branch's name, its ages, and the years that land in
+   it, in the branch's own charter colour — the same colour the answer band
+   takes below, so the two can never disagree about which branch is which.
+
+   Segments stay side by side only while each is wide enough to hold the years
+   it owns on one line; under that they stack, and the proportions move into
+   the length of each segment's bar, which is what carries them on a phone. */
+.desk-rail {
+  display: flex;
+  column-gap: 2px;
+  margin: 2rem 0 0;
+  padding: 0;
+  list-style: none;
 }
 
-.desk-branch {
-  padding: 0.875rem 1rem 1rem;
-  background-color: #fff;
-  border: 1px solid rgba(0, 0, 0, 0.125);
-  border-radius: 0.25rem;
+.desk-segment {
+  flex: var(--span, 1) 1 0;
+  min-width: 0;
+  /* Shared by the stacked layout, where the segment carries this itself. A
+     branch no preset made has no colour to mix, and gets none. */
+  --segment-tint: color-mix(in srgb, var(--branch, transparent) 14%, transparent);
 }
 
-.desk-branch-head {
+.desk-segment-bar {
+  display: block;
+  height: 4px;
+  border-radius: 2px;
+  /* A branch no preset made has no charter colour, and a bar in the page's own
+     ink would claim a meaning it does not carry — so it takes the structural
+     line, the way the answer band goes plain for that same branch. */
+  background-color: var(--branch, #dee2e6);
+  transform-origin: left center;
+  animation: desk-segment-grow 0.8s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+.desk-segment-head {
   display: flex;
   align-items: baseline;
   flex-wrap: wrap;
   gap: 0.25rem 0.5rem;
-  margin: 0;
+  margin: 0.625rem 0 0;
 }
 
-.desk-branch-name {
+.desk-segment-name {
   font-size: 1.0625rem;
   font-weight: 700;
 }
 
-.desk-branch-ages {
+/* A step darker than the paper's muted. `#5d666e` was chosen to clear AA on
+   paper by a comfortable margin, and a branch tint under it spends most of
+   that margin: on the three darker branch colours it lands at 4.16–4.35:1,
+   which is a failure thin enough to pass unnoticed. This is the same voice one
+   rung down, and it clears AA on all four tints (worst case 4.63:1). */
+.desk-segment-ages {
   font-size: 0.8125rem;
-  color: #5d666e;
+  color: #555f68;
 }
 
 /* The branch the answer names, marked by weight rather than a second colour. */
-.desk-branch-on .desk-branch-name {
+.desk-segment-on .desk-segment-name {
   font-weight: 800;
 }
 
-.desk-branch-on .desk-branch-ages {
+.desk-segment-on .desk-segment-ages {
   color: #0a4275;
   font-weight: 700;
 }
 
-/* Chips keep one size whatever their card holds, so a two-year branch reads
+/* What the four branches hold in common, under the line that divides them
+   from the answer they lead to. */
+.desk-note {
+  max-width: 62ch;
+  margin: 1.5rem 0 0;
+  padding-top: 1rem;
+  border-top: 1px solid #dee2e6;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  /* Darker than the paper's muted for the same reason the ages are: the line
+     lies across the branches' tint, and the tint is what costs the margin. */
+  color: #555f68;
+}
+
+@keyframes desk-segment-grow {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes desk-segment-grow-y {
+  from {
+    transform: scaleY(0);
+  }
+}
+
+/* Stacked, the rail keeps its proportions as length rather than width: each
+   segment carries a bar as tall as its branch is long. Side by side stops
+   paying at `lg`, which is where the narrowest branch — a two-year one, a
+   sixth of the row — can no longer hold its own years on one line. */
+@media (max-width: 991.98px) {
+  .desk-rail {
+    flex-direction: column;
+    column-gap: 0;
+  }
+
+  .desk-segment {
+    display: grid;
+    grid-template-columns: 4px 1fr;
+    column-gap: 1rem;
+    flex: none;
+    margin-bottom: 1.25rem;
+  }
+
+  .desk-segment-bar {
+    grid-row: 1 / span 2;
+    width: 4px;
+    min-height: calc(var(--span, 1) * 1.25rem);
+    height: 100%;
+    transform-origin: center top;
+    animation-name: desk-segment-grow-y;
+  }
+
+  .desk-segment-head {
+    margin-top: 0;
+  }
+
+  /* Stacked, a column per branch is a column four page-halves wide and the rail
+     has already stopped being a row, so the tint moves onto the segment itself:
+     the branch's colour runs out from behind its own bar, down the side of the
+     branch it belongs to. That is the same statement the columns make on a wide
+     screen — this colour is this branch — said in the direction the page is now
+     laid out. */
+  .desk-field {
+    display: none;
+  }
+
+  .desk-segment {
+    position: relative;
+  }
+
+  /* On a pseudo-element rather than on the segment itself, because the tint has
+     to let go downwards as well as to the right and one element carries one
+     mask: this way the branch's colour thins out under its own years instead of
+     ending on a ruled edge, which is what a tinted rectangle would look like. */
+  .desk-segment::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: linear-gradient(
+      90deg,
+      var(--segment-tint) 0,
+      var(--segment-tint) 55%,
+      transparent
+    );
+    -webkit-mask-image: linear-gradient(180deg, #000 0, #000 58%, transparent);
+    mask-image: linear-gradient(180deg, #000 0, #000 58%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .desk-segment-bar {
+    animation: none;
+  }
+}
+
+/* Chips keep one size whatever their segment holds, so a two-year branch reads
    as the same control as a four-year one rather than as two wide buttons. */
 .desk-years {
   display: flex;
@@ -359,6 +628,11 @@ header.masthead .card {
   margin-top: 0.75rem;
 }
 
+/* Lifted rather than outlined. A 1px line is the quieter signal of the two on
+   paper anyway, and the two are the same signal — so the chip keeps the
+   border's box, so nothing reflows, and gives up its ink to a soft raise.
+   Tinted with the charter blue the system's other lifted surfaces use, so it
+   reads as a lift rather than a drop. */
 .desk-year {
   min-width: 3.375rem;
   padding: 0.75rem 0.375rem;
@@ -368,23 +642,50 @@ header.masthead .card {
   color: #0a4275;
   text-decoration: none;
   background-color: #fff;
-  border: 1px solid #ced4da;
-  border-radius: 0.25rem;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.125rem 0.375rem rgba(10, 66, 117, 0.1);
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
     border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
-.desk-year:hover,
-.desk-year:focus-visible {
-  border-color: #0a4275;
-  box-shadow: 0 0 0 0.25rem rgba(10, 66, 117, 0.25);
+/* The halo is the affordance here, so hover and focus carry it on top of the
+   lift rather than replacing it — the chip must not appear to sink under the
+   pointer that is choosing it.
+
+   Hover's halo is the branch's own colour, because the branch is the thing
+   being chosen and the colour is already on screen beside it. Focus keeps the
+   charter-blue ring it has everywhere else: a focus indicator is chrome, and
+   chrome that changes colour from control to control is chrome a keyboard
+   reader has to re-find. */
+.desk-year:hover {
+  box-shadow: 0 0.125rem 0.375rem rgba(10, 66, 117, 0.1),
+    0 0 0 0.25rem color-mix(in srgb, var(--branch, #0a4275) 25%, transparent);
 }
 
-.desk-year-on,
+.desk-year:focus-visible {
+  box-shadow: 0 0.125rem 0.375rem rgba(10, 66, 117, 0.1),
+    0 0 0 0.25rem rgba(10, 66, 117, 0.25);
+}
+
+/* The chosen year wears its branch: a ring in the branch's colour at full
+   strength, over a fill of that same colour laid into paper. It is what makes
+   the row tell the visitor which branch they have just landed in before the
+   answer band says it in words, and it keeps the year in charter ink on a
+   light ground — which a chip filled solid could not do, since two of the four
+   branch colours cannot carry white type and the other two cannot carry dark
+   (see the answer band, which puts a sheet between the two). */
+.desk-year-on {
+  color: #0a4275;
+  background-color: color-mix(in srgb, var(--branch, #0a4275) 32%, #fff);
+  box-shadow: inset 0 0 0 2px var(--branch, #0a4275),
+    0 0.125rem 0.375rem rgba(10, 66, 117, 0.14);
+}
+
 .desk-year-on:hover {
-  color: #fff;
-  background-color: #0a4275;
-  border-color: #0a4275;
+  box-shadow: inset 0 0 0 2px var(--branch, #0a4275),
+    0 0.125rem 0.375rem rgba(10, 66, 117, 0.14),
+    0 0 0 0.25rem color-mix(in srgb, var(--branch, #0a4275) 25%, transparent);
 }
 
 .desk-answer {
@@ -396,8 +697,14 @@ header.masthead .card {
 }
 
 /* The answer, as a sheet of paper. It carries its own layout so the band
-   around it can be nothing but colour. */
+   around it can be nothing but colour.
+
+   Positioned so it stacks above the band's own topping: the theme draws that
+   watermark as an absolutely positioned pseudo-element, which paints over
+   in-flow content, and a sheet lying on the field must not have the field's
+   pattern washed across the words it carries. */
 .desk-answer-paper {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -405,14 +712,30 @@ header.masthead .card {
   padding: 1.75rem 2rem;
 }
 
-/* The branch's charter colour as the ground, with the words on the paper over
-   it — the unit's band device, one step down in scale. White type on the
-   colour would fail AA for two of the four branches and dark type would fail
-   for the other two, so the copy is never asked to sit on it. */
+/* The branch's charter colour as the ground, carrying the branch's own topping
+   — the federation's flag drawn for that branch — with the words on the paper
+   over it. The unit's band device, one step down in scale.
+
+   White type on the colour would fail AA for two of the four branches and dark
+   type would fail for the other two, so the copy is never asked to sit on it.
+
+   The padding is the whole frame the pattern gets around its sheet. It was
+   twice this, and at that size the band read as a board the sheet was mounted
+   in rather than as the field holding it. */
 .desk-answer-branch {
-  padding: 2.25rem 2.25rem 1.5rem;
+  padding: 1.25rem 1.25rem 1rem;
   background-color: var(--branch);
   border: 0;
+}
+
+/* The topping is the theme's, drawn as an absolutely positioned pseudo-element
+   filling the band, and the theme defaults it to full strength. This is the
+   strength the system already spends on a topping and the only one DESIGN.md
+   allows: a watermark that never carries meaning and never appears at full
+   weight. Set here rather than through the theme's own opacity classes so the
+   band's appearance is decided in one place. */
+.desk-answer-branch::before {
+  opacity: 10%;
 }
 
 .desk-answer-branch .desk-answer-paper {
@@ -505,6 +828,73 @@ header.masthead .card {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
+
+
+/* ---------------------------------------------------------------------------
+   Where the unit meets (homepage/snippets/place.html).
+
+   Under the desk, and the other half of the same answer: the desk names the
+   branch a child would join, this names the place to turn up at.
+
+   The map is the troop's own picture, so it can be any provider's render and
+   any shape. It gets a ceiling and a corner rather than a frame — a picture of
+   a map is content, not a control, so it wears the radius a container wears
+   and no border.
+--------------------------------------------------------------------------- */
+
+.place {
+  padding: 2.5rem 0 1rem;
+}
+
+.place-title {
+  margin-bottom: 1rem;
+  font-size: 1.375rem;
+  font-weight: 700;
+}
+
+/* The words and the map as one object rather than two things a row apart. A
+   grid let the words stretch to fill the row, so a short address — which is
+   most addresses — ended up an arm's length from its own map; a flex row takes
+   each at the width it needs and puts them beside each other.
+
+   The pair shares one raised surface, so the space between them is inside
+   something instead of between two things. A shadow and no border, the rule
+   for a surface that is a unit of its own, in the same tinted charter-blue
+   step the year chips wear. */
+.place-body {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.25rem;
+  background-color: #fff;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.125rem 0.375rem rgba(10, 66, 117, 0.1);
+}
+
+.place-name {
+  margin: 0;
+  font-size: 1.0625rem;
+  font-weight: 700;
+}
+
+.place-address {
+  margin: 0.25rem 0 0;
+  line-height: 1.5;
+  color: #5d666e;
+}
+
+.place-directions {
+  margin: 0.75rem 0 0;
+}
+
+.place-map img {
+  display: block;
+  width: 100%;
+  max-width: 28rem;
+  border-radius: 0.5rem;
+}
+
 
 
 /* ---------------------------------------------------------------------------
@@ -816,7 +1206,7 @@ header.masthead .card {
     padding-top: 1.75rem;
   }
 
-  .desk-branches {
+  .desk-rail {
     margin-top: 1.25rem;
   }
 

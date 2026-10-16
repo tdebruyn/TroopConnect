@@ -7,9 +7,10 @@
 {% endblock header %}
 {% block content %}
     {% comment %}
-        The unit's own opening band, then the desk, then the rest of the page.
-        The band is the unit introducing itself, so it comes first; the desk
-        sits under it and only for a visitor who is not signed in, since a
+        The unit's own opening band, then the desk, then where it meets, then
+        the rest of the page. The band is the unit introducing itself, so it
+        comes first; the desk and the address under it are the visitor's half
+        of the page and appear only for a reader who is not signed in, since a
         member's `/` is the tool and the troop's page is at `/unite/`.
 
         The view splits the band out of the content because the editor keeps it
@@ -18,6 +19,7 @@
     {{ hero_html|safe }}
     {% if show_desk %}
         {% include "homepage/snippets/desk.html" %}
+        {% include "homepage/snippets/place.html" %}
     {% endif %}
     {{ page_html|safe }}
     {% if page_css %}<style>{{ page_css|safe }}</style>{% endif %}

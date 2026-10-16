@@ -42,13 +42,29 @@
     </head>
     <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
         <header class="site-header">
+            {% comment %}
+                The bar is left short of opaque so the hero's photograph shows
+                through it: the band runs up behind the navbar (see
+                `header.masthead` in troopconnect.css), and a solid fill hid
+                the top of the troop's own picture.
+
+                `!important` is required rather than sloppy — `.bg-primary`
+                sets the fill with `!important` too, and a style attribute
+                cannot out-rank it without one.
+
+                The backdrop is darkened as well as blurred. White nav links
+                over a photograph are only legible while the ground behind
+                them stays dark, and the troop's picture may be bright
+                anywhere in it, so the alpha alone is not a guarantee.
+            {% endcomment %}
             <nav class="navbar navbar-dark navbar-expand-md bg-primary bg-gradient py-3"
                  style="padding: 0px 0px;
                         padding-top: 6px;
                         margin-bottom: 0px;
                         padding-bottom: 0px;
                         height: 110px;
-                        background: var(--bs-navbar-toggler-border-color)">
+                        background: rgba(10, 66, 117, 0.72) !important;
+                        backdrop-filter: blur(14px) brightness(0.45)">
                 <div class="container-fluid px-3">
                     <a class="navbar-brand d-flex align-items-center"
                        href="{% url 'homepage' %}"
@@ -194,6 +210,61 @@
         {% endif %}
         {% block content %}
         {% endblock content %}
+        {% comment %}
+            The site footer, on every page. It is also where several settings
+            that had no home finally land: the address, the phone, the legal
+            line and the unit's social accounts were all stored — and all
+            rendered by nothing — until now.
+
+            Never styled with a bare `footer` selector. The homepage editor
+            exports content that can carry its own <footer>, exactly as it can
+            a <header>; a bare selector reaches into what a troop authored.
+            See `header.masthead` for the same rule stated the other way.
+        {% endcomment %}
+        <footer class="site-footer">
+            <div class="container">
+                <div class="footer-body">
+                    <div class="footer-who">
+                        <p class="footer-name">{{ site_name }}</p>
+                        {% if federation %}
+                            <p class="footer-federation">{{ federation }}</p>
+                        {% endif %}
+                        {% if unit_address %}
+                            <p class="footer-address">{{ unit_address|linebreaksbr }}</p>
+                        {% endif %}
+                    </div>
+                    <ul class="footer-links">
+                        {% if contact_email %}
+                            <li><a href="mailto:{{ contact_email }}">{{ contact_email }}</a></li>
+                        {% endif %}
+                        {% if contact_phone %}
+                            {# Spaces stripped: a tel: URI wants the number bare. #}
+                            <li><a href="tel:{{ contact_phone|cut:' ' }}">{{ contact_phone }}</a></li>
+                        {% endif %}
+                        {% if privacy_policy_url %}
+                            <li><a href="{{ privacy_policy_url }}" target="_blank" rel="noopener">{% trans "Privacy policy" %}</a></li>
+                        {% endif %}
+                        {% if facebook_url %}
+                            <li><a href="{{ facebook_url }}" target="_blank" rel="noopener">Facebook</a></li>
+                        {% endif %}
+                        {% if instagram_url %}
+                            <li><a href="{{ instagram_url }}" target="_blank" rel="noopener">Instagram</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+                {% comment %}
+                    A troop with its own legal page stores a URL and gets the
+                    link above. One that wrote its policy into the setting gets
+                    the words here instead — the field holds either, so the
+                    footer shows whichever it was given.
+                {% endcomment %}
+                {% if privacy_policy and not privacy_policy_url %}
+                    <p class="footer-legal">{{ privacy_policy|linebreaksbr }}</p>
+                {% endif %}
+                {% now "Y" as current_year %}
+                <p class="footer-copyright">{% blocktranslate with unit=site_name year=current_year %}© {{ year }} {{ unit }}{% endblocktranslate %}</p>
+            </div>
+        </footer>
         {% if messages %}
             <div class="toast-container position-fixed top-0 end-0 p-3">
                 {% for message in messages %}

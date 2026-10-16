@@ -28,3 +28,15 @@
 .gjs-locked {
   opacity: 1;
 }
+
+/* The public site pulls its hero up so the photograph runs behind the navbar
+   (see `header.masthead` in troopconnect.css). There is no navbar in the
+   editing frame, so that pull would drag the hero out of the top of the canvas
+   and clip the photo with nothing covering it. This file loads after
+   troopconnect.css, so putting the band back exactly as the canvas always drew
+   it takes no more than the three properties the site changed. */
+header.masthead {
+  margin-top: 0;
+  padding-top: 3.625rem;
+  background-position: center calc(-1 * var(--site-navbar-height));
+}

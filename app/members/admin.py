@@ -188,6 +188,8 @@ class TroopSettingsAdmin(TranslationAdmin):
                     "contact_phone",
                     "reply_to_email",
                     "footer_address",
+                    "meeting_place",
+                    "map_image",
                     "privacy_policy",
                 )
             },

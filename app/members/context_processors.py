@@ -14,6 +14,30 @@ def contact_info(request):
         available = list(troop_settings.enabled_languages or [settings.LANGUAGE_CODE])
     return {
         "contact_email": troop_settings.contact_email,
+        "contact_phone": troop_settings.contact_phone,
+        # Which federation the unit belongs to, as free text. A fact about the
+        # unit, never a claim of endorsement: the project does not know the
+        # federations its users belong to and does not speak for any of them.
+        "federation": troop_settings.federation,
+        # The site footer's legal line. Both forms are offered because the
+        # field holds either: a troop with its own legal page stores the URL
+        # and gets a link, and one that wrote its policy here gets the words.
+        "privacy_policy": troop_settings.privacy_policy,
+        "privacy_policy_url": troop_settings.privacy_policy_url(),
+        "facebook_url": troop_settings.facebook_url,
+        "instagram_url": troop_settings.instagram_url,
+        # Where the unit meets: the address it stores, whatever it calls the
+        # place, and its own picture of it. All three are optional and any of
+        # them may be empty, so whoever renders them decides what to leave out
+        # rather than filling a blank in here.
+        "unit_address": troop_settings.footer_address,
+        "meeting_place": troop_settings.meeting_place,
+        # Through `map_url()`, never the field: an ImageField with no file has
+        # no URL to ask for.
+        "unit_map_url": troop_settings.map_url(),
+        # The address as a map query, so the page can offer directions without
+        # embedding anything that calls out to a map service on its own.
+        "unit_address_url": troop_settings.address_search_url(),
         # The templates say `site_name`; the model field is `name`. Keeping the
         # context key means the header templates and their translations do not
         # have to change with the model.

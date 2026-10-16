@@ -8,18 +8,43 @@
   The years are the branches' age ranges read backwards — a child born in year
   Y is `reference_year - Y` on the troop's age reference day — so a troop that
   renames or re-ages its branches changes this page without touching it.
+
+  The rail is that same arithmetic drawn: one segment per branch, as long as
+  the branch is, in the branch's own charter colour. It replaced a card per
+  branch that named each one above its years — the page already states the
+  branches and their ages, so the segment carries them once instead of twice.
 {% endcomment %}
 <section class="desk{% if not registration_open %} desk-closed{% endif %}">
+    {% comment %}
+        The same four branches drawn again, as the ground the band stands on:
+        one column per branch, in that branch's own colour, as wide as the
+        branch is long — the rail's own proportions, behind the rail.
+
+        Painted here rather than in CSS as four fixed stops for the same reason
+        the rail is: a troop that renames, re-ages or drops a branch reshapes
+        this without anyone editing it, and a column can never disagree with
+        the segment in front of it about which branch is which. Decorative
+        only — it carries no words, so it is invisible to a screen reader.
+    {% endcomment %}
+    {% if desk_groups %}
+        <div class="desk-field" aria-hidden="true">
+            <div class="container">
+                <div class="desk-field-row">
+                    {% for group in desk_groups %}
+                        <span class="desk-field-col"
+                              style="--span: {{ group.span }}{% if group.colour %}; --branch: {{ group.colour }}{% endif %}"></span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
     <div class="container">
         <div class="desk-inner">
             {% comment %}
-                The band carries the page's h1 while it still has a heading of
-                its own; without one this question is the page's title. The
-                class carries the size either way.
-
-                Tested on `hero_heading` rather than `hero_html`: the band is
-                the troop's to edit now, so it can be present and heading-less,
-                and the outline must not lose its top when it is.
+                The question is the page's `h1` while the page has no heading
+                of its own above it; under the troop's own band — which is the
+                troop's to edit and can arrive heading-less — it is a
+                subheading. The class carries the size either way.
             {% endcomment %}
             {% if hero_heading %}<h2 class="desk-question">{% else %}<h1 class="desk-question">{% endif %}
                 {% trans "What year was your child born?" %}
@@ -27,19 +52,21 @@
 
             {% if desk_groups %}
                 {% comment %}
-                    One card per branch: its age range in the heading, its own
-                    years beneath. A parent knows how old their child is and
-                    mostly does not know which branch a name refers to, so the
-                    age range is the way in and the branch name is what they
-                    leave with — four ranges to scan instead of twelve years
-                    differing only in their last digit.
+                    A parent knows how old their child is and mostly does not
+                    know which branch a name refers to, so the segment leads
+                    with the branch and its ages and keeps the years beneath.
+                    Its length is the branch's own age range, which is what
+                    makes the four of them read as one twelve-year journey
+                    rather than as four equal blocks.
                 {% endcomment %}
-                <div class="desk-branches">
+                <ol class="desk-rail">
                     {% for group in desk_groups %}
-                        <div class="desk-branch{% if desk_answer.branch.pk == group.branch.pk %} desk-branch-on{% endif %}">
-                            <p class="desk-branch-head">
-                                <span class="desk-branch-name">{{ group.branch.name }}</span>
-                                <span class="desk-branch-ages">{% blocktranslate with min=group.branch.min_age_dec_31 max=group.branch.max_age_dec_31 %}{{ min }} to {{ max }} years{% endblocktranslate %}</span>
+                        <li class="desk-segment{% if desk_answer.branch.pk == group.branch.pk %} desk-segment-on{% endif %}"
+                            style="--span: {{ group.span }}{% if group.colour %}; --branch: {{ group.colour }}{% endif %}">
+                            <span class="desk-segment-bar" aria-hidden="true"></span>
+                            <p class="desk-segment-head">
+                                <span class="desk-segment-name">{{ group.branch.name }}</span>
+                                <span class="desk-segment-ages">{% blocktranslate with min=group.branch.min_age_dec_31 max=group.branch.max_age_dec_31 %}{{ min }} to {{ max }} years{% endblocktranslate %}</span>
                             </p>
                             <div class="desk-years" role="group"
                                  aria-label="{% blocktranslate with branch=group.branch.name %}{{ branch }}: year of birth{% endblocktranslate %}">
@@ -54,9 +81,10 @@
                                        {% if desk_answer.year == year %}aria-current="true"{% endif %}>{{ year }}</a>
                                 {% endfor %}
                             </div>
-                        </div>
+                        </li>
                     {% endfor %}
-                </div>
+                </ol>
+                <p class="desk-note">{% trans "The method, the values and the educational ambition are the same in every branch — what changes with age is the way they are lived." %}</p>
                 {# The swap replaces this region, so it has to announce itself. #}
                 <div id="desk-answer" aria-live="polite" aria-atomic="true">
                     {% include "homepage/snippets/desk_answer.html" %}

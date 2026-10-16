@@ -344,6 +344,18 @@ BRANCH_COLOURS = {
     "pionniers": "#d51317",
 }
 
+#: The theme's own topping for each branch — the federation's flag drawn for
+#: that branch, shipped as a white watermark in the vendored theme
+#: (`.bg-topping-<branch>`, per the mapping in its README). Same keys and the
+#: same rule as the colours above: a branch no preset made has no topping to
+#: wear, and borrowing another branch's mark would name a branch it is not.
+BRANCH_TOPPINGS = {
+    "baladins": "bg-topping-baladins",
+    "louveteaux": "bg-topping-louveteaux",
+    "eclaireurs": "bg-topping-eclaireurs",
+    "pionniers": "bg-topping-pionniers",
+}
+
 
 def _desk_rows(school_year):
     """``(birth_year, branch)`` for every year some branch accepts, ascending.
@@ -384,19 +396,36 @@ def _desk_groups(rows):
 
     A parent knows their child's age and mostly does not know which branch a
     name refers to, so the branch is the heading and its age range is the way
-    in: four cards to scan rather than twelve bare years differing only in
-    their last digit. The years inside a card keep the order ``_desk_rows``
-    gave them, so the desk still reads left to right as the years do.
+    in: four segments to scan rather than twelve bare years differing only in
+    their last digit.
 
-    Youngest branch first — the order the branch list is read in everywhere
-    else, and the reverse of the order the years run, which is why the two
-    are not one list any more.
+    Youngest branch first, and the youngest year first inside it — the order
+    the branch list is itself read in. Across the whole rail that makes one run
+    from the youngest child to the oldest, rather than a run that restarts at
+    every segment.
     """
     groups = {}
     for year, branch in rows:
-        groups.setdefault(branch.pk, {"branch": branch, "years": []})["years"].append(
-            year
-        )
+        groups.setdefault(
+            branch.pk,
+            {
+                "branch": branch,
+                "years": [],
+                # The rail above the desk draws each branch as a segment as
+                # long as the branch is: the span is its own age range, so a
+                # troop that re-ages or drops a branch reshapes that rail
+                # without anyone editing it.
+                "span": branch.max_age_dec_31 - branch.min_age_dec_31 + 1,
+                # Through the same map the answer band reads, so a branch can
+                # never be one colour in the rail and another one below it.
+                "colour": BRANCH_COLOURS.get(branch.key),
+            },
+        )["years"].append(year)
+    # `_desk_rows` hands the years over ascending. The rail draws a branch's
+    # years the same way it draws the branches — youngest first — so the line
+    # reads as one journey instead of restarting at every segment.
+    for group in groups.values():
+        group["years"].reverse()
     return sorted(
         groups.values(),
         key=lambda group: (group["branch"].min_age_dec_31 or 0, group["branch"].name),
@@ -443,6 +472,7 @@ def _desk_answer(rows, requested, school_year):
             "min_age": branch.min_age_dec_31,
             "max_age": branch.max_age_dec_31,
             "colour": BRANCH_COLOURS.get(branch.key),
+            "topping": BRANCH_TOPPINGS.get(branch.key),
             "first_year": _school_year_label(first),
             "last_year": _school_year_label(last),
             "is_final_year": first == last,

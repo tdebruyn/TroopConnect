@@ -4,10 +4,11 @@
   because it is the page's one action and a parent who came to register should
   not have to answer the desk's question first.
 
-  The year travels with the click, so the branch a parent has just found is
-  not asked for again on the other side of the sign-up. The label and the note
-  below it say what the step actually is: an account first, the child after
-  it, which is what the destination page asks for.
+  `?annee=` rides along so the branch a parent has just found can be carried
+  across the sign-up, but nothing reads it yet: the destination still opens an
+  empty account form, and its heading names parents and animators rather than
+  the child. The label promises a child, so whatever explains that the account
+  comes first belongs on that screen.
 {% endcomment %}
 {% if registration_open %}
     <div class="desk-answer-action">
@@ -15,9 +16,6 @@
            href="{% url 'account_signup' %}{% if desk_answer.year %}?annee={{ desk_answer.year }}{% endif %}">
             {% trans "Register my child" %}
         </a>
-        <p class="desk-cta-note">
-            {% trans "First you create your parent account; then you register your child." %}
-        </p>
     </div>
 {% else %}
     {# The branch is still worth naming; what is missing is the way in. #}

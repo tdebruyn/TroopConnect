@@ -2,6 +2,7 @@ import calendar
 import re
 import uuid
 from datetime import date, datetime, time, timedelta
+from urllib.parse import quote
 
 import phonenumbers
 from django.contrib.auth.models import (
@@ -886,6 +887,20 @@ class TroopSettings(models.Model):
     contact_phone = models.CharField(max_length=20, blank=True)
     footer_address = models.TextField(blank=True)
 
+    # What the unit calls the place it meets — "Par delà l'eau", or whatever
+    # the troop calls its local. Deliberately not one of the translated
+    # columns: a place name is a name, and a troop does not rename its hall
+    # per language. Empty means the unit has not named it, and the page shows
+    # the address on its own rather than inventing a label.
+    meeting_place = models.CharField(
+        max_length=80,
+        blank=True,
+        help_text=_(
+            "What the unit calls the place it meets, if it calls it anything. "
+            "Shown above the address on the homepage."
+        ),
+    )
+
     # Where replies to automated mail should go, when that is not the sender
     # (`DEFAULT_FROM_EMAIL`). Empty means "reply to the sender".
     reply_to_email = models.EmailField(default="", blank=True)
@@ -923,6 +938,21 @@ class TroopSettings(models.Model):
         help_text=_(
             "The small icon browsers show for the site. "
             "Leave empty for no icon."
+        ),
+    )
+
+    # A picture of where the unit meets, shown beside the address on the public
+    # homepage. An upload rather than a map service: naming a keyed provider
+    # here would make every troop open an account with it, and an embedded map
+    # would have each visitor's browser call that provider from the unit's own
+    # page — neither of which this project's deployment contract allows. The
+    # troop renders its own picture, from whichever map it likes, once.
+    map_image = models.ImageField(
+        upload_to="troop/",
+        blank=True,
+        help_text=_(
+            "A picture of where the unit meets, shown beside the address on "
+            "the homepage. Leave empty to show the address on its own."
         ),
     )
 
@@ -1139,6 +1169,33 @@ class TroopSettings(models.Model):
         behaviour, which is what it had before this field existed.
         """
         return self._upload_url(self.favicon)
+
+    def map_url(self):
+        """The picture of where the unit meets, or "" when there is none.
+
+        Read through this rather than the field, like the logo and the favicon:
+        an ``ImageField`` with no file has no URL to ask for, and the places
+        that show the map have to know to leave it out.
+        """
+        return self._upload_url(self.map_image)
+
+    def address_search_url(self):
+        """The unit's address as a map query, or "" when it stores no address.
+
+        Built here rather than in a template because the address is a
+        multi-line field and a map query wants one line: its newlines and runs
+        of spaces collapse to single spaces before they are quoted, so
+        "Rue X 89\\n1300 Limal" asks for the same place as the same address
+        typed on one line.
+
+        OpenStreetMap because it takes a free-text query and needs no account
+        or key — a keyed provider would mean every troop signing up to it
+        before its own page worked.
+        """
+        address = " ".join((self.footer_address or "").split())
+        if not address:
+            return ""
+        return "https://www.openstreetmap.org/search?query=" + quote(address)
 
     @staticmethod
     def _upload_url(field):

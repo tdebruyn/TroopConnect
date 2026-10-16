@@ -65,7 +65,36 @@ def _escape(s):
 
 # msgid text -> (French, Dutch). Key is the .po inner-quote (escaped) form.
 TRANSLATIONS = {
+    # --- where the unit meets ---
+    "Where to find us": ("Où nous trouver", "Waar je ons vindt"),
+    "Directions": ("Itinéraire", "Route"),
+    "A map of where the unit meets": (
+        "Un plan de l'endroit où l'unité se réunit",
+        "Een kaart van waar de eenheid samenkomt",
+    ),
+    "Meeting place": ("Lieu de réunion", "Ontmoetingsplaats"),
+    "Map of the meeting place": (
+        "Plan du lieu de réunion",
+        "Kaart van de ontmoetingsplaats",
+    ),
+    "What the unit calls the place it meets, if it calls it anything. Shown above the address on the homepage.": (
+        "Le nom que l'unité donne au lieu où elle se réunit, si elle en donne "
+        "un. Affiché au-dessus de l'adresse sur la page d'accueil.",
+        "De naam die de eenheid geeft aan de plaats waar ze samenkomt, als ze "
+        "er een geeft. Wordt boven het adres op de startpagina getoond.",
+    ),
+    "A picture of where the unit meets, shown beside the address on the homepage. Leave empty to show the address on its own.": (
+        "Une image de l'endroit où l'unité se réunit, affichée à côté de "
+        "l'adresse sur la page d'accueil. Laissez vide pour n'afficher que "
+        "l'adresse.",
+        "Een afbeelding van waar de eenheid samenkomt, naast het adres op de "
+        "startpagina. Laat leeg om alleen het adres te tonen.",
+    ),
     # --- enrolment desk ---
+    "The method, the values and the educational ambition are the same in every branch — what changes with age is the way they are lived.": (
+        "La méthode, les valeurs et l'ambition éducative sont les mêmes dans chaque branche — c'est la façon de les vivre qui change avec l'âge.",
+        "De methode, de waarden en de educatieve ambitie zijn in elke tak dezelfde — wat met de leeftijd verandert, is de manier waarop ze worden beleefd.",
+    ),
     "First you create your parent account; then you register your child.": (
         "Vous créez d'abord votre compte parent, puis vous inscrivez votre enfant.",
         "U maakt eerst uw ouderaccount aan en daarna schrijft u uw kind in.",

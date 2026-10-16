@@ -651,11 +651,45 @@ NEW_STRINGS = [
     ),
     ("%(min)s to %(max)s years", "ans", "jaar"),
     ("%(branch)s: year of birth", "année de naissance", "geboortejaar"),
+    (
+        "The method, the values and the educational ambition are the same in "
+        "every branch — what changes with age is the way they are lived.",
+        "ambition éducative",
+        "educatieve ambitie",
+    ),
     ("Our unit", "Notre unité", "Onze eenheid"),
     (
         "This is where the unit introduces itself to the families of the commune.",
         "se présente aux familles",
         "stelt de eenheid zich voor",
+    ),
+    # Where the unit meets: the band under the desk, and the two settings
+    # fields behind it. The place's own name is a proper noun and is
+    # deliberately not among these — it is not translated per language.
+    ("Where to find us", "Où nous trouver", "Waar je ons vindt"),
+    ("Directions", "Itinéraire", "Route"),
+    (
+        "A map of where the unit meets",
+        "Un plan de l'endroit",
+        "Een kaart van waar",
+    ),
+    ("Meeting place", "Lieu de réunion", "Ontmoetingsplaats"),
+    (
+        "Map of the meeting place",
+        "Plan du lieu de réunion",
+        "Kaart van de ontmoetingsplaats",
+    ),
+    (
+        "What the unit calls the place it meets, if it calls it anything. "
+        "Shown above the address on the homepage.",
+        "donne au lieu",
+        "plaats waar ze samenkomt",
+    ),
+    (
+        "A picture of where the unit meets, shown beside the address on the "
+        "homepage. Leave empty to show the address on its own.",
+        "affichée à côté",
+        "naast het adres",
     ),
 ]
 

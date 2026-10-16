@@ -19,7 +19,7 @@
         Only when the branch has a charter colour: a branch no preset made has
         none, and inventing one would claim a meaning it does not carry.
     {% endcomment %}
-    <div class="desk-answer{% if desk_answer.colour %} desk-answer-branch{% endif %}"
+    <div class="desk-answer{% if desk_answer.colour %} desk-answer-branch{% endif %}{% if desk_answer.topping %} {{ desk_answer.topping }}{% endif %}"
          {% if desk_answer.colour %}style="--branch: {{ desk_answer.colour }}"{% endif %}>
       <div class="desk-answer-paper">
         <div class="desk-answer-text">

@@ -62,6 +62,10 @@ class PristineDatabaseTest(TroopSettingsTestCase):
         self.assertEqual(troop.default_language, "fr")
         self.assertEqual(troop.contact_email, "")
         self.assertEqual(troop.footer_address, "")
+        self.assertEqual(troop.meeting_place, "")
+        # Read through the accessor, which is what every template uses: the
+        # bare field has no URL to give when it holds no file.
+        self.assertEqual(troop.map_url(), "")
         self.assertEqual(troop.currency, "EUR")
         self.assertEqual(troop.phone_region, "BE")
         self.assertIsNone(troop.last_passage_school_year)
