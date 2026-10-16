@@ -19,7 +19,7 @@ cssbeautifier==2.0.3
 # requires Django<6.1, so 6.1.x cannot be resolved. See the ignore rule in
 # .github/dependabot.yml.
 django==6.0.9
-django-allauth==65.19.5
+django-allauth==65.20.0
 django-celery-beat==2.9.0
 django-celery-results==2.6.0
 django-debug-toolbar==8.0.0
@@ -47,7 +47,7 @@ json5==0.15.0
 kombu==5.6.2
 matplotlib-inline==0.2.2
 nh3==0.3.7
-oauthlib==3.3.1
+oauthlib==4.0.0
 openpyxl==3.1.5
 packaging==26.3
 parso==0.8.7
