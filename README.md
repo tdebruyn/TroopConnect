@@ -325,6 +325,7 @@ scripts/dev-migrate.sh --show      # migration status
 scripts/dev-migrate.sh --check     # exit 1 if anything is unapplied
 scripts/worktree-tidy.sh           # review git worktrees, merge and clean up
 scripts/dev-zen-test-users.sh      # four logged-in browser windows
+scripts/dev-seed-demo.sh           # seed the demo troop into the dev instance
 ```
 
 `dev-migrate.sh` works whether or not the stack is running (it falls back to
