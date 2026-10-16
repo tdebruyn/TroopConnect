@@ -292,6 +292,21 @@ login helper is `e2e/helpers/auth.js`. To *look* at the app as each persona
 rather than test it, `scripts/dev-zen-test-users.sh` opens four Zen Browser
 windows, one per account, each already logged in.
 
+### A demo troop, to click through
+
+`create_test_data` seeds the six accounts the browser suite drives, which is
+not much to look at. For a whole unit instead — four sections with children and
+leaders in them, seven families, an agenda, a mailbox, a fee grid, the unit's
+own settings and a few documents — seed the demo troop:
+
+```bash
+docker compose -f compose.yml -f compose.dev.yml exec web python manage.py seed_demo
+```
+
+It runs only on a `DEBUG` instance (pass `--force` to override), leaves anything
+already there alone, and sends no mail. Running it twice adds nothing the
+second time. Every login it prints uses the password `Demo1234!`.
+
 ### Dev scripts
 
 Wrappers around `docker compose -f compose.yml -f compose.dev.yml`; `--help` on
