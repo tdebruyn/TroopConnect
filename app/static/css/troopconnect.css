@@ -10,12 +10,56 @@
  * states is a liability: the theme can change under it and our copy would win.
  */
 
+/* ---------------------------------------------------------------------------
+   The display serif, vendored (see `static/fonts/README.md`).
+
+   One file per subset and *not* one per weight: Source Serif 4 is a variable
+   font, so the whole 400–700 range is one download and `font-weight: 400 700`
+   is the truth about it rather than a convenience. The two subsets are Google's
+   own — `latin` alone would drop the œ in "cœur" and the Œ in a troop's name
+   and hand them to the fallback face mid-heading, which is exactly the seam a
+   serif makes visible.
+
+   Declared here rather than beside the theme because it is a deviation, and the
+   deviations all live in one file. It is loaded before anything that uses it,
+   and `font-display: swap` means a slow font never holds up a parent in a
+   hurry — they get the fallback and the swap is not something they will notice.
+--------------------------------------------------------------------------- */
+@font-face {
+  font-family: "Source Serif 4";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("../fonts/SourceSerif4-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Source Serif 4";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("../fonts/SourceSerif4-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
 /* The site navbar is a fixed 110px tall — base.html sets that height inline on
    .navbar, and only there. The hero sits directly underneath it. In px, not
    rem: the navbar's own 110px does not follow the root font size, so this must
    not either. */
 :root {
   --site-navbar-height: 110px;
+  /* The display face, and the one place this product uses a second one. The
+     theme ships Muli for everything and four decorative faces for pages this
+     project does not build; a *serif* for headings is a departure from both, and
+     it is the whole of what makes a unit's name read as a title rather than as
+     a large label. Body text, UI, buttons and tables stay Muli: a serif in a
+     table or on a button is a costume, a serif on a title is a voice. */
+  --font-display: "Source Serif 4", Georgia, "Times New Roman", serif;
+  /* The pill, and the one radius in the system that is not a shaved corner. It
+     belongs to the page's door — the two actions in the bar — and to the two
+     round marks the desk draws; nowhere else in the product is round. */
+  --site-pill: 999px;
   /* The bar is a pane of glass, and these two are what is in it: how much of
      its own colour it lays over the backdrop, and what it does to the backdrop
      itself. base.html applies them, because `.bg-primary` carries the navbar's
@@ -38,15 +82,14 @@
      `paper` are four hues of four different temperatures sitting side by side;
      read through a common ground they are four rooms of one room. */
   --home-ground: color-mix(in srgb, #0a4275 9%, #f2f5f8);
-  /* How much of the photograph is spent letting go of itself. It scales with
-     the window because the band it dissolves does: at phone widths the hero is
-     most of the first screen already, and a settle as deep as the desktop's
-     would push the desk's answer out of reach.
-
-     Deliberately short of generous. A dissolve is a band of the troop's own
-     picture given up to a flat colour, and the deeper it runs the more of the
-     photograph reads as washed out rather than as handed over. */
-  --home-settle: clamp(4rem, 10vw, 6.5rem);
+  /* The federation's own green, taken down until it can hold white type over any
+     photograph — the colour the public page's band is read under. It is the
+     theme's `--bs-secondary`, charter-green-deep, darkened rather than replaced:
+     a scout unit's header rule that is not green is a header rule that has
+     forgotten who it is for. Green over the troop's own afternoon is what the
+     band is — and it is why the band needs neither a pool of shade nor a fade to
+     be legible, because a known colour at every height is arithmetic. */
+  --home-green: color-mix(in srgb, #304a3c 84%, #0b1a12);
 }
 
 /* The homepage hero: the unit's photo, with the presentation card on it.
@@ -84,19 +127,12 @@ header.masthead {
      as a panel lying on it. */
   overflow: hidden;
   margin-top: calc(-1 * var(--site-navbar-height));
-  /* Top: the navbar's height plus the room the unit's own name needs. Bottom:
-     the settle, which the photograph spends handing over to the desk.
-
-     Held as tight as the band can be. The first viewport has to reach the year
-     chips — a parent who has to scroll before they can answer the question has
-     been given a poster instead of a registration desk — and a troop's own
-     description is however long it is. */
-  /* The release is shorter than the room under the words by exactly this much,
-     so the last line of a troop's description is never the line the band starts
-     going pale under. A description is whatever length its troop wrote; the
-     ground behind the last line must not depend on that. */
-  padding: calc(var(--site-navbar-height) + 3.25rem) 0
-    calc(var(--home-settle) + 1.5rem);
+  /* Held as tight as a band can be and still be one. The first viewport has to
+     reach the year chips — a parent who has to scroll before they can answer the
+     question has been given a poster instead of a registration desk — and a
+     troop's own description is however long it is. Shorter than the reference
+     this was drawn from: a hero is a way in, not a room. */
+  padding: calc(var(--site-navbar-height) + 2.25rem) 0 2.75rem;
   text-align: center;
   color: #fff;
   background-image: url("../images/troop/brouettes.jpg");
@@ -106,117 +142,37 @@ header.masthead {
   background-size: cover;
 }
 
-/* The trace of the page's ink the photograph is read under, and the only thing
-   the band does to the picture as a whole. It is a wash, not a shade: the
-   photograph is what the troop put there, and darkening the whole band to make
-   the words safe is paying for the type with the picture. Deepest at the top,
-   where the navbar's glass sits on it, easing off downwards so the release into
-   the desk has somewhere to come from. */
+/* The troop's photograph, under the federation's green.
+
+   This is the band's whole legibility device, and it replaced two of them: a
+   wash along the top and a pool of blurred shade behind the words. One colour
+   does both jobs and does them better — it states the unit's movement, it keeps
+   the photograph *visible* instead of burying it under a grey of its own, and
+   because it is a known colour at every height the contrast of the words on it
+   is arithmetic rather than luck. Worst case, measured over the brightest thing
+   a photograph can be, is 6.0:1 for the description and 7.6:1 for the name.
+
+   Deeper at the top, where the bar sits and nothing has to be read; lightest
+   through the middle, where the words are and the picture should keep the most
+   of itself; deeper again at the foot, so the band closes rather than stops.
+
+   `backdrop-filter` and not `filter`, which is the load-bearing choice: a
+   `filter` would dim the band and every word in it, while a backdrop filter
+   acts on the photograph behind this layer and leaves the type sharp. */
 header.masthead::before {
   content: "";
   position: absolute;
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  -webkit-backdrop-filter: brightness(0.92) saturate(110%);
-  backdrop-filter: brightness(0.92) saturate(110%);
+  -webkit-backdrop-filter: brightness(0.72) saturate(116%);
+  backdrop-filter: brightness(0.72) saturate(116%);
   background-image: linear-gradient(
     180deg,
-    rgba(10, 66, 117, 0.3) 0,
-    rgba(10, 66, 117, 0.12) 100%
+    color-mix(in srgb, var(--home-green) 74%, transparent) 0,
+    color-mix(in srgb, var(--home-green) 62%, transparent) 56%,
+    color-mix(in srgb, var(--home-green) 70%, transparent) 100%
   );
-}
-
-/* The photograph lets go of itself before the desk begins.
-
-   A band that stops on a line and a page that starts from nothing read as two
-   pictures stacked; the settle spends the band's last inches handing the
-   visitor over to the colour the desk opens on, so the top of the page is one
-   ground. It goes to `--home-ground` and the desk *begins* at `--home-ground`,
-   so the two meet on the same colour and there is no seam to see between them.
-
-   It eases rather than ramps: the scrim above is already deepest at the top, so
-   a straight line here would read as a second, competing gradient. Two thirds
-   of the distance is covered by the midpoint, which leaves the band dark for
-   longer and then hands over quickly. */
-header.masthead::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: var(--home-settle);
-  z-index: 0;
-  pointer-events: none;
-  background-image: linear-gradient(
-    180deg,
-    transparent 0,
-    color-mix(in srgb, var(--home-ground) 72%, #0a4275) 34%,
-    var(--home-ground) 100%
-  );
-}
-
-/* The pool: the photograph blurred and dimmed exactly where the unit's words
-   are, and nowhere else.
-
-   A photograph is the wrong ground for type and the right thing for a band, so
-   the two are not reconciled by beating the picture down — the band stays sharp
-   and the words get a place to stand. It is the same glass the navbar is made
-   of, at the size of the words rather than the width of the page, which is what
-   makes the bar and the band read as one page rather than as a header over a
-   picture.
-
-   Sized by the card and then bled past it by more than the feather reaches, so
-   the words sit in the *opaque* middle of the pool and only its edges soften.
-   A radial feather would have left the corners — where the unit's own name and
-   the first word of its description are — on a half-dimmed ground; two linear
-   gradients crossed with `mask-composite` feather the four edges and keep the
-   middle whole.
-
-   `backdrop-filter` and not `filter`, again: this layer has to blur what is
-   behind it and not the words it exists for. */
-header.masthead .card::before {
-  content: "";
-  position: absolute;
-  /* Blurred far enough that the picture is an average of itself, then dimmed
-     until a word is safe on it — measured against a photograph that is *bright*,
-     not against this troop's grass. A unit may upload a beach or a snowball
-     fight, and a pane that only works on a mid-green field is a pane that works
-     for one troop. The blur does the work of the value: it is what stops a
-     single white shirt or a lit leaf from sitting under a letter, and it is what
-     keeps the dimming from having to be so heavy that the pane reads as a hole.
-
-     Bled past the words by more than the feather reaches, on every side, so the
-     words stand in the *fully treated* middle: a feather that crosses the text
-     leaves its first and last letters on a half-dimmed ground, and at 18px that
-     is the difference between passing and not.
-
-     The page's own ink rather than black, so the pane belongs to the same world
-     as the bar above it. */
-  inset: -5rem -7rem;
-  z-index: -1;
-  pointer-events: none;
-  -webkit-backdrop-filter: blur(34px) brightness(0.48) saturate(130%);
-  backdrop-filter: blur(34px) brightness(0.48) saturate(130%);
-  background-color: rgba(10, 66, 117, 0.22);
-  -webkit-mask-image: linear-gradient(
-      90deg,
-      transparent 0,
-      #000 13%,
-      #000 87%,
-      transparent 100%
-    ),
-    linear-gradient(180deg, transparent 0, #000 17%, #000 83%, transparent 100%);
-  mask-image: linear-gradient(
-      90deg,
-      transparent 0,
-      #000 13%,
-      #000 87%,
-      transparent 100%
-    ),
-    linear-gradient(180deg, transparent 0, #000 17%, #000 83%, transparent 100%);
-  -webkit-mask-composite: source-in;
-  mask-composite: intersect;
 }
 
 /* The unit's own opening, and the card is only the block it was authored in.
@@ -265,13 +221,20 @@ header.masthead .card h1,
 header.masthead .card .h2 {
   margin: 0;
   /* White, stated on the heading itself: the theme gives every heading the
-     charter ink through its own rule, which the card's colour cannot reach —
-     and a navy name on a dark photograph is a name nobody can read. */
+     charter ink through its own rule, which a colour set on the card behind it
+     cannot reach — and a navy name on a dark photograph is a name nobody can
+     read.
+
+     The display face, at a step *below* where a poster would put it. The unit's
+     name is the first thing anyone reads on this page and it earns the serif;
+     it does not earn half the screen, because the thing the page is for is
+     sixty pixels further down. */
   color: #fff;
-  font-size: clamp(2.125rem, 4.6vw, 3.5rem);
-  font-weight: 800;
-  line-height: 1.06;
-  letter-spacing: -0.025em;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 3.2vw, 2.75rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.012em;
   text-wrap: balance;
 }
 
@@ -327,13 +290,70 @@ header.masthead .card p {
    has paper behind the bar, where the same alpha would wash it out to a pale
    slate and the two would no longer look like one site. */
 .page-home {
-  --site-navbar-fill: rgba(10, 66, 117, 0.3);
-  /* Dimming is *not* repeated here. The band underneath has already dimmed and
-     scrimmed its photograph, and dimming it a second time in the glass turned
-     the bar into a near-black strip lying across the top of the picture — the
-     opposite of a bar made of the picture. The glass's job on this page is the
-     blur and a tint; the dark is the band's. */
-  --site-navbar-backdrop: blur(14px) brightness(0.62) saturate(124%);
+  /* Barely a fill at all: at 18% the glass is a haze over a band that is
+     already dark, and the troop's photograph comes through it. The dimming is
+     *not* repeated here either — the band has dimmed and greened the picture
+     once already, and repeating it in the glass turned the bar into a near-black
+     strip lying across the top of the picture, which is the opposite of a bar
+     made of the picture. */
+  --site-navbar-fill: rgba(10, 66, 117, 0.18);
+  --site-navbar-backdrop: blur(14px) brightness(1.02) saturate(114%);
+}
+
+/* The bar's two actions, and they are a *pair*: the page exists to get a child
+   registered, so the standing invitation to a stranger is the filled one and
+   signing in is its quiet peer. That is the reverse of the members pages, where
+   a reader is already known and the account is what the bar is for — which is
+   why the roles are named here and the theme's own two classes are left alone.
+
+   Pills rather than the system's 0.25rem corners, and the bar is the one place
+   for them: this is the page's door, not a control inside the product, and a
+   door has a different shape from a button. The radii are declared once, above. */
+.page-home .nav-cta {
+  padding: 0.5rem 1.15rem;
+  border-radius: var(--site-pill);
+  background-color: #fff;
+  color: var(--home-green);
+  font-weight: 700;
+  line-height: 1.5;
+  text-decoration: none;
+  transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+}
+
+.page-home .nav-cta:hover,
+.page-home .nav-cta:focus-visible {
+  background-color: color-mix(in srgb, #fff 82%, var(--home-green));
+  color: var(--home-green);
+}
+
+/* Styled through the theme's own properties and not through Bootstrap's
+   `--bs-btn-*` variables, because this theme's build predates them: its
+   `.btn-info` sets `color`, `background-color` and `border-color` outright. The
+   element is still a `.btn`, so the override names the element and the page
+   rather than arguing with the class. */
+.page-home .navbar .nav-secondary,
+.page-home .navbar .nav-secondary:hover,
+.page-home .navbar .nav-secondary:focus-visible,
+.page-home .navbar .nav-secondary:active {
+  padding: 0.5rem 1.15rem;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: var(--site-pill);
+  background-color: transparent;
+  /* `!important`, and it is not laziness: the theme's own `.btn-info` carries a
+     colour this cascade does not out-rank by specificity alone, and the
+     alternative — a longer selector chain written to win an argument — is a rule
+     nobody can read. The bar's two actions are named by role in the markup so
+     that this file can dress them at all. */
+  color: #fff !important;
+  font-weight: 600;
+  line-height: 1.5;
+  box-shadow: none;
+}
+
+.page-home .navbar .nav-secondary:hover,
+.page-home .navbar .nav-secondary:focus-visible {
+  border-color: #fff;
+  background-color: rgba(255, 255, 255, 0.14);
 }
 
 .bg-transparent {
@@ -647,175 +667,72 @@ body {
 /* ---------------------------------------------------------------------------
    The public homepage's enrolment desk (homepage/snippets/desk.html).
 
-   The one part of that page the troop does not edit: naming the branch a child
-   would join means reading the branches' own ages. Everything below it is still
-   the GrapesJS canvas.
+   The section that asks the question and takes the answer: the branches as one
+   strip of four rooms, and the sheet below it that names the branch a child
+   would join. It is the one part of the public page the troop does not edit,
+   because reading the branches' own ages is not something a canvas can do.
 --------------------------------------------------------------------------- */
 
 .desk {
-  /* Positioned and isolated so the field below can sit at `z-index: -1`
-     without escaping behind the page. Clipped because that field runs wider
-     than the container the words are set in. */
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  padding: 2.75rem 0 1.25rem;
-  /* How far the desk's words stand inside the colour they stand on. A branch's
-     name written on the seam where its colour starts reads as spilling over
-     the edge of the previous branch; every one of them gets the same hold. */
-  --desk-gutter: 2rem;
-  /* The desk's own ground, and what makes the band above it able to let go: the
-     hero's settle ends on this colour, so the two are continuous and no seam
-     can show where the photograph stopped and the desk started.
-
-     It eases back to `paper` well before the desk ends, so the desk is a field
-     the page *rises out of* rather than a band laid across it — by the time the
-     closing note is read the page is the page again, and the section below
-     begins on nothing. */
-  background-image: linear-gradient(
-    180deg,
-    var(--home-ground) 0,
-    #f2f5f8 20rem
-  );
+  /* The page's own ground, washed a step with the charter ink so the section
+     reads as a band of the page rather than as the page. */
+  background-color: var(--home-ground);
+  padding: 3rem 0 1.5rem;
+  /* How far a branch's words stand inside the room they stand in. A name
+     written on the seam where its colour begins reads as spilling over the edge
+     of the branch before it; every one of them gets the same hold. */
+  --desk-gutter: 1.75rem;
+  /* The section's own colour: the label over its heading, the rules it draws,
+     and the shape of the two marks it makes. A troop never sets this — it is
+     the federation's green, which is what a scout unit's page is written in. */
+  --section-label: #304a3c;
+  --section-rule: #304a3c;
 }
 
-/* The desk stands on the branches themselves: one column per branch, in that
-   branch's own charter colour, as wide as the branch is long — the rail's
-   proportion drawn once more behind it.
-
-   Dark enough to be seen as a colour of paper, light enough that a year chip
-   still reads as a sheet lying on it; the white chips are what the whole band
-   is measured against.
-
-   The columns carry the rail's own 2px gap, so a colour and the segment in
-   front of it can never disagree about where one branch stops.
-
-   Decorative: it is `aria-hidden` in the markup and says nothing the rail does
-   not already say in words. */
-.desk-field {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  --desk-field-bleed: 4rem;
-  /* The letting-go, top and bottom, and deliberately on this box rather than on
-     the container inside it. A mask clips what it is set on to that element's
-     own border box, and the two end columns run a bleed *outside* the container
-     — masked on the container, those bleeds are cut off at its edge and the
-     field ends on a hard vertical line that four columns of colour make very
-     visible. On the field's own box, which is the desk's full width, the ends
-     are inside the mask and fade as the drawing says they do. The left and the
-     right are still the end columns' own business, below. */
-  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 24%, #000 44%, transparent 100%);
-  mask-image: linear-gradient(180deg, transparent 0, #000 24%, #000 44%, transparent 100%);
+/* The label over a section's heading. Small, spaced, and in the section's own
+   colour, which is what makes it read as a label rather than as a small
+   heading: it names the section before the heading says what it asks. */
+.desk-eyebrow,
+.place-eyebrow {
+  margin: 0 0 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--section-label);
 }
 
-/* The field rises out of the troop's photograph and settles back into the page,
-   so the desk never ends on a strip of colour that the page below it then has
-   to start from. (The mask itself is on `.desk-field`, above, and for a reason
-   that is about the ends rather than about the top and bottom.)
-
-   The fall is the long half, and that is the whole shape of the desk: the
-   branches' colour is spent on the strip that names them — the question, the
-   rail, the names and the years, which is where a visitor is choosing between
-   four of them — and then gives way downwards to the ground they share. Held
-   flat the whole height, four saturated colours are a striped panel; spent and
-   released, they are the light the choice is made in and the page beneath it is
-   one page again.
-
-   Full strength is reached just under the question and held through the rail,
-   which is the first thing that needs a branch's colour to be exactly its own. */
-.desk-field .container {
-  height: 100%;
-}
-
-/* No gap between the columns, and that is the difference between a ground and
-   a swatch strip. The rail keeps its 2px gap — its segments are separate
-   objects with separate rules — but the field's columns are one surface, and a
-   gap here let the page show through every boundary as a bright hairline, which
-   is what made four rooms read as four panels. The boundaries still land
-   exactly where the rail's do: the columns are sized by the same `--span`, so
-   removing the gap moves no edge. */
-.desk-field-row {
-  display: flex;
-  height: 100%;
-}
-
-.desk-field-col {
-  flex: var(--span, 1) 1 0;
-  min-width: 0;
-  /* A branch no preset made has no charter colour, and mixing one out of
-     nothing is how it gets none — the rail's bar and the answer band go plain
-     for that same branch.
-
-     Mixed with `transparent` and not with `paper`, so the tint stays a veil the
-     desk's ground is read *through* rather than a colour laid over it. That is
-     the whole of how four branches of four temperatures end up in one light:
-     they are all the same ground with a hue in it, not four grounds. */
-  --field-tint: color-mix(in srgb, var(--branch, transparent) 15%, transparent);
-  background-color: var(--field-tint);
-}
-
-/* The two ends run on past the container the words are set in, and let go as
-   they go. A ground whose edge is the same line as the first letter of what
-   stands on it is not a ground, it is a box: the question, the rail and the
-   answer band all have to sit inside the colour, with colour to spare.
-
-   The two ends only. Widening the whole row would move the boundaries between
-   the columns, and those are the rail's own boundaries — the one thing this
-   drawing may not lose. So the ends take the extra width and nothing in
-   between moves. */
-.desk-field-col:first-child,
-.desk-field-col:last-child {
-  position: relative;
-}
-
-.desk-field-col:first-child::before,
-.desk-field-col:last-child::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: var(--desk-field-bleed);
-  pointer-events: none;
-}
-
-.desk-field-col:first-child::before {
-  right: 100%;
-  background-image: linear-gradient(90deg, transparent, var(--field-tint));
-}
-
-.desk-field-col:last-child::after {
-  left: 100%;
-  background-image: linear-gradient(90deg, var(--field-tint), transparent);
-}
-
+/* The question, and it is the largest thing on the page: the desk is what a
+   parent came for, and the section is not allowed to whisper. The display face
+   at full strength, on the page's own ink, and sitting *off* the strip — the
+   rooms below are the answer to it, and a question asked from inside one of
+   them would be asked twice. */
 .desk-question {
-  font-size: 2.5rem;
-  font-weight: 800;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-  max-width: 20ch;
+  margin: 0 0 1.75rem;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 3.4vw, 2.75rem);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  max-width: 26ch;
   /* Balanced, so the question breaks into even lines instead of leaving its
      "?" alone on the last one at phone widths. */
   text-wrap: balance;
 }
 
-/* One segment per branch, as long as the branch is: the four spans of the
-   scout journey drawn as a single line, so the years a child spends in each
+/* One room per branch, as wide as the branch is long: the four spans of the
+   scout journey drawn as a single strip, so the years a child spends in each
    one are legible before a single year is read.
 
-   The segment carries the branch's name, its ages, and the years that land in
-   it, in the branch's own charter colour — the same colour the answer band
-   takes below, so the two can never disagree about which branch is which.
+   No gap between the rooms. They are one surface divided rather than four
+   objects in a row, and a gap would let the page show through every boundary as
+   a bright hairline — which is what made four rooms read as four panels.
 
-   Segments stay side by side only while each is wide enough to hold the years
-   it owns on one line; under that they stack, and the proportions move into
-   the length of each segment's bar, which is what carries them on a phone. */
+   Side by side only while each room can hold the years it owns on one line;
+   under that they stack, and each keeps its own colour as its own card. */
 .desk-rail {
   display: flex;
-  column-gap: 2px;
-  margin: 2rem 0 0;
+  margin: 0;
   padding: 0;
   list-style: none;
 }
@@ -823,45 +740,27 @@ body {
 .desk-segment {
   flex: var(--span, 1) 1 0;
   min-width: 0;
-  /* Shared by the stacked layout, where the segment carries this itself. A
-     branch no preset made has no colour to mix, and gets none. */
-  --segment-tint: color-mix(in srgb, var(--branch, transparent) 14%, transparent);
+  /* The room, in the branch's own colour, laid into the page rather than
+     painted over it so the strip stays one surface at four hues. A branch no
+     preset made has no colour, and a room mixed out of nothing is how it gets
+     none: it stays the page's own ground. */
+  background-color: color-mix(
+    in srgb,
+    var(--branch, transparent) 14%,
+    transparent
+  );
+  padding: 1.5rem var(--desk-gutter) 1.75rem;
 }
 
-.desk-segment-bar {
+/* Each room is headed by its branch's own rule, at full strength — the one
+   place the colour is not held back, because a rule only has to be seen. */
+.desk-segment::before {
+  content: "";
   display: block;
   height: 4px;
-  border-radius: 2px;
-  /* A branch no preset made has no charter colour, and a bar in the page's own
-     ink would claim a meaning it does not carry — so it takes the structural
-     line, the way the answer band goes plain for that same branch. */
-  background-color: var(--branch, #dee2e6);
-  transform-origin: left center;
-  /* The rail is one twelve-year line, so it is drawn as one: the segments lay
-     themselves down in the order they are read, youngest branch first, which is
-     the order the journey inside the row actually runs. */
-  animation: desk-segment-grow 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
-}
-
-/* What makes four bars a line rather than four blocks. Held to 80ms a step and
-   capped at the fourth, so a unit running more branches than the preset takes
-   the last step together instead of pushing the draw past the 800ms an authored
-   entrance is allowed. Stacked, the same delay moves down the column, which is
-   the direction the rail is read in there. */
-.desk-segment:nth-child(2) .desk-segment-bar {
-  animation-delay: 80ms;
-}
-
-.desk-segment:nth-child(3) .desk-segment-bar {
-  animation-delay: 160ms;
-}
-
-.desk-segment:nth-child(4) .desk-segment-bar {
-  animation-delay: 240ms;
-}
-
-.desk-segment:nth-child(n + 5) .desk-segment-bar {
-  animation-delay: 320ms;
+  margin-bottom: 1rem;
+  border-radius: var(--site-pill);
+  background-color: var(--branch, var(--section-rule));
 }
 
 .desk-segment-head {
@@ -869,407 +768,243 @@ body {
   align-items: baseline;
   flex-wrap: wrap;
   gap: 0.25rem 0.5rem;
-  margin: 0.625rem 0 0;
+  margin: 0;
 }
 
+/* The name and its ages are written in the branch's *ink*. The room states the
+   colour at full strength; the words state it at the strength words can be.
+   That is not the same value for two of the four branches — see `BRANCH_INKS`,
+   which is a measurement and not a shade of the same idea. */
 .desk-segment-name {
-  font-size: 1.0625rem;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
   font-weight: 700;
+  color: var(--branch-ink, #0a4275);
 }
 
-/* A step darker than the paper's muted. `#5d666e` was chosen to clear AA on
-   paper by a comfortable margin, and a branch tint under it spends most of
-   that margin: on the three darker branch colours it lands at 4.16–4.35:1,
-   which is a failure thin enough to pass unnoticed. This is the same voice one
-   rung down again, re-measured against the tints *over the home ground* rather
-   than over `paper` — a darker base spends more of the margin, and the rung
-   that cleared the old tints (4.63:1 worst) landed at 4.35:1 on the new ones.
-   It clears all four now (worst case 4.66:1). */
 .desk-segment-ages {
   font-size: 0.8125rem;
-  color: #515a63;
+  color: var(--branch-ink, #5d666e);
 }
 
-/* The branch the answer names, marked by weight rather than a second colour. */
+/* The branch the answer names, marked by weight rather than by a second colour. */
 .desk-segment-on .desk-segment-name {
-  font-weight: 800;
-}
-
-.desk-segment-on .desk-segment-ages {
-  color: #0a4275;
-  font-weight: 700;
+  font-weight: 900;
 }
 
 /* What the four branches hold in common, closing the desk under the answer
-   rather than interrupting the run up to it. The rule above it divides the
-   footnote from the band it footnotes. */
+   rather than interrupting the run up to it. Carried on a rule in the section's
+   green down its left, which is the device this page uses for a statement it
+   wants read as a statement and not as fine print. */
 .desk-note {
-  max-width: 62ch;
-  margin: 1.5rem 0 0;
-  padding-top: 1rem;
-  border-top: 1px solid #dee2e6;
-  /* The desk's closing statement about the four branches, not a caption on the
-     answer above it: at body size it read as fine print belonging to the block
-     it followed, so it carries size *and* weight. Weight is what this system
-     uses to be emphatic — it never reaches for a hue — and the leading comes in
-     with it, because 700 at 1.5 reads as loose rather than as firm. Still short
-     of the answer title, which stays the loudest line in the band.
-
-     At 1.25rem/700 the line is also large text by WCAG's reckoning, so the
-     muted ink below needs 3:1 rather than 4.5:1 and clears it twice over. */
-  font-size: 1.25rem;
-  font-weight: 700;
-  line-height: 1.35;
-  /* The field rung, for the same reason the ages take it: the line lies across
-     the branches' tint, and the tint is what costs the margin. */
-  color: #515a63;
+  max-width: 60ch;
+  margin: 2rem 0 0;
+  padding-left: 1.25rem;
+  border-left: 3px solid var(--section-rule);
+  font-family: var(--font-display);
+  font-size: 1.3125rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #2c3742;
 }
 
-/* Side by side, a branch's name stands inside its own colour rather than on
-   the seam where that colour begins: written on the seam it reads as spilling
-   over the edge of the branch before it.
-
-   The first column is the exception, and only because of the ground: the field
-   runs on past the page's margin, so that branch's colour already reaches left
-   of its name and the name needs no help. Every column after the first begins
-   on a seam and takes the gutter. The rail's 4px rules are left out of it
-   either way — a rule marks where a branch starts, and it cannot start
-   anywhere but the branch's own edge.
-
-   Stacked, the segments carry a bar down their left instead and the gutter is
-   already there as the grid's `1rem`; a second one would only push the words
-   away from the bar that names them. */
-@media (min-width: 992px) {
-  .desk-segment:not(:first-child) .desk-segment-head,
-  .desk-segment:not(:first-child) .desk-years {
-    padding-left: var(--desk-gutter);
-  }
-}
-
-@keyframes desk-segment-grow {
-  from {
-    transform: scaleX(0);
-  }
-}
-
-@keyframes desk-segment-grow-y {
-  from {
-    transform: scaleY(0);
-  }
-}
-
-/* Stacked, the rail keeps its proportions as length rather than width: each
-   segment carries a bar as tall as its branch is long. Side by side stops
-   paying at `lg`, which is where the narrowest branch — a two-year one, a
-   sixth of the row — can no longer hold its own years on one line. */
 @media (max-width: 991.98px) {
   .desk-rail {
     flex-direction: column;
-    column-gap: 0;
   }
 
   .desk-segment {
-    display: grid;
-    grid-template-columns: 4px 1fr;
-    column-gap: 1rem;
     flex: none;
-    margin-bottom: 1.25rem;
-  }
-
-  .desk-segment-bar {
-    grid-row: 1 / span 2;
-    width: 4px;
-    min-height: calc(var(--span, 1) * 1.25rem);
-    height: 100%;
-    transform-origin: center top;
-    animation-name: desk-segment-grow-y;
-  }
-
-  .desk-segment-head {
-    margin-top: 0;
-  }
-
-  /* Stacked, a column per branch is a column four page-halves wide and the rail
-     has already stopped being a row, so the tint moves onto the segment itself:
-     the branch's colour runs out from behind its own bar, down the side of the
-     branch it belongs to. That is the same statement the columns make on a wide
-     screen — this colour is this branch — said in the direction the page is now
-     laid out. */
-  .desk-field {
-    display: none;
-  }
-
-  .desk-segment {
-    position: relative;
-  }
-
-  /* On a pseudo-element rather than on the segment itself, because the tint has
-     to let go downwards as well as to the right and one element carries one
-     mask: this way the branch's colour thins out under its own years instead of
-     ending on a ruled edge, which is what a tinted rectangle would look like.
-
-     The short fade-in at the top is what keeps four stacked bands from reading
-     as four stacked rectangles: the tint arrives under the band's own rule
-     rather than starting on a ruler line drawn across the page. It is short
-     because the branch's name has to keep standing in its colour — this is an
-     arrival, not a gradient the words are laid across. */
-  .desk-segment::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background-image: linear-gradient(
-      90deg,
-      var(--segment-tint) 0,
-      var(--segment-tint) 55%,
-      transparent
-    );
-    -webkit-mask-image: linear-gradient(
-      180deg,
-      transparent 0,
-      #000 12%,
-      #000 56%,
-      transparent
-    );
-    mask-image: linear-gradient(
-      180deg,
-      transparent 0,
-      #000 12%,
-      #000 56%,
-      transparent
-    );
+    margin-bottom: 0.75rem;
+    border-radius: 0.5rem;
+    padding: 1.25rem var(--desk-gutter) 1.5rem;
   }
 }
 
-/* Chips keep one size whatever their segment holds, so a two-year branch reads
-   as the same control as a four-year one rather than as two wide buttons. */
+/* Chips keep one size whatever their room holds, so a two-year branch reads as
+   the same control as a four-year one.
+
+   The year carries its branch's ink as its text, which is what makes the row
+   read as four branches at a glance instead of as twelve identical buttons. */
 .desk-years {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  margin-top: 0.75rem;
+  margin-top: 1rem;
 }
 
-/* Lifted rather than outlined. A 1px line is the quieter signal of the two on
-   paper anyway, and the two are the same signal — so the chip keeps the
-   border's box, so nothing reflows, and gives up its ink to a soft raise.
-   Tinted with the charter blue the system's other lifted surfaces use, so it
-   reads as a lift rather than a drop. */
 .desk-year {
-  min-width: 3.375rem;
-  padding: 0.75rem 0.375rem;
+  min-width: 3.75rem;
+  padding: 0.625rem 0.5rem;
   text-align: center;
   font-size: 1.0625rem;
   font-weight: 700;
-  color: #0a4275;
+  color: var(--branch-ink, #0a4275);
   text-decoration: none;
   background-color: #fff;
-  border: 1px solid transparent;
   border-radius: 0.5rem;
   box-shadow: 0 0.125rem 0.375rem rgba(10, 66, 117, 0.1);
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
-    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    box-shadow 0.15s ease-in-out;
 }
 
-/* The halo is the affordance here, so hover and focus carry it on top of the
-   lift rather than replacing it — the chip must not appear to sink under the
-   pointer that is choosing it.
-
-   Hover's halo is the branch's own colour, because the branch is the thing
-   being chosen and the colour is already on screen beside it. Focus keeps the
-   charter-blue ring it has everywhere else: a focus indicator is chrome, and
-   chrome that changes colour from control to control is chrome a keyboard
-   reader has to re-find. */
 .desk-year:hover {
+  background-color: color-mix(in srgb, var(--branch-ink, #0a4275) 7%, #fff);
   box-shadow: 0 0.125rem 0.375rem rgba(10, 66, 117, 0.1),
     0 0 0 0.25rem color-mix(in srgb, var(--branch, #0a4275) 25%, transparent);
 }
 
+/* Focus keeps the charter-blue ring it has everywhere else: a focus indicator
+   is chrome, and chrome that changes colour from control to control is chrome a
+   keyboard reader has to re-find. */
 .desk-year:focus-visible {
   box-shadow: 0 0.125rem 0.375rem rgba(10, 66, 117, 0.1),
     0 0 0 0.25rem rgba(10, 66, 117, 0.25);
 }
 
-/* The chosen year wears its branch: a ring in the branch's colour at full
-   strength, over a fill of that same colour laid into paper. It is what makes
-   the row tell the visitor which branch they have just landed in before the
-   answer band says it in words, and it keeps the year in charter ink on a
-   light ground — which a chip filled solid could not do, since two of the four
-   branch colours cannot carry white type and the other two cannot carry dark
-   (see the answer band, which puts a sheet between the two). */
-.desk-year-on {
-  color: #0a4275;
-  background-color: color-mix(in srgb, var(--branch, #0a4275) 32%, #fff);
-  box-shadow: inset 0 0 0 2px var(--branch, #0a4275),
-    0 0.125rem 0.375rem rgba(10, 66, 117, 0.14);
-}
-
+/* The chosen year is a solid chip in its branch's colour — and *not* at the
+   colour's full strength. The fill and the white on it are measured together in
+   `BRANCH_INKS`, which is the only reason a filled chip is possible here: at
+   full strength Baladins carries white at 2.9:1, so the branch's bright blue
+   would have had to keep a ring around it instead. */
+.desk-year-on,
 .desk-year-on:hover {
-  box-shadow: inset 0 0 0 2px var(--branch, #0a4275),
-    0 0.125rem 0.375rem rgba(10, 66, 117, 0.14),
-    0 0 0 0.25rem color-mix(in srgb, var(--branch, #0a4275) 25%, transparent);
+  color: #fff;
+  background-color: var(--branch-ink, #0a4275);
+  box-shadow: 0 0.125rem 0.375rem rgba(10, 66, 117, 0.18);
 }
 
+.desk-year-on:focus-visible {
+  box-shadow: 0 0.125rem 0.375rem rgba(10, 66, 117, 0.18),
+    0 0 0 0.25rem rgba(10, 66, 117, 0.25);
+}
+
+/* The answer, as a sheet of paper on the section's ground rather than as a
+   field of colour. The branch is stated by the rule down the sheet's edge and
+   by its own mark in the corner — the same rule-and-mark device the closing
+   note below it uses, so the two read as the section speaking rather than as
+   two unrelated blocks. */
 .desk-answer {
-  /* The same interval the year chips use: both are steps in one sequence. */
+  position: relative;
   margin-top: 2rem;
-  border: 1px solid #dee2e6;
-  border-radius: 0.25rem;
+  padding-left: 0.375rem;
+  border-radius: 0.5rem;
   background-color: #fff;
+  box-shadow: 0 0.125rem 0.5rem rgba(10, 66, 117, 0.09);
 }
 
-/* The answer, as a sheet of paper. It carries its own layout so the band
-   around it can be nothing but colour.
+.desk-answer::before {
+  content: "";
+  position: absolute;
+  top: 0.75rem;
+  bottom: 0.75rem;
+  left: 0;
+  width: 3px;
+  border-radius: var(--site-pill);
+  background-color: var(--branch, var(--section-rule));
+}
 
-   Positioned so it stacks above the band's own topping: the theme draws that
-   watermark as an absolutely positioned pseudo-element, which paints over
-   in-flow content, and a sheet lying on the field must not have the field's
-   pattern washed across the words it carries. */
+/* The answer, as a sheet of paper. It carries its own layout so the frame
+   around it can be nothing but the rule. */
 .desk-answer-paper {
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 1.5rem;
-  padding: 1.75rem 2rem;
-  /* It lands on the ground rather than being revealed with it, on both states
-     of the band: the answer is set down on the branch, which is the one thing
-     this band is a picture of. It follows the ground's own descent from the
-     rail above, so the two read as one gesture rather than as two items. */
-  animation: desk-answer-sheet 0.34s cubic-bezier(0.16, 1, 0.3, 1) 90ms
-    backwards;
+  padding: 1.5rem 2rem 1.5rem 1.75rem;
 }
 
-/* The branch's charter colour as the ground, carrying the branch's own topping
-   — the federation's flag drawn for that branch — with the words on the paper
-   over it. The unit's band device, one step down in scale.
+.desk-answer-text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
 
-   White type on the colour would fail AA for two of the four branches and dark
-   type would fail for the other two, so the copy is never asked to sit on it.
-
-   The padding is the whole frame the pattern gets around its sheet. It was
-   twice this, and at that size the band read as a board the sheet was mounted
-   in rather than as the field holding it. */
-.desk-answer-branch {
-  /* A mat around the sheet, not a plate it is mounted in. The colour's job here
-     is to be the branch's ground and to hold the sheet off the page; past about
-     this much it stops being a frame and starts being a fourth surface. */
-  padding: 0.75rem;
-  border: 0;
-  /* Painted rather than filled, so the ground can lay itself down out of the
-     rail above instead of having been there all along: the branch's colour as a
-     background image growing down from the band's top edge.
-
-     An image and not a clip path, because the sheet inside has to land *on* the
-     colour rather than be cut off by it — and not a `scaleY` on the band, which
-     would squash the sheet with it. Painted on the band's own box and not a
-     positioned child, because a ground that carries no data does not need an
-     element the way the desk field's columns do. */
-  background-color: transparent;
-  background-image: linear-gradient(var(--branch), var(--branch));
-  background-repeat: no-repeat;
-  background-position: top;
-  background-size: 100% 100%;
-  animation: desk-answer-field 0.3s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+/* The branch's own mark, as a square: the federation's topping drawn for that
+   branch, faint, at the size of a stamp and in its own corner. The theme draws
+   every topping as an absolutely positioned pseudo-element at full strength,
+   and this is the strength the system spends on a watermark — but cut to a
+   square, because a pattern run across the whole sheet stops being a mark and
+   becomes wallpaper. */
+.desk-answer-mark {
+  flex: 0 0 auto;
+  align-self: stretch;
+  width: 4.5rem;
+  border-radius: 0.4rem;
+  background-color: color-mix(in srgb, var(--branch, var(--section-rule)) 10%, #fff);
+  overflow: hidden;
 }
 
 /* The topping is the theme's, drawn as an absolutely positioned pseudo-element
-   filling the band, and the theme defaults it to full strength. This is the
-   strength the system already spends on a topping and the only one DESIGN.md
-   allows: a watermark that never carries meaning and never appears at full
-   weight. Set here rather than through the theme's own opacity classes so the
-   band's appearance is decided in one place. */
-.desk-answer-branch::before {
+   filling whatever it is put on, and the theme defaults it to full strength.
+   This is the strength the system spends on a watermark and the only one it
+   allows — set on the mark rather than through the theme's own opacity classes,
+   so the strength is decided in one place. */
+.desk-answer-mark::before {
   opacity: 10%;
 }
 
-.desk-answer-branch .desk-answer-paper {
-  padding: 1.75rem 2rem;
-  background-color: #fff;
-  border-radius: 0.25rem;
-}
-
-/* Both keyframes state only where the thing comes *from*, never where it ends
-   up: the resting state stays the element's own rule. An animation that never
-   runs — a browser without them, or the reduced-motion block below — therefore
-   leaves the band and its sheet exactly as designed, rather than half-arrived
-   or invisible. */
-@keyframes desk-answer-field {
-  from {
-    background-size: 100% 0;
-  }
-}
-
-@keyframes desk-answer-sheet {
-  from {
-    opacity: 0;
-    transform: translateY(-0.5rem);
-  }
-}
-
-/* The desk's motion, in one place so the whole of it can be read at once: what
-   the rail draws, what the ground lays down, and what the sheet lands from are
-   all above, and all of them stop here. Nothing is left moving — but the state
-   change still registers, because the band arrives as one object instead of
-   arriving in silence. The chip the parent touched and the segment above it are
-   already confirmed in their own colour by then, so the desk never answers a
-   choice with nothing. */
-@media (prefers-reduced-motion: reduce) {
-  .desk-segment-bar,
-  .desk-answer-paper {
-    animation: none;
-  }
-
-  .desk-answer,
-  .desk-answer-branch {
-    animation: desk-answer-arrive 0.2s ease-out backwards;
-  }
-}
-
-@keyframes desk-answer-arrive {
-  from {
-    opacity: 0;
-  }
-}
-
 .desk-answer-label {
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: #5d666e;
 }
 
 .desk-answer-title {
-  margin: 0.5rem 0 0;
-  font-size: 1.75rem;
-  font-weight: 800;
+  margin: 0.4rem 0 0;
+  font-family: var(--font-display);
+  font-size: 1.625rem;
+  font-weight: 700;
+  line-height: 1.2;
   letter-spacing: -0.01em;
 }
 
+/* The branch the answer names, in its own ink: the one place in the band where
+   the colour is the point of the sentence. */
+.desk-answer-name {
+  color: var(--branch-ink, #0a4275);
+}
+
 .desk-answer-when {
-  margin: 0.5rem 0 0;
-  font-size: 1rem;
+  margin: 0.4rem 0 0;
+  font-size: 0.9375rem;
   color: #5d666e;
 }
 
-.desk-cta {
-  font-size: 1.0625rem;
+/* The page's one action. Green, and shaped like the bar's door rather than like
+   a button inside the product — this is the second door on the page. */
+/* Green, so the page has one family of action colour rather than two, and the
+   same pill the bar's own door wears: both are ways in, and a way in is not a
+   button inside the product. Stated against `.btn-primary`'s own properties,
+   which this theme sets directly rather than through Bootstrap's variables. */
+.desk-cta,
+.desk-cta:focus-visible {
+  font-size: 1rem;
   font-weight: 700;
-  padding: 1rem 1.875rem;
+  padding: 0.75rem 1.5rem;
+  border: 0;
+  border-radius: var(--site-pill);
+  background-color: var(--section-rule);
+  color: #fff;
   white-space: nowrap;
+  box-shadow: none;
 }
 
-/* For a unit that has not filled its branches in yet. Solid, like every other
-   band on this page: the system has no dashed line. */
+.desk-cta:hover,
+.desk-cta:active {
+  background-color: color-mix(in srgb, var(--section-rule) 84%, #000);
+  color: #fff;
+}
+
+/* For a unit that has not filled its branches in yet. */
 .desk-prompt {
-  margin: 2.125rem 0 0;
+  margin: 2rem 0 0;
   padding: 1.5rem 2rem;
   font-size: 1.0625rem;
   color: #5d666e;
   background-color: #fff;
-  border: 1px solid #dee2e6;
-  border-radius: 0.25rem;
+  border-radius: 0.5rem;
 }
 
 .desk-closed-note {
@@ -1279,15 +1014,14 @@ body {
   color: #5d666e;
 }
 
-/* The band before a year is picked: the same paper and the same way in, in the
-   plain outlined band a branch with no charter colour gets. Its heading is a
-   sentence rather than a headline, so it steps down from the answer's. */
+/* The sheet before a year is picked: the same paper and the same way in, with
+   the edge drawn in the section's own rule rather than in a colour, because no
+   branch has been named. */
 .desk-answer-quiet .desk-answer-title {
-  font-size: 1.375rem;
+  font-size: 1.1875rem;
   letter-spacing: 0;
 }
 
-/* The action and what it actually is, so the label and the step agree. */
 .desk-answer-action {
   display: flex;
   flex-direction: column;
@@ -1305,18 +1039,25 @@ body {
   color: #5d666e;
 }
 
-@media (min-width: 768px) {
-  .desk-branches {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+@media (max-width: 767.98px) {
+  .desk-answer-paper {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1.25rem 1.25rem 1.5rem 1.5rem;
+  }
+
+  .desk-answer-mark {
+    display: none;
+  }
+
+  .desk-answer-action {
+    align-items: flex-start;
+  }
+
+  .desk-cta-note {
+    text-align: left;
   }
 }
-
-@media (min-width: 1200px) {
-  .desk-branches {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-}
-
 
 /* ---------------------------------------------------------------------------
    Where the unit meets (homepage/snippets/place.html).
@@ -1330,14 +1071,27 @@ body {
    and no border.
 --------------------------------------------------------------------------- */
 
+/* A full-bleed band in the page's warm step. The page changes ground between
+   the desk and the footer so the eye is told a section ended, and the warm step
+   is `charter-orange` laid into the page's own paper — a second section colour
+   and not a second brand colour. The band runs edge to edge, like the hero:
+   a section that changes colour and stops at the container's edge reads as a
+   box, not as a section. */
 .place {
-  padding: 2.5rem 0 1rem;
+  background-color: color-mix(in srgb, #ef7b00 6%, #f2f5f8);
+  padding: 2.5rem 0 2.75rem;
 }
 
+/* The troop's own name for its hall, at display size. It is a name, so it takes
+   the display face and the page's ink; the label above it has already said what
+   the section is. */
 .place-title {
-  margin-bottom: 1rem;
-  font-size: 1.375rem;
+  margin: 0 0 1.25rem;
+  font-family: var(--font-display);
+  font-size: 1.75rem;
   font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
 }
 
 /* The words and the map as one object rather than two things a row apart. A

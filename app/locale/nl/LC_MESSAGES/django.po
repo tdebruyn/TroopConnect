@@ -3588,6 +3588,9 @@ msgstr[1] "%(counter)s rijen geweigerd"
 msgid "What year was your child born?"
 msgstr "In welk jaar is uw kind geboren?"
 
+msgid "The branches"
+msgstr "De takken"
+
 
 msgid "Year of birth"
 msgstr "Geboortejaar"

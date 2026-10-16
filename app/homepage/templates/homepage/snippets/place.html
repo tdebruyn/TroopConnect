@@ -27,12 +27,17 @@
 {% if unit_address or meeting_place %}
     <section class="place">
         <div class="container">
-            <h2 class="place-title">{% trans "Where to find us" %}</h2>
+            {% comment %}
+                The label names the section; the heading is the troop's own name
+                for its hall. A unit that has named it gets its own words at
+                display size — which is the whole point of the setting — and a
+                unit that has not gets the label alone, because "Where to find
+                us" twice is not a heading.
+            {% endcomment %}
+            <p class="place-eyebrow">{% trans "Where to find us" %}</p>
+            {% if meeting_place %}<h2 class="place-title">{{ meeting_place }}</h2>{% endif %}
             <div class="place-body">
                 <div class="place-text">
-                    {% if meeting_place %}
-                        <p class="place-name">{{ meeting_place }}</p>
-                    {% endif %}
                     {% if unit_address %}
                         <p class="place-address">{{ unit_address|linebreaksbr }}</p>
                     {% endif %}

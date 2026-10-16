@@ -344,6 +344,26 @@ BRANCH_COLOURS = {
     "pionniers": "#d51317",
 }
 
+#: The same colour per branch written as *text*: the branch's own hue darkened
+#: — in its own hue, never toward the charter blue, which drags Louveteaux's
+#: green into a teal — until it is legible both as words on the desk's tint and
+#: as the ground a white chip is read on. Measured, not chosen, and not the same
+#: value as `BRANCH_COLOURS` for three of the four.
+#:
+#: Baladins is why this exists at all: #00a0de is a *light* blue, and light blues
+#: cannot be small text on a pale ground however they are set. Left alone it
+#: measures 2.4:1 as a branch name and 2.9:1 on a white chip — two failures thin
+#: enough to ship. Every value here clears 4.9:1 on the tint it is written on and
+#: carries white at 4.9:1 or better when it is a fill, which is what lets the
+#: chosen year be a solid chip in the branch's colour rather than a ring around
+#: one. Pionniers keeps 85% of itself, Louveteaux 90%, Éclaireurs all of it.
+BRANCH_INKS = {
+    "baladins": "#006085",
+    "louveteaux": "#246248",
+    "eclaireurs": "#004f9f",
+    "pionniers": "#aa0f12",
+}
+
 #: The theme's own topping for each branch — the federation's flag drawn for
 #: that branch, shipped as a white watermark in the vendored theme
 #: (`.bg-topping-<branch>`, per the mapping in its README). Same keys and the
@@ -419,6 +439,9 @@ def _desk_groups(rows):
                 # Through the same map the answer band reads, so a branch can
                 # never be one colour in the rail and another one below it.
                 "colour": BRANCH_COLOURS.get(branch.key),
+                # The same colour as words. A branch with no colour has no ink
+                # either, and its name and years fall back to the page's own.
+                "ink": BRANCH_INKS.get(branch.key),
             },
         )["years"].append(year)
     # `_desk_rows` hands the years over ascending. The rail draws a branch's
@@ -472,6 +495,7 @@ def _desk_answer(rows, requested, school_year):
             "min_age": branch.min_age_dec_31,
             "max_age": branch.max_age_dec_31,
             "colour": BRANCH_COLOURS.get(branch.key),
+            "ink": BRANCH_INKS.get(branch.key),
             "topping": BRANCH_TOPPINGS.get(branch.key),
             "first_year": _school_year_label(first),
             "last_year": _school_year_label(last),

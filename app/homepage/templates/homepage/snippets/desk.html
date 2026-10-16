@@ -9,37 +9,18 @@
   Y is `reference_year - Y` on the troop's age reference day — so a troop that
   renames or re-ages its branches changes this page without touching it.
 
-  The rail is that same arithmetic drawn: one segment per branch, as long as
-  the branch is, in the branch's own charter colour. It replaced a card per
-  branch that named each one above its years — the page already states the
-  branches and their ages, so the segment carries them once instead of twice.
+  The branches are drawn as one strip of four rooms: each as wide as its branch
+  is long, in that branch's own colour, in the order the branches are read in.
+  The room is what carries the colour and the words are written in the branch's
+  *ink* — the same hue taken down to where it can be read — so a branch states
+  itself in its own colour instead of in the page's, and Baladins' light blue,
+  which cannot be small text on anything pale, is the reason the two are not the
+  same value.
 {% endcomment %}
 <section class="desk{% if not registration_open %} desk-closed{% endif %}">
-    {% comment %}
-        The same four branches drawn again, as the ground the band stands on:
-        one column per branch, in that branch's own colour, as wide as the
-        branch is long — the rail's own proportions, behind the rail.
-
-        Painted here rather than in CSS as four fixed stops for the same reason
-        the rail is: a troop that renames, re-ages or drops a branch reshapes
-        this without anyone editing it, and a column can never disagree with
-        the segment in front of it about which branch is which. Decorative
-        only — it carries no words, so it is invisible to a screen reader.
-    {% endcomment %}
-    {% if desk_groups %}
-        <div class="desk-field" aria-hidden="true">
-            <div class="container">
-                <div class="desk-field-row">
-                    {% for group in desk_groups %}
-                        <span class="desk-field-col"
-                              style="--span: {{ group.span }}{% if group.colour %}; --branch: {{ group.colour }}{% endif %}"></span>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-    {% endif %}
     <div class="container">
         <div class="desk-inner">
+            <p class="desk-eyebrow">{% trans "The branches" %}</p>
             {% comment %}
                 The question is the page's `h1` while the page has no heading
                 of its own above it; under the troop's own band — which is the
@@ -53,17 +34,16 @@
             {% if desk_groups %}
                 {% comment %}
                     A parent knows how old their child is and mostly does not
-                    know which branch a name refers to, so the segment leads
-                    with the branch and its ages and keeps the years beneath.
-                    Its length is the branch's own age range, which is what
-                    makes the four of them read as one twelve-year journey
-                    rather than as four equal blocks.
+                    know which branch a name refers to, so the room leads with
+                    the branch and its ages and keeps the years beneath. Its
+                    width is the branch's own age range, which is what makes the
+                    four of them read as one twelve-year journey rather than as
+                    four equal blocks.
                 {% endcomment %}
                 <ol class="desk-rail">
                     {% for group in desk_groups %}
                         <li class="desk-segment{% if desk_answer.branch.pk == group.branch.pk %} desk-segment-on{% endif %}"
-                            style="--span: {{ group.span }}{% if group.colour %}; --branch: {{ group.colour }}{% endif %}">
-                            <span class="desk-segment-bar" aria-hidden="true"></span>
+                            style="--span: {{ group.span }}{% if group.colour %}; --branch: {{ group.colour }}{% endif %}{% if group.ink %}; --branch-ink: {{ group.ink }}{% endif %}">
                             <p class="desk-segment-head">
                                 <span class="desk-segment-name">{{ group.branch.name }}</span>
                                 <span class="desk-segment-ages">{% blocktranslate with min=group.branch.min_age_dec_31 max=group.branch.max_age_dec_31 %}{{ min }} to {{ max }} years{% endblocktranslate %}</span>

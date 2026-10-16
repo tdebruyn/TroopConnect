@@ -184,14 +184,27 @@ federation's; none was chosen by this project.
   Fields are not white — they sit on the page as slightly darker wells defined by
   their border. This is the single most distinctive thing about the form layer.
 - **Home Ground** (#dde5ec, `color-mix(in srgb, #0a4275 9%, #f2f5f8)`): The
-  opening ground of the public page, and one colour doing two jobs: the troop's
-  photograph settles into it, and the four branches' tints are read through it.
-  It is *derived* rather than picked, so it moves with the ink it is mixed from,
-  and it exists only at the top of `/` — no members page ever sees it.
-  It is the desk field's base, so the four tints are *darker* than they were
-  over bare `paper` — 15% of a saturated hue over a darker base — and darker
-  ground costs dark text its margin. `muted-on-field` was re-measured and moved
-  a step down for exactly that reason; see its entry below.
+  ground the desk's section is laid on, so the section reads as a band of the
+  page rather than as the page. It is *derived* rather than picked, so it moves
+  with the ink it is mixed from, and it exists only on `/` — no members page ever
+  sees it. It is also the base the four branch rooms are mixed into, which makes
+  those rooms darker than they would be on bare `paper`; the `muted-on-field`
+  rung was re-measured against that and moved a step down, and every ink in
+  `BRANCH_INKS` is measured against it.
+- **Home Green** (#2c4936, `color-mix(in srgb, #304a3c 84%, #0b1a12)`): The
+  federation's own green taken down until it can hold white type over any
+  photograph, and the colour the public page's band is read under. Charter-green-
+  deep is `--bs-secondary` in the theme; this is that colour darkened rather than
+  replaced, and it is the page's only large surface of colour that belongs to no
+  branch.
+- **Section Green** (#304a3c): Charter-green-deep itself, at label size for a
+  section's eyebrow, for the rule the page draws down the left of a statement it
+  wants read as a statement, and as the ground of both doors on the page.
+- **Warm Paper** (`color-mix(in srgb, #ef7b00 6%, #f2f5f8)`): The page's own
+  paper warmed with the charter's ochre, and the ground of the "where to find us"
+  band. A second *section* colour and not a second brand colour: the page changes
+  ground between sections so the eye is told one ended, and it changes it inside
+  the federation's palette.
 - **White** (#ffffff): Cards, dropdowns, modals, the navbar's overlay surfaces.
   Nothing else is white.
 - **Border** (#dee2e6): Structural lines — wizard branches, the agenda grid,
@@ -266,17 +279,26 @@ because the two elements are siblings and neither owns it.
 
 ## Typography
 
-**Display Font:** Muli (with `sans-serif`)
+**Display Font:** Source Serif 4 (with `Georgia, serif`)
 **Body Font:** Muli (with `sans-serif`)
 **Available but unused:** Housepaint, CaveatBrush, Mali-Bold, Roboto Mono
 
-**Character:** One geometric humanist sans in nine weights, set entirely without
-decoration. The theme ships the real Muli files — ExtraLight through Black, both
-upright and oblique — so weight is a free and precise tool, and the design uses
-it plainly: 700 for anything that names something, 400 for everything else.
+**Character:** A humanist sans for everything the product says, and a serif for
+the things it *names*. Muli runs in nine weights and carries every label, table
+cell, button and paragraph; Source Serif 4 carries the unit's own name, a
+section's heading, a branch's name and the desk's closing sentence — the words
+that are titles rather than prose.
 
-Hierarchy inside a page is carried by size and weight, not by colour or by
-shifting typefaces, because every heading shares the body's ink.
+The serif is vendored (`static/fonts`, OFL, one variable file per subset) and it
+is the only typeface this project has ever added. The theme's four decorative
+faces — Housepaint, CaveatBrush, Mali-Bold, Roboto Mono — are still not used and
+still should not be: they are costumes. A serif is not a costume on a title; it
+is the difference between a title and a large label.
+
+Hierarchy inside a page is carried by size and weight, and now by *face* at one
+boundary only: display type is the serif, everything else is the sans, and no
+third case exists. Colour is still not a hierarchy tool —
+see the Weight-Not-Colour Rule.
 
 ### Hierarchy
 - **Display** (700, `calc(1.375rem + 1.5vw)` → 2.5rem, 1.2): The page title
@@ -314,10 +336,13 @@ stays the largest type on the page at every width.
 
 ### Named Rules
 
-**The One Voice Rule.** The application sets Muli and only Muli. The theme's
-Housepaint (a hand-painted face), CaveatBrush, Mali-Bold and Roboto Mono are
-available in the stylesheet and appear nowhere in the product; reaching for one
-is a departure from the incumbent system, not a flourish within it.
+**The Two-Voice Rule.** The application speaks Muli and *names* in Source Serif
+4. The boundary is display versus everything else — a unit's name, a section
+heading, a branch's name, the desk's closing statement are display; a button,
+a table cell, a help line, a form label are not, however emphatic. A third face
+is a departure from this system rather than a flourish within it, and the
+theme's four decorative faces (Housepaint, CaveatBrush, Mali-Bold, Roboto Mono)
+are still not it: they are costume, and a title is not a costume.
 
 **The Two-Scale Rule.** A new block sizes itself from the override scale above
 and never from an ad-hoc value; a page's structure keeps to the theme's ramp.
@@ -549,183 +574,117 @@ members page opens with it: a charter sky band carrying the federation flag at
   property set there rather than a rule in a stylesheet nobody can reach. The
   editor holds it in place as the anchor it repairs the rest of the canvas
   around, so it may not be dragged, removed or copied — only edited into.
-- **The photograph is left sharp, and it is not darkened to make room for type.**
-  All the band does to the picture as a whole is a wash — a trace of the charter
-  ink, deepest at the top where the bar's glass sits on it — and it does the same
-  job the bar's glass does: take the glare off, not the picture out. Darkening a
-  whole band to make words safe is paying for the type with the photograph, and
-  the photograph is what the troop put there.
-- **The words get a pool of shallow shade instead, and nothing else does.**
-  `header.masthead .card::before` is a second pane of the same glass, sized to
-  the words rather than to the page: blurred hard enough that the picture is an
-  average of itself, then dimmed until a letter is safe on it — measured against
-  a photograph that is *bright*, not against the troop's own grass, because a
-  unit may upload a beach or a snowball fight. It is bled past the card by more
-  than its feather reaches on every side, so the words stand in the fully
-  treated middle: a feather crossing the text leaves its first and last letters
-  on a half-dimmed ground, and at 18px that is the difference between passing and
-  not.
-- **Both layers are painted as pseudo-elements and never as background layers**,
-  because a troop's own picture arrives as an inline `background-image` and an
-  inline style beats anything a stylesheet says about it. Both are
-  `backdrop-filter` and not `filter`, which is the load-bearing choice: a
-  `filter` would blur or dim the band and every word in it, while a backdrop
-  filter acts on what is *behind* the layer and leaves the type sharp.
-- **The settle is deliberately short.** A dissolve is a band of the troop's own
-  picture given up to a flat colour, and the deeper it runs the more the
-  photograph reads as washed out rather than as handed over. It scales with the
-  window, because at phone widths the band is most of the first screen already.
+- **The band is the federation's green, over the troop's own photograph.**
+  `--home-green` is charter-green-deep taken down until it can hold white type
+  over any picture, laid over the troop's own image at 62–74%. It is the page's
+  only large surface of colour that is not a branch's, and it is deliberately
+  green: a scout unit's header rule that is not green is a header rule that has
+  forgotten who it is for.
+- **One colour doing the work of three.** It states the movement, it keeps the
+  photograph *visible* instead of burying it under a grey of its own, and because
+  it is a known colour at every height the contrast of the words on it is
+  arithmetic rather than luck — 6.0:1 worst case for the description and 7.6:1
+  for the name, measured over the brightest thing a photograph can be. It
+  replaced a wash *and* a pool of blurred shade behind the words, and it is why
+  the band needs neither.
+- **Deeper at the top, lightest through the middle, deeper at the foot.** The bar
+  sits on the deepest part and the words on the lightest, so the picture keeps
+  the most of itself exactly where it is being looked at. The band ends on a hard
+  edge, like a band and not like a fade.
+- **It is shallower than the reference it was drawn from.** A hero is a way in,
+  not a room.
+- **Painted as a pseudo-element and never as a background layer**, because a
+  troop's own picture arrives as an inline `background-image` and an inline style
+  beats anything a stylesheet says about it. `backdrop-filter` and not `filter`,
+  which is the load-bearing choice: a `filter` would dim the band and every word
+  in it, while a backdrop filter acts on what is *behind* the layer and leaves
+  the type sharp.
 - **The band's words are one centred column of left-aligned type.** A unit's
   description runs to whatever length its troop wrote; past two lines a centred
   block stops being read as one statement and starts being read as a shape. The
   column is centred so the band stays symmetrical under the bar — the words
   inside it are not.
-- **The editor's canvas keeps the pool and drops the settle.** The pool is what
-  makes the words legible and the canvas has the same photograph behind them.
-  There is no desk below the hero there to hand over to, so the release fades to
-  the page colour the blocks are dropped onto instead.
+- **The editor's canvas drops only the last of it.** The canvas has the same
+  photograph and the same green, so the words read there exactly as they do on
+  the site; what it does not have is the hard edge into the desk, so its band
+  ends on the page colour the blocks are dropped onto.
 
-### Desk Field
+### The desk's rooms
 
-The ground the enrolment desk stands on, and the first thing the public page
-says before it says anything in words: the four branches as four columns, each
-as wide as its branch is long and in that branch's own colour, laid across the
-width of the container at 15% over the home ground.
+The first thing the public page says before it says anything in words: the four
+branches as one strip of four rooms, each as wide as its branch is long and in
+that branch's own colour, laid across the width of the container at 14% over the
+home ground. It is not a field the desk stands on — it *is* the desk's subject,
+and the question sits above it rather than on it, because a question asked from
+inside one of the four answers would be asked twice.
 
-- **It is the rail's drawing at a second strength.** Same colours, same
-  proportions, but **no gap**: the columns meet. The rail keeps its 2px gap —
-  its segments are separate objects with separate rules — while the field's
-  columns are one surface, and a gap here let the page show through every
-  boundary as a bright hairline, which is what made four rooms read as four
-  panels. The boundaries still land exactly where the rail's do, because the
-  columns are sized by the same `--span`; removing the gap moves no edge. A
-  column stands exactly behind the segment that names it, and the two can never
-  disagree about which branch is which. Four fixed stops in CSS could not do
-  that: a troop that renames, re-ages or drops a branch reshapes both from the
-  same data.
-- **Its colour is spent and released, not held.** The rise is short and the fall
-  is the long half: the field reaches full strength just under the question,
-  holds it through the rail, and then gives the rest of the desk back to the
-  ground the four branches share. That is the shape of the choice — the question,
-  the names and the years are where a visitor is picking between four of them,
-  and the answer band and the closing note are what they hold in common.
-  Held flat the whole height, four saturated colours are a striped panel; spent
-  and released, they are the light the choice is made in.
-- **It runs past what stands on it.** The two ends reach 4rem beyond the
-  container the words are set in and let go as they go. A ground whose edge is
-  the same line as the first letter of the question is not a ground, it is a
-  box: the question, the rail and the answer band all sit inside the colour,
-  with colour to spare. Only the two ends — widening the whole row would move
-  the boundaries between the columns, and those are the rail's own boundaries.
-- **The fade lives on the field's own box, not on the container inside it.** A
-  mask clips what it is set on to *that element's* border box. The two ends
-  paint outside the container by design, so a mask on the container cuts both
-  bleeds off at its edge and the field ends on a hard vertical line — which four
-  columns of colour make very visible. On the field's full-width box the ends are
-  inside the mask, and they fade as the drawing says they do.
-- **It dissolves at every edge.** In at the top and out at the bottom, so the
-  desk rises out of the troop's photograph and settles back into the page; in
-  at the left and the right, so it arrives out of the page rather than starting
-  at a container's edge. The edges *between* the columns stay crisp — a blend
-  there would be a second colour that no branch owns.
-- **It is for a wide screen.** Stacked, a column per branch is a column four
-  page-halves wide and the rail has stopped being a row, so the tint moves onto
-  the segment itself: the branch's colour runs out from behind its own bar and
-  thins under its own years. The same statement, said in the direction the page
-  is now laid out.
-- **It carries no words and says nothing.** `aria-hidden`, decorative, and
-  read as the page's own colour: the question, the branch names and the years
-  sit on it in ink that was measured against it.
+- **It is the rail's drawing, and the rail is not a second drawing.** The room
+  and the branch's name stand in one box; there is no field behind a rail, and
+  there is no gap between the rooms. They are one surface divided rather than
+  four objects in a row, and a gap let the page show through every boundary as a
+  bright hairline — which is what made four rooms read as four panels.
+- **The rooms are drawn from the data, not from CSS.** Four fixed stops could not
+  do this: a troop that renames, re-ages or drops a branch reshapes the whole
+  strip from the same source, and the widths stay the branches' own age ranges,
+  so the four read as one twelve-year journey rather than as four equal blocks.
+- **A branch's rule is its colour at full strength; its words are its ink.** The
+  rule only has to be seen and the name has to be read, and they are not the same
+  value for two of the four branches — see `BRANCH_INKS`. A branch no preset made
+  has neither: its room is the page's own ground and its rule is the section's.
+- **The question sits above the strip, not on it**, in the display face and at
+  the largest size on the page. The section is what a parent came for; it is not
+  allowed to whisper, and it is not allowed to ask from inside an answer.
+- **The chosen year is a solid chip in its branch's ink.** Not the branch's
+  colour at full strength: at full strength Baladins carries white at 2.9:1, so
+  the fill and the white on it are measured together — which is the only reason
+  a filled chip is possible here at all rather than a chip with a ring around it.
+- **Stacked, the rooms become cards.** They keep their own colour, take a corner,
+  and the strip stops being a strip — the same statement said in the direction
+  the page is now laid out.
 
-### Answer Band
+### The answer sheet
 
-The enrolment desk's answer, and the second use of the band device the Banner
-owns: a charter colour as a full field, with the answer on a sheet of paper over
-it — where the Banner sets copy on a photograph, this sets it on the branch's
-own colour. It is the public page's one peak, and it is the only place the
-palette is spent at field scale rather than as an accent.
+A sheet of paper on the section's ground, and the one place in the band where a
+branch's *full-strength* colour is spent. It is stated twice, and never in words
+alone:
 
-- **The field:** the matched branch's charter colour, from `BRANCH_COLOURS`,
-  inset in the page rather than full-bleed. A branch with no colour gets the
-  plain outlined band instead, because a field in the page's own ink would claim
-  a meaning it does not carry.
-- **The paper:** a white sheet inside it, carrying the label, the branch, the
-  scout years and the action. No border and no shadow — it is a sheet on a
-  field, not a card in a card.
-- **Two states, one band.** With a year picked it is the branch's own colour.
-  With nothing picked it is the plain outlined band — the same one a branch with
-  no charter colour gets, because no branch has been named. Naming no child is
-  the point: a year filled in for the visitor would describe somebody else's.
-- **The action, on both.** The ordinary `button-primary`, on the paper, whether
-  or not a year has been picked — a parent who came to register should not have
-  to answer the desk's question first. It carries the chosen year into the
-  sign-up, and a line under it says what the step actually is: an account
-  first, the child after it.
-- **The mat, not a plate.** The branch's colour frames the sheet by 0.75rem.
-  Its job is to be the ground the sheet lies on and to hold it off the page;
-  past about that much it stops being a frame and becomes a fourth surface.
-- **The desk's closing line sits under the band**, not between it and the rail:
-  it is what the four branches hold in common, so it belongs after one of them
-  has been named. It is also outside `#desk-answer`, the fragment the year
-  picker swaps, so picking a second year cannot rebuild it. It is set at
-  1.25rem/700 — emphatic by size *and* weight, never by hue — which also makes
-  it large text by WCAG's reckoning and gives the muted ink below more room than
-  it needs.
-
-### Branch rail
-
-The desk's choice: one segment per branch, the branch's name and age range at
-its head and that branch's birth years beneath it, the whole run ordered from
-the youngest child to the oldest.
-
-- **Why segments and not a row of years.** A parent knows how old their child is
-  and mostly does not know which branch a name refers to, so the age range is
-  the way in and the branch name is what they leave with — four ranges to scan
-  rather than twelve years differing only in their last digit.
-- **The year stays the selector.** The branch is the answer, never a choice:
-  nobody is asked to pick "Éclaireurs" by name.
-- **A segment is as long as its branch is.** `flex: <age range> 1 0`, so the
-  four of them read as one twelve-year journey rather than as four equal blocks,
-  and a troop that re-ages a branch reshapes the rail without anyone editing it.
-- **Each segment's rule is its branch's colour at full strength**, and the desk
-  field behind it is the same colour at 15% — the rail states which branch, the
-  field fills the room it occupies.
-- **A name stands inside its own colour.** Side by side, every segment but the
-  first holds a 2rem gutter under its rule, so no branch's name is written on
-  the seam where its colour begins — on the seam it reads as spilling over the
-  edge of the branch before it. The first column is the exception, and only
-  because of the field: the ground runs on past the page's margin there, so that
-  branch's colour already reaches left of its name. The rules themselves are
-  outside the gutter, because a rule marks where a branch starts and cannot
-  start anywhere but the branch's own edge.
-- **The chosen year wears its branch**: a 2px ring in the branch's colour at
-  full strength over a fill of that colour laid into paper at 32%. It is how the
-  row says which branch the visitor has just landed in before the answer band
-  says it in words. Hover carries the same colour in the halo; focus keeps the
-  charter-blue ring, because chrome that changes colour from control to control
-  is chrome a keyboard reader has to re-find.
-- **Side by side, then stacked.** A row only while every segment can hold the
-  years it owns on one line (992px and up); below that they stack and the tints
-  move onto the segments. A chip keeps one size whatever its segment holds, so a
-  two-year branch reads as the same control as a four-year one.
-- **Stacked, the tint arrives rather than starting.** Each segment's colour fades
-  in under its own rule, which is what keeps four stacked bands from reading as
-  four stacked rectangles with a ruler line drawn across the page at each one.
-  The fade-in is short, because the branch's name has to keep standing in its
-  colour: this is an arrival, not a gradient the words are laid across.
+- **A slim rule down the sheet's left edge, in the branch's colour**, and **a
+  square in the corner carrying the federation's mark for that branch** at the
+  10% a watermark is allowed. The rule is 3px and inset from the corners: a frame
+  as thick as the branch's colour deserves reads as a plate the sheet is mounted
+  in rather than as the sheet's own edge, and the branch is already stated by the
+  name in the sentence and by the chip the visitor chose.
+- **The mark is a square, not a run of pattern.** The theme draws a topping as an
+  absolutely positioned pseudo-element that fills whatever it is put on; across a
+  whole sheet a pattern stops being a mark and becomes wallpaper.
+- **The branch's name is written in its ink and the sentence around it is not.**
+  It is the one place on the page where the colour is the point of the sentence:
+  a parent who has never heard of this troop reads one word of it.
+- **The action is the second door on the page** — the same green and the same
+  pill as the bar's own, because both are ways in and a way in is not a button
+  inside the product.
+- **With nothing chosen it is the same sheet**, with its edge in the section's
+  rule rather than in a colour, because no branch has been named.
 
 **The Never-On-The-Field Rule.** Copy is never set *on* a charter field. White
 type fails AA on the Baladins blue and dark type fails on the other three, so
 the paper goes between them every time. The field may carry meaning; it may not
 carry words.
 
-A **tint** of a branch colour is not that field. At the 15% the desk field lays
-down, the page's own ink and the `muted-on-field` rung both clear AA on all four
-branch colours, which is what lets the question and the branch names stand on
-it. The line is where the ground stops being paper with a colour in it and
-starts being the colour: past that, the paper has to come back between the two.
-A tint is measured, not eyeballed — the four branches differ enough that one
-rung of the muted ladder passes on Baladins and fails on the other three.
+A **tint** of a branch colour is not that field. At the 14% a room lays down,
+the page's own ink and every value in `BRANCH_INKS` clear AA, which is what lets
+the question and the branch names stand on it. The line is where the ground stops
+being paper with a colour in it and starts being the colour: past that, the paper
+has to come back between the two — which, once a year has been chosen, is exactly
+what the answer sheet does.
+
+**The Ink-Not-The-Colour Rule.** A branch's colour is stated twice on the page
+and written once. The room, the rule and the mark take the colour at the strength
+their ground allows; the branch's *name* — in the rail, on the chosen year, in
+the sentence that names it — takes `BRANCH_INKS`, which is the same hue darkened
+until it can be read. These are not two colours. They are one colour used for two
+jobs that do not have the same requirement, and no branch is ever renamed by it:
+Baladins' room is still #00a0de.
 
 ### Place
 
@@ -733,6 +692,14 @@ Where the unit meets, under the desk and the other half of the same answer: one
 raised surface holding the hall, the address, a directions link and — when the
 troop uploaded one — its own picture of a map.
 
+- **It is a full-bleed band, in the page's warm step.** The ground changes edge
+  to edge between the desk and the footer, so the eye is told a section ended; a
+  band that changed colour and stopped at the container's edge would read as a
+  box rather than as a section.
+- **It carries an eyebrow and the troop's own name for its hall.** The label says
+  what the section is; the heading is whatever the troop called the place, which
+  is the whole point of the setting, at display size. A unit that has not named it
+  gets the label alone — the same sentence twice is not a heading.
 - **It has a measure, not a fit.** `width: min(100%, 60rem)`. It was
   `fit-content`, which reads better as an intention than it works as a rule: on
   a flex row allowed to wrap, a fit-content container takes the width of its

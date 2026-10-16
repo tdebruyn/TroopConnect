@@ -6,29 +6,31 @@
 
   Nothing picked yet is still an answer band, not a placeholder: the region
   carries the same paper and the same way in, so the page's one action is on
-  screen from the first paint. What it does not do is name a child — filling
-  in a year would tell a parent about somebody else's.
+  screen from the first paint. What it does not do is name a child — filling in
+  a year would tell a parent about somebody else's.
+
+  The branch is stated twice and never in words alone: the rule down the sheet's
+  left edge is its colour, and the square in the corner is the federation's own
+  mark for it. The colour at full strength is kept for those two — the name in
+  the sentence is written in the branch's *ink*, because the name has to be read
+  and the rule only has to be seen.
 {% endcomment %}
 {% if desk_answer %}
-    {% comment %}
-        The branch colour, at full field scale, with the answer on a sheet of
-        paper over it — the same device the unit's own band uses one screen up,
-        where a photo carries a card. Below that scale the colour was a 4px
-        rule, which named the branch but did not say it.
-
-        Only when the branch has a charter colour: a branch no preset made has
-        none, and inventing one would claim a meaning it does not carry.
-    {% endcomment %}
-    <div class="desk-answer{% if desk_answer.colour %} desk-answer-branch{% endif %}{% if desk_answer.topping %} {{ desk_answer.topping }}{% endif %}"
-         {% if desk_answer.colour %}style="--branch: {{ desk_answer.colour }}"{% endif %}>
+    <div class="desk-answer{% if desk_answer.colour %} desk-answer-branch{% endif %}"
+         {% if desk_answer.colour %}style="--branch: {{ desk_answer.colour }}{% if desk_answer.ink %}; --branch-ink: {{ desk_answer.ink }}{% endif %}"{% endif %}>
       <div class="desk-answer-paper">
         <div class="desk-answer-text">
             <p class="desk-answer-label">
                 {% blocktranslate with year=desk_answer.year %}Born in {{ year }}{% endblocktranslate %}
             </p>
             <h2 class="desk-answer-title">
-                {% blocktranslate with branch=desk_answer.branch.name min=desk_answer.min_age max=desk_answer.max_age trimmed %}
-                    Your child would join {{ branch }}, the branch for {{ min }} to {{ max }} year olds.
+                {% comment %}
+                    The branch's name is in its own colour and the sentence around
+                    it is not, which is the whole point of the line: a parent who
+                    has never heard of this troop reads one word of it.
+                {% endcomment %}
+                {% blocktranslate with min=desk_answer.min_age max=desk_answer.max_age trimmed %}
+                    Your child would join <span class="desk-answer-name">{{ branch }}</span>, the branch for {{ min }} to {{ max }} year olds.
                 {% endblocktranslate %}
             </h2>
             {# The scout years, which is what a parent is deciding about. #}
@@ -45,14 +47,18 @@
             </p>
         </div>
         {% include "homepage/snippets/desk_action.html" %}
+        {% if desk_answer.topping %}
+            {# The federation's mark for this branch, cut to a square. #}
+            <span class="desk-answer-mark {{ desk_answer.topping }}" aria-hidden="true"></span>
+        {% endif %}
       </div>
     </div>
 {% else %}
     {% comment %}
-        The plain outlined band, which is what the answer gets for a branch
-        that has no charter colour — the desk before a year is picked is in
-        exactly that position: a band with no colour to spend, because no
-        branch has been named.
+        The sheet before a year is picked. The edge of it is the section's own
+        rule rather than a branch's colour, which is the same treatment a branch
+        with no charter colour gets: no branch has been named, so there is no
+        colour to name it in.
     {% endcomment %}
     <div class="desk-answer desk-answer-quiet">
       <div class="desk-answer-paper">

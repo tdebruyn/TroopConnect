@@ -171,8 +171,18 @@
                                     <a class="nav-link active" href="{% url 'faq' %}">{% trans "FAQ" %}</a>
                                 </li>
                             </ul>
-<a class="nav-link" href="{% url 'account_signup' %}">{% trans "Sign up" %}</a>
-                            <a class="btn btn-info" role="button" href="{% url 'account_login' %}">{% trans "Log in" %}</a>
+{% comment %}
+                                The pair is named by role rather than by the
+                                theme's classes, so a page can say which of the
+                                two it is and style the pair. On the public
+                                homepage a stranger is the reader and signing up
+                                is the door; on the members pages a reader is
+                                already known and the account is what the bar is
+                                for. The markup carries both names; only the
+                                homepage dresses them.
+                            {% endcomment %}
+                            <a class="nav-link nav-cta" href="{% url 'account_signup' %}">{% trans "Sign up" %}</a>
+                            <a class="btn btn-info nav-secondary" role="button" href="{% url 'account_login' %}">{% trans "Log in" %}</a>
                         {% endif %}
                         {% if show_language_selector %}
                             <form action="{% url 'set_language' %}"
