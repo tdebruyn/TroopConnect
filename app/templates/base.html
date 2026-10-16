@@ -65,19 +65,25 @@
                     </button>
                     <div id="navcol-1" class="collapse navbar-collapse">
                         <ul class="navbar-nav me-auto">
-                            <li class="nav-item dropdown d-xxl-flex align-items-xxl-center">
-                                <a class="dropdown-toggle nav-link active"
-                                   aria-expanded="false"
-                                   data-bs-toggle="dropdown"
-                                   href="#">{% trans "Sections" %}</a>
-                                <div class="dropdown-menu dropdown-menu-dark">
-                                    {% for section in nav_sections %}
-                                        <a class="dropdown-item" href="{% url 'messaging:section_history' section_id=section.pk %}">{{ section.name }}</a>
-                                    {% empty %}
-                                        <a class="dropdown-item disabled" href="#">{% trans "No section" %}</a>
-                                    {% endfor %}
-                                </div>
-                            </li>
+                            {% comment %}
+                                Only when there is something in it: a visitor has
+                                no sections, and a dropdown that opens onto
+                                "No section" is a dead end on the one page
+                                strangers actually read.
+                            {% endcomment %}
+                            {% if nav_sections %}
+                                <li class="nav-item dropdown d-xxl-flex align-items-xxl-center">
+                                    <a class="dropdown-toggle nav-link active"
+                                       aria-expanded="false"
+                                       data-bs-toggle="dropdown"
+                                       href="#">{% trans "Sections" %}</a>
+                                    <div class="dropdown-menu dropdown-menu-dark">
+                                        {% for section in nav_sections %}
+                                            <a class="dropdown-item" href="{% url 'messaging:section_history' section_id=section.pk %}">{{ section.name }}</a>
+                                        {% endfor %}
+                                    </div>
+                                </li>
+                            {% endif %}
                             {% module_enabled "agenda" as agenda_on %}
                             {% if agenda_on and user.is_authenticated %}
                                 <li class="nav-item">
@@ -122,6 +128,17 @@
                                         <a class="dropdown-item" href="{% url 'messaging:compose' %}">{% trans "Send a message" %}</a>
                                         <a class="dropdown-item" href="{% url 'messaging:animateur_history' %}">{% trans "Message history" %}</a>
                                     </div>
+                                </li>
+                            {% endif %}
+                            {% if user.is_authenticated %}
+                                {% comment %}
+                                    `/` is the tool for anyone signed in, so the
+                                    troop's own page needs a way in from here —
+                                    otherwise a member can never see the page
+                                    their unit writes.
+                                {% endcomment %}
+                                <li class="nav-item">
+                                    <a class="nav-link active" href="{% url 'unit_page' %}">{% trans "Our unit" %}</a>
                                 </li>
                             {% endif %}
                             <li class="nav-item">

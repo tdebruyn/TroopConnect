@@ -5,6 +5,15 @@
     <script src="{% static 'js/base.js' %}"></script>
 {% endblock header %}
 {% block content %}
+    {% comment %}
+        The desk comes first and only for a visitor who is not signed in — a
+        member's `/` is the tool, and the troop's page is at `/unite/`. Its data
+        comes from the branches themselves, so it is the one part of this page
+        the homepage editor does not own.
+    {% endcomment %}
+    {% if show_desk %}
+        {% include "homepage/snippets/desk.html" %}
+    {% endif %}
     {% if page_html %}
         {{ page_html|safe }}
         <style>{{ page_css|safe }}</style>

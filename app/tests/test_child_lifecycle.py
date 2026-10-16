@@ -41,6 +41,37 @@ ADULT_BIRTHDAY = date(1990, 1, 1)
 CHILD_BIRTHDAY = date(2015, 6, 15)
 
 
+class EnrollmentStrTest(TroopSettingsTestCase):
+    """``str(enrollment)`` is what the Django admin prints, and it raised.
+
+    The method read ``school_year.year``, which does not exist — ``SchoolYear``
+    names its field ``name`` — so every row in the admin's enrolment list was an
+    AttributeError rather than a label. The school year is shown as its range
+    ("2026-2027") because that is what a troop calls it.
+    """
+
+    def setUp(self):
+        super().setUp()
+        branch = Branch.objects.create(name="Baladins", min_age_dec_31=6, max_age_dec_31=9)
+        section = Section.objects.create(name="Baladins A", branch=branch)
+        child = Person.objects.create(
+            first_name="Charlie", last_name="Dupont",
+            primary_role=Role.objects.get(short="e"), status="a",
+        )
+        self.enrollment = Enrollment.objects.create(
+            user=child, section=section, school_year=SchoolYear.current(),
+        )
+
+    def test_it_names_the_child_the_section_and_the_range(self):
+        self.assertEqual(str(self.enrollment), "Charlie - Baladins A (2026-2027)")
+
+    def test_a_year_without_a_range_falls_back_to_its_start_year(self):
+        self.enrollment.school_year.range = None
+        self.enrollment.school_year.save()
+        self.enrollment.refresh_from_db()
+        self.assertEqual(str(self.enrollment), "Charlie - Baladins A (2026)")
+
+
 class ChildLifecycleTestBase(MailTestCase):
     def setUp(self):
         super().setUp()

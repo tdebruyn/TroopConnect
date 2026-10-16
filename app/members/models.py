@@ -644,7 +644,11 @@ class Enrollment(models.Model):
         ]
 
     def __str__(self):
-        return f"{self.user.first_name} - {self.section.name} ({self.school_year.year})"
+        # `range` ("2026-2027") reads as a school year; `name` is only the
+        # calendar year it starts in. It is nullable, so `name` is the fallback
+        # rather than the other way round.
+        school_year = self.school_year.range or self.school_year.name
+        return f"{self.user.first_name} - {self.section.name} ({school_year})"
 
 
 class SectionEvent(models.Model):

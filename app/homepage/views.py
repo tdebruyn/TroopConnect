@@ -1,17 +1,40 @@
 import json
 import re
+from decimal import Decimal
 
 from django.conf import settings
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core.exceptions import ValidationError
+from django.db.models import Count
 from django.http import HttpResponseBadRequest, JsonResponse
+from django.shortcuts import render
 from django.template.loader import render_to_string
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import override
 from django.views import View
 from django.views.generic import TemplateView
 
 from homepage.models import ImageAsset, SiteContent
+from members import modules
+from members.models import (
+    Absence,
+    Branch,
+    Enrollment,
+    Person,
+    SchoolYear,
+    SectionEvent,
+    TroopSettings,
+)
+from members.modules import module_enabled
+from members.permissions import (
+    ANIMATEUR_ROLES,
+    can_access_finance,
+    can_manage_unit,
+    get_person,
+    has_primary_role,
+    visible_sections,
+)
 
 # Languages offered in the editor's language tabs (modeltranslation languages).
 EDITOR_LANGUAGES = settings.MODELTRANSLATION_LANGUAGES
@@ -242,7 +265,274 @@ def _edited_context(page):
     }
 
 
+#: The federation's colour per branch, taken from the theme's own charter
+#: (`.bg-ls-*` / `--bs-ls-*`). Keyed by ``Branch.key`` — the preset slug — and
+#: not by name, because a troop renames its branches and the colour belongs to
+#: the branch the federation prints, not to whatever the troop calls it. A
+#: branch a troop created itself has no key and takes the charter blue.
+BRANCH_COLOURS = {
+    "baladins": "#00a0de",
+    "louveteaux": "#296f52",
+    "eclaireurs": "#004f9f",
+    "pionniers": "#d51317",
+}
+BRANCH_COLOUR_FALLBACK = "#0a4275"
+
+
+def _desk_rows(school_year):
+    """``(birth_year, branch)`` for every year some branch accepts, ascending.
+
+    A child born in year Y is ``reference_year - Y`` on the troop's age
+    reference day — the arithmetic :meth:`TroopSettings.age_at_reference` does
+    from a birthday, read backwards. Where two branches claim the same age the
+    first one in the editor's order wins, so the desk and the branch list can
+    never name different sections for the same child.
+    """
+    reference_year = TroopSettings.get_settings().age_reference_date(school_year).year
+    branches = Branch.objects.filter(
+        min_age_dec_31__isnull=False, max_age_dec_31__isnull=False
+    ).order_by("min_age_dec_31", "name")
+
+    by_year = {}
+    for branch in branches:
+        for year in range(
+            reference_year - branch.max_age_dec_31,
+            reference_year - branch.min_age_dec_31 + 1,
+        ):
+            by_year.setdefault(year, branch)
+    return sorted(by_year.items())
+
+
+def _desk_legend(rows):
+    """The branches the desk covers, once each, in the order the years run."""
+    legend = []
+    seen = set()
+    for _year, branch in rows:
+        if branch.pk not in seen:
+            seen.add(branch.pk)
+            legend.append(branch)
+    return legend
+
+
+def _desk_answer(rows, requested):
+    """The branch a birth year lands in, or None when it lands in no branch."""
+    if not requested or not requested.isdigit():
+        return None
+    year = int(requested)
+    for row_year, branch in rows:
+        if row_year == year:
+            return {
+                "year": year,
+                "branch": branch,
+                "min_age": branch.min_age_dec_31,
+                "max_age": branch.max_age_dec_31,
+                "colour": BRANCH_COLOURS.get(branch.key, BRANCH_COLOUR_FALLBACK),
+            }
+    return None
+
+
+def _upcoming_events(sections):
+    """The next activity of each of ``sections``, keyed by section id."""
+    today = timezone.localdate()
+    events = {}
+    for section in sections:
+        event = (
+            SectionEvent.objects.filter(section=section, start_date__gte=today)
+            .order_by("start_date", "start_time")
+            .first()
+        )
+        if event is not None:
+            events[section.pk] = event
+    return events
+
+
+def _absence_counts(events):
+    """How many children are reported absent, per event id."""
+    counts = {}
+    for row in Absence.objects.filter(event_id__in=[e.pk for e in events]).values(
+        "event_id"
+    ):
+        counts[row["event_id"]] = counts.get(row["event_id"], 0) + 1
+    return counts
+
+
+def _household_dues(children, school_year):
+    """What the households these children belong to still owe this year.
+
+    Fees are billed per *household*, not per child — the eldest pays in full
+    and siblings are discounted — so this sums whole households rather than the
+    children's own shares, which is the amount a parent is actually asked for.
+
+    The grouping comes from :func:`finance.models.household_index` rather than
+    from each balance row's ``household``, because that field is ``None`` for a
+    household inferred from the postal address — which is most troops most of
+    the time. Reading it directly would quietly report nothing owed to every
+    family the unit never split out by hand.
+    """
+    from finance.models import calculate_balances, household_index
+
+    index = household_index(school_year)
+    billed = set()
+    for child in children:
+        group = index.get(child.pk)
+        if group is not None:
+            billed.update(member.pk for member in group["members"])
+    if not billed:
+        return None
+
+    rows = [row for row in calculate_balances(school_year) if row["person_id"] in billed]
+    owed = sum((row["balance"] for row in rows), Decimal("0"))
+    if owed <= 0:
+        return None
+    return {"owed": owed, "late": any(row["is_late"] for row in rows)}
+
+
+def _member_context(user):
+    """What a signed-in reader sees on ``/``, by role.
+
+    The panel's subject follows the reader — a parent's children, a section
+    leader's sections, every section for the people running the unit — while the
+    panel itself stays the same shape, so the page is predictable whatever the
+    role. A reader who is both a parent and a leader gets both groups, children
+    first, rather than one silently winning.
+    """
+    person = get_person(user)
+    school_year = SchoolYear.current()
+    if person is None or school_year is None:
+        return {"member_panels": [], "member_heading": _("Your unit")}
+
+    children = list(Person.objects.filter(as_child__parent=person))
+    # An animateur's role is a *primary* one, which is the predicate the nav and
+    # the messaging app already use. A plain parent is enrolled nowhere, so
+    # reading visible_sections for them would hand back their children's
+    # sections and give every parent a leader's panels.
+    leads = can_manage_unit(user) or has_primary_role(user, ANIMATEUR_ROLES)
+    sections = list(visible_sections(user)) if leads else []
+
+    events = _upcoming_events(
+        [child.get_section() for child in children if child.get_section()] + sections
+    )
+    absences = _absence_counts(list(events.values()))
+
+    panels = []
+    for child in children:
+        section = child.get_section()
+        event = events.get(section.pk) if section else None
+        panels.append(
+            {
+                "kind": "child",
+                "person": child,
+                "section": section,
+                "event": event,
+                "absences": absences.get(event.pk, 0) if event else 0,
+            }
+        )
+
+    if sections:
+        sizes = {
+            row["section_id"]: row["n"]
+            for row in Enrollment.objects.filter(
+                school_year=school_year, section__in=sections
+            )
+            .values("section_id")
+            .annotate(n=Count("id"))
+        }
+        for section in sections:
+            event = events.get(section.pk)
+            panels.append(
+                {
+                    "kind": "section",
+                    "section": section,
+                    "event": event,
+                    "absences": absences.get(event.pk, 0) if event else 0,
+                    "members": sizes.get(section.pk, 0),
+                }
+            )
+
+    return {
+        "member_panels": panels,
+        # A reader who answers for sections gets the unit's heading whether or
+        # not they also have children: "Your children" over a list of sections
+        # would be a lie, and a leader with no section yet is still a leader.
+        "member_heading": _("Your unit") if leads else _("Your children"),
+        "member_children": sum(1 for panel in panels if panel["kind"] == "child"),
+        "member_sections": sum(1 for panel in panels if panel["kind"] == "section"),
+        # The treasurer's screens 404 for everyone else, so a parent who is not
+        # one must not be handed a Pay button that dead-ends.
+        "member_can_pay": can_access_finance(user),
+        # Only a parent is asked for money, and only where the troop runs fees.
+        "member_dues": (
+            _household_dues(children, school_year)
+            if children and module_enabled(modules.FEES)
+            else None
+        ),
+    }
+
+
 class HomePage(TemplateView):
+    """The unit's page to a visitor, this reader's people to a member.
+
+    One route, two surfaces: an anonymous visitor gets the enrolment desk and
+    the page the troop edits; anyone signed in gets the tool. Members reach the
+    troop's own page at ``/unite/``.
+    """
+
+    template_name = "homepage/home.html"
+
+    def get(self, request, *args, **kwargs):
+        # The desk swaps only its answer. Without HTMX the same link reloads the
+        # page and renders identical markup, so nothing here depends on the swap.
+        if request.headers.get("HX-Request") and "annee" in request.GET:
+            return self._desk_partial(request)
+        return super().get(request, *args, **kwargs)
+
+    def _desk_partial(self, request):
+        school_year = SchoolYear.current()
+        rows = _desk_rows(school_year) if school_year else []
+        return render(
+            request,
+            "homepage/snippets/desk_answer.html",
+            {"desk_answer": _desk_answer(rows, request.GET.get("annee"))},
+        )
+
+    def get_template_names(self):
+        if self.request.user.is_authenticated:
+            return ["homepage/member.html"]
+        return [self.template_name]
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.is_authenticated:
+            context.update(_member_context(self.request.user))
+        else:
+            context.update(_edited_context(SiteContent.Page.HOME))
+            school_year = SchoolYear.current()
+            rows = _desk_rows(school_year) if school_year else []
+            context["desk_rows"] = rows
+            context["desk_branches"] = _desk_legend(rows)
+            context["desk_federation"] = TroopSettings.get_settings().federation
+            # `range` ("2026-2027"), not `name` (the integer start year) and not
+            # the model's own __str__, which spells the whole date range out and
+            # reads as nonsense inside this sentence.
+            context["desk_year_label"] = (
+                school_year.range or school_year.name if school_year else ""
+            )
+            context["desk_answer"] = _desk_answer(rows, self.request.GET.get("annee"))
+            # An explicit flag, not `user.is_authenticated` in the template:
+            # UnitPage renders the same template and a signed-out reader there
+            # is just as anonymous, which would put the desk on the troop's own
+            # page as well as on the homepage.
+            context["show_desk"] = True
+        return context
+
+
+class UnitPage(TemplateView):
+    """The troop's public page, at its own URL, for anyone who wants it.
+
+    A member's ``/`` is the tool; this is the page the troop edits, on a route
+    that does not change shape with who is looking at it.
+    """
+
     template_name = "homepage/home.html"
 
     def get_context_data(self, **kwargs):

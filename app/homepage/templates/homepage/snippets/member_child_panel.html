@@ -1,0 +1,71 @@
+{% load i18n %}
+{% comment %}
+  One child: what they are committed to next, what the unit knows about their
+  attendance, and the two things a parent does about it. The household's money
+  is deliberately absent — fees are billed per household, not per child, and it
+  is stated once above these panels.
+{% endcomment %}
+<section class="member-panel">
+    <header class="member-panel-head">
+        <span class="member-avatar" aria-hidden="true">{{ panel.person.first_name|first }}{{ panel.person.last_name|first }}</span>
+        <div>
+            <h2 class="member-panel-name">{{ panel.person }}</h2>
+            <p class="member-panel-meta text-muted">
+                {% if panel.section %}
+                    {{ panel.section.name }}
+                {% else %}
+                    {% trans "Pending" %}
+                {% endif %}
+            </p>
+        </div>
+    </header>
+
+    {% comment %}
+        Activities and absences are the agenda's, so a troop with that module
+        switched off gets the panel without them rather than links that 404.
+        The whole list goes, not just the links: an empty fact sheet is worse
+        than none.
+    {% endcomment %}
+    {% if agenda_enabled %}
+        <dl class="member-facts">
+            <dt>{% trans "Next activity" %}</dt>
+            <dd>
+                {% if panel.event %}
+                    {{ panel.event.title }}
+                    <span class="member-chip {{ panel.event.type_css_class }}">{{ panel.event.get_activity_type_display }}</span>
+                {% else %}
+                    <span class="text-muted">{% trans "Nothing scheduled" %}</span>
+                {% endif %}
+            </dd>
+
+            {% if panel.event %}
+                <dt>{% trans "When" %}</dt>
+                <dd>
+                    {{ panel.event.start_date|date:"l j F" }}{% if panel.event.start_time %}, {{ panel.event.start_time|time }}{% endif %}
+                </dd>
+
+                <dt>{% trans "Absences" %}</dt>
+                <dd>
+                    {% if panel.absences %}
+                        <span class="member-late">
+                        {% blocktranslate count counter=panel.absences %}{{ counter }} absence reported{% plural %}{{ counter }} absences reported{% endblocktranslate %}
+                    </span>
+                    {% else %}
+                        <span class="text-muted">{% trans "None" %}</span>
+                    {% endif %}
+                </dd>
+            {% endif %}
+        </dl>
+    {% endif %}
+
+    <footer class="member-panel-foot">
+        {% if agenda_enabled and panel.section %}
+            <a class="btn btn-outline-primary btn-sm" href="{% url 'members:agenda' %}?section={{ panel.section.pk }}">
+                {% trans "Report an absence" %}
+            </a>
+        {% endif %}
+        <a class="btn btn-outline-primary btn-sm" href="{% url 'members:edit_child' pk=panel.person.pk %}">
+            {% trans "Edit details" %}
+        </a>
+    </footer>
+</section>

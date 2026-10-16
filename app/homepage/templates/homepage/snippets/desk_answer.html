@@ -1,0 +1,35 @@
+{% load i18n %}
+{% comment %}
+  The desk's answer, alone on purpose: this is the fragment HTMX swaps when a
+  year is picked, and the same include renders it on the full page load so the
+  page is never built two ways.
+{% endcomment %}
+{% if desk_answer %}
+    {# The branch colour, spent once on this page: the rule beside the answer. #}
+    <div class="desk-answer" style="--branch: {{ desk_answer.colour }}">
+        <div class="desk-answer-text">
+            <p class="desk-answer-label">
+                {% blocktranslate with year=desk_answer.year %}Born in {{ year }}{% endblocktranslate %}
+            </p>
+            <h2 class="desk-answer-title">
+                {% blocktranslate with branch=desk_answer.branch.name min=desk_answer.min_age max=desk_answer.max_age trimmed %}
+                    Your child would join {{ branch }}, the branch for {{ min }} to {{ max }} year olds.
+                {% endblocktranslate %}
+            </h2>
+        </div>
+        {% if registration_open %}
+            <a class="btn btn-primary desk-cta" href="{% url 'account_signup' %}">
+                {% trans "Register my child" %}
+            </a>
+        {% else %}
+            {# The branch is still worth naming; what is missing is the way in. #}
+            <p class="desk-closed-note">{{ registration_message }}</p>
+        {% endif %}
+    </div>
+{% elif registration_open %}
+    <p class="desk-prompt">
+        {% trans "Pick the year your child was born to see which branch that is." %}
+    </p>
+{% else %}
+    <p class="desk-prompt desk-prompt-closed">{{ registration_message }}</p>
+{% endif %}

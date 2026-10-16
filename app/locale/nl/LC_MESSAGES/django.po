@@ -3580,3 +3580,100 @@ msgid "%(counter)s row rejected"
 msgid_plural "%(counter)s rows rejected"
 msgstr[0] "%(counter)s rij geweigerd"
 msgstr[1] "%(counter)s rijen geweigerd"
+
+msgid "What year was your child born?"
+msgstr "In welk jaar is uw kind geboren?"
+
+msgid "For the scout year %(year)s. One answer, and you know which branch they would join."
+msgstr "Voor het scoutsjaar %(year)s. Eén antwoord en u weet bij welke tak hij of zij zou horen."
+
+msgid "Year of birth"
+msgstr "Geboortejaar"
+
+msgid "This unit has not set up its branches yet."
+msgstr "Deze eenheid heeft haar takken nog niet ingesteld."
+
+msgid "Born in %(year)s"
+msgstr "Geboren in %(year)s"
+
+msgid "Your child would join %(branch)s, the branch for %(min)s to %(max)s year olds."
+msgstr "Uw kind zou bij %(branch)s terechtkomen, de tak voor %(min)s- tot %(max)s-jarigen."
+
+msgid "Register my child"
+msgstr "Mijn kind inschrijven"
+
+msgid "Pick the year your child was born to see which branch that is."
+msgstr "Kies het geboortejaar van uw kind om te zien welke tak dat is."
+
+msgid "Your unit"
+msgstr "Uw eenheid"
+
+msgid "Your children"
+msgstr "Uw kinderen"
+
+msgid "Household balance"
+msgstr "Saldo van het gezin"
+
+msgid "The deadline has passed."
+msgstr "De deadline is verstreken."
+
+msgid "Membership fees, this scout year."
+msgstr "Lidgeld, dit scoutsjaar."
+
+msgid "Nothing is attached to your account yet. Your unit's leaders can link your children to it."
+msgstr "Er is nog niets aan uw account gekoppeld. De leiding van uw eenheid kan uw kinderen eraan koppelen."
+
+msgid "Next activity"
+msgstr "Volgende activiteit"
+
+msgid "Nothing scheduled"
+msgstr "Niets gepland"
+
+msgid "When"
+msgstr "Wanneer"
+
+msgid "Absences"
+msgstr "Afwezigheden"
+
+msgid "None"
+msgstr "Geen"
+
+msgid "None reported"
+msgstr "Geen gemeld"
+
+msgid "Edit details"
+msgstr "Gegevens bewerken"
+
+msgid "%(counter)s absence reported"
+msgid_plural "%(counter)s absences reported"
+msgstr[0] "%(counter)s afwezigheid gemeld"
+msgstr[1] "%(counter)s afwezigheden gemeld"
+
+msgid "%(counter)s reported for that activity"
+msgid_plural "%(counter)s reported for that activity"
+msgstr[0] "%(counter)s gemeld voor die activiteit"
+msgstr[1] "%(counter)s gemeld voor die activiteit"
+
+msgid "%(counter)s member"
+msgid_plural "%(counter)s members"
+msgstr[0] "%(counter)s lid"
+msgstr[1] "%(counter)s leden"
+
+msgid "Our unit"
+msgstr "Onze eenheid"
+
+msgid "Payments are recorded by the unit's treasurer."
+msgstr "Betalingen worden geregistreerd door de penningmeester van de eenheid."
+
+msgid "Open the ledger"
+msgstr "Het grootboek openen"
+
+msgid "%(counter)s section you answer for."
+msgid_plural "%(counter)s sections you answer for."
+msgstr[0] "%(counter)s sectie waar u verantwoordelijk voor bent."
+msgstr[1] "%(counter)s secties waar u verantwoordelijk voor bent."
+
+msgid "%(counter)s child linked to your account."
+msgid_plural "%(counter)s children linked to your account."
+msgstr[0] "%(counter)s kind gekoppeld aan uw account."
+msgstr[1] "%(counter)s kinderen gekoppeld aan uw account."

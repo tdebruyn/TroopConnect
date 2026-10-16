@@ -1,0 +1,23 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "low-contrast",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/circular.html"
+        ],
+        "createdAt": "2026-10-16T08:56:21.847Z",
+        "reason": "measured on the rendered sketch: lowest pair is #6c757d on the white sheet at 4.69:1, and every other pair is 6.1:1 or better; the text sits on .sheet's #fff, not the body's #f2f5f8 the detector resolved"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "mulish",
+        "createdAt": "2026-10-16T08:56:21.854Z",
+        "reason": "same fixture: the Google Fonts request URL spelling of Mulish/Muli"
+      }
+    ]
+  }
+}

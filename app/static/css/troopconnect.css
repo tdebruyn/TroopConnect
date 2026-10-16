@@ -270,3 +270,368 @@ header.masthead {
 .household-cell {
   max-width: 16rem;
 }
+
+/* ---------------------------------------------------------------------------
+   The public homepage's enrolment desk (homepage/snippets/desk.html).
+
+   The one part of that page the troop does not edit: naming the branch a child
+   would join means reading the branches' own ages. Everything below it is still
+   the GrapesJS canvas.
+--------------------------------------------------------------------------- */
+
+.desk {
+  padding: 2.75rem 0 1.25rem;
+}
+
+.desk-question {
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  max-width: 20ch;
+}
+
+.desk-lede {
+  margin-top: 0.875rem;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  max-width: 56ch;
+  /* The theme's muted is drawn for white cards; on this page's own ground it
+     measures 4.29:1. One step darker clears AA on both. */
+  color: #5d666e;
+}
+
+.desk-years {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+  margin-top: 2rem;
+}
+
+.desk-year {
+  min-width: 5.75rem;
+  padding: 0.8rem 0;
+  text-align: center;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0a4275;
+  text-decoration: none;
+  background-color: #fff;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.desk-year:hover,
+.desk-year:focus-visible {
+  border-color: #0a4275;
+  box-shadow: 0 0 0 0.25rem rgba(10, 66, 117, 0.25);
+}
+
+.desk-year-on,
+.desk-year-on:hover {
+  color: #fff;
+  background-color: #0a4275;
+  border-color: #0a4275;
+}
+
+.desk-answer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-top: 2.125rem;
+  padding: 1.75rem 2rem;
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  /* The page's single spend of the branch colour, and the one line in this
+     file that is deliberately thicker than 1px: it marks which branch the
+     answer is about, and a 1px rule in a colour would not read as state. */
+  border-left: 4px solid var(--branch, #0a4275);
+  border-radius: 0.25rem;
+}
+
+.desk-answer {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.desk-federation {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.9375rem;
+  color: #5d666e;
+}
+
+.desk-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.75rem;
+  margin: 1.25rem 0 0;
+  font-size: 0.9375rem;
+  color: #5d666e;
+}
+
+.desk-legend-on {
+  color: #0a4275;
+  font-weight: 700;
+}
+
+.desk-legend-on b {
+  font-weight: 800;
+}
+
+.desk-answer-label {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #5d666e;
+}
+
+.desk-answer-title {
+  margin: 0.5rem 0 0;
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.desk-cta {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  padding: 1rem 1.875rem;
+  white-space: nowrap;
+}
+
+.desk-prompt {
+  margin: 2.125rem 0 0;
+  padding: 1.5rem 2rem;
+  font-size: 1.0625rem;
+  color: #5d666e;
+  background-color: #fff;
+  border: 1px dashed #ced4da;
+  border-radius: 0.25rem;
+}
+
+.desk-prompt-closed {
+  border-style: solid;
+  border-color: #dee2e6;
+}
+
+.desk-closed-note {
+  flex: 0 1 24rem;
+  font-size: 1rem;
+  line-height: 1.55;
+  color: #5d666e;
+}
+
+/* The hero was drawn to sit directly under the 110px navbar, and offsets its
+   photo by that much to compensate. With the desk above it, that offset would
+   show the wrong band of the photo, so it is only correct on the pages where
+   the hero really is the first thing after the navbar. */
+.desk ~ header.masthead {
+  background-position: center top;
+}
+
+/* ---------------------------------------------------------------------------
+   The member homepage (homepage/member.html).
+
+   One panel per thing the reader answers for. The panel's subject changes with
+   the role; its shape does not.
+--------------------------------------------------------------------------- */
+
+.member-page {
+  padding-top: 2rem;
+  padding-bottom: 3rem;
+}
+
+.member-title {
+  font-size: 2.125rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  margin-bottom: 1.25rem;
+}
+
+.member-house {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.25rem 1.5rem;
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 0.25rem;
+}
+
+.member-house-grow {
+  flex: 1;
+}
+
+.member-house-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #5d666e;
+}
+
+.member-house-amount {
+  font-size: 1.875rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+.member-house-note {
+  font-size: 0.9375rem;
+}
+
+.member-late {
+  color: #d60f3c;
+  font-weight: 700;
+}
+
+/* auto-fill, not flex-grow: one child must not stretch a panel across the
+   whole window, which is what a single flex item does at any width. The track
+   floor is clamped to the container so a phone gets one full-width column
+   rather than a 26rem track that overflows it. */
+.member-panels {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(26rem, 100%), 1fr));
+  gap: 1.375rem;
+  margin-top: 1.375rem;
+}
+
+.member-summary {
+  margin: -0.75rem 0 0;
+  font-size: 1.0625rem;
+  color: #5d666e;
+}
+
+.member-panel {
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 0.25rem;
+}
+
+.member-panel-head {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.member-avatar {
+  width: 3.375rem;
+  height: 3.375rem;
+  border-radius: 50%;
+  background-color: #e9ecef;
+  color: #0a4275;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.125rem;
+  font-weight: 800;
+}
+
+.member-panel-name {
+  font-size: 1.375rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.member-panel-meta {
+  font-size: 0.9375rem;
+  margin: 0.125rem 0 0;
+}
+
+/* Label beside its value, not above it: the panel is a fact sheet, and a
+   stack of labels each over its own answer reads as four blocks, not three
+   facts. */
+.member-facts {
+  display: grid;
+  /* Wide enough for the longest label ("Prochaine activité") to stay on one
+     line, so every row is the same height. */
+  grid-template-columns: 14rem 1fr;
+  margin: 0;
+}
+
+.member-facts dt,
+.member-facts dd {
+  padding: 0.9375rem 1.5rem;
+  border-top: 1px solid #eceff2;
+}
+
+.member-facts dt:nth-of-type(1),
+.member-facts dd:nth-of-type(1) {
+  border-top: 0;
+}
+
+.member-facts dt {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #5d666e;
+}
+
+.member-facts dd {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.member-chip {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.1875rem 0.625rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #fff;
+  border-radius: 0.1875rem;
+}
+
+.member-panel-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+  padding: 1.125rem 1.5rem;
+  border-top: 1px solid #dee2e6;
+}
+
+.member-empty {
+  color: #5d666e;
+  font-size: 1.0625rem;
+}
+
+@media (max-width: 767.98px) {
+  .desk-question {
+    font-size: 2.125rem;
+  }
+
+  .desk-answer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* A 13rem label column leaves a phone nothing for the value, so the facts
+   stack — the label keeps the row and the answer sits under it. */
+@media (max-width: 575.98px) {
+  .member-facts {
+    grid-template-columns: 1fr;
+  }
+
+  .member-facts dt {
+    padding-bottom: 0;
+  }
+
+  .member-facts dd {
+    padding-top: 0.1875rem;
+  }
+
+  .member-house {
+    flex-wrap: wrap;
+  }
+}

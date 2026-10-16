@@ -1,0 +1,55 @@
+{% load i18n %}
+{% comment %}
+  The enrolment desk, and the one part of the public homepage the troop does
+  not edit: naming the branch a child would join means reading the branches'
+  own ages, which a GrapesJS canvas cannot do. Everything below it stays the
+  troop's own page.
+
+  The years are the branches' age ranges read backwards — a child born in year
+  Y is `reference_year - Y` on the troop's age reference day — so a troop that
+  renames or re-ages its branches changes this page without touching it.
+{% endcomment %}
+<section class="desk{% if not registration_open %} desk-closed{% endif %}">
+    <div class="container">
+        <div class="desk-inner">
+            <h1 class="desk-question">{% trans "What year was your child born?" %}</h1>
+            <p class="desk-lede">
+                {% blocktranslate with year=desk_year_label trimmed %}
+                    For the scout year {{ year }}. One answer, and you know which branch they would join.
+                {% endblocktranslate %}
+                {% if desk_federation %}<span class="desk-federation">{{ desk_federation }}</span>{% endif %}
+            </p>
+
+            {% if desk_rows %}
+                <div class="desk-years" role="group" aria-label="{% trans "Year of birth" %}">
+                    {% for year, branch in desk_rows %}
+                        <a class="desk-year{% if desk_answer.year == year %} desk-year-on{% endif %}"
+                           href="?annee={{ year }}"
+                           hx-get="?annee={{ year }}"
+                           hx-target="#desk-answer"
+                           hx-swap="innerHTML"
+                           hx-push-url="true"
+                           {% if desk_answer.year == year %}aria-current="true"{% endif %}>{{ year }}</a>
+                    {% endfor %}
+                </div>
+                <div id="desk-answer">
+                    {% include "homepage/snippets/desk_answer.html" %}
+                </div>
+                {% comment %}
+                    Every branch with its ages, so a parent whose child is not
+                    the age they guessed can still see what the unit runs. The
+                    matched one is marked by weight, not by a second colour.
+                {% endcomment %}
+                <p class="desk-legend">
+                    {% for branch in desk_branches %}
+                        <span class="desk-legend-item{% if desk_answer.branch.pk == branch.pk %} desk-legend-on{% endif %}">{{ branch.name }} <b>{{ branch.min_age_dec_31 }}–{{ branch.max_age_dec_31 }}</b></span>
+                    {% endfor %}
+                </p>
+            {% else %}
+                <p class="desk-prompt">
+                    {% trans "This unit has not set up its branches yet." %}
+                </p>
+            {% endif %}
+        </div>
+    </div>
+</section>

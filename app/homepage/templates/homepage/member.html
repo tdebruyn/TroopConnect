@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load i18n money %}
+{% comment %}
+  The member homepage: one panel per thing this reader answers for.
+
+  The subject follows the role — a parent's children, a leader's sections, every
+  section for the people running the unit — while the panel keeps the same shape
+  so the page stays predictable. See homepage.views._member_context for the rule;
+  the decisions are there, not here.
+{% endcomment %}
+{% block content %}
+    <div class="container member-page">
+        <h1 class="member-title">{{ member_heading }}</h1>
+        {% if member_panels %}
+            <p class="member-summary">
+                {% if member_sections %}
+                    {% blocktranslate count counter=member_sections %}{{ counter }} section you answer for.{% plural %}{{ counter }} sections you answer for.{% endblocktranslate %}
+                {% endif %}
+                {% if member_children %}
+                    {% blocktranslate count counter=member_children %}{{ counter }} child linked to your account.{% plural %}{{ counter }} children linked to your account.{% endblocktranslate %}
+                {% endif %}
+            </p>
+        {% endif %}
+
+        {% if member_dues %}
+            <section class="member-house{% if member_dues.late %} member-house-late{% endif %}">
+                <div>
+                    <p class="member-house-label">{% trans "Household balance" %}</p>
+                    <p class="member-house-amount">{{ member_dues.owed|money }}</p>
+                </div>
+                <div class="member-house-grow">
+                    {% if member_dues.late %}
+                        <p class="member-house-note member-late">
+                            {% trans "The deadline has passed." %}
+                        </p>
+                    {% endif %}
+                    <p class="member-house-note text-muted">
+                        {% trans "Membership fees, this scout year." %}
+                    </p>
+                    {% comment %}
+                        The treasurer's screens are behind `can_access_finance`
+                        and raise 404 for anyone else, so a parent is told what
+                        happens to the money instead of being handed a button
+                        that dead-ends. The product has no parent-facing payment
+                        step: payments are recorded by hand.
+                    {% endcomment %}
+                    {% if not member_can_pay %}
+                        <p class="member-house-note text-muted">
+                            {% trans "Payments are recorded by the unit's treasurer." %}
+                        </p>
+                    {% endif %}
+                </div>
+                {% if member_can_pay and fees_enabled %}
+                    <a class="btn btn-primary" href="{% url 'finance:billing' %}">
+                        {% trans "Open the ledger" %}
+                    </a>
+                {% endif %}
+            </section>
+        {% endif %}
+
+        {% if member_panels %}
+            <div class="member-panels">
+                {% for panel in member_panels %}
+                    {% if panel.kind == "child" %}
+                        {% include "homepage/snippets/member_child_panel.html" %}
+                    {% else %}
+                        {% include "homepage/snippets/member_section_panel.html" %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="member-empty text-muted">
+                {% trans "Nothing is attached to your account yet. Your unit's leaders can link your children to it." %}
+            </p>
+        {% endif %}
+    </div>
+{% endblock content %}

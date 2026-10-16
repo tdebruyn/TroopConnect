@@ -165,7 +165,13 @@ class EditorSaveTest(HomePageEditorTestBase):
         self.client.force_login(self.superuser)
         response = self._save(self.client, "home", "fr", "<div><h1>Bienvenue</h1></div>")
         self.assertEqual(response.status_code, 200)
+
+        # `/` is the tool once someone is signed in, so the troop's page is
+        # what a visitor gets — and what `/unite/` shows to anyone.
+        self.client.logout()
         response = self.client.get(reverse("homepage"))
+        self.assertContains(response, "<h1>Bienvenue</h1>")
+        response = self.client.get(reverse("unit_page"))
         self.assertContains(response, "<h1>Bienvenue</h1>")
 
     def test_superuser_can_save_faq_content(self):
@@ -199,6 +205,7 @@ class EditorSaveTest(HomePageEditorTestBase):
     def test_nl_falls_back_to_french(self):
         self.client.force_login(self.superuser)
         self._save(self.client, "home", "fr", '<div class="fr-only">Contenu FR</div>')
+        self.client.logout()
         with override("nl"):
             response = self.client.get(reverse("homepage"))
         self.assertContains(response, "Contenu FR")
@@ -207,6 +214,7 @@ class EditorSaveTest(HomePageEditorTestBase):
         self.client.force_login(self.superuser)
         self._save(self.client, "home", "fr", "<div><h1>Bienvenue</h1></div>")
         self._save(self.client, "home", "fr", "")
+        self.client.logout()
         response = self.client.get(reverse("homepage"))
         self.assertContains(response, "Description principale")
 
@@ -215,6 +223,7 @@ class EditorSaveTest(HomePageEditorTestBase):
         self._save(
             self.client, "home", "fr", "<div class='x'>y</div>", css="#gjs-x{color:red}"
         )
+        self.client.logout()
         response = self.client.get(reverse("homepage"))
         self.assertContains(response, "color:red")
 
