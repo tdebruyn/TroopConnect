@@ -16,6 +16,19 @@
    not either. */
 :root {
   --site-navbar-height: 110px;
+  /* The bar is a pane of glass, and these two are what is in it: how much of
+     its own colour it lays over the backdrop, and what it does to the backdrop
+     itself. base.html applies them, because `.bg-primary` carries the navbar's
+     fill with `!important` and only an inline `!important` out-ranks it — but
+     they are written here so a page can restate them.
+
+     The public homepage lowers the fill to let the troop's photograph through,
+     and can afford to because its band is dark underneath; a page with paper
+     behind the bar cannot, which is why this default stays as opaque as it is.
+     The dimming is what keeps white nav links legible over a photograph that
+     may be bright anywhere in it — the fill's alpha never was. */
+  --site-navbar-fill: rgba(10, 66, 117, 0.72);
+  --site-navbar-backdrop: blur(14px) brightness(0.45);
   /* The ground the top of the public page stands on: the page's own paper with
      a trace of the charter ink in it. Two things meet on it — the unit's
      photograph lets go of itself into it, and the four branches' tints are read
@@ -50,26 +63,40 @@
  * navbar — the band the theme's own `-110px` background offset was always
  * pointing at. It gets there by a negative top margin rather than by leaving
  * the flow: the shell needs the hero in flow (see above), so this is a pull,
- * not a position. The margin and the padding are one movement — the band grows
- * by exactly the height the navbar occupies, so the card still lands 168px
- * down the page and nothing below the hero shifts.
+ * not a position.
  *
  * The homepage editor's frame loads this file and has no navbar; it undoes the
  * pull in `editor-canvas.css`, where that difference belongs. */
 header.masthead {
   /* Positioned and isolated for the two layers the band draws over its own
-     photograph — the ink it is read under, and the ground it lets go into.
-     Both are painted rather than set as background layers, because the troop's
-     own picture arrives as an inline background-image and an inline style beats
-     anything a stylesheet says about it. */
+     photograph. Both are painted rather than set as background layers, because
+     the troop's own picture arrives as an inline background-image and an inline
+     style beats anything a stylesheet says about it.
+
+     `isolation` also makes the band a backdrop root, which is what the blur
+     layer below needs: without it, it would reach past the band and blur the
+     page behind. */
   position: relative;
   isolation: isolate;
+  /* The pool behind the words bleeds past the card, and past the band's own
+     edges on a narrow screen. Clipped here rather than sized around, because
+     the bleed is what makes the pool read as light on the photograph instead of
+     as a panel lying on it. */
+  overflow: hidden;
   margin-top: calc(-1 * var(--site-navbar-height));
-  /* The bottom is the settle, not a margin: the band keeps its photograph for
-     that whole distance and spends it handing over to the desk. It is what
-     stops the card from sitting flush against the band's own bottom edge. */
-  padding: calc(var(--site-navbar-height) + 3.625rem) 0.75rem
-    var(--home-settle);
+  /* Top: the navbar's height plus the room the unit's own name needs. Bottom:
+     the settle, which the photograph spends handing over to the desk.
+
+     Held as tight as the band can be. The first viewport has to reach the year
+     chips — a parent who has to scroll before they can answer the question has
+     been given a poster instead of a registration desk — and a troop's own
+     description is however long it is. */
+  /* The release is shorter than the room under the words by exactly this much,
+     so the last line of a troop's description is never the line the band starts
+     going pale under. A description is whatever length its troop wrote; the
+     ground behind the last line must not depend on that. */
+  padding: calc(var(--site-navbar-height) + 3.25rem) 0
+    calc(var(--home-settle) + 1.5rem);
   text-align: center;
   color: #fff;
   background-image: url("../images/troop/brouettes.jpg");
@@ -79,28 +106,24 @@ header.masthead {
   background-size: cover;
 }
 
-/* The band is read under a trace of the page's own ink. The navbar is the one
-   opaque strip at the top of the page and the photograph begins immediately
-   under it; without this the two meet on a ruled edge and read as two things
-   stacked rather than as one page opening.
-
-   The ink is held flat to the height of the navbar and only let go below it.
-   That flat part sits under the navbar and is never seen on its own — it is
-   there so the colour arriving *below* the navbar is already at full strength,
-   and the band opens under the menu instead of stepping down from it. Gone by
-   the card, because this is a shading of the troop's photograph and never a
-   filter over it. */
+/* The trace of the page's ink the photograph is read under, and the only thing
+   the band does to the picture as a whole. It is a wash, not a shade: the
+   photograph is what the troop put there, and darkening the whole band to make
+   the words safe is paying for the type with the picture. Deepest at the top,
+   where the navbar's glass sits on it, easing off downwards so the release into
+   the desk has somewhere to come from. */
 header.masthead::before {
   content: "";
   position: absolute;
   inset: 0;
   z-index: 0;
   pointer-events: none;
+  -webkit-backdrop-filter: brightness(0.92) saturate(110%);
+  backdrop-filter: brightness(0.92) saturate(110%);
   background-image: linear-gradient(
     180deg,
-    rgba(10, 66, 117, 0.5) 0,
-    rgba(10, 66, 117, 0.5) var(--site-navbar-height),
-    rgba(10, 66, 117, 0) 58%
+    rgba(10, 66, 117, 0.3) 0,
+    rgba(10, 66, 117, 0.12) 100%
   );
 }
 
@@ -109,13 +132,13 @@ header.masthead::before {
    A band that stops on a line and a page that starts from nothing read as two
    pictures stacked; the settle spends the band's last inches handing the
    visitor over to the colour the desk opens on, so the top of the page is one
-   ground from the navbar down to the answer. It goes to `--home-ground` and the
-   desk *begins* at `--home-ground`, so the two meet on the same colour and
-   there is no seam to see between them.
+   ground. It goes to `--home-ground` and the desk *begins* at `--home-ground`,
+   so the two meet on the same colour and there is no seam to see between them.
 
-   The ramp is the whole height of it and its top is fully clear: the band never
-   ends on a tinted edge of its own, and the colour only becomes itself as the
-   desk takes over. */
+   It eases rather than ramps: the scrim above is already deepest at the top, so
+   a straight line here would read as a second, competing gradient. Two thirds
+   of the distance is covered by the midpoint, which leaves the band dark for
+   longer and then hands over quickly. */
 header.masthead::after {
   content: "";
   position: absolute;
@@ -125,28 +148,144 @@ header.masthead::after {
   height: var(--home-settle);
   z-index: 0;
   pointer-events: none;
-  background-image: linear-gradient(180deg, transparent, var(--home-ground));
+  background-image: linear-gradient(
+    180deg,
+    transparent 0,
+    color-mix(in srgb, var(--home-ground) 72%, #0a4275) 34%,
+    var(--home-ground) 100%
+  );
 }
 
-/* The band's card carries the troop's heading and description as the card's
-   own children, and `.card` has no inset of its own: without this the words
-   sit on the card's border. Fixed here rather than in the markup so pages
-   saved before the seed changed get the inset too.
+/* The pool: the photograph blurred and dimmed exactly where the unit's words
+   are, and nowhere else.
 
-   Left short of opaque so the troop's own photograph reads through it as a
-   ground rather than being hidden behind a white rectangle. The words stay a
-   translation of a mostly-white sheet under dark charter ink, so the contrast
-   they need survives at any alpha short of fully clear — the transparency is
-   the troop's photograph showing, never the reader's legibility leaving. */
+   A photograph is the wrong ground for type and the right thing for a band, so
+   the two are not reconciled by beating the picture down — the band stays sharp
+   and the words get a place to stand. It is the same glass the navbar is made
+   of, at the size of the words rather than the width of the page, which is what
+   makes the bar and the band read as one page rather than as a header over a
+   picture.
+
+   Sized by the card and then bled past it by more than the feather reaches, so
+   the words sit in the *opaque* middle of the pool and only its edges soften.
+   A radial feather would have left the corners — where the unit's own name and
+   the first word of its description are — on a half-dimmed ground; two linear
+   gradients crossed with `mask-composite` feather the four edges and keep the
+   middle whole.
+
+   `backdrop-filter` and not `filter`, again: this layer has to blur what is
+   behind it and not the words it exists for. */
+header.masthead .card::before {
+  content: "";
+  position: absolute;
+  /* Blurred far enough that the picture is an average of itself, then dimmed
+     until a word is safe on it — measured against a photograph that is *bright*,
+     not against this troop's grass. A unit may upload a beach or a snowball
+     fight, and a pane that only works on a mid-green field is a pane that works
+     for one troop. The blur does the work of the value: it is what stops a
+     single white shirt or a lit leaf from sitting under a letter, and it is what
+     keeps the dimming from having to be so heavy that the pane reads as a hole.
+
+     Bled past the words by more than the feather reaches, on every side, so the
+     words stand in the *fully treated* middle: a feather that crosses the text
+     leaves its first and last letters on a half-dimmed ground, and at 18px that
+     is the difference between passing and not.
+
+     The page's own ink rather than black, so the pane belongs to the same world
+     as the bar above it. */
+  inset: -5rem -7rem;
+  z-index: -1;
+  pointer-events: none;
+  -webkit-backdrop-filter: blur(34px) brightness(0.48) saturate(130%);
+  backdrop-filter: blur(34px) brightness(0.48) saturate(130%);
+  background-color: rgba(10, 66, 117, 0.22);
+  -webkit-mask-image: linear-gradient(
+      90deg,
+      transparent 0,
+      #000 13%,
+      #000 87%,
+      transparent 100%
+    ),
+    linear-gradient(180deg, transparent 0, #000 17%, #000 83%, transparent 100%);
+  mask-image: linear-gradient(
+      90deg,
+      transparent 0,
+      #000 13%,
+      #000 87%,
+      transparent 100%
+    ),
+    linear-gradient(180deg, transparent 0, #000 17%, #000 83%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+
+/* The unit's own opening, and the card is only the block it was authored in.
+
+   The band's card used to be a sheet of near-white laid on the photograph: a
+   rectangle of placeholder colour over the unit's own picture, with the unit's
+   name and description inside it. It is the same words and the same markup
+   now, with no sheet — the photograph is the ground and the type stands on it,
+   which is what the band was always for. `background: none` on a `.card` the
+   troop can also style in the editor is deliberate: a card that arrives with
+   its own fill still wins, because that is the troop's decision and this is
+   only the seeded default. */
 header.masthead .card {
   /* Above the band's two layers. The card is already `position: relative` in the
      theme, but the z-index is what the stacking here actually rests on, so the
      position is stated with it: a theme that dropped it would leave the words
-     under the settle with nothing in the diff to show why. */
+     under the release with nothing in the diff to show why. */
   position: relative;
   z-index: 1;
-  padding: 1rem 1.25rem;
-  background-color: rgba(255, 255, 255, 0.85);
+  /* A centred column of left-aligned words, which is what a lead paragraph wants
+     and what centred words never give: a unit's description runs to whatever
+     length its troop wrote, and past two lines a centred block stops being read
+     as one statement and starts being read as a shape. The column is centred so
+     the band stays symmetrical under the bar; the words inside it are not. */
+  max-width: 46rem;
+  margin-inline: auto;
+  /* The inset the band no longer carries. It is the page's own page-gutter, so
+     the words in the band stand on the same rail as the desk below and on the
+     same rail as every other page. Without it the unit's own name runs off the
+     left edge of a phone. */
+  padding: 0 1.5rem;
+  text-align: left;
+  background: none;
+  border: 0;
+  /* The card carries the page's ink through the theme, and on a photograph that
+     ink is invisible. Stated on the card and not only on the heading and the
+     paragraph inside it: a troop can put anything in here, and everything in it
+     is being read on a dark ground. */
+  color: #fff;
+}
+
+/* The unit's name, at the size a unit's name deserves: this is the first and
+   often the only thing a parent takes from the top of the page, and it was
+   being set at the theme's second-level heading size inside a pale box. */
+header.masthead .card h1,
+header.masthead .card .h2 {
+  margin: 0;
+  /* White, stated on the heading itself: the theme gives every heading the
+     charter ink through its own rule, which the card's colour cannot reach —
+     and a navy name on a dark photograph is a name nobody can read. */
+  color: #fff;
+  font-size: clamp(2.125rem, 4.6vw, 3.5rem);
+  font-weight: 800;
+  line-height: 1.06;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+/* The description. It is the same white as the name — the system's loudness
+   dial is weight and size, never a lighter ink — so the two are separated by
+   scale, weight and the measure rather than by fading the smaller one out.
+   `pretty` and not `balance`: a paragraph this long wants its last line not to
+   be a orphan, not its every line evened out. */
+header.masthead .card p {
+  margin: 1.25rem 0 0;
+  font-size: clamp(0.9375rem, 0.45vw + 0.85rem, 1.125rem);
+  font-weight: 400;
+  line-height: 1.6;
+  text-wrap: pretty;
 }
 
 .navbar {
@@ -173,6 +312,28 @@ header.masthead .card {
   font-size: 1.2em !important;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
     border-color 0.15s ease-in-out;
+}
+
+/* The public homepage is the one page whose top is a photograph, so it is the
+   one page that can let the bar be mostly that photograph: at 30% the fill is a
+   tint on the glass rather than the glass's colour, and the troop's own picture
+   is what the visitor sees behind the logo and the menu.
+
+   The dimming stays at full strength, and that is the point — it is what keeps
+   the white links legible over a picture that is bright somewhere in it. The
+   alpha here is a look; the brightness filter is the guarantee.
+
+   Scoped to the page rather than applied everywhere because every other page
+   has paper behind the bar, where the same alpha would wash it out to a pale
+   slate and the two would no longer look like one site. */
+.page-home {
+  --site-navbar-fill: rgba(10, 66, 117, 0.3);
+  /* Dimming is *not* repeated here. The band underneath has already dimmed and
+     scrimmed its photograph, and dimming it a second time in the glass turned
+     the bar into a near-black strip lying across the top of the picture — the
+     opposite of a bar made of the picture. The glass's job on this page is the
+     blur and a tint; the dark is the band's. */
+  --site-navbar-backdrop: blur(14px) brightness(0.62) saturate(124%);
 }
 
 .bg-transparent {
@@ -568,9 +729,15 @@ body {
   height: 100%;
 }
 
+/* No gap between the columns, and that is the difference between a ground and
+   a swatch strip. The rail keeps its 2px gap — its segments are separate
+   objects with separate rules — but the field's columns are one surface, and a
+   gap here let the page show through every boundary as a bright hairline, which
+   is what made four rooms read as four panels. The boundaries still land
+   exactly where the rail's do: the columns are sized by the same `--span`, so
+   removing the gap moves no edge. */
 .desk-field-row {
   display: flex;
-  column-gap: 2px;
   height: 100%;
 }
 
@@ -1183,23 +1350,42 @@ body {
    for a surface that is a unit of its own, in the same tinted charter-blue
    step the year chips wear.
 
-   The surface is sized by what it holds, not by the page. Left as a plain
-   block it filled the container, so the card ran hundreds of pixels past its
-   own address and the empty white was the widest thing in the section.
-   `fit-content` ends the card where the words and the map end; `max-width`
-   stops that from ever exceeding the container, which is what mobile and any
-   oversized map rely on. */
+   Given a measure of its own, where it used to be sized by what it holds.
+   `fit-content` reads better as an intention than it works as a rule: on a
+   flex row that is allowed to wrap, a fit-content container takes the width of
+   its *widest single item*, not of the line they would make — so at a 28rem map
+   the card stopped at half the page and the address floated in a dead half,
+   and at a 36rem map it gave up and wrapped the map under the words. A measure
+   is what the page's other blocks use and what the card can actually hold.
+
+   The map's ceiling is what the two columns divide: the words take a column of
+   their own and never stretch, and the map gets everything else up to 36rem, so
+   a troop that uploaded a proper screenshot gets a card that reaches most of
+   the way across and the address is still beside its own map.
+
+   The words are centred against the picture: an address is three lines beside a
+   picture a hundred tall, and pinned to the top it reads as having fallen off
+   the top of its own card. */
 .place-body {
   display: flex;
   flex-wrap: wrap;
-  width: fit-content;
-  max-width: 100%;
+  width: min(100%, 60rem);
   align-items: center;
-  gap: 1.5rem;
-  padding: 1.25rem;
+  gap: 2rem;
+  padding: 1.5rem;
   background-color: #fff;
   border-radius: 0.5rem;
   box-shadow: 0 0.125rem 0.375rem rgba(10, 66, 117, 0.1);
+}
+
+.place-text {
+  flex: 1 1 18rem;
+  min-width: 0;
+}
+
+.place-map {
+  flex: 0 1 36rem;
+  min-width: 0;
 }
 
 .place-name {
@@ -1236,10 +1422,11 @@ body {
   box-shadow: 0 0 0 0.25rem rgba(10, 66, 117, 0.25);
 }
 
+/* No ceiling here: the column above is the ceiling, and a second one would
+   stop the picture short of the column the card just gave it. */
 .place-map img {
   display: block;
   width: 100%;
-  max-width: 28rem;
   border-radius: 0.5rem;
 }
 

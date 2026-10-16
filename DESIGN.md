@@ -344,12 +344,34 @@ at the window's edge rather than at whatever its content stopped on. The footer
 sits in a `.site-footer-slot` whose auto margin spends the height a short page
 does not use. The slot exists so the *footer* keeps its own 3rem gap: an auto
 margin on the footer itself would eat that gap on every long page, and on a page
-that already fills the screen the whole mechanism is inert. The navbar's height and its background both live
-in inline style, and the background reads
-`var(--bs-navbar-toggler-border-color)` — a Bootstrap variable for a *toggle
-button* used as the navbar's own fill. It resolves today, but it is the kind of
-reference a theme upgrade can drop without any local file changing; treat the
-navbar's chrome as pinned by markup rather than by CSS. Content is laid out at `col-md-12` by default and
+that already fills the screen the whole mechanism is inert.
+
+**The navbar is a pane of glass.** Its height and the two properties that make
+it what it is live in inline style on the element, because `.bg-primary` carries
+the navbar's fill with `!important` and only an inline `!important` out-ranks
+it. The two properties are named in `:root` and *applied* by `base.html`
+(`--site-navbar-fill`, `--site-navbar-backdrop`), which is what lets a page
+restate them without a style attribute of its own.
+
+- **What is behind the glass is what you see.** A `backdrop-filter` blurs and
+  dims the backdrop — the band the page opens with — and the fill is only a tint
+  laid over the result. That is why the bar reads as the band seen through
+  glass rather than as a bar of its own colour.
+- **The dimming is the guarantee, the alpha is the look.** White nav links are
+  legible only while their ground stays dark, and a troop's photograph may be
+  bright anywhere in it. The fill's alpha can never promise that; the
+  `brightness()` in the backdrop filter can, and it is what lets the default bar
+  work over paper and the homepage's over a photograph.
+- **The glass only sees what is painted before it.** `z-index: 2` on `.navbar`
+  is load-bearing rather than tidy: the hero band is a positioned sibling that
+  comes later in the document, and without the order stated the band paints over
+  the bar and swallows the logo and the menu.
+- **The homepage restates both values** (`.page-home`, read off the `body_class`
+  block). Its band is dark underneath, so it can drop the fill to 30% and let the
+  photograph through; every other page has paper behind the bar, where the same
+  alpha washes it out to a pale slate and the two stop looking like one site.
+
+Content is laid out at `col-md-12` by default and
 split into halves or thirds only where two things genuinely sit side by side; a
 form is one full-width field per block.
 
@@ -527,22 +549,41 @@ members page opens with it: a charter sky band carrying the federation flag at
   property set there rather than a rule in a stylesheet nobody can reach. The
   editor holds it in place as the anchor it repairs the rest of the canvas
   around, so it may not be dragged, removed or copied — only edited into.
-- **It carries two layers on the site that its own markup never sees.** The
-  first is a trace of the charter ink, held flat to the height of the navbar and
-  let go only below it — so the band opens *under* the menu instead of stepping
-  down from it. The second is the settle: the band's last `--home-settle` inches,
-  spent handing the visitor over to the desk's ground. Both are painted as
-  pseudo-elements and never as background layers, because a troop's own picture
-  arrives as an inline `background-image` and an inline style beats anything a
-  stylesheet says about it.
+- **The photograph is left sharp, and it is not darkened to make room for type.**
+  All the band does to the picture as a whole is a wash — a trace of the charter
+  ink, deepest at the top where the bar's glass sits on it — and it does the same
+  job the bar's glass does: take the glare off, not the picture out. Darkening a
+  whole band to make words safe is paying for the type with the photograph, and
+  the photograph is what the troop put there.
+- **The words get a pool of shallow shade instead, and nothing else does.**
+  `header.masthead .card::before` is a second pane of the same glass, sized to
+  the words rather than to the page: blurred hard enough that the picture is an
+  average of itself, then dimmed until a letter is safe on it — measured against
+  a photograph that is *bright*, not against the troop's own grass, because a
+  unit may upload a beach or a snowball fight. It is bled past the card by more
+  than its feather reaches on every side, so the words stand in the fully
+  treated middle: a feather crossing the text leaves its first and last letters
+  on a half-dimmed ground, and at 18px that is the difference between passing and
+  not.
+- **Both layers are painted as pseudo-elements and never as background layers**,
+  because a troop's own picture arrives as an inline `background-image` and an
+  inline style beats anything a stylesheet says about it. Both are
+  `backdrop-filter` and not `filter`, which is the load-bearing choice: a
+  `filter` would blur or dim the band and every word in it, while a backdrop
+  filter acts on what is *behind* the layer and leaves the type sharp.
 - **The settle is deliberately short.** A dissolve is a band of the troop's own
   picture given up to a flat colour, and the deeper it runs the more the
   photograph reads as washed out rather than as handed over. It scales with the
   window, because at phone widths the band is most of the first screen already.
-- **The editor's canvas keeps the ink and drops the settle.** There is no desk
-  below the hero there to hand over to, so the band would be settling onto a
-  colour nothing under it wears. It also drops the flat part of the ink, which
-  would otherwise lie across the top of the picture with no navbar to explain it.
+- **The band's words are one centred column of left-aligned type.** A unit's
+  description runs to whatever length its troop wrote; past two lines a centred
+  block stops being read as one statement and starts being read as a shape. The
+  column is centred so the band stays symmetrical under the bar — the words
+  inside it are not.
+- **The editor's canvas keeps the pool and drops the settle.** The pool is what
+  makes the words legible and the canvas has the same photograph behind them.
+  There is no desk below the hero there to hand over to, so the release fades to
+  the page colour the blocks are dropped onto instead.
 
 ### Desk Field
 
@@ -552,10 +593,16 @@ as wide as its branch is long and in that branch's own colour, laid across the
 width of the container at 15% over the home ground.
 
 - **It is the rail's drawing at a second strength.** Same colours, same
-  proportions, same 2px gap, so a column stands exactly behind the segment that
-  names it and the two can never disagree about which branch is which. Four
-  fixed stops in CSS could not do that: a troop that renames, re-ages or drops a
-  branch reshapes both from the same data.
+  proportions, but **no gap**: the columns meet. The rail keeps its 2px gap —
+  its segments are separate objects with separate rules — while the field's
+  columns are one surface, and a gap here let the page show through every
+  boundary as a bright hairline, which is what made four rooms read as four
+  panels. The boundaries still land exactly where the rail's do, because the
+  columns are sized by the same `--span`; removing the gap moves no edge. A
+  column stands exactly behind the segment that names it, and the two can never
+  disagree about which branch is which. Four fixed stops in CSS could not do
+  that: a troop that renames, re-ages or drops a branch reshapes both from the
+  same data.
 - **Its colour is spent and released, not held.** The rise is short and the fall
   is the long half: the field reaches full strength just under the question,
   holds it through the rail, and then gives the rest of the desk back to the
@@ -679,6 +726,29 @@ it. The line is where the ground stops being paper with a colour in it and
 starts being the colour: past that, the paper has to come back between the two.
 A tint is measured, not eyeballed — the four branches differ enough that one
 rung of the muted ladder passes on Baladins and fails on the other three.
+
+### Place
+
+Where the unit meets, under the desk and the other half of the same answer: one
+raised surface holding the hall, the address, a directions link and — when the
+troop uploaded one — its own picture of a map.
+
+- **It has a measure, not a fit.** `width: min(100%, 60rem)`. It was
+  `fit-content`, which reads better as an intention than it works as a rule: on
+  a flex row allowed to wrap, a fit-content container takes the width of its
+  *widest single item* rather than of the line they would make, so the card
+  stopped at half the page and left the address floating in a dead half beside
+  it — and at any wider map it gave up and wrapped the map under the words.
+- **The two columns divide the measure.** The words take a column of their own
+  and never stretch — which is what keeps the address beside its own map rather
+  than an arm's length from it, the fault a stretched grid cell had — and the
+  map takes everything else up to 36rem.
+- **The words are centred against the picture.** An address is three lines
+  beside a picture a hundred tall; pinned to the top it reads as having fallen
+  off the top of its own card.
+- **The map is content, not a control.** It wears the radius a container wears
+  and no border, and the anchor around it is what draws the focus halo — without
+  that radius the halo would be a rectangle around a rounded picture.
 
 ### Cards / Containers
 - **Corner Style:** 0.25rem, outlined in 12.5% black, no shadow.

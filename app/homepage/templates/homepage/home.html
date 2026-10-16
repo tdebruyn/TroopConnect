@@ -1,6 +1,13 @@
 {% extends "base.html" %}
 {% load static %}
 {% load i18n %}
+{% comment %}
+    The one page that opens under the troop's own photograph instead of onto
+    paper. Both surfaces that have to agree about it — the navbar, which is
+    dark glass over whatever the page opens with, and the hero band itself —
+    read this class rather than each guessing.
+{% endcomment %}
+{% block body_class %}page-home{% endblock body_class %}
 {% block header %}
     <script src="{% static 'js/base.js' %}"></script>
     <script src="{% static 'js/desk.js' %}" defer></script>

@@ -40,22 +40,34 @@
         {% block header %}
         {% endblock header %}
     </head>
-    <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+    {% comment %}
+        `body_class` is how a page states that it opens under something rather
+        than onto paper. The public homepage is the only one that does, and
+        both the bar and the band have to agree about it.
+    {% endcomment %}
+    <body class="{% block body_class %}{% endblock body_class %}"
+          hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
         <header class="site-header">
             {% comment %}
-                The bar is left short of opaque so the hero's photograph shows
-                through it: the band runs up behind the navbar (see
-                `header.masthead` in troopconnect.css), and a solid fill hid
-                the top of the troop's own picture.
+                The bar is a pane of dark glass held over whatever the page
+                opens with, not a bar of its own colour. Everything visible
+                through it is the backdrop filter's doing — it blurs and dims
+                what is behind the element — so the bar reads as the band
+                underneath it, seen through glass.
+
+                The two values live in `troopconnect.css` as `--site-navbar-*`
+                rather than here, so a page can restate them without a style
+                attribute: the public homepage opens under a photograph and
+                lets far more of it through than a page with paper behind it.
 
                 `!important` is required rather than sloppy — `.bg-primary`
                 sets the fill with `!important` too, and a style attribute
                 cannot out-rank it without one.
 
-                The backdrop is darkened as well as blurred. White nav links
-                over a photograph are only legible while the ground behind
-                them stays dark, and the troop's picture may be bright
-                anywhere in it, so the alpha alone is not a guarantee.
+                Dimming is not optional. White nav links are only legible while
+                the ground behind them stays dark, and a troop's photograph may
+                be bright anywhere in it, so the fill's alpha alone is never
+                the guarantee — the brightness filter is.
             {% endcomment %}
             <nav class="navbar navbar-dark navbar-expand-md bg-primary bg-gradient py-3"
                  style="padding: 0px 0px;
@@ -63,8 +75,8 @@
                         margin-bottom: 0px;
                         padding-bottom: 0px;
                         height: 110px;
-                        background: rgba(10, 66, 117, 0.72) !important;
-                        backdrop-filter: blur(14px) brightness(0.45)">
+                        background: var(--site-navbar-fill) !important;
+                        backdrop-filter: var(--site-navbar-backdrop)">
                 <div class="container-fluid px-3">
                     <a class="navbar-brand d-flex align-items-center"
                        href="{% url 'homepage' %}"
