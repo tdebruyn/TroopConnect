@@ -173,12 +173,9 @@ body {
   color: #0a4275;
 }
 
-/* Held to a reading measure rather than to the container. The footer is the
-   one block on the page that is allowed to be narrower than what it sits
-   under: nothing lines up with it, and a legal paragraph set to a full
-   container width is a wall of fifteen-word lines. */
+/* Runs the container's full width, unlike the reading measures the body copy
+   is set to. */
 .footer-legal {
-  max-width: 52ch;
   margin: 1.5rem 0 0;
   line-height: 1.5;
 }
