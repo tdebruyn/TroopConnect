@@ -325,13 +325,13 @@ scripts/dev-migrate.sh --show      # migration status
 scripts/dev-migrate.sh --check     # exit 1 if anything is unapplied
 scripts/worktree-tidy.sh           # review git worktrees, merge and clean up
 scripts/dev-zen-test-users.sh      # four logged-in browser windows
+scripts/dev-seed-demo.sh           # seed the demo troop into the dev instance
 ```
 
 `dev-migrate.sh` works whether or not the stack is running (it falls back to
 `docker compose run --rm`). Set `COMPOSE_FILE` to target a different dev
 overlay; `compose.yml` is always included.
 
-<<<<<<< HEAD
 ### Layout
 
 - `app/` — the Django project. `members/` is the core app (accounts, persons,
@@ -340,16 +340,7 @@ overlay; `compose.yml` is always included.
 - `app/tests/` — the test suite; `e2e/` — the Playwright suite.
 - `docs/dev/CONTRACT.md` — how configuration is split between the environment
   and the database, and the reference for both.
-- `niche-tools/` — one-off scripts (importing the old site's data, repairing a
-  table) that 99% of the time you can ignore. They sit outside `app/` on purpose
-  so they are never built into the image; you run them by hand, mounted into a
-  throwaway container. See [niche-tools/README.md](niche-tools/README.md).
 
-## Licence and security
-
-Licensed under the [AGPL-3.0](LICENSE). To report a vulnerability, see
-[SECURITY.md](SECURITY.md).
-=======
 ## One-off tools
 
 `contrib/` holds the run-by-hand extras that no installation needs: the
@@ -357,4 +348,8 @@ Ansible playbooks, and the one-off importer for the old site's database. They
 sit outside `app/` on purpose, so they are never built into the Docker image —
 you run them by hand, mounted into a throwaway container. The importer is
 documented in [`contrib/legacy-import/README.md`](contrib/legacy-import/README.md).
->>>>>>> worktree-member-import-export
+
+## Licence and security
+
+Licensed under the [AGPL-3.0](LICENSE). To report a vulnerability, see
+[SECURITY.md](SECURITY.md).
