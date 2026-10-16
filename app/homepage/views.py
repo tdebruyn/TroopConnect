@@ -344,20 +344,39 @@ def _desk_legend(rows):
     return sorted(legend.values(), key=lambda b: (b.min_age_dec_31 or 0, b.name))
 
 
-def _desk_answer(rows, requested):
-    """The branch a birth year lands in, or None when it lands in no branch."""
+def _school_year_label(start_year):
+    """``2026-2027``, the way a SchoolYear names its own range."""
+    return f"{start_year}-{start_year + 1}"
+
+
+def _desk_answer(rows, requested, school_year):
+    """The branch a birth year lands in, or None when it lands in no branch.
+
+    Carries the scout years the child would spend there: a branch holds ages
+    [min, max), and the age is the one they have on the troop's reference day,
+    so in the year starting ``Y`` it is ``Y - birth_year`` and they are in the
+    branch while ``birth_year + min <= Y <= birth_year + max - 1``. Years
+    already behind us are cut, because a parent is asking where to register,
+    not where the child would have been.
+    """
     if not requested or not requested.isdigit():
         return None
     year = int(requested)
     for row_year, branch in rows:
-        if row_year == year:
-            return {
-                "year": year,
-                "branch": branch,
-                "min_age": branch.min_age_dec_31,
-                "max_age": branch.max_age_dec_31,
-                "colour": BRANCH_COLOURS.get(branch.key),
-            }
+        if row_year != year:
+            continue
+        first = max(school_year.name, year + branch.min_age_dec_31)
+        last = year + branch.max_age_dec_31 - 1
+        return {
+            "year": year,
+            "branch": branch,
+            "min_age": branch.min_age_dec_31,
+            "max_age": branch.max_age_dec_31,
+            "colour": BRANCH_COLOURS.get(branch.key),
+            "first_year": _school_year_label(first),
+            "last_year": _school_year_label(last),
+            "is_final_year": first == last,
+        }
     return None
 
 
@@ -553,7 +572,11 @@ class HomePage(TemplateView):
         return render(
             request,
             "homepage/snippets/desk_answer.html",
-            {"desk_answer": _desk_answer(rows, request.GET.get("annee"))},
+            {
+                "desk_answer": _desk_answer(
+                    rows, request.GET.get("annee"), school_year
+                )
+            },
         )
 
     def get_template_names(self):
@@ -598,7 +621,9 @@ class HomePage(TemplateView):
             context["desk_year_label"] = (
                 school_year.range or school_year.name if school_year else ""
             )
-            context["desk_answer"] = _desk_answer(rows, self.request.GET.get("annee"))
+            context["desk_answer"] = _desk_answer(
+                rows, self.request.GET.get("annee"), school_year
+            )
             # An explicit flag, not `user.is_authenticated` in the template:
             # UnitPage renders the same template and a signed-out reader there
             # is just as anonymous, which would put the desk on the troop's own

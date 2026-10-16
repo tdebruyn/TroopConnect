@@ -3690,3 +3690,13 @@ msgid "To be paid by %(date)s."
 msgid_plural "To be paid by %(date)s."
 msgstr[0] "Te betalen voor %(date)s."
 msgstr[1] "Te betalen voor %(date)s."
+
+msgid "They would be there for school year %(year)s, their last year in this branch."
+msgid_plural "They would be there for school year %(year)s, their last year in this branch."
+msgstr[0] "Hij of zij zou er voor het schooljaar %(year)s zijn, het laatste jaar in deze tak."
+msgstr[1] "Hij of zij zou er voor het schooljaar %(year)s zijn, het laatste jaar in deze tak."
+
+msgid "They would be there from school year %(first)s to %(last)s."
+msgid_plural "They would be there from school year %(first)s to %(last)s."
+msgstr[0] "Hij of zij zou er van schooljaar %(first)s tot %(last)s zijn."
+msgstr[1] "Hij of zij zou er van schooljaar %(first)s tot %(last)s zijn."

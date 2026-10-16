@@ -22,6 +22,18 @@
                     Your child would join {{ branch }}, the branch for {{ min }} to {{ max }} year olds.
                 {% endblocktranslate %}
             </h2>
+            {# The scout years, which is what a parent is deciding about. #}
+            <p class="desk-answer-when">
+                {% if desk_answer.is_final_year %}
+                    {% blocktranslate with year=desk_answer.first_year trimmed %}
+                        They would be there for school year {{ year }}, their last year in this branch.
+                    {% endblocktranslate %}
+                {% else %}
+                    {% blocktranslate with first=desk_answer.first_year last=desk_answer.last_year trimmed %}
+                        They would be there from school year {{ first }} to {{ last }}.
+                    {% endblocktranslate %}
+                {% endif %}
+            </p>
         </div>
         {% if registration_open %}
             <a class="btn btn-primary desk-cta" href="{% url 'account_signup' %}">

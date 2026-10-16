@@ -399,6 +399,12 @@ header.masthead {
   letter-spacing: -0.01em;
 }
 
+.desk-answer-when {
+  margin: 0.5rem 0 0;
+  font-size: 1rem;
+  color: #5d666e;
+}
+
 .desk-cta {
   font-size: 1.0625rem;
   font-weight: 700;

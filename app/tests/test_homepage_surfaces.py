@@ -128,6 +128,36 @@ class FederationMappingTest(TroopSettingsTestCase):
         self.assertEqual(self.years_of("Pionniers"), [self.reference_year - 17,
                                                       self.reference_year - 16])
 
+    def answer_for(self, year):
+        from homepage.views import _desk_answer
+
+        return _desk_answer(_desk_rows(self.school_year), str(year), self.school_year)
+
+    def test_a_child_in_their_last_year_is_told_so(self):
+        """Born 2015, they are 11 in 2026-2027 — the last Louveteaux year.
+
+        This is the example the user gave when asking for the scout years.
+        """
+        answer = self.answer_for(2015)
+        self.assertEqual(answer["branch"].name, "Louveteaux")
+        self.assertEqual(answer["first_year"], "2026-2027")
+        self.assertEqual(answer["last_year"], "2026-2027")
+        self.assertTrue(answer["is_final_year"])
+
+    def test_a_child_with_the_branch_ahead_of_them_gets_the_span(self):
+        """Born 2020, the Baladins hold ages 6 and 7, so two scout years."""
+        answer = self.answer_for(2020)
+        self.assertEqual(answer["branch"].name, "Baladins")
+        self.assertEqual(answer["first_year"], "2026-2027")
+        self.assertEqual(answer["last_year"], "2027-2028")
+        self.assertFalse(answer["is_final_year"])
+
+    def test_years_already_behind_the_child_are_not_shown(self):
+        """A parent is asking where to register, not where they would have been."""
+        answer = self.answer_for(2018)
+        self.assertEqual(answer["branch"].name, "Louveteaux")
+        self.assertEqual(answer["first_year"], "2026-2027", "not 2023-2024")
+
     def test_every_year_lands_in_exactly_one_branch(self):
         """No gaps and no overlaps, which is the whole point of the rule."""
         rows = _desk_rows(self.school_year)
