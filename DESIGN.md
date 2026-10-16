@@ -487,6 +487,13 @@ palette is spent at field scale rather than as an accent.
   to answer the desk's question first. It carries the chosen year into the
   sign-up, and a line under it says what the step actually is: an account
   first, the child after it.
+- **The mat, not a plate.** The branch's colour frames the sheet by 0.75rem.
+  Its job is to be the ground the sheet lies on and to hold it off the page;
+  past about that much it stops being a frame and becomes a fourth surface.
+- **The desk's closing line sits under the band**, not between it and the rail:
+  it is what the four branches hold in common, so it belongs after one of them
+  has been named. It is also outside `#desk-answer`, the fragment the year
+  picker swaps, so picking a second year cannot rebuild it.
 
 ### Branch rail
 
@@ -506,6 +513,14 @@ the youngest child to the oldest.
 - **Each segment's rule is its branch's colour at full strength**, and the desk
   field behind it is the same colour at 15% — the rail states which branch, the
   field fills the room it occupies.
+- **A name stands inside its own colour.** Side by side, every segment but the
+  first holds a 2rem gutter under its rule, so no branch's name is written on
+  the seam where its colour begins — on the seam it reads as spilling over the
+  edge of the branch before it. The first column is the exception, and only
+  because of the field: the ground runs on past the page's margin there, so that
+  branch's colour already reaches left of its name. The rules themselves are
+  outside the gutter, because a rule marks where a branch starts and cannot
+  start anywhere but the branch's own edge.
 - **The chosen year wears its branch**: a 2px ring in the branch's colour at
   full strength over a fill of that colour laid into paper at 32%. It is how the
   row says which branch the visitor has just landed in before the answer band
