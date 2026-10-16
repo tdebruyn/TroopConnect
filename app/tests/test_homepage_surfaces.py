@@ -11,7 +11,8 @@ from decimal import Decimal
 
 from django.urls import reverse
 
-from homepage.views import _desk_rows, _household_dues
+from finance.models import FeeRule
+from homepage.views import _desk_rows, _household_dues, _siblings_are_discounted
 from members.models import (
     Account,
     Branch,
@@ -98,8 +99,8 @@ class PublicHomepageTest(DeskTestBase):
     def test_the_answer_carries_the_branch_colour(self):
         """The page's one spend of colour, keyed on the preset slug.
 
-        A branch the troop made itself has no slug and takes the charter blue;
-        this one carries the federation's own colour for the Louveteaux.
+        A troop renames its branches, so the colour follows the slug the
+        preset wrote rather than the name the troop chose.
         """
         Branch.objects.create(
             name="Meute", key="louveteaux", min_age_dec_31=8, max_age_dec_31=12
@@ -110,9 +111,20 @@ class PublicHomepageTest(DeskTestBase):
         self.assertContains(response, "Meute")
         self.assertContains(response, "--branch: #296f52")
 
-    def test_a_branch_with_no_slug_takes_the_charter_blue(self):
+    def test_a_branch_no_preset_made_carries_no_colour_rule(self):
+        """Rather than a fallback in the page's own ink, which would look like
+        a branch colour and mean nothing. The fixture's branches have no key."""
         response = self.client.get("/", {"annee": self.year_in(self.baladins)})
-        self.assertContains(response, "--branch: #0a4275")
+        self.assertNotContains(response, "--branch")
+        self.assertNotContains(response, "desk-answer-branch")
+
+    def test_an_unknown_slug_is_also_no_colour(self):
+        Branch.objects.create(
+            name="Maison", key="maison", min_age_dec_31=8, max_age_dec_31=12
+        )
+        response = self.client.get("/", {"annee": self.reference_year - 12})
+        self.assertContains(response, "Maison")
+        self.assertNotContains(response, "--branch")
 
     def test_a_year_in_no_branch_asks_again_instead_of_guessing(self):
         response = self.client.get("/", {"annee": 1900})
@@ -323,6 +335,24 @@ class MemberDuesTest(FinanceTestBase):
         response = self.client.get("/")
         self.assertContains(response, "member-page")
         self.assertNotContains(response, "member-house-amount")
+
+    def test_the_sibling_discount_is_reported_because_this_troop_has_one(self):
+        """The fixture prices rank 1 at 80.00 and rank 2 at 60.00."""
+        self.assertTrue(_siblings_are_discounted(self.current_year))
+
+    def test_no_discount_is_claimed_when_every_rank_costs_the_same(self):
+        """The rule is read off the fee table, never assumed from the model."""
+        FeeRule.objects.filter(
+            school_year=self.current_year, member_type=FeeRule.MemberType.CHILD
+        ).update(amount=Decimal("80.00"))
+        self.assertFalse(_siblings_are_discounted(self.current_year))
+
+    def test_the_deadline_is_stated_when_the_band_is_shown(self):
+        self.config.late_deadline = date.today() + timedelta(days=14)
+        self.config.save()
+
+        self.client.force_login(self.parent1_account)
+        self.assertContains(self.client.get("/"), "member-house")
 
     def test_the_overdue_state_is_marked_when_the_deadline_has_passed(self):
         self.config.late_deadline = date.today() - timedelta(days=1)

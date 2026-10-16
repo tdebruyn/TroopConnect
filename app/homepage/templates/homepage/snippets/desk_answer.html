@@ -5,8 +5,14 @@
   page is never built two ways.
 {% endcomment %}
 {% if desk_answer %}
-    {# The branch colour, spent once on this page: the rule beside the answer. #}
-    <div class="desk-answer" style="--branch: {{ desk_answer.colour }}">
+    {% comment %}
+        The branch colour, spent once on this page as the rule beside the
+        answer — and only when the branch has one. A branch no preset made has
+        no colour, and a rule in the page's own ink would claim a meaning it
+        does not carry.
+    {% endcomment %}
+    <div class="desk-answer{% if desk_answer.colour %} desk-answer-branch{% endif %}"
+         {% if desk_answer.colour %}style="--branch: {{ desk_answer.colour }}"{% endif %}>
         <div class="desk-answer-text">
             <p class="desk-answer-label">
                 {% blocktranslate with year=desk_answer.year %}Born in {{ year }}{% endblocktranslate %}

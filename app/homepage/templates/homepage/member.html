@@ -31,11 +31,22 @@
                 <div class="member-house-grow">
                     {% if member_dues.late %}
                         <p class="member-house-note member-late">
-                            {% trans "The deadline has passed." %}
+                            {% blocktranslate with date=member_dues.deadline|date:"j F Y" trimmed %}
+                                The deadline of {{ date }} has passed.
+                            {% endblocktranslate %}
+                        </p>
+                    {% elif member_dues.deadline %}
+                        <p class="member-house-note">
+                            {% blocktranslate with date=member_dues.deadline|date:"j F Y" trimmed %}
+                                To be paid by {{ date }}.
+                            {% endblocktranslate %}
                         </p>
                     {% endif %}
                     <p class="member-house-note text-muted">
                         {% trans "Membership fees, this scout year." %}
+                        {% if member_dues.discounted %}
+                            {% trans "The first child in a household pays in full; the others pay less." %}
+                        {% endif %}
                     </p>
                     {% comment %}
                         The treasurer's screens are behind `can_access_finance`

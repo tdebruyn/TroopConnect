@@ -3677,3 +3677,16 @@ msgid "%(counter)s child linked to your account."
 msgid_plural "%(counter)s children linked to your account."
 msgstr[0] "%(counter)s kind gekoppeld aan uw account."
 msgstr[1] "%(counter)s kinderen gekoppeld aan uw account."
+
+msgid "The first child in a household pays in full; the others pay less."
+msgstr "Het eerste kind in een gezin betaalt het volle tarief; de volgende betalen minder."
+
+msgid "The deadline of %(date)s has passed."
+msgid_plural "The deadline of %(date)s has passed."
+msgstr[0] "De deadline van %(date)s is verstreken."
+msgstr[1] "De deadline van %(date)s is verstreken."
+
+msgid "To be paid by %(date)s."
+msgid_plural "To be paid by %(date)s."
+msgstr[0] "Te betalen voor %(date)s."
+msgstr[1] "Te betalen voor %(date)s."

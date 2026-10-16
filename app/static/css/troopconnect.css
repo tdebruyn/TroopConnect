@@ -345,14 +345,16 @@ header.masthead {
   padding: 1.75rem 2rem;
   background-color: #fff;
   border: 1px solid #dee2e6;
-  /* The page's single spend of the branch colour, and the one line in this
-     file that is deliberately thicker than 1px: it marks which branch the
-     answer is about, and a 1px rule in a colour would not read as state. */
-  border-left: 4px solid var(--branch, #0a4275);
   border-radius: 0.25rem;
 }
 
-.desk-answer {
+/* The page's single spend of the branch colour, and one of the three rules in
+   this codebase deliberately thicker than 1px: it names which branch the
+   answer is about. Only applied when the branch has a charter colour — a
+   1px-wide version would not read as state, and a fallback in the page's own
+   ink would read as state without carrying any. */
+.desk-answer-branch {
+  border-left: 4px solid var(--branch);
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
 }

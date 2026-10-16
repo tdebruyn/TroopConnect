@@ -266,17 +266,20 @@ def _edited_context(page):
 
 
 #: The federation's colour per branch, taken from the theme's own charter
-#: (`.bg-ls-*` / `--bs-ls-*`). Keyed by ``Branch.key`` — the preset slug — and
-#: not by name, because a troop renames its branches and the colour belongs to
-#: the branch the federation prints, not to whatever the troop calls it. A
-#: branch a troop created itself has no key and takes the charter blue.
+#: (`.bg-ls-*` / `--bs-ls-*`). Keyed by ``Branch.key`` — the preset slug, which
+#: the preset schema requires — and not by name, because a troop renames its
+#: branches and the colour belongs to the branch the federation prints, not to
+#: whatever the troop calls it.
+#:
+#: A branch with no key is one no preset made. It gets *no* colour rather than
+#: a fallback: the rule beside the answer exists to say which branch, and a
+#: rule in the page's own ink says nothing while looking like it does.
 BRANCH_COLOURS = {
     "baladins": "#00a0de",
     "louveteaux": "#296f52",
     "eclaireurs": "#004f9f",
     "pionniers": "#d51317",
 }
-BRANCH_COLOUR_FALLBACK = "#0a4275"
 
 
 def _desk_rows(school_year):
@@ -326,7 +329,7 @@ def _desk_answer(rows, requested):
                 "branch": branch,
                 "min_age": branch.min_age_dec_31,
                 "max_age": branch.max_age_dec_31,
-                "colour": BRANCH_COLOURS.get(branch.key, BRANCH_COLOUR_FALLBACK),
+                "colour": BRANCH_COLOURS.get(branch.key),
             }
     return None
 
@@ -369,7 +372,7 @@ def _household_dues(children, school_year):
     the time. Reading it directly would quietly report nothing owed to every
     family the unit never split out by hand.
     """
-    from finance.models import calculate_balances, household_index
+    from finance.models import CotisationConfig, calculate_balances, household_index
 
     index = household_index(school_year)
     billed = set()
@@ -384,7 +387,38 @@ def _household_dues(children, school_year):
     owed = sum((row["balance"] for row in rows), Decimal("0"))
     if owed <= 0:
         return None
-    return {"owed": owed, "late": any(row["is_late"] for row in rows)}
+    return {
+        "owed": owed,
+        "late": any(row["is_late"] for row in rows),
+        # What the parent is being asked for, and by when. A balance with no
+        # deadline is the normal case, so the date is only shown when set.
+        "deadline": CotisationConfig.get_for_year(school_year).late_deadline,
+        "discounted": _siblings_are_discounted(school_year),
+    }
+
+
+def _siblings_are_discounted(school_year):
+    """Whether this troop actually bills a second child less.
+
+    Not assumed: a troop may set every rank the same price, in which case
+    telling a parent that siblings get a discount would be a claim their own
+    fee table contradicts.
+    """
+    from finance.models import FeeRule
+
+    by_branch = {}
+    for rule in FeeRule.objects.filter(
+        school_year=school_year, member_type=FeeRule.MemberType.CHILD
+    ):
+        # `rank` is an integer field, so these keys are ints. `is not None`
+        # rather than a truth test: a rank priced at zero is still a price.
+        by_branch.setdefault(rule.branch_id, {})[rule.rank] = rule.amount
+    return any(
+        ranks.get(1) is not None
+        and ranks.get(2) is not None
+        and ranks[1] != ranks[2]
+        for ranks in by_branch.values()
+    )
 
 
 def _member_context(user):

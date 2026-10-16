@@ -17,6 +17,24 @@
         "value": "mulish",
         "createdAt": "2026-10-16T08:56:21.854Z",
         "reason": "same fixture: the Google Fonts request URL spelling of Mulish/Muli"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/month.html"
+        ],
+        "createdAt": "2026-10-16T10:02:53.437Z",
+        "reason": "decision-round fixture, not shipping code: the month grid is a spent alternative the user did not choose, its cells carry their own 8-9px insets by design, and it is drawn at fixed px because a 1440x900 sketch is a thumbnail rather than a page"
+      },
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "app/static/css/troopconnect.css"
+        ],
+        "createdAt": "2026-10-16T10:02:53.444Z",
+        "reason": "all three are deliberate state markers, documented in DESIGN.md Shapes as the only rules in the codebase above 1px: two are the pre-existing first-run wizard's step and nesting accents, the third is the desk's 4px branch rule the user locked in the approved sketch. Suppressing per-file because this is the only file our rules live in; a new side-tab here would need the DESIGN.md exception extended, not a new one added quietly"
       }
     ]
   }
