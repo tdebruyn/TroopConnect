@@ -12,7 +12,7 @@ click==8.5.0
 click-didyoumean==0.3.1
 click-plugins==1.1.1.2
 click-repl==0.4.1
-cron-descriptor==1.4.5
+cron-descriptor==2.2.1
 cryptography==50.0.2
 cssbeautifier==2.0.3
 # Held in the 6.0 series: django-celery-beat 2.9.0 (still the newest release)
