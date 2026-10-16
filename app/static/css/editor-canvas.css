@@ -39,4 +39,23 @@ header.masthead {
   margin-top: 0;
   padding-top: 3.625rem;
   background-position: center calc(-1 * var(--site-navbar-height));
+  /* The site's band settles into the desk's own ground, and the desk begins at
+     that same colour — which is what makes the join invisible there. There is
+     no desk in the canvas, so the band would be handing over to a colour
+     nothing below it wears. Given the page's own colour to go to instead, the
+     settle becomes what it is over paper: nothing. */
+  --home-ground: transparent;
+}
+
+/* On the site the band is read under the charter ink, held flat to the height
+   of the navbar and let go below it, so the band opens under the menu instead
+   of stepping down from it. There is no menu here: the flat part would be a
+   dark strip lying across the top of the troop's picture with nothing to
+   explain it. What is left is the part that was ever about the photograph. */
+header.masthead::before {
+  background-image: linear-gradient(
+    180deg,
+    rgba(10, 66, 117, 0.3) 0,
+    rgba(10, 66, 117, 0) 45%
+  );
 }

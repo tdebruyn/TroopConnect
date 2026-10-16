@@ -12,12 +12,13 @@ colors:
   charter-slate: "#809aaf"
   charter-sky: "#15adea"
   paper: "#f2f5f8"
+  home-ground: "#dde5ec"
   white: "#ffffff"
   border: "#dee2e6"
   border-input: "#ced4da"
   muted: "#6c757d"
   muted-on-paper: "#5d666e"
-  muted-on-field: "#555f68"
+  muted-on-field: "#515a63"
 typography:
   display:
     fontFamily: "Muli, sans-serif"
@@ -182,6 +183,15 @@ federation's; none was chosen by this project.
 - **Paper** (#f2f5f8): The page background *and* the fill of every text field.
   Fields are not white — they sit on the page as slightly darker wells defined by
   their border. This is the single most distinctive thing about the form layer.
+- **Home Ground** (#dde5ec, `color-mix(in srgb, #0a4275 9%, #f2f5f8)`): The
+  opening ground of the public page, and one colour doing two jobs: the troop's
+  photograph settles into it, and the four branches' tints are read through it.
+  It is *derived* rather than picked, so it moves with the ink it is mixed from,
+  and it exists only at the top of `/` — no members page ever sees it.
+  It is the desk field's base, so the four tints are *darker* than they were
+  over bare `paper` — 15% of a saturated hue over a darker base — and darker
+  ground costs dark text its margin. `muted-on-field` was re-measured and moved
+  a step down for exactly that reason; see its entry below.
 - **White** (#ffffff): Cards, dropdowns, modals, the navbar's overlay surfaces.
   Nothing else is white.
 - **Border** (#dee2e6): Structural lines — wizard branches, the agenda grid,
@@ -194,13 +204,19 @@ federation's; none was chosen by this project.
   theme's muted is drawn for white cards and measures 4.29:1 on `paper`, which
   fails AA by a margin thin enough that it would pass unnoticed — so text on the
   paper ground uses this instead, one step darker.
-- **Muted on Field** (#555f68): The third rung, for the same voice on a coloured
-  ground. `muted-on-paper` clears AA on `paper` with room to spare, and a branch
-  tint under it spends most of that room: on the three darker branch colours it
-  measures 4.16–4.35:1, which is a failure thin enough to pass unnoticed for the
-  same reason the theme's muted did. One step darker again, and it clears AA on
-  every branch tint the desk field can lay down (worst case 4.63:1) as well as on
-  `paper` (5.95:1).
+- **Muted on Field** (#515a63): The third rung, for the same voice on the desk
+  field's tints. `muted-on-paper` clears AA on `paper` with room to spare, and a
+  branch tint under it spends most of that room: on the three darker branch
+  colours it measures 4.16–4.35:1, which is a failure thin enough to pass
+  unnoticed for the same reason the theme's muted did. One step darker again, and
+  it clears AA on every tint the desk field can lay down (worst case 4.68:1) as
+  well as on `paper` (5.95:1), and on `home-ground` itself.
+  The rung is a *measurement*, not a choice, and it is re-measured whenever the
+  ground under the tints moves: the tints are read through `home-ground` now
+  rather than through `paper`, and the value that cleared the old ground (4.63:1
+  worst) came out at 4.35:1 on the new one — a failure thin enough to pass
+  unnoticed again. Any further change to `home-ground` or to the field's
+  strength has to bring this rung back with it.
 
 ### Branches
 
@@ -219,6 +235,14 @@ ground at full. A branch no preset made has no colour and gets none: a made-up
 one would claim a meaning it does not carry, so its rule is the structural line,
 its column is nothing, and its answer band is the plain outlined one.
 
+The field's 15% is a *veil over the home ground*, not a colour in its own right —
+the tints are mixed with `transparent` and never with `paper` — and that is the
+whole of how four branches of four different temperatures end up in one light.
+Nothing levels them: Baladins stays the loud one and Louveteaux the quiet one,
+because the relative weight of the four is the federation's own and not this
+project's to editorialise. The ground supplies the shared light; the hues stay
+the federation's.
+
 ### Named Rules
 
 **The Federation's Ink Rule.** The palette belongs to Les Scouts and a troop
@@ -231,6 +255,14 @@ no colour. Charter hues may carry meaning only through an explicit mapping —
 today that is the agenda's three activity types (`charter-blue-deep` reunion,
 `charter-green-deep` day, `charter-plum` weekend) — and never by inventing a hue
 or reaching for a Bootstrap default that the theme did not override.
+
+**The Shared Ground Rule.** The hero band and the desk are two elements of one
+field. The band's settle ends on `home-ground` and the desk *begins* on it, with
+no gap between them, and that is what makes the join invisible. Changing one
+without the other puts a seam across the top of the public page — and it lands
+at exactly the height where the photograph stops, which is the most visible
+line the page could have. Both read it from the one `--home-ground` in `:root`
+because the two elements are siblings and neither owns it.
 
 ## Typography
 
@@ -495,25 +527,55 @@ members page opens with it: a charter sky band carrying the federation flag at
   property set there rather than a rule in a stylesheet nobody can reach. The
   editor holds it in place as the anchor it repairs the rest of the canvas
   around, so it may not be dragged, removed or copied — only edited into.
+- **It carries two layers on the site that its own markup never sees.** The
+  first is a trace of the charter ink, held flat to the height of the navbar and
+  let go only below it — so the band opens *under* the menu instead of stepping
+  down from it. The second is the settle: the band's last `--home-settle` inches,
+  spent handing the visitor over to the desk's ground. Both are painted as
+  pseudo-elements and never as background layers, because a troop's own picture
+  arrives as an inline `background-image` and an inline style beats anything a
+  stylesheet says about it.
+- **The settle is deliberately short.** A dissolve is a band of the troop's own
+  picture given up to a flat colour, and the deeper it runs the more the
+  photograph reads as washed out rather than as handed over. It scales with the
+  window, because at phone widths the band is most of the first screen already.
+- **The editor's canvas keeps the ink and drops the settle.** There is no desk
+  below the hero there to hand over to, so the band would be settling onto a
+  colour nothing under it wears. It also drops the flat part of the ink, which
+  would otherwise lie across the top of the picture with no navbar to explain it.
 
 ### Desk Field
 
 The ground the enrolment desk stands on, and the first thing the public page
 says before it says anything in words: the four branches as four columns, each
 as wide as its branch is long and in that branch's own colour, laid across the
-width of the container at 15% over `paper`.
+width of the container at 15% over the home ground.
 
 - **It is the rail's drawing at a second strength.** Same colours, same
   proportions, same 2px gap, so a column stands exactly behind the segment that
   names it and the two can never disagree about which branch is which. Four
   fixed stops in CSS could not do that: a troop that renames, re-ages or drops a
   branch reshapes both from the same data.
+- **Its colour is spent and released, not held.** The rise is short and the fall
+  is the long half: the field reaches full strength just under the question,
+  holds it through the rail, and then gives the rest of the desk back to the
+  ground the four branches share. That is the shape of the choice — the question,
+  the names and the years are where a visitor is picking between four of them,
+  and the answer band and the closing note are what they hold in common.
+  Held flat the whole height, four saturated colours are a striped panel; spent
+  and released, they are the light the choice is made in.
 - **It runs past what stands on it.** The two ends reach 4rem beyond the
   container the words are set in and let go as they go. A ground whose edge is
   the same line as the first letter of the question is not a ground, it is a
   box: the question, the rail and the answer band all sit inside the colour,
   with colour to spare. Only the two ends — widening the whole row would move
   the boundaries between the columns, and those are the rail's own boundaries.
+- **The fade lives on the field's own box, not on the container inside it.** A
+  mask clips what it is set on to *that element's* border box. The two ends
+  paint outside the container by design, so a mask on the container cuts both
+  bleeds off at its edge and the field ends on a hard vertical line — which four
+  columns of colour make very visible. On the field's full-width box the ends are
+  inside the mask, and they fade as the drawing says they do.
 - **It dissolves at every edge.** In at the top and out at the bottom, so the
   desk rises out of the troop's photograph and settles back into the page; in
   at the left and the right, so it arrives out of the page rather than starting
@@ -599,6 +661,11 @@ the youngest child to the oldest.
   years it owns on one line (992px and up); below that they stack and the tints
   move onto the segments. A chip keeps one size whatever its segment holds, so a
   two-year branch reads as the same control as a four-year one.
+- **Stacked, the tint arrives rather than starting.** Each segment's colour fades
+  in under its own rule, which is what keeps four stacked bands from reading as
+  four stacked rectangles with a ruler line drawn across the page at each one.
+  The fade-in is short, because the branch's name has to keep standing in its
+  colour: this is an arrival, not a gradient the words are laid across.
 
 **The Never-On-The-Field Rule.** Copy is never set *on* a charter field. White
 type fails AA on the Baladins blue and dark type fails on the other three, so
@@ -716,3 +783,8 @@ cell per day.
   HTMX view targets it.
 - **Don't** add a page that has to be read on hover to be understood — nothing in
   this system depends on pointer state to be legible.
+- **Don't** put a mask or a clip on a container whose children are meant to paint
+  outside it. Both clip to the element's own border box, so a fade that lives one
+  level too deep cuts off exactly the overflow it was placed to soften — the desk
+  field's mask sits on the field's full-width box, never on the container its
+  bleeds are supposed to cross.

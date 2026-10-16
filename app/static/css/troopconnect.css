@@ -16,6 +16,24 @@
    not either. */
 :root {
   --site-navbar-height: 110px;
+  /* The ground the top of the public page stands on: the page's own paper with
+     a trace of the charter ink in it. Two things meet on it — the unit's
+     photograph lets go of itself into it, and the four branches' tints are read
+     through it — and it is in `:root` because the hero band and the desk are
+     siblings and both need the one colour.
+     Its job is to be *one* light. Four branch colours laid straight onto
+     `paper` are four hues of four different temperatures sitting side by side;
+     read through a common ground they are four rooms of one room. */
+  --home-ground: color-mix(in srgb, #0a4275 9%, #f2f5f8);
+  /* How much of the photograph is spent letting go of itself. It scales with
+     the window because the band it dissolves does: at phone widths the hero is
+     most of the first screen already, and a settle as deep as the desktop's
+     would push the desk's answer out of reach.
+
+     Deliberately short of generous. A dissolve is a band of the troop's own
+     picture given up to a flat colour, and the deeper it runs the more of the
+     photograph reads as washed out rather than as handed over. */
+  --home-settle: clamp(4rem, 10vw, 6.5rem);
 }
 
 /* The homepage hero: the unit's photo, with the presentation card on it.
@@ -39,8 +57,19 @@
  * The homepage editor's frame loads this file and has no navbar; it undoes the
  * pull in `editor-canvas.css`, where that difference belongs. */
 header.masthead {
+  /* Positioned and isolated for the two layers the band draws over its own
+     photograph — the ink it is read under, and the ground it lets go into.
+     Both are painted rather than set as background layers, because the troop's
+     own picture arrives as an inline background-image and an inline style beats
+     anything a stylesheet says about it. */
+  position: relative;
+  isolation: isolate;
   margin-top: calc(-1 * var(--site-navbar-height));
-  padding: calc(var(--site-navbar-height) + 3.625rem) 0.75rem 0.5rem;
+  /* The bottom is the settle, not a margin: the band keeps its photograph for
+     that whole distance and spends it handing over to the desk. It is what
+     stops the card from sitting flush against the band's own bottom edge. */
+  padding: calc(var(--site-navbar-height) + 3.625rem) 0.75rem
+    var(--home-settle);
   text-align: center;
   color: #fff;
   background-image: url("../images/troop/brouettes.jpg");
@@ -48,6 +77,55 @@ header.masthead {
   background-attachment: scroll;
   background-position: center;
   background-size: cover;
+}
+
+/* The band is read under a trace of the page's own ink. The navbar is the one
+   opaque strip at the top of the page and the photograph begins immediately
+   under it; without this the two meet on a ruled edge and read as two things
+   stacked rather than as one page opening.
+
+   The ink is held flat to the height of the navbar and only let go below it.
+   That flat part sits under the navbar and is never seen on its own — it is
+   there so the colour arriving *below* the navbar is already at full strength,
+   and the band opens under the menu instead of stepping down from it. Gone by
+   the card, because this is a shading of the troop's photograph and never a
+   filter over it. */
+header.masthead::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: linear-gradient(
+    180deg,
+    rgba(10, 66, 117, 0.5) 0,
+    rgba(10, 66, 117, 0.5) var(--site-navbar-height),
+    rgba(10, 66, 117, 0) 58%
+  );
+}
+
+/* The photograph lets go of itself before the desk begins.
+
+   A band that stops on a line and a page that starts from nothing read as two
+   pictures stacked; the settle spends the band's last inches handing the
+   visitor over to the colour the desk opens on, so the top of the page is one
+   ground from the navbar down to the answer. It goes to `--home-ground` and the
+   desk *begins* at `--home-ground`, so the two meet on the same colour and
+   there is no seam to see between them.
+
+   The ramp is the whole height of it and its top is fully clear: the band never
+   ends on a tinted edge of its own, and the colour only becomes itself as the
+   desk takes over. */
+header.masthead::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--home-settle);
+  z-index: 0;
+  pointer-events: none;
+  background-image: linear-gradient(180deg, transparent, var(--home-ground));
 }
 
 /* The band's card carries the troop's heading and description as the card's
@@ -61,12 +139,24 @@ header.masthead {
    they need survives at any alpha short of fully clear — the transparency is
    the troop's photograph showing, never the reader's legibility leaving. */
 header.masthead .card {
+  /* Above the band's two layers. The card is already `position: relative` in the
+     theme, but the z-index is what the stacking here actually rests on, so the
+     position is stated with it: a theme that dropped it would leave the words
+     under the settle with nothing in the diff to show why. */
+  position: relative;
+  z-index: 1;
   padding: 1rem 1.25rem;
   background-color: rgba(255, 255, 255, 0.85);
 }
 
 .navbar {
   position: relative;
+  /* The navbar is painted over the band, and the band runs up behind it. Both
+     are positioned siblings, so the order between them is stated here rather
+     than left to whichever comes later in the document — and the navbar is
+     partly transparent, so losing that order means the troop's photograph
+     covers the logo and the menu. */
+  z-index: 2;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -413,6 +503,19 @@ body {
      name written on the seam where its colour starts reads as spilling over
      the edge of the previous branch; every one of them gets the same hold. */
   --desk-gutter: 2rem;
+  /* The desk's own ground, and what makes the band above it able to let go: the
+     hero's settle ends on this colour, so the two are continuous and no seam
+     can show where the photograph stopped and the desk started.
+
+     It eases back to `paper` well before the desk ends, so the desk is a field
+     the page *rises out of* rather than a band laid across it — by the time the
+     closing note is read the page is the page again, and the section below
+     begins on nothing. */
+  background-image: linear-gradient(
+    180deg,
+    var(--home-ground) 0,
+    #f2f5f8 20rem
+  );
 }
 
 /* The desk stands on the branches themselves: one column per branch, in that
@@ -434,17 +537,35 @@ body {
   z-index: -1;
   pointer-events: none;
   --desk-field-bleed: 4rem;
+  /* The letting-go, top and bottom, and deliberately on this box rather than on
+     the container inside it. A mask clips what it is set on to that element's
+     own border box, and the two end columns run a bleed *outside* the container
+     — masked on the container, those bleeds are cut off at its edge and the
+     field ends on a hard vertical line that four columns of colour make very
+     visible. On the field's own box, which is the desk's full width, the ends
+     are inside the mask and fade as the drawing says they do. The left and the
+     right are still the end columns' own business, below. */
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 24%, #000 44%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0, #000 24%, #000 44%, transparent 100%);
 }
 
-/* The letting-go is at the top and the bottom, on the container so its fades
-   are measured against the desk's own height: the field rises out of the
-   troop's photograph and settles back into the page, and the desk never ends
-   on a strip of colour that the page below it then has to start from. The
-   left and the right are the end columns' own business, below. */
+/* The field rises out of the troop's photograph and settles back into the page,
+   so the desk never ends on a strip of colour that the page below it then has
+   to start from. (The mask itself is on `.desk-field`, above, and for a reason
+   that is about the ends rather than about the top and bottom.)
+
+   The fall is the long half, and that is the whole shape of the desk: the
+   branches' colour is spent on the strip that names them — the question, the
+   rail, the names and the years, which is where a visitor is choosing between
+   four of them — and then gives way downwards to the ground they share. Held
+   flat the whole height, four saturated colours are a striped panel; spent and
+   released, they are the light the choice is made in and the page beneath it is
+   one page again.
+
+   Full strength is reached just under the question and held through the rail,
+   which is the first thing that needs a branch's colour to be exactly its own. */
 .desk-field .container {
   height: 100%;
-  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 22%, #000 64%, transparent 96%);
-  mask-image: linear-gradient(180deg, transparent 0, #000 22%, #000 64%, transparent 96%);
 }
 
 .desk-field-row {
@@ -458,7 +579,12 @@ body {
   min-width: 0;
   /* A branch no preset made has no charter colour, and mixing one out of
      nothing is how it gets none — the rail's bar and the answer band go plain
-     for that same branch. */
+     for that same branch.
+
+     Mixed with `transparent` and not with `paper`, so the tint stays a veil the
+     desk's ground is read *through* rather than a colour laid over it. That is
+     the whole of how four branches of four temperatures end up in one light:
+     they are all the same ground with a hue in it, not four grounds. */
   --field-tint: color-mix(in srgb, var(--branch, transparent) 15%, transparent);
   background-color: var(--field-tint);
 }
@@ -588,10 +714,13 @@ body {
    paper by a comfortable margin, and a branch tint under it spends most of
    that margin: on the three darker branch colours it lands at 4.16–4.35:1,
    which is a failure thin enough to pass unnoticed. This is the same voice one
-   rung down, and it clears AA on all four tints (worst case 4.63:1). */
+   rung down again, re-measured against the tints *over the home ground* rather
+   than over `paper` — a darker base spends more of the margin, and the rung
+   that cleared the old tints (4.63:1 worst) landed at 4.35:1 on the new ones.
+   It clears all four now (worst case 4.66:1). */
 .desk-segment-ages {
   font-size: 0.8125rem;
-  color: #555f68;
+  color: #515a63;
 }
 
 /* The branch the answer names, marked by weight rather than a second colour. */
@@ -624,9 +753,9 @@ body {
   font-size: 1.25rem;
   font-weight: 700;
   line-height: 1.35;
-  /* Darker than the paper's muted for the same reason the ages are: the line
-     lies across the branches' tint, and the tint is what costs the margin. */
-  color: #555f68;
+  /* The field rung, for the same reason the ages take it: the line lies across
+     the branches' tint, and the tint is what costs the margin. */
+  color: #515a63;
 }
 
 /* Side by side, a branch's name stands inside its own colour rather than on
@@ -710,7 +839,13 @@ body {
   /* On a pseudo-element rather than on the segment itself, because the tint has
      to let go downwards as well as to the right and one element carries one
      mask: this way the branch's colour thins out under its own years instead of
-     ending on a ruled edge, which is what a tinted rectangle would look like. */
+     ending on a ruled edge, which is what a tinted rectangle would look like.
+
+     The short fade-in at the top is what keeps four stacked bands from reading
+     as four stacked rectangles: the tint arrives under the band's own rule
+     rather than starting on a ruler line drawn across the page. It is short
+     because the branch's name has to keep standing in its colour — this is an
+     arrival, not a gradient the words are laid across. */
   .desk-segment::before {
     content: "";
     position: absolute;
@@ -722,8 +857,20 @@ body {
       var(--segment-tint) 55%,
       transparent
     );
-    -webkit-mask-image: linear-gradient(180deg, #000 0, #000 58%, transparent);
-    mask-image: linear-gradient(180deg, #000 0, #000 58%, transparent);
+    -webkit-mask-image: linear-gradient(
+      180deg,
+      transparent 0,
+      #000 12%,
+      #000 56%,
+      transparent
+    );
+    mask-image: linear-gradient(
+      180deg,
+      transparent 0,
+      #000 12%,
+      #000 56%,
+      transparent
+    );
   }
 }
 
