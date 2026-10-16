@@ -625,6 +625,13 @@ class Command(BaseCommand):
         self.message_count = 0
         self.payment_count = 0
 
+        # The settings row is cached under a key that names no database, so a
+        # server pointed at another one has a copy waiting to be served here.
+        # Everything below is read from that row — the values this fills in,
+        # and the calendar it turns the roster's ages into birthdays against —
+        # so it has to be the row this database actually holds.
+        TroopSettings.clear_cache()
+
         # Creating a member normally mails the registration admins. Seeding a
         # demo is not a registration, so the receiver is out of the way for the
         # length of the run — and put back afterwards, which matters because

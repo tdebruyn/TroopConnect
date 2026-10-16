@@ -14,6 +14,7 @@ from io import StringIO
 
 from allauth.account.models import EmailAddress
 from django.core import mail
+from django.core.cache import cache
 from django.core.management import call_command
 from django.core.management.base import CommandError
 from django.test import override_settings
@@ -163,6 +164,24 @@ class SeedDemoTest(SeedDemoTestCase):
         self.seed()
 
         self.assertEqual(before, self._counts())
+
+    def test_it_reads_this_databases_settings_and_not_a_cached_copy(self):
+        # The cache key names no database, so a server pointed at another one
+        # leaves a copy the command would otherwise be served. That row decides
+        # both what is filled in here and the calendar the roster's ages are
+        # turned into birthdays against — so a stale copy silently places the
+        # whole demo on the wrong dates, or fills nothing at all.
+        cache.set(
+            TroopSettings.CACHE_KEY,
+            TroopSettings(pk=1, name_fr="Un autre groupe", site_keywords="autre"),
+            None,
+        )
+
+        self.seed()
+
+        troop = TroopSettings.get_settings()
+        self.assertEqual(troop.name_fr, "Scouts de Limal")
+        self.assertEqual(troop.contact_email, "contact@demo.test")
 
     def test_it_leaves_the_settings_a_troop_already_chose(self):
         troop = TroopSettings.get_settings()
