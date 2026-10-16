@@ -7,6 +7,13 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    ignore:
+      # A Django minor bump lands in python-minor, where it reads as one patch
+      # among eight and fails the whole group's build. It stays ignored until
+      # django-celery-beat drops its Django<6.1 ceiling; patch bumps of the 6.0
+      # series still come through.
+      - dependency-name: "django"
+        update-types: ["version-update:semver-minor"]
     groups:
       # Patch and minor bumps arrive as one pull request rather than fifteen;
       # majors stay separate because they need reading.
