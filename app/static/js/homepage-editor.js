@@ -177,7 +177,19 @@
                 {
                     name: i18n.sectorDecorations,
                     open: false,
-                    buildProps: ["background-color", "border-radius", "border", "box-shadow"],
+                    // The background properties are here for the opening band:
+                    // its stock photo is a rule in troopconnect.css, and only
+                    // an inline style can override it, so without these a troop
+                    // cannot put its own photograph on its own band.
+                    buildProps: [
+                        "background-color",
+                        "background-image",
+                        "background-size",
+                        "background-position",
+                        "border-radius",
+                        "border",
+                        "box-shadow",
+                    ],
                 },
                 { name: i18n.sectorExtra, open: false, buildProps: ["opacity", "transition"] },
             ],
@@ -189,9 +201,11 @@
      * The canvas is always: the hero, then the content area, and nothing else
      * at the top level.
      *
-     * The hero comes from the page snippet and is not meant to be edited here
-     * — its text is placeholder copy. It is locked, so it cannot be selected,
-     * dragged, dropped into, copied or deleted.
+     * The hero comes from the page snippet and is the troop's own band: its
+     * text is editable and blocks can be dropped into it, because it is how
+     * the unit introduces itself and it starts life as seeded copy. What it
+     * may not do is move — it is the anchor this repair works from — so it
+     * keeps the structural locks while losing the selection ones.
      *
      * Everything else belongs in the content area below it. Pages saved before
      * that area existed — including the markup the old snippet shipped, which
@@ -202,17 +216,25 @@
     var CONTENT_SELECTOR = ".tc-page-content";
     var CONTENT_MARKUP = '<main class="tc-page-content"></main>';
 
-    function lock(component) {
-        component.set({
-            draggable: false,
-            droppable: false,
-            removable: false,
-            copyable: false,
-            selectable: false,
-            hoverable: false,
-            editable: false,
+    // The band's own lock: no dragging, no deleting, no copying — moving it
+    // would break the repair above, which no longer has an anchor to find.
+    // Everything else is the troop's, so the whole subtree stays selectable
+    // and editable; a text node inside a locked parent cannot be reached.
+    var HERO_LOCK = {
+        draggable: false,
+        removable: false,
+        copyable: false,
+        droppable: true,
+        selectable: true,
+        hoverable: true,
+        editable: true,
+    };
+
+    function lock(component, rules) {
+        component.set(rules);
+        component.components().forEach(function (child) {
+            lock(child, rules);
         });
-        component.components().forEach(lock);
     }
 
     var normalizing = false;
@@ -267,7 +289,7 @@
                 }
             });
 
-            lock(hero);
+            lock(hero, HERO_LOCK);
         } catch (err) {
             // Loading a project rebuilds the canvas in the background, so a
             // pass can land on a half-built tree and throw. This runs again —

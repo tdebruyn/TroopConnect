@@ -114,18 +114,23 @@ def _split_hero(html):
     above the desk's question would otherwise leave the outline starting at
     level two. It keeps the ``h2`` class, so it still looks exactly as the
     troop's page drew it — only the level changes.
+
+    Whether that promotion actually happened comes back with the markup. The
+    band is the troop's to edit now, so it can arrive with its heading
+    deleted, and the desk has to know: with no heading up there its question
+    is the page's ``h1`` rather than a subheading.
     """
     if not html:
-        return "", html
+        return "", html, False
     start = html.find(_MASTHEAD_OPEN)
     if start == -1:
-        return "", html
+        return "", html, False
     close = html.find(_MASTHEAD_CLOSE, start + len(_MASTHEAD_OPEN))
     if close == -1:
-        return "", html
+        return "", html, False
     end = close + len(_MASTHEAD_CLOSE)
-    hero = _promote_heading(html[start:end])
-    return hero, (html[:start] + html[end:]).strip()
+    hero, promoted = _promote_heading(html[start:end])
+    return hero, (html[:start] + html[end:]).strip(), promoted
 
 
 # A heading element, its attributes (quote-aware so `>` inside one cannot end
@@ -137,14 +142,23 @@ _HEADING_RE = re.compile(
 
 
 def _promote_heading(html):
-    """Rewrite the first heading in `html` as an ``h1``, style untouched."""
+    """Rewrite the first heading in `html` as an ``h1``, style untouched.
+
+    Returns the markup and whether there was a heading to promote — a hero
+    the troop has stripped its heading from must not leave the page without
+    one. Only the first heading is promoted, so a second one stays at its own
+    level rather than competing for the outline's top.
+    """
+    promoted = []
+
     def swap(match):
         attrs = match.group(2)
         if "class=" not in attrs:
             attrs = ' class="h2"' + attrs
+        promoted.append(True)
         return f"<h1{attrs}>{match.group(3)}</h1>"
 
-    return _HEADING_RE.sub(swap, html, count=1)
+    return _HEADING_RE.sub(swap, html, count=1), bool(promoted)
 
 
 def _back_over_blanks(html, pos):
@@ -365,22 +379,44 @@ def _desk_rows(school_year):
     return sorted(by_year.items())
 
 
-def _desk_legend(rows):
-    """The branches the desk covers, once each, youngest first.
+def _desk_groups(rows):
+    """The desk's rows, grouped under the branch each birth year lands in.
 
-    Not in the order the year chips run: those go oldest child to youngest, and
-    a key read backwards is harder to scan than the branch list a troop sees
-    everywhere else, which is ordered by age.
+    A parent knows their child's age and mostly does not know which branch a
+    name refers to, so the branch is the heading and its age range is the way
+    in: four cards to scan rather than twelve bare years differing only in
+    their last digit. The years inside a card keep the order ``_desk_rows``
+    gave them, so the desk still reads left to right as the years do.
+
+    Youngest branch first — the order the branch list is read in everywhere
+    else, and the reverse of the order the years run, which is why the two
+    are not one list any more.
     """
-    legend = {}
-    for _year, branch in rows:
-        legend[branch.pk] = branch
-    return sorted(legend.values(), key=lambda b: (b.min_age_dec_31 or 0, b.name))
+    groups = {}
+    for year, branch in rows:
+        groups.setdefault(branch.pk, {"branch": branch, "years": []})["years"].append(
+            year
+        )
+    return sorted(
+        groups.values(),
+        key=lambda group: (group["branch"].min_age_dec_31 or 0, group["branch"].name),
+    )
 
 
 def _school_year_label(start_year):
     """``2026-2027``, the way a SchoolYear names its own range."""
     return f"{start_year}-{start_year + 1}"
+
+
+def _desk_requested(value):
+    """The birth year asked for, when it is one at all.
+
+    Empty for anything that is not a run of digits, so a hand-edited query
+    string lands on the unanswered desk rather than being quoted back at the
+    visitor as though it were a birth year.
+    """
+    value = value or ""
+    return value if value.isdigit() else ""
 
 
 def _desk_answer(rows, requested, school_year):
@@ -731,7 +767,11 @@ class HomePage(TemplateView):
             {
                 "desk_answer": _desk_answer(
                     rows, request.GET.get("annee"), school_year
-                )
+                ),
+                # Carried so the fragment can tell "nothing picked yet" from
+                # "picked a year no branch takes" — the two say different
+                # things, and the fragment is the page's only renderer.
+                "desk_requested": _desk_requested(request.GET.get("annee")),
             },
         )
 
@@ -753,9 +793,10 @@ class HomePage(TemplateView):
             html = render_to_string(
                 EDITOR_SEED_TEMPLATES[SiteContent.Page.HOME], request=self.request
             )
-        hero, rest = _split_hero(html)
+        hero, rest, promoted = _split_hero(html)
         return {
             "hero_html": hero,
+            "hero_heading": promoted,
             "page_html": rest,
             "page_css": content["page_css"],
         }
@@ -769,10 +810,11 @@ class HomePage(TemplateView):
             school_year = SchoolYear.current()
             rows = _desk_rows(school_year) if school_year else []
             context["desk_rows"] = rows
-            context["desk_branches"] = _desk_legend(rows)
+            context["desk_groups"] = _desk_groups(rows)
             context["desk_answer"] = _desk_answer(
                 rows, self.request.GET.get("annee"), school_year
             )
+            context["desk_requested"] = _desk_requested(self.request.GET.get("annee"))
             # An explicit flag, not `user.is_authenticated` in the template:
             # UnitPage renders the same template and a signed-out reader there
             # is just as anonymous, which would put the desk on the troop's own
@@ -798,8 +840,9 @@ class UnitPage(TemplateView):
             html = render_to_string(
                 EDITOR_SEED_TEMPLATES[SiteContent.Page.HOME], request=self.request
             )
-        hero, rest = _split_hero(html)
+        hero, rest, promoted = _split_hero(html)
         context["hero_html"] = hero
+        context["hero_heading"] = promoted
         context["page_html"] = rest
         context["page_css"] = content["page_css"]
         return context

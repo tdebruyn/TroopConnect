@@ -3,6 +3,11 @@
   The desk's answer, alone on purpose: this is the fragment HTMX swaps when a
   year is picked, and the same include renders it on the full page load so the
   page is never built two ways.
+
+  Nothing picked yet is still an answer band, not a placeholder: the region
+  carries the same paper and the same way in, so the page's one action is on
+  screen from the first paint. What it does not do is name a child — filling
+  in a year would tell a parent about somebody else's.
 {% endcomment %}
 {% if desk_answer %}
     {% comment %}
@@ -39,20 +44,34 @@
                 {% endif %}
             </p>
         </div>
-        {% if registration_open %}
-            <a class="btn btn-primary desk-cta" href="{% url 'account_signup' %}">
-                {% trans "Register my child" %}
-            </a>
-        {% else %}
-            {# The branch is still worth naming; what is missing is the way in. #}
-            <p class="desk-closed-note">{{ registration_message }}</p>
-        {% endif %}
+        {% include "homepage/snippets/desk_action.html" %}
       </div>
     </div>
-{% elif registration_open %}
-    <p class="desk-prompt">
-        {% trans "Pick the year your child was born to see which branch that is." %}
-    </p>
 {% else %}
-    <p class="desk-prompt desk-prompt-closed">{{ registration_message }}</p>
+    {% comment %}
+        The plain outlined band, which is what the answer gets for a branch
+        that has no charter colour — the desk before a year is picked is in
+        exactly that position: a band with no colour to spend, because no
+        branch has been named.
+    {% endcomment %}
+    <div class="desk-answer desk-answer-quiet">
+      <div class="desk-answer-paper">
+        <div class="desk-answer-text">
+            <h2 class="desk-answer-title">
+                {% if desk_requested %}
+                    {% comment %}
+                        A year that landed in no branch. Saying so is the point:
+                        falling back to the unanswered prompt left a parent
+                        staring at the year they had just typed, with the page
+                        pretending they had typed nothing.
+                    {% endcomment %}
+                    {% blocktranslate with year=desk_requested %}No branch in this unit takes a child born in {{ year }}. Check the year, or ask the unit.{% endblocktranslate %}
+                {% else %}
+                    {% trans "Pick the year your child was born, and we will name the branch and the years they would spend in it." %}
+                {% endif %}
+            </h2>
+        </div>
+        {% include "homepage/snippets/desk_action.html" %}
+      </div>
+    </div>
 {% endif %}

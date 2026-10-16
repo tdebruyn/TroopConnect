@@ -13,41 +13,54 @@
     <div class="container">
         <div class="desk-inner">
             {% comment %}
-                The unit's band is the page's h1 when it is there, so this
-                question is a subheading; without one it is the page's title.
-                The class carries the size either way.
-            {% endcomment %}
-            {% if hero_html %}<h2 class="desk-question">{% else %}<h1 class="desk-question">{% endif %}
-                {% trans "What year was your child born?" %}
-            {% if hero_html %}</h2>{% else %}</h1>{% endif %}
+                The band carries the page's h1 while it still has a heading of
+                its own; without one this question is the page's title. The
+                class carries the size either way.
 
-            {% if desk_rows %}
-                <div class="desk-years" role="group" aria-label="{% trans "Year of birth" %}">
-                    {% for year, branch in desk_rows %}
-                        <a class="desk-year{% if desk_answer.year == year %} desk-year-on{% endif %}"
-                           href="?annee={{ year }}"
-                           hx-get="?annee={{ year }}"
-                           hx-target="#desk-answer"
-                           hx-swap="innerHTML"
-                           hx-push-url="true"
-                           hx-sync="this:replace"
-                           {% if desk_answer.year == year %}aria-current="true"{% endif %}>{{ year }}</a>
+                Tested on `hero_heading` rather than `hero_html`: the band is
+                the troop's to edit now, so it can be present and heading-less,
+                and the outline must not lose its top when it is.
+            {% endcomment %}
+            {% if hero_heading %}<h2 class="desk-question">{% else %}<h1 class="desk-question">{% endif %}
+                {% trans "What year was your child born?" %}
+            {% if hero_heading %}</h2>{% else %}</h1>{% endif %}
+
+            {% if desk_groups %}
+                {% comment %}
+                    One card per branch: its age range in the heading, its own
+                    years beneath. A parent knows how old their child is and
+                    mostly does not know which branch a name refers to, so the
+                    age range is the way in and the branch name is what they
+                    leave with — four ranges to scan instead of twelve years
+                    differing only in their last digit.
+                {% endcomment %}
+                <div class="desk-branches">
+                    {% for group in desk_groups %}
+                        <div class="desk-branch{% if desk_answer.branch.pk == group.branch.pk %} desk-branch-on{% endif %}">
+                            <p class="desk-branch-head">
+                                <span class="desk-branch-name">{{ group.branch.name }}</span>
+                                <span class="desk-branch-ages">{% blocktranslate with min=group.branch.min_age_dec_31 max=group.branch.max_age_dec_31 %}{{ min }} to {{ max }} years{% endblocktranslate %}</span>
+                            </p>
+                            <div class="desk-years" role="group"
+                                 aria-label="{% blocktranslate with branch=group.branch.name %}{{ branch }}: year of birth{% endblocktranslate %}">
+                                {% for year in group.years %}
+                                    <a class="desk-year{% if desk_answer.year == year %} desk-year-on{% endif %}"
+                                       href="?annee={{ year }}"
+                                       hx-get="?annee={{ year }}"
+                                       hx-target="#desk-answer"
+                                       hx-swap="innerHTML"
+                                       hx-push-url="true"
+                                       hx-sync="this:replace"
+                                       {% if desk_answer.year == year %}aria-current="true"{% endif %}>{{ year }}</a>
+                                {% endfor %}
+                            </div>
+                        </div>
                     {% endfor %}
                 </div>
                 {# The swap replaces this region, so it has to announce itself. #}
                 <div id="desk-answer" aria-live="polite" aria-atomic="true">
                     {% include "homepage/snippets/desk_answer.html" %}
                 </div>
-                {% comment %}
-                    Every branch with its ages, so a parent whose child is not
-                    the age they guessed can still see what the unit runs. The
-                    matched one is marked by weight, not by a second colour.
-                {% endcomment %}
-                <p class="desk-legend">
-                    {% for branch in desk_branches %}
-                        <span class="desk-legend-item{% if desk_answer.branch.pk == branch.pk %} desk-legend-on{% endif %}">{{ branch.name }} <b>{{ branch.min_age_dec_31 }}–{{ branch.max_age_dec_31 }}</b></span>
-                    {% endfor %}
-                </p>
             {% else %}
                 <p class="desk-prompt">
                     {% trans "This unit has not set up its branches yet." %}

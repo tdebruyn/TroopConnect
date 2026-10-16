@@ -65,6 +65,34 @@ def _escape(s):
 
 # msgid text -> (French, Dutch). Key is the .po inner-quote (escaped) form.
 TRANSLATIONS = {
+    # --- enrolment desk ---
+    "First you create your parent account; then you register your child.": (
+        "Vous créez d'abord votre compte parent, puis vous inscrivez votre enfant.",
+        "U maakt eerst uw ouderaccount aan en daarna schrijft u uw kind in.",
+    ),
+    "Pick the year your child was born, and we will name the branch and the years they would spend in it.": (
+        "Choisissez l'année de naissance de votre enfant : nous vous dirons dans "
+        "quelle branche il ou elle entrerait et pour quelles années scolaires.",
+        "Kies het geboortejaar van uw kind: wij zeggen u in welke tak het "
+        "terechtkomt en voor welke schooljaren.",
+    ),
+    "No branch in this unit takes a child born in %(year)s. Check the year, or ask the unit.": (
+        "Aucune branche de cette unité ne prend un enfant né en %(year)s. "
+        "Vérifiez l'année ou demandez à l'unité.",
+        "Geen enkele tak van deze eenheid neemt een kind geboren in %(year)s. "
+        "Controleer het jaar of vraag het aan de eenheid.",
+    ),
+    "%(min)s to %(max)s years": ("%(min)s à %(max)s ans", "%(min)s tot %(max)s jaar"),
+    "%(branch)s: year of birth": (
+        "%(branch)s : année de naissance",
+        "%(branch)s: geboortejaar",
+    ),
+    # The band's seed, shown only on a page nobody has edited yet. Its
+    # heading reuses "Our unit", which the catalog already carries.
+    "This is where the unit introduces itself to the families of the commune.": (
+        "C'est ici que l'unité se présente aux familles de la commune.",
+        "Hier stelt de eenheid zich voor aan de gezinnen van de gemeente.",
+    ),
     # --- homepage editor ---
     "Homepage editor": ("Éditeur de la page d'accueil", "Editor voor de startpagina"),
     "View site": ("Voir le site", "Site bekijken"),

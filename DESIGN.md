@@ -337,12 +337,14 @@ size of the thing rather than a fixed scale.
 Almost every line is 1px, at three values: `#ced4da` for input borders, 12.5%
 black for card and dropdown outlines, `#dee2e6` for structural borders and the
 agenda grid. A thicker rule is reserved for stating *which* thing you are
-looking at, and there are exactly three in the codebase: the first-run wizard
+looking at, and there are exactly two in the codebase: the first-run wizard
 marks a step's summary and a structure block's nesting with 3px `border-left`
-accents (`--bs-primary`, `--bs-border-color`), and the enrolment desk marks the
-branch its answer is about with a 4px rule in that branch's charter colour. All
-three are state, not decoration, and none of them is a pattern to extend to a
-card that has no state to state.
+accents (`--bs-primary`, `--bs-border-color`). Both are state, not decoration,
+and neither is a pattern to extend to a card that has no state to state.
+
+The enrolment desk was the third until the desk was rebuilt: it marked its
+branch with a 4px rule. It no longer does. The branch now takes the Answer
+Band's full field, and the card the answer came from is marked by weight.
 
 Circular forms appear exactly once, in the wizard's progress markers, where the
 shape is doing semantic work (done / current / pending) rather than decoration.
@@ -389,9 +391,14 @@ members page opens with it: a charter sky band carrying the federation flag at
 - **Behaviour:** It is the page's *identifier*, not its content. It always says
   what page you are on, it is the same on every page, and it never carries
   actions — the buttons live in the content below it.
-- **The homepage is the exception:** its hero is a photo rather than a flat band,
+- **The homepage is the exception:** its band is a photo rather than a flat band,
   and it stays an ordinary block in the flow (not absolutely positioned), because
-  the homepage editor drops content directly beneath it.
+  the homepage editor drops content directly beneath it. It is also the one band
+  a troop writes itself: the unit's own name and description seed it, its text
+  and contents are editable in the editor, and its background image is a
+  property set there rather than a rule in a stylesheet nobody can reach. The
+  editor holds it in place as the anchor it repairs the rest of the canvas
+  around, so it may not be dragged, removed or copied — only edited into.
 
 ### Answer Band
 
@@ -408,7 +415,33 @@ palette is spent at field scale rather than as an accent.
 - **The paper:** a white sheet inside it, carrying the label, the branch, the
   scout years and the action. No border and no shadow — it is a sheet on a
   field, not a card in a card.
-- **The action:** the ordinary `button-primary`, unchanged, on the paper.
+- **Two states, one band.** With a year picked it is the branch's own colour.
+  With nothing picked it is the plain outlined band — the same one a branch with
+  no charter colour gets, because no branch has been named. Naming no child is
+  the point: a year filled in for the visitor would describe somebody else's.
+- **The action, on both.** The ordinary `button-primary`, on the paper, whether
+  or not a year has been picked — a parent who came to register should not have
+  to answer the desk's question first. It carries the chosen year into the
+  sign-up, and a line under it says what the step actually is: an account
+  first, the child after it.
+
+### Branch cards
+
+The desk's choice: one card per branch, the branch's name and age range in the
+heading and that branch's birth years beneath it.
+
+- **Why cards and not a row of years.** A parent knows how old their child is
+  and mostly does not know which branch a name refers to, so the age range is
+  the way in and the branch name is what they leave with — four ranges to scan
+  rather than twelve years differing only in their last digit.
+- **The year stays the selector.** The branch is the answer, never a choice:
+  nobody is asked to pick "Éclaireurs" by name.
+- **The card the answer came from** is marked by weight, the same device the
+  legend it replaced used — never by a second colour.
+- **Four across, then two, then one.** Four only where a card is wide enough to
+  hold four years on one line (1200px and up); they pair up between 768 and
+  1199, and take the full width below that. A chip keeps one size whatever its
+  card holds, so a two-year branch reads as the same control as a four-year one.
 
 **The Never-On-The-Field Rule.** Copy is never set *on* a charter field. White
 type fails AA on the Baladins blue and dark type fails on the other three, so

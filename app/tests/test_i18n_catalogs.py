@@ -628,6 +628,34 @@ NEW_STRINGS = [
         "aucun membre avec l'identifiant externe",
         "geen lid met externe id",
     ),
+    # The enrolment desk, rebuilt around one card per branch: the arrival
+    # state, the year that fits nowhere, and the way in that now says what it
+    # is. Plus the band's seed, which only an unedited page shows.
+    (
+        "First you create your parent account; then you register your child.",
+        "compte parent",
+        "ouderaccount",
+    ),
+    (
+        "Pick the year your child was born, and we will name the branch and the "
+        "years they would spend in it.",
+        "Choisissez l'année de naissance",
+        "Kies het geboortejaar",
+    ),
+    (
+        "No branch in this unit takes a child born in %(year)s. Check the year, "
+        "or ask the unit.",
+        "Aucune branche",
+        "Geen enkele tak",
+    ),
+    ("%(min)s to %(max)s years", "ans", "jaar"),
+    ("%(branch)s: year of birth", "année de naissance", "geboortejaar"),
+    ("Our unit", "Notre unité", "Onze eenheid"),
+    (
+        "This is where the unit introduces itself to the families of the commune.",
+        "se présente aux familles",
+        "stelt de eenheid zich voor",
+    ),
 ]
 
 

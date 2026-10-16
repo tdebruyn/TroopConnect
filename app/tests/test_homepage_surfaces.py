@@ -12,6 +12,7 @@ from decimal import Decimal
 from django.urls import reverse
 
 from finance.models import FeeRule
+from homepage.models import SiteContent
 from homepage.views import _desk_rows, _household_dues, _siblings_are_discounted
 from members.models import (
     Account,
@@ -248,10 +249,16 @@ class PublicHomepageTest(DeskTestBase):
         self.assertContains(response, "Maison")
         self.assertNotContains(response, "--branch")
 
-    def test_a_year_in_no_branch_asks_again_instead_of_guessing(self):
+    def test_a_year_in_no_branch_says_so_instead_of_guessing(self):
+        """Told, not silently re-asked with the year still in the URL.
+
+        The unanswered desk and a year that fits nowhere are different states
+        and say different things; the page used to render the first for both.
+        """
         response = self.client.get("/", {"annee": 1900})
-        self.assertContains(response, "desk-prompt")
-        self.assertNotContains(response, "desk-answer-title")
+        self.assertContains(response, "desk-answer-quiet")
+        self.assertContains(response, "1900")
+        self.assertNotContains(response, "desk-answer-branch")
 
     def test_nonsense_in_the_query_string_is_not_a_crash(self):
         for value in ("abc", "-1", "", "2018.5"):
@@ -277,6 +284,56 @@ class PublicHomepageTest(DeskTestBase):
         response = self.client.get("/", {"annee": self.year_in(self.baladins)})
         self.assertNotContains(response, "desk-cta")
         self.assertContains(response, "Les inscriptions rouvrent en août.")
+
+    def test_each_branch_gets_its_own_card_of_years(self):
+        """The grouping that replaced the flat year row: the branch names the
+        card and its age range is the way in."""
+        response = self.client.get("/")
+        self.assertEqual(response.content.count(b'class="desk-years"'), 2)
+
+    def test_the_way_in_is_there_before_anything_is_picked(self):
+        """The page's one action does not wait on the desk's question.
+
+        A parent who arrived to register should not have to answer it first —
+        and the region that carries the answer carries the action on both of
+        its states.
+        """
+        response = self.client.get("/")
+        self.assertContains(response, "desk-answer-quiet")
+        self.assertContains(response, "desk-cta")
+
+    def test_the_action_carries_the_year_it_was_given(self):
+        """So the branch a parent has just found is not asked for again on the
+        other side of the sign-up."""
+        year = self.year_in(self.louveteaux)
+        response = self.client.get("/", {"annee": year})
+        self.assertContains(response, f"{reverse('account_signup')}?annee={year}")
+
+    def test_a_band_with_no_heading_leaves_the_question_as_the_h1(self):
+        """The band is the troop's to edit, so it can arrive heading-less —
+        and the outline must not lose its top when it does."""
+        SiteContent.objects.create(
+            page=SiteContent.Page.HOME,
+            html_fr=(
+                '<header class="masthead"><div class="card">'
+                "<p>Une ligne sans titre.</p></div></header>"
+            ),
+        )
+        response = self.client.get("/")
+        self.assertContains(response, '<h1 class="desk-question">')
+
+    def test_a_band_with_a_heading_keeps_the_question_as_a_subheading(self):
+        """The other half of the same rule: with a heading up there, the
+        question is not the page's top level."""
+        SiteContent.objects.create(
+            page=SiteContent.Page.HOME,
+            html_fr=(
+                '<header class="masthead"><div class="card">'
+                "<h2>Le titre de l'unité</h2></div></header>"
+            ),
+        )
+        response = self.client.get("/")
+        self.assertContains(response, '<h2 class="desk-question">')
 
     def test_the_units_own_page_is_public_and_carries_no_desk(self):
         response = self.client.get("/unite/")

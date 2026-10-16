@@ -13,6 +13,11 @@ from django.utils.translation import override
 from homepage.models import ImageAsset, SiteContent
 from members.models import Account, Person, Role
 
+#: The element only the seeded default carries. Asserted on rather than on the
+#: band's copy, which starts as the unit's own name and description and is the
+#: troop's to replace — a test matching that sentence would pin the seed text.
+SEED_MARKER = "tc-page-content"
+
 
 class HomePageEditorTestBase(TestCase):
     """Shared users and helpers for the homepage editor tests."""
@@ -109,7 +114,7 @@ class EditorPageAccessTest(HomePageEditorTestBase):
         SiteContent.objects.create(page=SiteContent.Page.HOME, project_json='{"pages": []}')
         self.client.force_login(self.superuser)
         response = self.client.get(reverse("homepage_editor"))
-        self.assertContains(response, "Description principale")
+        self.assertContains(response, SEED_MARKER)
 
     def test_project_with_frames_is_loaded(self):
         # GrapesJS 0.23 keeps a page's component tree on its frame. Looking for
@@ -124,7 +129,7 @@ class EditorPageAccessTest(HomePageEditorTestBase):
         response = self.client.get(reverse("homepage_editor"))
         # The saved project ships to the editor; no seed markup is injected.
         self.assertContains(response, "project-json")
-        self.assertNotContains(response, "Description principale")
+        self.assertNotContains(response, SEED_MARKER)
 
     def test_project_with_empty_frames_seeds_default_content(self):
         # An abandoned session can leave a page whose frame holds nothing.
@@ -134,7 +139,7 @@ class EditorPageAccessTest(HomePageEditorTestBase):
         )
         self.client.force_login(self.superuser)
         response = self.client.get(reverse("homepage_editor"))
-        self.assertContains(response, "Description principale")
+        self.assertContains(response, SEED_MARKER)
 
     def test_project_ships_as_an_object_not_a_json_string(self):
         # json_script encodes whatever it is handed. Passing it the stored JSON
@@ -200,7 +205,7 @@ class EditorSaveTest(HomePageEditorTestBase):
 
     def test_default_content_shown_without_save(self):
         response = self.client.get(reverse("homepage"))
-        self.assertContains(response, "Description principale")
+        self.assertContains(response, SEED_MARKER)
 
     def test_nl_falls_back_to_french(self):
         self.client.force_login(self.superuser)
@@ -216,7 +221,7 @@ class EditorSaveTest(HomePageEditorTestBase):
         self._save(self.client, "home", "fr", "")
         self.client.logout()
         response = self.client.get(reverse("homepage"))
-        self.assertContains(response, "Description principale")
+        self.assertContains(response, SEED_MARKER)
 
     def test_edited_css_is_rendered(self):
         self.client.force_login(self.superuser)

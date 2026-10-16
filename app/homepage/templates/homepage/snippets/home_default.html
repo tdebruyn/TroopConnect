@@ -1,13 +1,19 @@
-{% load i18n %}
-{# The hero, then the area the editor drops blocks into. The hero is not part  #}
-{# of the editable content — the editor locks it, so it can be neither edited, #}
-{# dropped into nor deleted. See homepage-editor.js.                          #}
+{% load i18n homepage_content %}
+{% comment %}
+  The hero, then the area the editor drops blocks into.
+
+  The hero is the troop's content: the editor lets its text be selected,
+  changed, and dropped into, and holds it in place as the anchor the rest of
+  the canvas is repaired around. Its words start as the unit's own — its name
+  and its description — so an instance nobody has edited yet still opens
+  saying something true about the unit, rather than showing a slot label to
+  the public.
+{% endcomment %}
+{% band_seed as band %}
 <header class="masthead">
     <div class="card">
-        <h2>{% trans "Main Description" %}</h2>
-        <p>
-            {% trans "Roll on the floor purring your whiskers off intrigued by the shower burrow under covers, and play time, rub face on everything, intently sniff hand, or pelt around the house and up and down stairs chasing phantoms. Attack feet. Damn that dog shake treat bag under the bed drink water out of the faucet for lick butt love to play with owner's hair tie. Swat at dog give attitude." %}
-        </p>
+        <h2>{{ band.heading }}</h2>
+        <p>{{ band.text }}</p>
     </div>
 </header>
 <main class="tc-page-content"></main>

@@ -42,6 +42,14 @@ header.masthead {
   background-size: cover;
 }
 
+/* The band's card carries the troop's heading and description as the card's
+   own children, and `.card` has no inset of its own: without this the words
+   sit on the card's border. Fixed here rather than in the markup so pages
+   saved before the seed changed get the inset too. */
+header.masthead .card {
+  padding: 1rem 1.25rem;
+}
+
 .navbar {
   position: relative;
   display: flex;
@@ -289,20 +297,73 @@ header.masthead {
   line-height: 1.1;
   letter-spacing: -0.02em;
   max-width: 20ch;
+  /* Balanced, so the question breaks into even lines instead of leaving its
+     "?" alone on the last one at phone widths. */
+  text-wrap: balance;
 }
 
-.desk-years {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.625rem;
+/* One card per branch. The cards do the grouping the flat year row could not:
+   each names a branch and the ages it takes, and holds the years that land in
+   it, so the first question a parent answers is one they can answer.
+
+   Four across only where a card is wide enough to hold four years on one
+   line; below that they pair up, and on a phone each takes the full width. */
+.desk-branches {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
   margin-top: 2rem;
 }
 
+.desk-branch {
+  padding: 0.875rem 1rem 1rem;
+  background-color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  border-radius: 0.25rem;
+}
+
+.desk-branch-head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.5rem;
+  margin: 0;
+}
+
+.desk-branch-name {
+  font-size: 1.0625rem;
+  font-weight: 700;
+}
+
+.desk-branch-ages {
+  font-size: 0.8125rem;
+  color: #5d666e;
+}
+
+/* The branch the answer names, marked by weight rather than a second colour. */
+.desk-branch-on .desk-branch-name {
+  font-weight: 800;
+}
+
+.desk-branch-on .desk-branch-ages {
+  color: #0a4275;
+  font-weight: 700;
+}
+
+/* Chips keep one size whatever their card holds, so a two-year branch reads
+   as the same control as a four-year one rather than as two wide buttons. */
+.desk-years {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
 .desk-year {
-  min-width: 5.75rem;
-  padding: 0.8rem 0;
+  min-width: 3.375rem;
+  padding: 0.75rem 0.375rem;
   text-align: center;
-  font-size: 1.25rem;
+  font-size: 1.0625rem;
   font-weight: 700;
   color: #0a4275;
   text-decoration: none;
@@ -360,24 +421,6 @@ header.masthead {
   border-radius: 0.25rem;
 }
 
-.desk-legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.75rem;
-  margin: 1.25rem 0 0;
-  font-size: 0.9375rem;
-  color: #5d666e;
-}
-
-.desk-legend-on {
-  color: #0a4275;
-  font-weight: 700;
-}
-
-.desk-legend-on b {
-  font-weight: 800;
-}
-
 .desk-answer-label {
   font-size: 0.8125rem;
   font-weight: 700;
@@ -406,19 +449,16 @@ header.masthead {
   white-space: nowrap;
 }
 
+/* For a unit that has not filled its branches in yet. Solid, like every other
+   band on this page: the system has no dashed line. */
 .desk-prompt {
   margin: 2.125rem 0 0;
   padding: 1.5rem 2rem;
   font-size: 1.0625rem;
   color: #5d666e;
   background-color: #fff;
-  border: 1px dashed #ced4da;
+  border: 1px solid #dee2e6;
   border-radius: 0.25rem;
-}
-
-.desk-prompt-closed {
-  border-style: solid;
-  border-color: #dee2e6;
 }
 
 .desk-closed-note {
@@ -426,6 +466,44 @@ header.masthead {
   font-size: 1rem;
   line-height: 1.55;
   color: #5d666e;
+}
+
+/* The band before a year is picked: the same paper and the same way in, in the
+   plain outlined band a branch with no charter colour gets. Its heading is a
+   sentence rather than a headline, so it steps down from the answer's. */
+.desk-answer-quiet .desk-answer-title {
+  font-size: 1.375rem;
+  letter-spacing: 0;
+}
+
+/* The action and what it actually is, so the label and the step agree. */
+.desk-answer-action {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+  flex: 0 0 auto;
+}
+
+.desk-cta-note {
+  margin: 0;
+  max-width: 30ch;
+  text-align: right;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: #5d666e;
+}
+
+@media (min-width: 768px) {
+  .desk-branches {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1200px) {
+  .desk-branches {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }
 
 
@@ -732,6 +810,16 @@ header.masthead {
 }
 
 @media (max-width: 767.98px) {
+  /* The desk starts higher on a phone, where every 40px decides whether the
+     choice is on screen when the page opens. */
+  .desk {
+    padding-top: 1.75rem;
+  }
+
+  .desk-branches {
+    margin-top: 1.25rem;
+  }
+
   .desk-question {
     font-size: 2.125rem;
   }
@@ -739,6 +827,15 @@ header.masthead {
   .desk-answer-paper {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .desk-answer-action {
+    align-items: flex-start;
+  }
+
+  .desk-cta-note {
+    max-width: none;
+    text-align: left;
   }
 
   /* The colour shows above and below rather than round the sides: at this

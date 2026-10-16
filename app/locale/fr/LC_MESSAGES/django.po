@@ -3603,6 +3603,24 @@ msgstr "Votre enfant rejoindrait les %(branch)s, la branche des %(min)s à %(max
 msgid "Register my child"
 msgstr "Inscrire mon enfant"
 
+msgid "First you create your parent account; then you register your child."
+msgstr "Vous créez d'abord votre compte parent, puis vous inscrivez votre enfant."
+
+msgid "Pick the year your child was born, and we will name the branch and the years they would spend in it."
+msgstr "Choisissez l'année de naissance de votre enfant : nous vous dirons dans quelle branche il ou elle entrerait et pour quelles années scolaires."
+
+msgid "No branch in this unit takes a child born in %(year)s. Check the year, or ask the unit."
+msgstr "Aucune branche de cette unité ne prend un enfant né en %(year)s. Vérifiez l'année ou demandez à l'unité."
+
+msgid "%(min)s to %(max)s years"
+msgstr "%(min)s à %(max)s ans"
+
+msgid "%(branch)s: year of birth"
+msgstr "%(branch)s : année de naissance"
+
+msgid "This is where the unit introduces itself to the families of the commune."
+msgstr "C'est ici que l'unité se présente aux familles de la commune."
+
 msgid "Pick the year your child was born to see which branch that is."
 msgstr "Choisissez l'année de naissance de votre enfant pour voir de quelle branche il s'agit."
 
