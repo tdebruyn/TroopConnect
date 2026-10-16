@@ -25,6 +25,11 @@ typography:
     fontSize: "calc(1.375rem + 1.5vw)"
     fontWeight: 700
     lineHeight: 1.2
+  display-serif:
+    fontFamily: "\"Source Serif 4\", Georgia, serif"
+    fontSize: "clamp(2rem, 3.4vw, 2.75rem)"
+    fontWeight: 700
+    lineHeight: 1.08
   headline:
     fontFamily: "Muli, sans-serif"
     fontSize: "calc(1.325rem + 0.9vw)"
@@ -320,13 +325,23 @@ fact label:
 
 | Step | Size | Where |
 | --- | --- | --- |
-| Question | 3rem (2.125rem under 768px) | The enrolment desk's `h1` |
+| Unit name | clamp(2rem, 3.2vw, 2.75rem) | The public page's band |
+| Question | clamp(2rem, 3.4vw, 2.75rem) | The enrolment desk's heading |
 | Surface title | 2.125rem | "Vos enfants", "Votre unité" |
+| Section title | 1.75rem | "Nos locaux" / the troop's own name for its hall |
 | Panel name | 1.375rem | A child's or a section's name |
-| Answer | 1.75rem | The branch a birth year lands in |
+| Answer | 1.625rem | The branch a birth year lands in |
+| Room name | 1.25rem | A branch's name on the desk's strip |
+| Note | 1.3125rem | The desk's closing statement |
 | Lede | 1.0625rem | Desk lede, CTAs, the household summary |
-| Note | 0.9375rem | Federation line, branch legend, household notes |
-| Fact label | 0.8125rem | Panel row labels, activity chips |
+| Body note | 0.9375rem | Federation line, branch legend, household notes |
+| Fact label | 0.8125rem | Panel row labels, branch ages, activity chips |
+| Eyebrow | 0.75rem | The label over a section's heading |
+
+The steps above `Lede` are the ones the public page sets; the steps below it are
+shared with the members pages. The **unit name**, the **question** and the
+**section title** are the three that take the display serif — see the Two-Voice
+Rule — and everything from `Room name` down is Muli.
 
 It is a second scale and is documented as one rather than folded into the
 theme's, because the two answer different questions: the theme's ramp sizes
