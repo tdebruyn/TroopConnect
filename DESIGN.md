@@ -298,7 +298,15 @@ sharing it.
 **The site shell** is fixed: a 110px navbar (set inline in `base.html`, and
 mirrored as `--site-navbar-height` in CSS in **px, not rem**, because the navbar
 itself does not follow the root font size), then an optional banner, then a
-`.container` holding the page. The navbar's height and its background both live
+`.container` holding the page.
+
+It is a **full-height column** — `body` is `display: flex; flex-direction:
+column; min-height: 100vh` — so that a page shorter than the window still ends
+at the window's edge rather than at whatever its content stopped on. The footer
+sits in a `.site-footer-slot` whose auto margin spends the height a short page
+does not use. The slot exists so the *footer* keeps its own 3rem gap: an auto
+margin on the footer itself would eat that gap on every long page, and on a page
+that already fills the screen the whole mechanism is inert. The navbar's height and its background both live
 in inline style, and the background reads
 `var(--bs-navbar-toggler-border-color)` — a Bootstrap variable for a *toggle
 button* used as the navbar's own fill. It resolves today, but it is the kind of
@@ -493,7 +501,10 @@ palette is spent at field scale rather than as an accent.
 - **The desk's closing line sits under the band**, not between it and the rail:
   it is what the four branches hold in common, so it belongs after one of them
   has been named. It is also outside `#desk-answer`, the fragment the year
-  picker swaps, so picking a second year cannot rebuild it.
+  picker swaps, so picking a second year cannot rebuild it. It is set at
+  1.25rem/700 — emphatic by size *and* weight, never by hue — which also makes
+  it large text by WCAG's reckoning and gives the muted ink below more room than
+  it needs.
 
 ### Branch rail
 

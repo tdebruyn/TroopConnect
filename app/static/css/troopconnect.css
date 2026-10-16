@@ -97,6 +97,30 @@ header.masthead .card {
 }
 
 /* ---------------------------------------------------------------------------
+   The page shell, which exists so the page can reach the floor.
+
+   A page shorter than the window ends wherever its content stops, and the
+   footer then floats in the middle of nothing — an FAQ with no questions in it
+   is the clear case. The shell is a full-height column and the footer's slot
+   takes the height nothing else wants, so the footer's bottom edge is the
+   window's bottom edge whenever there is not enough page to get there on its
+   own. Nothing moves on a page that already fills the screen: an auto margin
+   only ever spends space that is going spare.
+
+   `min-height` and not `height`, so a long page scrolls exactly as it did.
+--------------------------------------------------------------------------- */
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.site-footer-slot {
+  margin-top: auto;
+}
+
+/* ---------------------------------------------------------------------------
    The site footer (base.html), on every page.
 
    Chrome, so it stays quiet: a 1px structural rule above it, the page's own
@@ -108,7 +132,7 @@ header.masthead .card {
 
 .site-footer {
   margin-top: 3rem;
-  padding: 2rem 0 2.5rem;
+  padding: 2rem 0 3.1rem;
   border-top: 1px solid #dee2e6;
   font-size: 0.9375rem;
   color: #5d666e;
@@ -149,8 +173,12 @@ header.masthead .card {
   color: #0a4275;
 }
 
+/* Held to a reading measure rather than to the container. The footer is the
+   one block on the page that is allowed to be narrower than what it sits
+   under: nothing lines up with it, and a legal paragraph set to a full
+   container width is a wall of fifteen-word lines. */
 .footer-legal {
-  max-width: 70ch;
+  max-width: 52ch;
   margin: 1.5rem 0 0;
   line-height: 1.5;
 }
@@ -563,12 +591,18 @@ header.masthead .card {
   margin: 1.5rem 0 0;
   padding-top: 1rem;
   border-top: 1px solid #dee2e6;
-  /* Above the body's own 1rem: this is the desk's closing statement about the
-     four branches, not a caption on the answer above it, and at body size it
-     read as fine print belonging to the block it follows. Still short of the
-     answer title, which stays the loudest line in the band. */
-  font-size: 1.125rem;
-  line-height: 1.5;
+  /* The desk's closing statement about the four branches, not a caption on the
+     answer above it: at body size it read as fine print belonging to the block
+     it followed, so it carries size *and* weight. Weight is what this system
+     uses to be emphatic — it never reaches for a hue — and the leading comes in
+     with it, because 700 at 1.5 reads as loose rather than as firm. Still short
+     of the answer title, which stays the loudest line in the band.
+
+     At 1.25rem/700 the line is also large text by WCAG's reckoning, so the
+     muted ink below needs 3:1 rather than 4.5:1 and clears it twice over. */
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.35;
   /* Darker than the paper's muted for the same reason the ages are: the line
      lies across the branches' tint, and the tint is what costs the margin. */
   color: #555f68;
