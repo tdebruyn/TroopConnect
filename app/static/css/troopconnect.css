@@ -483,13 +483,15 @@ header.masthead {
   font-weight: 700;
 }
 
-/* auto-fill, not flex-grow: one child must not stretch a panel across the
-   whole window, which is what a single flex item does at any width. The track
+/* auto-fit, not auto-fill: a lone panel collapses the empty tracks and takes
+   the whole row, so it lines up with the household band above it instead of
+   floating at a third of the width with page background beside it. With two or
+   more, the tracks are still equal and they split the row between them. The
    floor is clamped to the container so a phone gets one full-width column
    rather than a 26rem track that overflows it. */
 .member-panels {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(26rem, 100%), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(26rem, 100%), 1fr));
   gap: 1.375rem;
   margin-top: 1.375rem;
 }
@@ -500,7 +502,14 @@ header.masthead {
   color: #5d666e;
 }
 
+/* A column, so the actions can be pushed to the bottom: the panels in a row are
+   as tall as the tallest, and two sections that do not hold the same number of
+   facts put their buttons at two different heights unless something pins them.
+   The white space lands above the buttons, inside the card, rather than after
+   them. */
 .member-panel {
+  display: flex;
+  flex-direction: column;
   background-color: #fff;
   border: 1px solid #dee2e6;
   border-radius: 0.25rem;
@@ -548,7 +557,9 @@ header.masthead {
 .member-facts {
   display: grid;
   /* Wide enough for the longest label ("Prochaine activité") to stay on one
-     line, so every row is the same height. */
+     line, so every row is the same height. The answer takes the rest: capping
+     it looked better on paper and worse on screen, because each row's rule is
+     drawn on the cell and stopped in mid-air half way across the card. */
   grid-template-columns: 14rem 1fr;
   margin: 0;
 }
@@ -594,6 +605,7 @@ header.masthead {
   gap: 0.625rem;
   padding: 1.125rem 1.5rem;
   border-top: 1px solid #dee2e6;
+  margin-top: auto;
 }
 
 .member-empty {
