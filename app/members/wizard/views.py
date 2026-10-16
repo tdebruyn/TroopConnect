@@ -38,9 +38,15 @@ from .steps import (
     new_section_entry,
 )
 
-#: The steps the progress list shows: the code is the gate rather than a step,
-#: and "done" is what the list has been counting towards.
-PROGRESS = ORDER[1:-1]
+#: The steps the progress list shows: every one but "done", which is what the
+#: list has been counting towards. The code is among them — it is the first
+#: page of the wizard, and a list that opened on "Administrator" while the
+#: screen asked for a code named a step the host had not reached yet.
+PROGRESS = ORDER[:-1]
+
+#: Where Back may go. The code is not among them: it has been entered, and
+#: offering it again would only invite a second guess at it.
+BACKWARD = ORDER[1:-1]
 
 
 class SetupGuardMixin:
@@ -228,14 +234,10 @@ class StructureRowView(SetupGuardMixin, View):
 
 
 def _previous(name):
-    """The step before this one, or None on the first.
-
-    The setup code is deliberately not somewhere to go back to: it has been
-    entered, and offering it again would only invite a second guess at it.
-    """
-    if name not in PROGRESS or PROGRESS.index(name) == 0:
+    """The step before this one, or None on the first."""
+    if name not in BACKWARD or BACKWARD.index(name) == 0:
         return None
-    return PROGRESS[PROGRESS.index(name) - 1]
+    return BACKWARD[BACKWARD.index(name) - 1]
 
 
 def _progress(current):

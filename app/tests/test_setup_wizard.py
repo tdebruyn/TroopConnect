@@ -40,7 +40,12 @@ from members.wizard import (
     setup_complete,
     setup_required,
 )
-from members.wizard.steps import SESSION_KEY, StructureForm, default_structure
+from members.wizard.steps import (
+    INSTALL_GUIDE_URL,
+    SESSION_KEY,
+    StructureForm,
+    default_structure,
+)
 
 from .base import TroopSettingsTestCase
 
@@ -198,6 +203,34 @@ class CodeStepTest(WizardTestCase):
         # the wizard is translated, and a test that reads the French is a test
         # that breaks the moment somebody rewords a sentence.
         self.assertContains(response, 'name="code"')
+
+    def test_the_page_says_where_the_code_came_from(self):
+        """The host is asked for something they were handed and not told about."""
+        response = self.client.get(reverse("setup:index"))
+
+        self.assertContains(response, "manage.py setup_code")
+
+    def test_the_page_links_to_the_installation_guide(self):
+        response = self.client.get(reverse("setup:index"))
+
+        self.assertContains(response, f'href="{INSTALL_GUIDE_URL}"')
+
+    def test_the_step_is_named_once(self):
+        """The heading names the step and the field takes the code, so a label
+        repeating the heading said it twice on the same screen."""
+        page = self.client.get(reverse("setup:index")).content.decode()
+
+        self.assertEqual(page.count('class="visually-hidden"'), 1)
+        self.assertNotIn("form-label", page)
+
+    def test_the_progress_list_counts_the_step_being_shown(self):
+        """The first entry is the code, and it is the one marked current: a
+        list opening on "Administrator" named a page the host had not reached."""
+        page = self.client.get(reverse("setup:index")).content.decode()
+        progress = page.split('<ol class="setup-progress"', 1)[1].split("</ol>", 1)[0]
+
+        self.assertEqual(progress.count("setup-progress-current"), 1)
+        self.assertIn("setup-progress-current", progress.split("</li>", 1)[0])
 
     def test_the_right_code_opens_the_next_step(self):
         response = self.post_code(self.code)
@@ -445,6 +478,13 @@ class AdminStepTest(WizardTestCase):
         self.assertTrue(account.is_staff)
         self.assertFalse(account.is_superuser)
         self.assertTrue(setup_required())
+
+    def test_the_code_is_not_somewhere_to_go_back_to(self):
+        """It has been entered; offering it again invites a second guess at it."""
+        response = self.client.get(reverse("setup:step", args=["admin"]))
+
+        self.assertContains(response, reverse("setup:step", args=["admin"]))
+        self.assertNotContains(response, reverse("setup:step", args=["code"]))
 
     def test_a_mismatched_confirmation_is_refused(self):
         response = self.post(password_confirm="Something-else-9")

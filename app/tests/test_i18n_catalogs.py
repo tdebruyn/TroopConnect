@@ -207,6 +207,7 @@ NEW_STRINGS = [
         "Een paar vragen",
     ),
     ("Setup code", "Code d'installation", "Installatiecode"),
+    ("Installation guide", "Guide d'installation", "Installatiegids"),
     ("Administrator", "Administrateur", "Beheerder"),
     ("The unit", "L'unité", "De eenheid"),
     ("Languages and country", "Langues et pays", "Talen en land"),

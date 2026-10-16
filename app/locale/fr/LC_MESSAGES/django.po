@@ -3051,6 +3051,10 @@ msgid "Setup code"
 msgstr "Code d'installation"
 
 #: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "Installation guide"
+msgstr "Guide d'installation"
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
 msgid "Administrator"
 msgstr "Administrateur"
 

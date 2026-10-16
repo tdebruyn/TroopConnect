@@ -2637,6 +2637,10 @@ msgid "Setup code"
 msgstr ""
 
 #: members/wizard (hand-added; see docs/dev/CONTRACT.md)
+msgid "Installation guide"
+msgstr ""
+
+#: members/wizard (hand-added; see docs/dev/CONTRACT.md)
 msgid "That account already existed; kept it."
 msgstr ""
 

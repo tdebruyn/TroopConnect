@@ -568,6 +568,10 @@ docker compose exec web python manage.py setup_code     # prints it again
 docker compose exec web python manage.py setup_code --reset   # a new one
 ```
 
+The screen that asks for it says where it was printed and links to
+`GETTING-STARTED.md`, whose step 6 and 7 are exactly this moment: a host
+arrives holding a code they were told to keep, with no idea what issued it.
+
 It is a gate, not a password: it says "whoever can read this container's log
 is the person setting the instance up". It is compared in constant time and
 the comparison is rate-limited per `REMOTE_ADDR` — ten wrong codes, then a
@@ -581,7 +585,9 @@ the whole instance, which is the safe direction for it to be wrong in.
 HTMX, one form at a time, with Back and Next; each step is saved as it is
 answered, so a reload (or a lost session, after the code is entered again)
 picks up where the last save left off, and Back shows the step as it now
-stands. The progress list counts the seven steps between the gate and the end.
+stands. The progress list counts every step but the last, the code included:
+the first page of the wizard is also its first progress entry. Back stops at
+the administrator — the code is not a step to return to.
 
 | Step | What it does | How |
 | --- | --- | --- |

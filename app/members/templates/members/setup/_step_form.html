@@ -7,6 +7,10 @@
   enctype and hx-encoding are both set: the unit step carries the logo
   upload, and HTMX has to be told to post multipart rather than urlencoded or
   the file arrives empty.
+
+  A field whose label repeats the step's own title — the code does — keeps its
+  label for the screen reader and drops it from the page: the heading directly
+  above has already said it.
 {% endcomment %}
 <form hx-post="{% url 'setup:step' current %}"
       hx-target="#wizard-pane"
@@ -32,7 +36,8 @@
         </div>
         {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
       {% else %}
-        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+        <label class="{% if field.label == step.title %}visually-hidden{% else %}form-label{% endif %}"
+               for="{{ field.id_for_label }}">{{ field.label }}</label>
         {% if field.field.choices %}
           {% render_field field class="form-select" %}
         {% else %}

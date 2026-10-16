@@ -1,0 +1,18 @@
+{% load i18n %}
+{% comment %}
+  The gate, and the one step whose field a host cannot fill in from memory.
+
+  A host arrives here holding a code they were told to keep, with no idea where
+  it came from or what the instance will ask next. The heading above names the
+  step and the field takes the code, so what this page adds is where the code
+  was printed, and where the rest of the deployment is written down.
+{% endcomment %}
+<p class="text-muted small">{{ setup_code_hint }}</p>
+
+<p class="small">
+  <a href="{{ install_guide_url }}" target="_blank" rel="noopener noreferrer">
+    {% trans "Installation guide" %}
+  </a>
+</p>
+
+{% include "members/setup/_step_form.html" %}

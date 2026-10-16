@@ -116,6 +116,7 @@ class CodeStep(Step):
 
     name = "code"
     title = _("Setup code")
+    template = "members/setup/_step_code.html"
 
     def form(self, data=None, files=None):
         return SetupCodeForm(data)
@@ -126,7 +127,10 @@ class CodeStep(Step):
         return ""
 
     def context(self, form=None):
-        return {"setup_code_hint": _code_hint()}
+        return {
+            "setup_code_hint": _code_hint(),
+            "install_guide_url": INSTALL_GUIDE_URL,
+        }
 
 
 class AdminStep(Step):
@@ -406,6 +410,14 @@ STEP_CLASSES = (
 
 STEPS = {step.name: step for step in STEP_CLASSES}
 ORDER = tuple(step.name for step in STEP_CLASSES)
+
+
+#: The installation guide, which ships with the code that draws this screen —
+#: which is why it is a constant and not a setting. The host reading the wizard
+#: is the one person who needs it and the one least likely to know it exists.
+INSTALL_GUIDE_URL = (
+    "https://github.com/tdebruyn/TroopConnect/blob/main/GETTING-STARTED.md"
+)
 
 
 def _code_hint():
