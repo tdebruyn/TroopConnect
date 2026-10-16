@@ -614,13 +614,6 @@ class HomePage(TemplateView):
             rows = _desk_rows(school_year) if school_year else []
             context["desk_rows"] = rows
             context["desk_branches"] = _desk_legend(rows)
-            context["desk_federation"] = TroopSettings.get_settings().federation
-            # `range` ("2026-2027"), not `name` (the integer start year) and not
-            # the model's own __str__, which spells the whole date range out and
-            # reads as nonsense inside this sentence.
-            context["desk_year_label"] = (
-                school_year.range or school_year.name if school_year else ""
-            )
             context["desk_answer"] = _desk_answer(
                 rows, self.request.GET.get("annee"), school_year
             )

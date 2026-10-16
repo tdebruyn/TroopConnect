@@ -3587,8 +3587,6 @@ msgstr[1] "%(counter)s lignes rejetées"
 msgid "What year was your child born?"
 msgstr "En quelle année votre enfant est-il né ?"
 
-msgid "For the scout year %(year)s. One answer, and you know which branch they would join."
-msgstr "Pour l'année scoute %(year)s. Une seule réponse, et vous savez dans quelle branche il ou elle entrerait."
 
 msgid "Year of birth"
 msgstr "Année de naissance"

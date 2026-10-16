@@ -24,9 +24,14 @@ the branch, and is handed the registration.
 
 ## Content and proof
 
-The unit's real name and federation, the federation's four branches with their
-ages, and the registration state — all already held by the instance in
-`TroopSettings` and `Branch`. No prices, no testimonials, no invented dates.
+The unit's real name, the federation's four branches with their ages, and the
+registration state — all already held by the instance in `TroopSettings` and
+`Branch`. No prices, no testimonials, no invented dates.
+
+The desk opens on its question and nothing else. A line naming the scout year
+and the federation sat under the heading and was **removed on the user's
+instruction**: the question and the years say what the page is for, and the
+sentence restated the navbar. The branch legend below the answer stays.
 
 ## Open decision
 

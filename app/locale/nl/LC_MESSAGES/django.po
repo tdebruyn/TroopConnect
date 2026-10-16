@@ -3584,8 +3584,6 @@ msgstr[1] "%(counter)s rijen geweigerd"
 msgid "What year was your child born?"
 msgstr "In welk jaar is uw kind geboren?"
 
-msgid "For the scout year %(year)s. One answer, and you know which branch they would join."
-msgstr "Voor het scoutsjaar %(year)s. Eén antwoord en u weet bij welke tak hij of zij zou horen."
 
 msgid "Year of birth"
 msgstr "Geboortejaar"

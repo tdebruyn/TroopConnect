@@ -291,16 +291,6 @@ header.masthead {
   max-width: 20ch;
 }
 
-.desk-lede {
-  margin-top: 0.875rem;
-  font-size: 1.0625rem;
-  line-height: 1.6;
-  max-width: 56ch;
-  /* The theme's muted is drawn for white cards; on this page's own ground it
-     measures 4.29:1. One step darker clears AA on both. */
-  color: #5d666e;
-}
-
 .desk-years {
   display: flex;
   flex-wrap: wrap;
@@ -357,13 +347,6 @@ header.masthead {
   border-left: 4px solid var(--branch);
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
-}
-
-.desk-federation {
-  display: block;
-  margin-top: 0.25rem;
-  font-size: 0.9375rem;
-  color: #5d666e;
 }
 
 .desk-legend {

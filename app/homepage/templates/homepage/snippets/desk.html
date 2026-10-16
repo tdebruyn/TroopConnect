@@ -13,12 +13,6 @@
     <div class="container">
         <div class="desk-inner">
             <h1 class="desk-question">{% trans "What year was your child born?" %}</h1>
-            <p class="desk-lede">
-                {% blocktranslate with year=desk_year_label trimmed %}
-                    For the scout year {{ year }}. One answer, and you know which branch they would join.
-                {% endblocktranslate %}
-                {% if desk_federation %}<span class="desk-federation">{{ desk_federation }}</span>{% endif %}
-            </p>
 
             {% if desk_rows %}
                 <div class="desk-years" role="group" aria-label="{% trans "Year of birth" %}">
