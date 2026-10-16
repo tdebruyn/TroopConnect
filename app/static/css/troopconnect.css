@@ -428,13 +428,6 @@ header.masthead {
   color: #5d666e;
 }
 
-/* The hero was drawn to sit directly under the 110px navbar, and offsets its
-   photo by that much to compensate. With the desk above it, that offset would
-   show the wrong band of the photo, so it is only correct on the pages where
-   the hero really is the first thing after the navbar. */
-.desk ~ header.masthead {
-  background-position: center top;
-}
 
 /* ---------------------------------------------------------------------------
    The member homepage (homepage/member.html).

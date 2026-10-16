@@ -6,20 +6,20 @@
 {% endblock header %}
 {% block content %}
     {% comment %}
-        The desk comes first and only for a visitor who is not signed in — a
-        member's `/` is the tool, and the troop's page is at `/unite/`. Its data
-        comes from the branches themselves, so it is the one part of this page
-        the homepage editor does not own.
+        The unit's own opening band, then the desk, then the rest of the page.
+        The band is the unit introducing itself, so it comes first; the desk
+        sits under it and only for a visitor who is not signed in, since a
+        member's `/` is the tool and the troop's page is at `/unite/`.
+
+        The view splits the band out of the content because the editor keeps it
+        inside the markup it owns — see HomePage._troop_page.
     {% endcomment %}
+    {{ hero_html|safe }}
     {% if show_desk %}
         {% include "homepage/snippets/desk.html" %}
     {% endif %}
-    {% if page_html %}
-        {{ page_html|safe }}
-        <style>{{ page_css|safe }}</style>
-    {% else %}
-        {% include "homepage/snippets/home_default.html" %}
-    {% endif %}
+    {{ page_html|safe }}
+    {% if page_css %}<style>{{ page_css|safe }}</style>{% endif %}
     {% if user.is_superuser %}
         <a href="{% url 'homepage_editor' %}?page=home"
            class="btn btn-outline-secondary position-absolute bottom-0 end-0 m-3">

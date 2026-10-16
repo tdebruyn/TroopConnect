@@ -197,21 +197,21 @@ class MoneyDisplayTest(TroopSettingsTestCase):
     """Amounts are shown in the troop's currency."""
 
     def test_the_default_is_the_euro(self):
-        self.assertEqual(format_money(Decimal("12.50")), "12.50€")
+        self.assertEqual(format_money(Decimal("12.50")), "12,50\u00a0€")
 
     def test_a_configured_currency_replaces_the_symbol(self):
         troop = TroopSettings.get_settings()
         troop.currency = "USD"
         troop.save()
 
-        self.assertEqual(format_money(Decimal("12.50")), "12.50$")
+        self.assertEqual(format_money(Decimal("12.50")), "12,50\u00a0$")
 
     def test_a_currency_without_a_symbol_is_written_as_its_code(self):
         troop = TroopSettings.get_settings()
         troop.currency = "SEK"
         troop.save()
 
-        self.assertEqual(format_money(Decimal("12.50")), "12.50 SEK")
+        self.assertEqual(format_money(Decimal("12.50")), "12,50\u00a0SEK")
 
     def test_a_code_is_normalised_to_upper_case(self):
         troop = TroopSettings.get_settings()
@@ -228,7 +228,7 @@ class MoneyDisplayTest(TroopSettingsTestCase):
         rendered = Template("{% load money %}{{ amount|money }}").render(
             Context({"amount": Decimal("3.00")})
         )
-        self.assertEqual(rendered, "3.00€")
+        self.assertEqual(rendered, "3,00\u00a0€")
 
 
 class PhoneRegionTest(TroopSettingsTestCase):

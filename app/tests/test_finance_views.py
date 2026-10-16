@@ -20,6 +20,7 @@ from post_office.models import Email
 
 from finance.models import Payment, get_adults_with_balance
 from members.models import Account, Person, Role, SchoolYear
+from members.money import format_money
 from members.permissions import is_tresorier
 from tests.mail import MailTestCase
 from tests.test_finance import FinanceTestBase
@@ -228,7 +229,9 @@ class SendRemindersTest(FinanceMailTestBase):
             )
             body = matching[0].message
             self.assertIn(adult["person"].first_name, body)
-            self.assertIn(str(adult["balance"]), body)
+            # The amount as the recipient reads it, not as the database holds
+            # it: a French family is told "220,00 €", never "220.00".
+            self.assertIn(format_money(adult["balance"]), body)
             self.assertNotIn("{prenom}", body)
             self.assertNotIn("{solde}", body)
 

@@ -98,6 +98,26 @@ def _cut_mastheads(html):
     return "".join(pieces)
 
 
+def _split_hero(html):
+    """The page's opening ``<header class="masthead">`` on its own, and the rest.
+
+    The band is the unit introducing itself, so it stays above everything the
+    homepage adds — the enrolment desk included — while remaining inside the
+    content the editor owns and locks. Splitting it here is what lets the desk
+    sit under the unit's own opening without the editor losing the hero.
+    """
+    if not html:
+        return "", html
+    start = html.find(_MASTHEAD_OPEN)
+    if start == -1:
+        return "", html
+    close = html.find(_MASTHEAD_CLOSE, start + len(_MASTHEAD_OPEN))
+    if close == -1:
+        return "", html
+    end = close + len(_MASTHEAD_CLOSE)
+    return html[start:end], (html[:start] + html[end:]).strip()
+
+
 def _back_over_blanks(html, pos):
     """The index where the run of blanks ending at `pos` begins."""
     while pos > 0 and html[pos - 1].isspace():
@@ -307,14 +327,16 @@ def _desk_rows(school_year):
 
 
 def _desk_legend(rows):
-    """The branches the desk covers, once each, in the order the years run."""
-    legend = []
-    seen = set()
+    """The branches the desk covers, once each, youngest first.
+
+    Not in the order the year chips run: those go oldest child to youngest, and
+    a key read backwards is harder to scan than the branch list a troop sees
+    everywhere else, which is ordered by age.
+    """
+    legend = {}
     for _year, branch in rows:
-        if branch.pk not in seen:
-            seen.add(branch.pk)
-            legend.append(branch)
-    return legend
+        legend[branch.pk] = branch
+    return sorted(legend.values(), key=lambda b: (b.min_age_dec_31 or 0, b.name))
 
 
 def _desk_answer(rows, requested):
@@ -534,12 +556,32 @@ class HomePage(TemplateView):
             return ["homepage/member.html"]
         return [self.template_name]
 
+    def _troop_page(self):
+        """The troop's page, its opening band separated from the rest.
+
+        The default is rendered here rather than by an `{% include %}` in the
+        template, because the hero has to be lifted out of whichever markup the
+        page happens to have — saved or seeded — for the desk to sit under it.
+        """
+        content = _edited_context(SiteContent.Page.HOME)
+        html = content["page_html"]
+        if html is None:
+            html = render_to_string(
+                EDITOR_SEED_TEMPLATES[SiteContent.Page.HOME], request=self.request
+            )
+        hero, rest = _split_hero(html)
+        return {
+            "hero_html": hero,
+            "page_html": rest,
+            "page_css": content["page_css"],
+        }
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.request.user.is_authenticated:
             context.update(_member_context(self.request.user))
         else:
-            context.update(_edited_context(SiteContent.Page.HOME))
+            context.update(self._troop_page())
             school_year = SchoolYear.current()
             rows = _desk_rows(school_year) if school_year else []
             context["desk_rows"] = rows
@@ -571,7 +613,16 @@ class UnitPage(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context.update(_edited_context(SiteContent.Page.HOME))
+        content = _edited_context(SiteContent.Page.HOME)
+        html = content["page_html"]
+        if html is None:
+            html = render_to_string(
+                EDITOR_SEED_TEMPLATES[SiteContent.Page.HOME], request=self.request
+            )
+        hero, rest = _split_hero(html)
+        context["hero_html"] = hero
+        context["page_html"] = rest
+        context["page_css"] = content["page_css"]
         return context
 
 
