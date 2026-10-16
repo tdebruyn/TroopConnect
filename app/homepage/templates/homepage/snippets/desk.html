@@ -84,11 +84,17 @@
                         </li>
                     {% endfor %}
                 </ol>
-                <p class="desk-note">{% trans "The method, the values and the educational ambition are the same in every branch — what changes with age is the way they are lived." %}</p>
                 {# The swap replaces this region, so it has to announce itself. #}
                 <div id="desk-answer" aria-live="polite" aria-atomic="true">
                     {% include "homepage/snippets/desk_answer.html" %}
                 </div>
+                {% comment %}
+                    Below the answer, and outside the swap target on purpose: it
+                    is what the four branches hold in common, so it belongs
+                    after the one of them has been named, and it must not be
+                    rebuilt every time a year is picked.
+                {% endcomment %}
+                <p class="desk-note">{% trans "The method, the values and the educational ambition are the same in every branch — what changes with age is the way they are lived." %}</p>
             {% else %}
                 <p class="desk-prompt">
                     {% trans "This unit has not set up its branches yet." %}

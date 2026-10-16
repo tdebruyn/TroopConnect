@@ -384,6 +384,10 @@ header.masthead .card {
   isolation: isolate;
   overflow: hidden;
   padding: 2.75rem 0 1.25rem;
+  /* How far the desk's words stand inside the colour they stand on. A branch's
+     name written on the seam where its colour starts reads as spilling over
+     the edge of the previous branch; every one of them gets the same hold. */
+  --desk-gutter: 2rem;
 }
 
 /* The desk stands on the branches themselves: one column per branch, in that
@@ -551,18 +555,44 @@ header.masthead .card {
   font-weight: 700;
 }
 
-/* What the four branches hold in common, under the line that divides them
-   from the answer they lead to. */
+/* What the four branches hold in common, closing the desk under the answer
+   rather than interrupting the run up to it. The rule above it divides the
+   footnote from the band it footnotes. */
 .desk-note {
   max-width: 62ch;
   margin: 1.5rem 0 0;
   padding-top: 1rem;
   border-top: 1px solid #dee2e6;
-  font-size: 0.9375rem;
+  /* Above the body's own 1rem: this is the desk's closing statement about the
+     four branches, not a caption on the answer above it, and at body size it
+     read as fine print belonging to the block it follows. Still short of the
+     answer title, which stays the loudest line in the band. */
+  font-size: 1.125rem;
   line-height: 1.5;
   /* Darker than the paper's muted for the same reason the ages are: the line
      lies across the branches' tint, and the tint is what costs the margin. */
   color: #555f68;
+}
+
+/* Side by side, a branch's name stands inside its own colour rather than on
+   the seam where that colour begins: written on the seam it reads as spilling
+   over the edge of the branch before it.
+
+   The first column is the exception, and only because of the ground: the field
+   runs on past the page's margin, so that branch's colour already reaches left
+   of its name and the name needs no help. Every column after the first begins
+   on a seam and takes the gutter. The rail's 4px rules are left out of it
+   either way — a rule marks where a branch starts, and it cannot start
+   anywhere but the branch's own edge.
+
+   Stacked, the segments carry a bar down their left instead and the gutter is
+   already there as the grid's `1rem`; a second one would only push the words
+   away from the bar that names them. */
+@media (min-width: 992px) {
+  .desk-segment:not(:first-child) .desk-segment-head,
+  .desk-segment:not(:first-child) .desk-years {
+    padding-left: var(--desk-gutter);
+  }
 }
 
 @keyframes desk-segment-grow {
@@ -752,7 +782,10 @@ header.masthead .card {
    twice this, and at that size the band read as a board the sheet was mounted
    in rather than as the field holding it. */
 .desk-answer-branch {
-  padding: 1.25rem 1.25rem 1rem;
+  /* A mat around the sheet, not a plate it is mounted in. The colour's job here
+     is to be the branch's ground and to hold the sheet off the page; past about
+     this much it stops being a frame and starts being a fourth surface. */
+  padding: 0.75rem;
   background-color: var(--branch);
   border: 0;
 }
@@ -889,10 +922,19 @@ header.masthead .card {
    The pair shares one raised surface, so the space between them is inside
    something instead of between two things. A shadow and no border, the rule
    for a surface that is a unit of its own, in the same tinted charter-blue
-   step the year chips wear. */
+   step the year chips wear.
+
+   The surface is sized by what it holds, not by the page. Left as a plain
+   block it filled the container, so the card ran hundreds of pixels past its
+   own address and the empty white was the widest thing in the section.
+   `fit-content` ends the card where the words and the map end; `max-width`
+   stops that from ever exceeding the container, which is what mobile and any
+   oversized map rely on. */
 .place-body {
   display: flex;
   flex-wrap: wrap;
+  width: fit-content;
+  max-width: 100%;
   align-items: center;
   gap: 1.5rem;
   padding: 1.25rem;
@@ -1260,7 +1302,7 @@ header.masthead .card {
   /* The colour shows above and below rather than round the sides: at this
      width a frame on all four sides is a margin, not a field. */
   .desk-answer-branch {
-    padding: 1rem 0;
+    padding: 0.75rem 0;
   }
 }
 
