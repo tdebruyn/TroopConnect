@@ -17,6 +17,12 @@
   each troop open an account with that service before its homepage worked.
   What the page owes a parent is directions, so it gives them as a link they
   choose to follow.
+
+  The map is that link wherever there is one, because the picture of the place
+  is the thing a reader points at when they want to be sent to it; a "Directions"
+  line beside it would be a second, quieter copy of the same offer. The words
+  stay for the troops that have an address but uploaded no picture, which would
+  otherwise be left with no way to ask for the route at all.
 {% endcomment %}
 {% if unit_address or meeting_place %}
     <section class="place">
@@ -30,7 +36,7 @@
                     {% if unit_address %}
                         <p class="place-address">{{ unit_address|linebreaksbr }}</p>
                     {% endif %}
-                    {% if unit_address_url %}
+                    {% if unit_address_url and not unit_map_url %}
                         <p class="place-directions">
                             <a href="{{ unit_address_url }}" target="_blank" rel="noopener">{% trans "Directions" %}</a>
                         </p>
@@ -38,8 +44,15 @@
                 </div>
                 {% if unit_map_url %}
                     <div class="place-map">
-                        <img src="{{ unit_map_url }}"
-                             alt="{% trans 'A map of where the unit meets' %}" />
+                        {% if unit_address_url %}
+                            <a href="{{ unit_address_url }}" target="_blank" rel="noopener">
+                                <img src="{{ unit_map_url }}"
+                                     alt="{% trans 'Directions — a map of where the unit meets' %}" />
+                            </a>
+                        {% else %}
+                            <img src="{{ unit_map_url }}"
+                                 alt="{% trans 'A map of where the unit meets' %}" />
+                        {% endif %}
                     </div>
                 {% endif %}
             </div>

@@ -3757,6 +3757,9 @@ msgstr "Où nous trouver"
 msgid "Directions"
 msgstr "Itinéraire"
 
+msgid "Directions — a map of where the unit meets"
+msgstr "Itinéraire — un plan de l'endroit où l'unité se réunit"
+
 msgid "A map of where the unit meets"
 msgstr "Un plan de l'endroit où l'unité se réunit"
 

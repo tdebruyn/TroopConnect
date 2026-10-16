@@ -3754,6 +3754,9 @@ msgstr "Waar je ons vindt"
 msgid "Directions"
 msgstr "Route"
 
+msgid "Directions — a map of where the unit meets"
+msgstr "Route — een kaart van waar de eenheid samenkomt"
+
 msgid "A map of where the unit meets"
 msgstr "Een kaart van waar de eenheid samenkomt"
 

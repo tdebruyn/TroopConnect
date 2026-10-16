@@ -990,6 +990,24 @@ body {
   margin: 0.75rem 0 0;
 }
 
+/* The map is the directions link wherever a troop uploaded one, so it carries
+   the halo the system's other clickable surfaces raise, in the charter blue
+   every one of them uses: a focus indicator is chrome, and chrome that changes
+   colour control to control is chrome a keyboard reader has to re-find.
+
+   The radius is the image's own — the anchor is what draws the halo, and
+   without it the halo would be a rectangle around a rounded picture. */
+.place-map a {
+  display: block;
+  border-radius: 0.5rem;
+  transition: box-shadow 0.15s ease-in-out;
+}
+
+.place-map a:hover,
+.place-map a:focus-visible {
+  box-shadow: 0 0 0 0.25rem rgba(10, 66, 117, 0.25);
+}
+
 .place-map img {
   display: block;
   width: 100%;

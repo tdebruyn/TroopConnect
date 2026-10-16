@@ -37,6 +37,7 @@ from members.permissions import (
     visible_sections,
 )
 from tests.base import TroopSettingsTestCase
+from tests.test_branding import MediaRootTestCase, an_image
 from tests.test_finance import FinanceTestBase
 
 
@@ -700,7 +701,7 @@ class MemberDuesTest(FinanceTestBase):
         self.assertContains(self.client.get("/"), "member-house-late")
 
 
-class PlaceBandTest(TroopSettingsTestCase):
+class PlaceBandTest(MediaRootTestCase):
     """Where the unit meets, under the desk.
 
     This band is the only place the unit's address reaches a page at all: it
@@ -748,6 +749,38 @@ class PlaceBandTest(TroopSettingsTestCase):
         self.assertContains(
             response, "query=Rue%20Achille%20Bauduin%2089%201300%20Limal"
         )
+
+    def test_a_troop_with_words_alone_still_gets_a_directions_link(self):
+        """The fallback for the troop whose address is all it has: with no
+        picture to point at, the words are the only way to ask for the route."""
+        troop = TroopSettings.get_settings()
+        troop.footer_address = "Rue Achille Bauduin 89"
+        troop.save()
+
+        response = self.client.get("/")
+
+        self.assertContains(response, "place-directions")
+        self.assertContains(response, "openstreetmap.org/search?query=")
+
+    def test_the_map_carries_the_directions_link(self):
+        """Where the troop did upload a picture, the picture is the link: the
+        reader points at the place rather than at a word beside it."""
+        troop = TroopSettings.get_settings()
+        troop.footer_address = "Rue Achille Bauduin 89\n1300 Limal"
+        troop.map_image = an_image("hall.png")
+        troop.save()
+
+        response = self.client.get("/")
+        content = response.content.decode()
+        map_url = troop.map_url()
+
+        # The map is the only thing inside the anchor, so the picture's own URL
+        # standing after the anchor's opening tag is what says so.
+        anchor = content.index(f'href="{troop.address_search_url()}"')
+        self.assertGreater(content.index(f'src="{map_url}"'), anchor)
+        # And the row of words it used to sit beside is gone: one offer, not
+        # two copies of the same one.
+        self.assertNotContains(response, "place-directions")
 
     def test_no_map_image_until_one_is_uploaded(self):
         troop = TroopSettings.get_settings()
