@@ -327,27 +327,37 @@ header.masthead {
 }
 
 .desk-answer {
+  /* The same interval the year chips use: both are steps in one sequence. */
+  margin-top: 2rem;
+  border: 1px solid #dee2e6;
+  border-radius: 0.25rem;
+  background-color: #fff;
+}
+
+/* The answer, as a sheet of paper. It carries its own layout so the band
+   around it can be nothing but colour. */
+.desk-answer-paper {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1.5rem;
-  /* The same interval the year chips use: both are steps in one sequence. */
-  margin-top: 2rem;
   padding: 1.75rem 2rem;
-  background-color: #fff;
-  border: 1px solid #dee2e6;
-  border-radius: 0.25rem;
 }
 
-/* The page's single spend of the branch colour, and one of the three rules in
-   this codebase deliberately thicker than 1px: it names which branch the
-   answer is about. Only applied when the branch has a charter colour — a
-   1px-wide version would not read as state, and a fallback in the page's own
-   ink would read as state without carrying any. */
+/* The branch's charter colour as the ground, with the words on the paper over
+   it — the unit's band device, one step down in scale. White type on the
+   colour would fail AA for two of the four branches and dark type would fail
+   for the other two, so the copy is never asked to sit on it. */
 .desk-answer-branch {
-  border-left: 4px solid var(--branch);
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
+  padding: 2.25rem 2.25rem 1.5rem;
+  background-color: var(--branch);
+  border: 0;
+}
+
+.desk-answer-branch .desk-answer-paper {
+  padding: 1.75rem 2rem;
+  background-color: #fff;
+  border-radius: 0.25rem;
 }
 
 .desk-legend {
@@ -726,9 +736,15 @@ header.masthead {
     font-size: 2.125rem;
   }
 
-  .desk-answer {
+  .desk-answer-paper {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  /* The colour shows above and below rather than round the sides: at this
+     width a frame on all four sides is a margin, not a field. */
+  .desk-answer-branch {
+    padding: 1rem 0;
   }
 }
 

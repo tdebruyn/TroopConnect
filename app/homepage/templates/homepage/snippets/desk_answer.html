@@ -6,13 +6,17 @@
 {% endcomment %}
 {% if desk_answer %}
     {% comment %}
-        The branch colour, spent once on this page as the rule beside the
-        answer — and only when the branch has one. A branch no preset made has
-        no colour, and a rule in the page's own ink would claim a meaning it
-        does not carry.
+        The branch colour, at full field scale, with the answer on a sheet of
+        paper over it — the same device the unit's own band uses one screen up,
+        where a photo carries a card. Below that scale the colour was a 4px
+        rule, which named the branch but did not say it.
+
+        Only when the branch has a charter colour: a branch no preset made has
+        none, and inventing one would claim a meaning it does not carry.
     {% endcomment %}
     <div class="desk-answer{% if desk_answer.colour %} desk-answer-branch{% endif %}"
          {% if desk_answer.colour %}style="--branch: {{ desk_answer.colour }}"{% endif %}>
+      <div class="desk-answer-paper">
         <div class="desk-answer-text">
             <p class="desk-answer-label">
                 {% blocktranslate with year=desk_answer.year %}Born in {{ year }}{% endblocktranslate %}
@@ -43,6 +47,7 @@
             {# The branch is still worth naming; what is missing is the way in. #}
             <p class="desk-closed-note">{{ registration_message }}</p>
         {% endif %}
+      </div>
     </div>
 {% elif registration_open %}
     <p class="desk-prompt">

@@ -412,6 +412,11 @@
         "name": "The Two-Scale Rule",
         "body": "A new block sizes itself from the override scale and never from an ad-hoc value; a page's structure keeps to the theme's Bootstrap ramp. Bootstrap caps h1 at 2.5rem above 1200px, so the desk's 3rem question stays the largest type on the page at every width. Adding a step to either scale without recording it here is how a system stops being one.",
         "section": "typography"
+      },
+      {
+        "name": "The Never-On-The-Field Rule",
+        "body": "Copy is never set on a charter field. White type fails AA on the Baladins blue and dark type fails on the other three, so the paper goes between them every time. The field may carry meaning; it may not carry words.",
+        "section": "components"
       }
     ],
     "dos": [
@@ -423,7 +428,8 @@
       "Do wrap every .table in .table-responsive, and put a max-width on a free-text cell instead of letting the row grow.",
       "Do open every members page with the banner (hat_title + hat_text).",
       "Do ship a plain href or action alongside every HTMX attribute, so the page still works when the swap does not.",
-      "Do set the navbar's 110px height in px and keep --site-navbar-height in px to match; the navbar does not scale with the root font size."
+      "Do set the navbar's 110px height in px and keep --site-navbar-height in px to match; the navbar does not scale with the root font size.",
+      "Do put copy on a sheet of paper over a charter field, never on the field itself."
     ],
     "donts": [
       "Don't edit anything under app/static/vendor/template-unite/. It is byte-identical to a known upstream commit, and a local edit is lost at the next theme refresh and invisible in the diff that would have caught it.",

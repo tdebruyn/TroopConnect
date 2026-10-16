@@ -122,10 +122,12 @@ because the theme can move under it and the local copy would win.
 The result is deliberately unglamorous and consistently so. Density follows the
 task rather than the brand: a settings page is a stack of cards, a member list is
 a striped table, a form is one labelled field per block. The federation shows up
-in flat charter colour, in bold Muli, and in one ornamental gesture — the flag
-silhouette repeated behind a banner — and nowhere else. There is no troop-level
-colour, no theme picker, no second accent: the palette is the federation's, and
-the unit's identity is carried by its name and the logo it uploads.
+in flat charter colour and in bold Muli — and, in two places, at field scale
+rather than as an accent: the banner's flag silhouette behind a page title, and
+the enrolment desk's answer, which takes the matched branch's own colour as its
+ground. There is no troop-level colour, no theme picker, no second accent: the
+palette is the federation's, and the unit's identity is carried by its name and
+the logo it uploads.
 
 **Key Characteristics:**
 - Bootstrap's own primitives, used as intended, restyled only where a task needs it
@@ -390,6 +392,28 @@ members page opens with it: a charter sky band carrying the federation flag at
 - **The homepage is the exception:** its hero is a photo rather than a flat band,
   and it stays an ordinary block in the flow (not absolutely positioned), because
   the homepage editor drops content directly beneath it.
+
+### Answer Band
+
+The enrolment desk's answer, and the second use of the band device the Banner
+owns: a charter colour as a full field, with the answer on a sheet of paper over
+it — where the Banner sets copy on a photograph, this sets it on the branch's
+own colour. It is the public page's one peak, and it is the only place the
+palette is spent at field scale rather than as an accent.
+
+- **The field:** the matched branch's charter colour, from `BRANCH_COLOURS`,
+  inset in the page rather than full-bleed. A branch with no colour gets the
+  plain outlined band instead, because a field in the page's own ink would claim
+  a meaning it does not carry.
+- **The paper:** a white sheet inside it, carrying the label, the branch, the
+  scout years and the action. No border and no shadow — it is a sheet on a
+  field, not a card in a card.
+- **The action:** the ordinary `button-primary`, unchanged, on the paper.
+
+**The Never-On-The-Field Rule.** Copy is never set *on* a charter field. White
+type fails AA on the Baladins blue and dark type fails on the other three, so
+the paper goes between them every time. The field may carry meaning; it may not
+carry words.
 
 ### Cards / Containers
 - **Corner Style:** 0.25rem, outlined in 12.5% black, no shadow.
