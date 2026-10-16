@@ -29,15 +29,23 @@
      may be bright anywhere in it — the fill's alpha never was. */
   --site-navbar-fill: rgba(10, 66, 117, 0.72);
   --site-navbar-backdrop: blur(14px) brightness(0.45);
-  /* The ground the top of the public page stands on: the page's own paper with
-     a trace of the charter ink in it. Two things meet on it — the unit's
-     photograph lets go of itself into it, and the four branches' tints are read
-     through it — and it is in `:root` because the hero band and the desk are
-     siblings and both need the one colour.
-     Its job is to be *one* light. Four branch colours laid straight onto
-     `paper` are four hues of four different temperatures sitting side by side;
-     read through a common ground they are four rooms of one room. */
-  --home-ground: color-mix(in srgb, #0a4275 9%, #f2f5f8);
+  /* The ink the public page descends into, and the ground it says everything
+     dark on. It is the federation's own deep blue taken down to where it can
+     hold white — mixed with near-black rather than with `paper`, because a page
+     that has to carry the four branch colours cannot carry them on a mid-blue:
+     Éclaireurs is #004f9f, and on any lighter ground its own rule disappears
+     into the field it is supposed to be marking.
+
+     It is in `:root` because the hero band and the desk are siblings and both
+     need the one colour: the photograph lets go into this, and the desk begins
+     on it. One dip, and one colour for the whole of it. */
+  --home-ink: color-mix(in srgb, #0a4275 30%, #03101c);
+  /* The muted voice *on the ink*, and the third rung of the ladder that starts
+     at the theme's `#6c757d`. On a dark ground the rungs invert — a muted voice
+     is one that is *dimmer* than white, not darker — so this is a light slate
+     rather than a grey, and it is measured against the lightest thing it can
+     land on: the Baladins column, at the strength the desk field lays down. */
+  --home-muted-on-ink: #a6b8c8;
   /* How much of the photograph is spent letting go of itself. It scales with
      the window because the band it dissolves does: at phone widths the hero is
      most of the first screen already, and a settle as deep as the desktop's
@@ -127,32 +135,39 @@ header.masthead::before {
   );
 }
 
-/* The photograph lets go of itself before the desk begins.
+/* The photograph goes down into the ink, and the desk is on the other side.
 
-   A band that stops on a line and a page that starts from nothing read as two
-   pictures stacked; the settle spends the band's last inches handing the
-   visitor over to the colour the desk opens on, so the top of the page is one
-   ground. It goes to `--home-ground` and the desk *begins* at `--home-ground`,
-   so the two meet on the same colour and there is no seam to see between them.
+   This is the page's one long movement and the reason the band and the desk
+   read as one thing: the unit's picture keeps its own light at the top, where
+   the bar is and where nothing has to be read, and then gives way downwards to
+   the colour the desk opens on. It goes to `--home-ink` and the desk *begins*
+   at `--home-ink`, so the two meet on the same colour and there is no seam at
+   the height where the picture stops — which would otherwise be the most
+   visible line on the page.
 
-   It eases rather than ramps: the scrim above is already deepest at the top, so
-   a straight line here would read as a second, competing gradient. Two thirds
-   of the distance is covered by the midpoint, which leaves the band dark for
-   longer and then hands over quickly. */
+   It is a descent, not a fade, and that is what the shape is for: a straight
+   ramp between two colours reads as a gradient lying on a photograph, while an
+   ease that turns late reads as the ground coming up. Past the midpoint the ink
+   is already most of the way there. */
 header.masthead::after {
   content: "";
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
-  height: var(--home-settle);
+  /* The whole foot, and not the settle: those differ by the clearance that
+     keeps the last line of the lede off the descent, and a descent that stops
+     short of the band's own edge leaves a strip of bare photograph between the
+     two — the one line on the page that is neither picture nor ink. */
+  height: calc(var(--home-settle) + 1.5rem);
   z-index: 0;
   pointer-events: none;
   background-image: linear-gradient(
     180deg,
     transparent 0,
-    color-mix(in srgb, var(--home-ground) 72%, #0a4275) 34%,
-    var(--home-ground) 100%
+    color-mix(in srgb, var(--home-ink) 62%, transparent) 42%,
+    var(--home-ink) 92%,
+    var(--home-ink) 100%
   );
 }
 
@@ -660,22 +675,29 @@ body {
   isolation: isolate;
   overflow: hidden;
   padding: 2.75rem 0 1.25rem;
+  /* Everything the desk says is said on the ink, so the desk's own voice is
+     white and the ladder of muted voices is the one built for this ground. */
+  color: #fff;
   /* How far the desk's words stand inside the colour they stand on. A branch's
      name written on the seam where its colour starts reads as spilling over
      the edge of the previous branch; every one of them gets the same hold. */
   --desk-gutter: 2rem;
-  /* The desk's own ground, and what makes the band above it able to let go: the
-     hero's settle ends on this colour, so the two are continuous and no seam
-     can show where the photograph stopped and the desk started.
+  /* The desk is the dark half of the page, and it is what makes the band above
+     it able to let go: the photograph's descent ends on this colour and the
+     desk begins on it, so the two are continuous and no seam can show where the
+     picture stopped and the desk started.
 
-     It eases back to `paper` well before the desk ends, so the desk is a field
-     the page *rises out of* rather than a band laid across it — by the time the
-     closing note is read the page is the page again, and the section below
-     begins on nothing. */
+     The ink holds to the closing note, and only then eases back to `paper`
+     inside the desk's own foot — so the page returns to light *after* the desk
+     has finished saying what it has to say, and the section below begins on the
+     page's own colour rather than on a half-lit one. The foot is the slack that
+     ease is spent in; without it the return would run under the note. */
+  padding-bottom: 8rem;
   background-image: linear-gradient(
     180deg,
-    var(--home-ground) 0,
-    #f2f5f8 20rem
+    var(--home-ink) 0,
+    var(--home-ink) calc(100% - 8rem),
+    #f2f5f8 100%
   );
 }
 
@@ -744,15 +766,23 @@ body {
 .desk-field-col {
   flex: var(--span, 1) 1 0;
   min-width: 0;
-  /* A branch no preset made has no charter colour, and mixing one out of
-     nothing is how it gets none — the rail's bar and the answer band go plain
+  /* A branch no preset made has no charter colour, and mixing one into the ink
+     is how it gets none — the fallback is the ink itself, so that column comes
+     out as the ink it already is. The rail's bar and the answer band go plain
      for that same branch.
 
-     Mixed with `transparent` and not with `paper`, so the tint stays a veil the
-     desk's ground is read *through* rather than a colour laid over it. That is
-     the whole of how four branches of four temperatures end up in one light:
-     they are all the same ground with a hue in it, not four grounds. */
-  --field-tint: color-mix(in srgb, var(--branch, transparent) 15%, transparent);
+     Mixed *into the ink* and not veiled over paper. On a dark ground a veil is
+     the one thing that cannot work: 15% of a colour over near-black is the
+     near-black it started as, and all four branches would come out the same.
+     The mix is what puts a hue in the room, and the strength is what keeps four
+     of them apart — which is a measurement, not a taste: at this strength the
+     four land at different enough values to read as four rooms, and the darkest
+     of them is still dark enough to carry white words. */
+  --field-tint: color-mix(
+    in srgb,
+    var(--branch, var(--home-ink)) 30%,
+    var(--home-ink)
+  );
   background-color: var(--field-tint);
 }
 
@@ -791,6 +821,10 @@ body {
 }
 
 .desk-question {
+  /* Stated here and not left to the desk's own colour: the question is a real
+     heading, and the theme gives every heading the charter ink through its own
+     rule. On the ink that is invisible. */
+  color: #fff;
   font-size: 2.5rem;
   font-weight: 800;
   line-height: 1.1;
@@ -835,7 +869,20 @@ body {
   /* A branch no preset made has no charter colour, and a bar in the page's own
      ink would claim a meaning it does not carry — so it takes the structural
      line, the way the answer band goes plain for that same branch. */
-  background-color: var(--branch, #dee2e6);
+  /* Lifted toward the page's own light, and that is the same move the field
+     makes in the other direction. A branch's room on the ink is its colour
+     mixed *into* the ink; its rule at full strength would then be drawn on a
+     room of almost exactly its own colour — Éclaireurs is #004f9f, and its rule
+     would vanish into the room it is naming. On a dark ground a colour is
+     stated by the strength the ground allows, so the rule carries the hue
+     lifted and the room carries it deepened, and the two cannot collide.
+
+     What that buys is worth more than the colour it costs: the branch's *true*
+     colour now appears in exactly one place on the page — the answer band's
+     ground, at the moment the page names a branch. The rail states; the answer
+     shows. A branch no preset made has no hue to lift, so its rule is the
+     structural line, lightened to stand on the ink. */
+  background-color: color-mix(in srgb, var(--branch, #7b8b99) 65%, #fff);
   transform-origin: left center;
   /* The rail is one twelve-year line, so it is drawn as one: the segments lay
      themselves down in the order they are read, youngest branch first, which is
@@ -884,19 +931,24 @@ body {
    rung down again, re-measured against the tints *over the home ground* rather
    than over `paper` — a darker base spends more of the margin, and the rung
    that cleared the old tints (4.63:1 worst) landed at 4.35:1 on the new ones.
-   It clears all four now (worst case 4.66:1). */
+   On the ink the ladder inverts: a muted voice here is one *dimmer* than
+   white rather than darker than paper, and it is measured against the lightest
+   thing it can land on — the Baladins column at the strength the field lays
+   down, which is the brightest ground any of these words sits on. */
 .desk-segment-ages {
   font-size: 0.8125rem;
-  color: #515a63;
+  color: var(--home-muted-on-ink);
 }
 
-/* The branch the answer names, marked by weight rather than a second colour. */
+/* The branch the answer names, marked by weight rather than a second colour —
+   and marked again on the ink, where the ages' muted rung is already a light
+   slate that reads as emphasis it does not mean. */
 .desk-segment-on .desk-segment-name {
   font-weight: 800;
 }
 
 .desk-segment-on .desk-segment-ages {
-  color: #0a4275;
+  color: #fff;
   font-weight: 700;
 }
 
@@ -907,7 +959,11 @@ body {
   max-width: 62ch;
   margin: 1.5rem 0 0;
   padding-top: 1rem;
-  border-top: 1px solid #dee2e6;
+  /* The divider, drawn for the ground it is on rather than reused from paper:
+     `#dee2e6` is a *light* line, so on the ink it reads at thirteen to one and
+     shouts a footnote louder than the note. A rule is structure, and structure
+     on a dark ground is a light line at the strength light is used there. */
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
   /* The desk's closing statement about the four branches, not a caption on the
      answer above it: at body size it read as fine print belonging to the block
      it followed, so it carries size *and* weight. Weight is what this system
@@ -920,9 +976,10 @@ body {
   font-size: 1.25rem;
   font-weight: 700;
   line-height: 1.35;
-  /* The field rung, for the same reason the ages take it: the line lies across
-     the branches' tint, and the tint is what costs the margin. */
-  color: #515a63;
+  /* The ink's muted rung, for the same reason the ages take it: the line lies
+     across the branches' rooms, and the lightest of them is what costs the
+     margin. */
+  color: var(--home-muted-on-ink);
 }
 
 /* Side by side, a branch's name stands inside its own colour rather than on
