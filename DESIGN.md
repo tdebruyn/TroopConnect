@@ -156,6 +156,11 @@ components:
     padding: "0.25rem 0.5rem"
   member-action-hover:
     backgroundColor: "color-mix(in srgb, #00a0de 20%, #ffffff)"
+  member-account-chip:
+    backgroundColor: "#eaf4ef"
+    textColor: "{colors.charter-blue-deep}"
+    rounded: "{rounded.md}"
+    padding: "0.375rem 0.75rem"
 ---
 
 # Design System: TroopConnect
@@ -232,8 +237,9 @@ federation's; none was chosen by this project.
 
 ### Tertiary
 - **Charter Teal** (#2b99a4): Bootstrap's `info`, and the one place the system
-  puts black text on a saturated fill (the navbar's user chip). A deliberate
-  oddity, not a pattern to extend.
+  puts black text on a saturated fill (the navbar's user chip on every page
+  except the member board, which restates it as paper). A deliberate oddity,
+  not a pattern to extend.
 - **Charter Green Bright** (#95c11f): `success`. Confirmation only — a saved
   settings group, a successful toast.
 - **Charter Orange** (#ef7b00): `warning`. The "detach" action and the
@@ -569,6 +575,14 @@ restate them without a style attribute of its own.
   block). Its band is dark underneath, so it can drop the fill to 30% and let the
   photograph through; every other page has paper behind the bar, where the same
   alpha washes it out to a pale slate and the two stop looking like one site.
+- **The member page restates them too** (`.page-member`, read off its own
+  `body_class` block). Its board is a green-to-blue ground, so the bar takes the
+  same two branch colours: a 110° fill from Louveteaux green through a slate
+  midpoint to charter blue, every stop at 94%, with a `brightness(0.82)` dimming
+  behind it. The bar reads as the board seen through glass rather than as a bar
+  of its own colour. Below `md` the collapsed menu keeps that gradient instead of
+  base.html's navy panel, so the account never opens onto a third ground. The
+  public page's bar is untouched: `.page-home` keeps its own restatement.
 
 Content is laid out at `col-md-12` by default and
 split into halves or thirds only where two things genuinely sit side by side; a
@@ -809,9 +823,15 @@ Nothing about a button is custom.
   drawn — Deregister, Remove, Detach. Destructive actions are never filled.
 - **Small (`btn-sm`):** 0.875rem type, `0.25rem 0.5rem` padding, 0.2rem radius.
   The default size for anything inside a table row or a toolbar.
-- **The teal exception:** `.btn-info` — charter teal with *black* text — is used
-  for the signed-in user's chip in the navbar and should stay there. It is the
-  only saturated fill in the system that takes dark text.
+- **The teal exception:** `.btn-info` — charter teal with *black* text — is the
+  theme's default for the signed-in user's chip, and stays the teal one
+  everywhere except the member page. There (`.page-member .navbar .btn-info`)
+  the chip is pale green-to-blue paper — a 110° `#e9f4ee` → `#e7f0f8` gradient
+  with the charter ink at 700, a 16% ink rule at the split, and a 2px white
+  focus outline; hover steps the paper down to `#dceee4` → `#dae9f5`. Its
+  `.bg-info` dropdown is white with ink items, so the account does not flash a
+  third colour over the board. The theme's teal chip remains the only saturated
+  fill in the system that takes dark text.
 - **Hover / Focus:** Hover darkens the fill (primary → #093863) or floods an
   outline button with its own colour and flips the text to white. Focus is
   Bootstrap's ring, tinted with the charter blue — `0 0 0 .25rem rgba(10, 66, 117, .25)`.
@@ -1047,9 +1067,10 @@ predictable whatever the reader answers for. An animateur leads exactly one
 section; the page renders one section panel from the first section the reader
 can edit, even if bad data holds a second. The head is the surface display title over one
 summary line: the reader's name in the ink at 700, then the counts that explain
-the page ("3 children linked to your account", "2 sections you answer for"). The
-greeting is part of the summary because the page is a tool that knows who is
-holding it, and the line already has room.
+the page ("3 children linked to your account"). The greeting is part of the
+summary because the page is a tool that knows who is holding it, and the line
+already has room. A leader's summary carries no section count: an animateur
+leads exactly one, and the tile below already says which.
 
 - **One subject, one tile shape.** A child and a section share the head, the
   date leaf, the event block, the presence line and the foot. Only the monogram

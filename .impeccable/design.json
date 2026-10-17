@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-17T08:05:06Z",
+  "generatedAt": "2026-10-17T08:49:11Z",
   "title": "Design System: TroopConnect",
   "extensions": {
     "colorMeta": {
@@ -494,6 +494,12 @@
     "layout": {
       "navbarHeight": "84px",
       "navbarNote": "Set inline in base.html and mirrored as --site-navbar-height. In px, not rem: the navbar does not follow the root font size, so neither may the offset that compensates for it.",
+      "memberNavbar": {
+        "fill": "linear-gradient(110deg, rgba(41, 111, 82, 0.94) 0%, rgba(24, 68, 88, 0.94) 52%, rgba(10, 66, 117, 0.94) 100%)",
+        "backdrop": "blur(14px) brightness(0.82)",
+        "note": ".page-member restates --site-navbar-fill and --site-navbar-backdrop on top of :root. The fill is a gradient because base.html paints the navbar with background, not background-color. Below 768px the collapsed menu keeps the gradient instead of the theme's navy panel. The public page's .page-home restatement is unchanged.",
+        "accountChip": "Pale green-to-blue paper (#e9f4ee to #e7f0f8) with charter ink #0a4275; hover #dceee4 to #dae9f5; white dropdown with ink items."
+      },
       "grid": "Bootstrap 12-column .container with .row / .col-md-*; one full-width field per block in forms. The member homepage is the exception: its board and tool mosaic are flex rows with unequal grow weights, not a grid.",
       "memberBoard": "A flex row at a 26rem basis. Grow weights: household balance 1.75, first person tile 1.25, second 0.9 — two tiles read about 7/5, three about 45/32/23. The tools repeat the rhythm at a 17rem basis, with the most-populated group at 1.5 / 24rem and a two-column list. Below 768px every tile and group takes the row.",
       "stylesheetOrder": [
@@ -609,6 +615,14 @@
       "description": "The signed-in reader's navigation: the whole tile is the link. White, branch-tinted or the one dark anchor; icon, label and corner arrow are visible at rest. Hover lifts 2px; focus is a solid ink outline.",
       "html": "<a class=\"ds-tool\" href=\"#\"><span class=\"ds-tool-icon\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 16 16\" aria-hidden=\"true\"><path fill=\"#0a4275\" d=\"M8 8a3 3 0 100-6 3 3 0 000 6zm0 1c-3 0-6 1.5-6 4v1h12v-1c0-2.5-3-4-6-4z\"/></svg></span><span class=\"ds-tool-label\">Add a child</span><svg class=\"ds-tool-arrow\" width=\"12\" height=\"12\" viewBox=\"0 0 16 16\" aria-hidden=\"true\"><path fill=\"none\" stroke=\"#0a4275\" stroke-width=\"2\" d=\"M4 12L12 4M6 4h6v6\"/></svg></a>",
       "css": ".ds-tool{position:relative;display:flex;flex-direction:column;justify-content:space-between;gap:1rem;min-height:7rem;padding:1rem;border-radius:1rem;background:color-mix(in srgb,#00a0de 7%,#fff);color:#0a4275;text-decoration:none;box-shadow:0 0.4rem 1.25rem rgba(10,66,117,.06);transition:transform .15s ease,box-shadow .15s ease,background-color .15s ease;font-family:Muli,\"Segoe UI\",system-ui,sans-serif}.ds-tool:hover,.ds-tool:focus-visible{transform:translateY(-2px);box-shadow:0 0.75rem 1.75rem rgba(10,66,117,.12)}.ds-tool:focus-visible{outline:2px solid #0a4275;outline-offset:2px}.ds-tool-icon{display:inline-flex;align-items:center;justify-content:center;width:2.25rem;height:2.25rem;border-radius:.75rem;background:rgba(10,66,117,.07)}.ds-tool-label{display:block;padding-right:1.25rem;font-size:1rem;font-weight:700;line-height:1.3;overflow-wrap:break-word}.ds-tool-arrow{position:absolute;top:1rem;right:1rem;opacity:.4;transition:opacity .15s ease-in-out,transform .15s ease-in-out}.ds-tool:hover .ds-tool-arrow,.ds-tool:focus-visible .ds-tool-arrow{opacity:1;transform:translate(2px,-2px)}.ds-tool-anchor{background:linear-gradient(145deg,color-mix(in srgb,#296f52 82%,#0b1a12),color-mix(in srgb,#0a4275 76%,#0b1a12));color:#fff}.ds-tool-anchor .ds-tool-icon{background:rgba(255,255,255,.14)}.ds-tool-anchor .ds-tool-label{font-size:1.25rem}.ds-tool-anchor .ds-tool-arrow path{stroke:#fff}.ds-tool-anchor:focus-visible{outline-color:#fff}@media (prefers-reduced-motion: reduce){.ds-tool,.ds-tool-arrow{transition:none}.ds-tool:hover,.ds-tool:focus-visible{transform:none}}"
+    },
+    {
+      "name": "Member Account Chip",
+      "kind": "chip",
+      "refersTo": "member-account-chip",
+      "description": "The signed-in reader's account on the member page's bar: pale green-to-blue paper with charter ink instead of the theme's teal, and a white dropdown with ink items. The split toggle carries a 16% ink rule; keyboard focus is a 2px white outline.",
+      "html": "<div class=\"ds-account\"><span class=\"ds-account-chip\">Camille Dupont</span><button class=\"ds-account-chip ds-account-toggle\" type=\"button\" aria-label=\"Toggle dropdown\">▾</button><div class=\"ds-account-menu\"><a class=\"ds-account-item\" href=\"#\">My profile</a><a class=\"ds-account-item\" href=\"#\">My documents</a><hr class=\"ds-account-divider\"></div></div>",
+      "css": ".ds-account{position:relative;display:inline-flex;font-family:Muli,\"Segoe UI\",system-ui,sans-serif;font-size:1rem;line-height:1.5}.ds-account-chip{display:inline-block;padding:.375rem .75rem;background-color:#eaf4ef;background-image:linear-gradient(110deg,#e9f4ee,#e7f0f8);border:1px solid transparent;border-radius:.25rem 0 0 .25rem;color:#0a4275;font-weight:700;line-height:1.5;text-decoration:none;cursor:pointer;transition:background-color .15s ease-in-out}.ds-account-chip:hover,.ds-account-chip:focus-visible{background-color:#dceee4;background-image:linear-gradient(110deg,#dceee4,#dae9f5);color:#0a4275}.ds-account-chip:focus-visible{outline:2px solid #fff;outline-offset:2px}.ds-account-toggle{border-left:1px solid rgba(10,66,117,.16);border-radius:0 .25rem .25rem 0;font-family:inherit;font-size:.75rem}.ds-account-menu{position:absolute;top:calc(100% + .25rem);left:0;min-width:12rem;padding:.5rem 0;background:#fff;border:1px solid rgba(10,66,117,.15);border-radius:.25rem;box-shadow:0 .5rem 1rem rgba(0,0,0,.15)}.ds-account-item{display:block;padding:.25rem 1rem;color:#0a4275;text-decoration:none;white-space:nowrap}.ds-account-item:hover,.ds-account-item:focus{background-color:#eef5f1;color:#0a4275}.ds-account-divider{margin:.5rem 0;border:0;border-top:1px solid rgba(10,66,117,.12)}"
     }
   ],
   "narrative": {

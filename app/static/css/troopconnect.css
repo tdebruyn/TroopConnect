@@ -1432,6 +1432,17 @@ body {
 --------------------------------------------------------------------------- */
 
 .page-member {
+  /* The bar joins the board: the same Louveteaux green into charter blue,
+     taken down until white navigation type is comfortable. The fill is a
+     gradient because base.html paints it with `background`, not
+     `background-color`; the dimming stays as the guarantee behind the glass. */
+  --site-navbar-fill: linear-gradient(
+    110deg,
+    rgba(41, 111, 82, 0.94) 0%,
+    rgba(24, 68, 88, 0.94) 52%,
+    rgba(10, 66, 117, 0.94) 100%
+  );
+  --site-navbar-backdrop: blur(14px) brightness(0.82);
   background-color: #f2f5f8;
   background-image:
     radial-gradient(
@@ -1454,6 +1465,68 @@ body {
 .page-member ::selection {
   background-color: color-mix(in srgb, #00a0de 24%, transparent);
   color: #0a4275;
+}
+
+/* The account chip is the one control on the bar, so it takes the board's two
+   colours rather than the theme's teal: pale green-to-blue paper with the
+   charter ink. The dropdown opens on white, the surface every other menu in
+   the product uses, so the account does not flash a third colour. The theme
+   sets these properties outright, hence the `!important` the navbar's own
+   login chip already needs (see the hardening block below). */
+.page-member .navbar .btn-info {
+  background-color: #eaf4ef;
+  background-image: linear-gradient(110deg, #e9f4ee, #e7f0f8);
+  border-color: transparent;
+  color: #0a4275 !important;
+  font-weight: 700;
+}
+
+.page-member .navbar .btn-info:hover,
+.page-member .navbar .btn-info:focus-visible,
+.page-member .navbar .btn-info:active {
+  background-color: #dceee4;
+  background-image: linear-gradient(110deg, #dceee4, #dae9f5);
+  border-color: transparent;
+  color: #0a4275 !important;
+}
+
+.page-member .navbar .btn-info.dropdown-toggle-split {
+  border-left: 1px solid rgba(10, 66, 117, 0.16);
+}
+
+.page-member .navbar .btn-info:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+.page-member .navbar .dropdown-menu.bg-info {
+  background-color: #fff !important;
+  background-image: none;
+  border-color: rgba(10, 66, 117, 0.15);
+}
+
+.page-member .navbar .dropdown-menu.bg-info .dropdown-item {
+  color: #0a4275;
+}
+
+.page-member .navbar .dropdown-menu.bg-info .dropdown-item:hover,
+.page-member .navbar .dropdown-menu.bg-info .dropdown-item:focus {
+  background-color: #eef5f1;
+  color: #0a4275;
+}
+
+.page-member .navbar .dropdown-menu.bg-info .dropdown-divider {
+  border-color: rgba(10, 66, 117, 0.12);
+}
+
+/* The collapsed menu is a panel, not the glass (base.html's own rule): on the
+   board it keeps the bar's gradient so the account does not open onto navy. */
+@media (max-width: 767.98px) {
+  .page-member .navbar-collapse {
+    background-color: #1a4437;
+    background-image: var(--site-navbar-fill);
+  }
 }
 
 .member-page {

@@ -118,9 +118,20 @@ remains the brief; these are the values and behaviours the build settled on.
   person tile.
 - **One section.** An animateur leads exactly one section, so `_member_context`
   takes the first section the reader can edit and the page renders one section
-  panel; the tools group is titled "Your section" in the singular. A second
-  enrolment is data a real troop cannot have and must not grow a second panel.
-  The agenda tools still reach every section the reader may read.
+  panel; the tools group is titled "Your section" in the singular, and the
+  head's summary line carries no section count — the tile below already says
+  which. The child count stays, because a family's number is not obvious from
+  the board. A second enrolment is data a real troop cannot have and must not
+  grow a second panel. The agenda tools still reach every section the reader may
+  read.
+- **Bar and account chip.** `.page-member` restates the navbar's two variables:
+  a 110° fill from Louveteaux green through a slate midpoint to charter blue
+  (all stops at 94%), dimmed at `brightness(0.82)`, so the bar reads as the
+  board's own glass. The account chip drops the theme's teal for a pale
+  green-to-blue paper (`#e9f4ee` → `#e7f0f8`, hover `#dceee4` → `#dae9f5`) with
+  charter ink at 700; its dropdown is white with ink items, and the collapsed
+  menu keeps the bar's gradient. The public page's `.page-home` bar is
+  untouched.
 - **Type.** The surface title uses `clamp(2rem, 3.4vw, 2.75rem)` in Source Serif
   4; panel names 1.75rem; the balance `clamp(2.5rem, 4.6vw, 3.25rem)`; a
   section's member count 2rem; a date leaf's day 1.875rem. Board numerals use

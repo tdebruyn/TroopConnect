@@ -23,9 +23,12 @@
                 {% if member_first_name %}
                     <span class="member-hello">{% blocktranslate with name=member_first_name %}Hello {{ name }}.{% endblocktranslate %}</span>
                 {% endif %}
-                {% if member_sections %}
-                    {% blocktranslate count counter=member_sections %}{{ counter }} section you answer for.{% plural %}{{ counter }} sections you answer for.{% endblocktranslate %}
-                {% endif %}
+                {% comment %}
+                    No section count: an animateur leads exactly one, so "1
+                    section" under the section tile says nothing. The child
+                    count stays, because a family's number is not obvious from
+                    the board alone.
+                {% endcomment %}
                 {% if member_children %}
                     {% blocktranslate count counter=member_children %}{{ counter }} child linked to your account.{% plural %}{{ counter }} children linked to your account.{% endblocktranslate %}
                 {% endif %}

@@ -880,9 +880,9 @@ def _member_context(user):
     return {
         "member_panels": panels,
         "member_tools": _member_tools(user, person, readable, children, leads),
-        # A reader who answers for sections gets the unit's heading whether or
-        # not they also have children: "Your children" over a list of sections
-        # would be a lie, and a leader with no section yet is still a leader.
+        # A reader who leads gets the unit's heading whether or not they also
+        # have children: "Your children" over a section tile would be a lie,
+        # and a leader with no section yet is still a leader.
         "member_heading": _("Your unit") if leads else _("Your children"),
         # The greeting is the reader's own name, not a label over the heading:
         # the head reads "Vos enfants" then "Bonjour Marc. 3 enfants…" because
@@ -890,7 +890,6 @@ def _member_context(user):
         # that says so costs one line it already has room for.
         "member_first_name": person.first_name,
         "member_children": sum(1 for panel in panels if panel["kind"] == "child"),
-        "member_sections": len(led),
         # The empty state explains an empty account to a family. A reader whose
         # page is their tools is not missing anything, so it is not shown to
         # them — it would tell an administrator their unit is not attached.
