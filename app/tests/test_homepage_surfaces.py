@@ -467,29 +467,19 @@ class TimelineTest(TroopSettingsTestCase):
             camps["width"], 8 / total * 100, places=2
         )  # the 18th through the 25th
 
-    def test_month_ticks_sit_at_their_months_midpoints(self):
+    def test_month_ticks_sit_on_the_first_of_the_month(self):
         months = self.timeline()["months"]
         axis_start, axis_end = axis_for(self.inscription.start_date)
         total = (axis_end - axis_start).days
-
-        def midpoint(month, next_month):
-            return (
-                (month - axis_start).days
-                + (next_month - month).days / 2
-            ) / total * 100
-
         year = self.school_year.name
         self.assertEqual([month["label"] for month in months], [
             "sept", "oct", "nov", "déc", "janv", "févr",
             "mars", "avr", "mai", "juin", "juil",
         ])
-        self.assertAlmostEqual(
-            months[0]["at"], midpoint(date(year, 9, 1), date(year, 10, 1)),
-            places=2,
-        )
+        self.assertEqual(months[0]["at"], 0)
         self.assertAlmostEqual(
             months[5]["at"],
-            midpoint(date(year + 1, 2, 1), date(year + 1, 3, 1)),
+            (date(year + 1, 2, 1) - axis_start).days / total * 100,
             places=2,
         )
 

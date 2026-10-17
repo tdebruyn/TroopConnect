@@ -401,6 +401,16 @@ header.masthead .card .hero-timeline__month::before {
   background: rgba(255, 255, 255, 0.6);
 }
 
+/* The first tick is the axis's own start, so its label runs right from the
+   edge instead of hanging half its width outside the card. */
+header.masthead .card .hero-timeline__month--start {
+  transform: none;
+}
+
+header.masthead .card .hero-timeline__month--start::before {
+  left: 0;
+}
+
 header.masthead .card .hero-timeline__note {
   margin: 0.5rem 0 0;
   font-size: 0.75rem;

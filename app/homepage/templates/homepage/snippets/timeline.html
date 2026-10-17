@@ -20,7 +20,8 @@
         </ol>
         <div class="hero-timeline__axis" aria-hidden="true">
             {% for month in timeline.months %}
-                <span class="hero-timeline__month" style="--at: {{ month.at|unlocalize }}%">{{ month.label }}</span>
+                <span class="hero-timeline__month{% if forloop.first %} hero-timeline__month--start{% endif %}"
+                      style="--at: {{ month.at|unlocalize }}%">{{ month.label }}</span>
             {% endfor %}
         </div>
     </div>

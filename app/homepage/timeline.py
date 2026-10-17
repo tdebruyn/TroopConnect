@@ -73,14 +73,22 @@ def _axis(school_year):
 
 
 def _months(start, end, total_days):
-    """One tick per month, placed at the month's true midpoint."""
+    """One tick per month, placed on the month's first day.
+
+    A tick marks where a month begins, so an activity is read against the
+    label of the month it falls in: an early-month date sits just right of
+    its own month, not to the left of a midpoint tick in the previous half.
+    """
     months = []
     cursor = start
     while cursor < end:
         next_month = (cursor.replace(day=28) + timedelta(days=4)).replace(day=1)
-        middle = (cursor - start).days + (next_month - cursor).days / 2
-        months.append({"label": _month(cursor.month)[0],
-                       "at": round(middle / total_days * 100, 3)})
+        months.append(
+            {
+                "label": _month(cursor.month)[0],
+                "at": round((cursor - start).days / total_days * 100, 3),
+            }
+        )
         cursor = next_month
     return months
 

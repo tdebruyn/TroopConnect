@@ -653,13 +653,12 @@ slot; the view fills it for the current school year, so the page and the
 activity list cannot hold two versions of the same dates.
 
 - **The axis is the calendar; the activity is the marker.** A 1px white rule
-  runs across the eleven months, each with a 1px × 6px tick at its *true*
-  midpoint (a month's real days, not one eleventh of the axis) and a lowercase
-  name at the Fact label step. A one-day activity is a filled 7px dot at its
-  start date's day fraction; a multi-day activity is the same line made 3px
-  thick, from its first day to its last inclusive. Both are placed by `--at`,
-  a percentage of the real date span, and the bar's `--w` is its inclusive
-  width.
+  runs across the eleven months, each with a 1px × 6px tick on its first day
+  and a lowercase name at the Fact label step, so an activity reads against the
+  month it falls in. A one-day activity is a filled 7px dot at its start date's
+  day fraction; a multi-day activity is the same line made 3px thick, from its
+  first day to its last inclusive. Both are placed by `--at`, a percentage of
+  the real date span, and the bar's `--w` is its inclusive width.
 - **No day is ever named in the text.** The label names the activity and, to a
   screen reader, its month; the exact day is read from the marker's position.
   This is the one place the system states a time by placing it rather than
