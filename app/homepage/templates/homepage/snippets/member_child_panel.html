@@ -85,7 +85,10 @@
                 {% trans "Messages" %}
             </a>
         {% endif %}
-        <a class="btn btn-outline-primary btn-sm" href="{% url 'members:edit_child' pk=panel.person.pk %}">
+        <a class="btn btn-outline-primary btn-sm"
+           href="{% url 'members:edit_child' pk=panel.person.pk %}"
+           hx-get="{% url 'members:edit_child' pk=panel.person.pk %}"
+           hx-target="#dialog">
             {% trans "Edit details" %}
         </a>
     </footer>

@@ -149,14 +149,17 @@
     var selectedValue = el ? el.value : "";
     var childadd = document.getElementById("child-add");
     var secondaryRoleContainer = document.getElementById("secondary-role-container");
+    var totem = document.getElementById("totem");
+    // A locked role prints the badge instead of the radio group, so the
+    // elements this function toggles are not on the page for every reader.
     if (selectedValue === "p") {
-      childadd.classList.remove("d-none");
-      secondaryRoleContainer.classList.remove("d-none");
-      totem.classList.add("d-none");
+      if (childadd) childadd.classList.remove("d-none");
+      if (secondaryRoleContainer) secondaryRoleContainer.classList.remove("d-none");
+      if (totem) totem.classList.add("d-none");
     } else {
-      childadd.classList.add("d-none");
-      secondaryRoleContainer.classList.add("d-none");
-      totem.classList.remove("d-none");
+      if (childadd) childadd.classList.add("d-none");
+      if (secondaryRoleContainer) secondaryRoleContainer.classList.add("d-none");
+      if (totem) totem.classList.remove("d-none");
     }
   }
 

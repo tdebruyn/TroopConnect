@@ -662,14 +662,29 @@ def _member_tools(user, person, sections, children, leads):
     parent_items = []
     if module_enabled(modules.AGENDA):
         parent_items.append(
-            (_("Agenda"), reverse("members:agenda"), "calendar3")
+            (_("Agenda"), reverse("members:agenda"), "calendar3", False)
         )
     # No entry for the children list itself: `members:child_list` renders an
     # HTMX fragment and answers 400 to a plain request, and the panels above
     # are that list anyway.
+    #
+    # The two add tools render modal fragments too, so the tile opens the
+    # system's one dialog rather than navigating to a page that is only the
+    # inside of one. The fourth item is that flag; a fixed-length tuple keeps
+    # the template's unpacking simple.
     parent_items += [
-        (_("Add a child"), reverse("members:add_new_child"), "person-plus"),
-        (_("Link a child with a key"), reverse("members:add_key_child"), "key"),
+        (
+            _("Add a child"),
+            reverse("members:add_new_child"),
+            "person-plus",
+            True,
+        ),
+        (
+            _("Link a child with a key"),
+            reverse("members:add_key_child"),
+            "key",
+            True,
+        ),
     ]
     if person is not None and (children or has_primary_role(user, (PARENT,))):
         groups.append(
@@ -685,11 +700,12 @@ def _member_tools(user, person, sections, children, leads):
         section_items = []
         if can_access_messaging(user):
             section_items += [
-                (_("Send a message"), reverse("messaging:compose"), "send"),
+                (_("Send a message"), reverse("messaging:compose"), "send", False),
                 (
                     _("Message history"),
                     reverse("messaging:animateur_history"),
                     "chat-left-text",
+                    False,
                 ),
             ]
         if module_enabled(modules.AGENDA):
@@ -698,6 +714,7 @@ def _member_tools(user, person, sections, children, leads):
                     _("Section agendas"),
                     reverse("members:agenda"),
                     "calendar-week",
+                    False,
                 )
             )
         if section_items:
@@ -724,19 +741,36 @@ def _member_tools(user, person, sections, children, leads):
                 _("Member management"),
                 reverse("members:admin_list"),
                 "people",
+                False,
             ),
-            (_("Section passage"), reverse("members:passage"), "arrow-left-right"),
+            (
+                _("Section passage"),
+                reverse("members:passage"),
+                "arrow-left-right",
+                False,
+            ),
             (
                 _("Import and export"),
                 reverse("members:member_import"),
                 "arrow-down-up",
+                False,
             ),
-            (_("Settings"), reverse("members:troop_settings"), "sliders2"),
-            (_("Email queue"), reverse("members:mail_queue"), "envelope"),
+            (
+                _("Settings"),
+                reverse("members:troop_settings"),
+                "sliders2",
+                False,
+            ),
+            (
+                _("Email queue"),
+                reverse("members:mail_queue"),
+                "envelope",
+                False,
+            ),
         ]
     if can_access_finance(user) and module_enabled(modules.FEES):
         unit_items.append(
-            (_("Membership fees"), reverse("finance:billing"), "cash-coin")
+            (_("Membership fees"), reverse("finance:billing"), "cash-coin", False)
         )
     if can_manage_unit(user) and module_enabled(modules.SIGNING):
         unit_items.append(
@@ -744,8 +778,27 @@ def _member_tools(user, person, sections, children, leads):
                 _("Attestations"),
                 reverse("attestations:index"),
                 "file-earmark-check",
+                False,
             )
         )
+    # These were the header dropdown's only copy. The account menu is now the
+    # way out alone, so the board has to carry them or a superuser loses the
+    # editor and the admin entirely.
+    if user.is_superuser:
+        unit_items += [
+            (
+                _("Edit homepage"),
+                reverse("homepage_editor"),
+                "pencil-square",
+                False,
+            ),
+            (
+                _("Site administration"),
+                reverse("admin:index"),
+                "gear",
+                False,
+            ),
+        ]
     if unit_items:
         groups.append(
             {
@@ -766,8 +819,14 @@ def _member_tools(user, person, sections, children, leads):
                     _("My profile"),
                     reverse("members:profile", kwargs={"pk": user.pk}),
                     "person-circle",
+                    False,
                 ),
-                (_("My documents"), reverse("members:documents"), "folder2-open"),
+                (
+                    _("My documents"),
+                    reverse("members:documents"),
+                    "folder2-open",
+                    False,
+                ),
             ],
         }
     )
@@ -777,8 +836,8 @@ def _member_tools(user, person, sections, children, leads):
             "title": _("The unit's page"),
             "kind": "site",
             "items": [
-                (_("Our unit"), reverse("unit_page"), "house-door"),
-                (_("FAQ"), reverse("faq"), "question-circle"),
+                (_("Our unit"), reverse("unit_page"), "house-door", False),
+                (_("FAQ"), reverse("faq"), "question-circle", False),
             ],
         }
     )

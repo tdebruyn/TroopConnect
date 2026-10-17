@@ -1,10 +1,13 @@
-{% extends "base.html" %}
+{% extends "members/base.html" %}
 {% load i18n %}
-{% block content %}
-<div class="container mt-4">
-    <h2>{% trans "Important documents" %}</h2>
+{% block hat_title %}
+    {% trans "Important documents" %}
+{% endblock hat_title %}
+{% block hat_text %}
+{% endblock hat_text %}
+{% block subcontent %}
     {% if documents %}
-    <div class="list-group mt-3">
+    <div class="list-group">
         {% for doc in documents %}
         <div class="list-group-item">
             <h5 class="mb-1">{{ doc.title }}</h5>
@@ -17,7 +20,6 @@
         {% endfor %}
     </div>
     {% else %}
-    <p class="mt-3">{% trans "No documents available." %}</p>
+    <p>{% trans "No documents available." %}</p>
     {% endif %}
-</div>
-{% endblock %}
+{% endblock subcontent %}

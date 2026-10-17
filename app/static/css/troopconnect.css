@@ -1302,14 +1302,15 @@ body {
    and no border.
 --------------------------------------------------------------------------- */
 
-/* A full-bleed band in the page's warm step. The page changes ground between
-   the desk and the footer so the eye is told a section ended, and the warm step
-   is `charter-orange` laid into the page's own paper — a second section colour
-   and not a second brand colour. The band runs edge to edge, like the hero:
-   a section that changes colour and stops at the container's edge reads as a
-   box, not as a section. */
+/* A full-bleed band on the same ground as the desk above it. The two are the
+   visitor's half of the page — the question and the place to turn up — so they
+   share one light rather than telling the eye the page changed hands in the
+   middle of one answer. The white card alone separates the address from the
+   branch strip, which is the object the reader is meant to see. The band runs
+   edge to edge, like the hero: a section that changes ground and stops at the
+   container's edge reads as a box, not as a section. */
 .place {
-  background-color: color-mix(in srgb, #ef7b00 6%, #f2f5f8);
+  background-color: var(--home-ground);
   padding: 2.5rem 0 2.75rem;
 }
 
@@ -1382,7 +1383,9 @@ body {
 .place-address {
   margin: 0.25rem 0 0;
   line-height: 1.5;
-  color: #5d666e;
+  /* The third muted rung, not the second: the address now sits on the home
+     ground, where the rung measured for `paper` falls to 4.59:1. */
+  color: #515a63;
 }
 
 .place-directions {
@@ -1488,10 +1491,6 @@ body {
   background-image: linear-gradient(110deg, #dceee4, #dae9f5);
   border-color: transparent;
   color: #0a4275 !important;
-}
-
-.page-member .navbar .btn-info.dropdown-toggle-split {
-  border-left: 1px solid rgba(10, 66, 117, 0.16);
 }
 
 .page-member .navbar .btn-info:focus-visible {

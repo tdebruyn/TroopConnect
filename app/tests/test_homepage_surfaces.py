@@ -803,7 +803,7 @@ class MemberHomepageTest(DeskTestBase):
             sections = list(visible_sections(account))
             leads = can_manage_unit(account) or has_primary_role(account, ANIMATEUR_ROLES)
             for group in _member_tools(account, person, sections, children, leads):
-                for label, url, _icon in group["items"]:
+                for label, url, _icon, _modal in group["items"]:
                     with self.subTest(role=role, tool=label):
                         self.client.force_login(account)
                         self.assertEqual(

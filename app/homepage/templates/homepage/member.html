@@ -120,9 +120,11 @@
                              {% if group.featured %}data-lead="true"{% endif %}>
                             <h3 class="member-tools-group-title">{{ group.title }}</h3>
                             <ul class="member-tools-list">
-                                {% for label, url, icon in group.items %}
+                                {% for label, url, icon, modal in group.items %}
                                     <li{% if forloop.first and group.featured and not member_dues %} class="member-tool-slot-anchor"{% endif %}>
-                                        <a class="member-tool" href="{{ url }}">
+                                        <a class="member-tool"
+                                           href="{{ url }}"
+                                           {% if modal %}hx-get="{{ url }}" hx-target="#dialog"{% endif %}>
                                             <span class="member-tool-icon"><i class="bi bi-{{ icon }}" aria-hidden="true"></i></span>
                                             <span class="member-tool-label">{{ label }}</span>
                                             <i class="bi bi-arrow-up-right member-tool-arrow" aria-hidden="true"></i>

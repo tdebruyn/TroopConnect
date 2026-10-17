@@ -255,10 +255,11 @@ federation's; none was chosen by this project.
   Fields are not white — they sit on the page as slightly darker wells defined by
   their border. This is the single most distinctive thing about the form layer.
 - **Home Ground** (#dde5ec, `color-mix(in srgb, #0a4275 9%, #f2f5f8)`): The
-  ground the desk's section is laid on, so the section reads as a band of the
-  page rather than as the page. It is *derived* rather than picked, so it moves
-  with the ink it is mixed from, and it exists only on `/` — no members page ever
-  sees it. It is also the base the four branch rooms are mixed into, which makes
+  ground the desk's section and the "where to find us" band are laid on, so the
+  visitor's half of the public page reads as one field rather than two sections
+  cut in different colours. It is *derived* rather than picked, so it moves with
+  the ink it is mixed from, and it exists only on `/` — no members page ever sees
+  it. It is also the base the four branch rooms are mixed into, which makes
   those rooms darker than they would be on bare `paper`; the `muted-on-field`
   rung was re-measured against that and moved a step down, and every ink in
   `BRANCH_INKS` is measured against it.
@@ -271,11 +272,6 @@ federation's; none was chosen by this project.
 - **Section Green** (#304a3c): Charter-green-deep itself, at label size for a
   section's eyebrow, for the rule the page draws down the left of a statement it
   wants read as a statement, and as the ground of both doors on the page.
-- **Warm Paper** (`color-mix(in srgb, #ef7b00 6%, #f2f5f8)`): The page's own
-  paper warmed with the charter's ochre, and the ground of the "where to find us"
-  band. A second *section* colour and not a second brand colour: the page changes
-  ground between sections so the eye is told one ended, and it changes it inside
-  the federation's palette.
 - **White** (#ffffff): Cards, dropdowns, modals, the navbar's overlay surfaces,
   and every person and tool tile on the member board. Nothing else is white.
 - **Border** (#dee2e6): Structural lines — wizard branches, the agenda grid,
@@ -827,11 +823,15 @@ Nothing about a button is custom.
   theme's default for the signed-in user's chip, and stays the teal one
   everywhere except the member page. There (`.page-member .navbar .btn-info`)
   the chip is pale green-to-blue paper — a 110° `#e9f4ee` → `#e7f0f8` gradient
-  with the charter ink at 700, a 16% ink rule at the split, and a 2px white
-  focus outline; hover steps the paper down to `#dceee4` → `#dae9f5`. Its
-  `.bg-info` dropdown is white with ink items, so the account does not flash a
-  third colour over the board. The theme's teal chip remains the only saturated
-  fill in the system that takes dark text.
+  with the charter ink at 700 and a 2px white focus outline; hover steps the
+  paper down to `#dceee4` → `#dae9f5`. Its `.bg-info` dropdown is white with
+  ink items, so the account does not flash a third colour over the board. The
+  theme's teal chip remains the only saturated fill in the system that takes
+  dark text.
+- **The account menu holds one door.** The signed-in reader's tools are on the
+  page at `/`, so the chip opens a menu with only "Log out": profile, documents
+  and staff destinations are tiles on the board, and a second copy in the header
+  is a link to keep honest twice.
 - **Hover / Focus:** Hover darkens the fill (primary → #093863) or floods an
   outline button with its own colour and flips the text to white. Focus is
   Bootstrap's ring, tinted with the charter blue — `0 0 0 .25rem rgba(10, 66, 117, .25)`.
@@ -1033,10 +1033,12 @@ Where the unit meets, under the desk and the other half of the same answer: one
 raised surface holding the hall, the address, a directions link and — when the
 troop uploaded one — its own picture of a map.
 
-- **It is a full-bleed band, in the page's warm step.** The ground changes edge
-  to edge between the desk and the footer, so the eye is told a section ended; a
-  band that changed colour and stopped at the container's edge would read as a
-  box rather than as a section.
+- **It is a full-bleed band on the desk's own ground.** The desk and the place
+  are the visitor's half of the page — the question and the place to turn up —
+  so they share one light rather than telling the eye the page changed hands in
+  the middle of one answer. The white card is what separates the address from
+  the branch strip. The band runs edge to edge so the card sits on a field
+  rather than in a box.
 - **It carries an eyebrow and the troop's own name for its hall.** The label says
   what the section is; the heading is whatever the troop called the place, which
   is the whole point of the setting, at display size. A unit that has not named it
