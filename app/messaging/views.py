@@ -541,6 +541,9 @@ def animateur_history(request):
             "message": msg,
             "total": msg.total_recipients,
             "sent": msg.sent_recipients,
+            # Sent and ignored partition the recipients; the tile prints only
+            # the non-zero count.
+            "ignored": msg.total_recipients - msg.sent_recipients,
         }
         for msg in sent_messages
     ]

@@ -5,18 +5,22 @@
     {% blocktranslate with first_name=child.first_name %}Confirm that you want to remove {{ first_name }}{% endblocktranslate %}
 {% endblock hat_title %}
 {% block subcontent %}
-    {% if not allow_remove %}
-        {{ message | linebreaks }}
-        <a class="btn btn-primary" href="{% url 'members:profile' user.id %}">{% trans "Back" %}</a>
-    {% else %}
-        <p>
-            {% blocktranslate with first_name=child.first_name %}This will permanently delete {{ first_name }} and their account. This cannot be undone.{% endblocktranslate %}
-        </p>
-        <div class="container">
-            <a class="btn btn-danger me-1"
-               href="{% url 'members:remove_child_confirm' child.pk %}">{% trans "Remove" %}</a>
-            <a class="btn btn-outline-primary"
-               href="{% url 'members:profile' user.id %}">{% trans "Cancel" %}</a>
-        </div>
-    {% endif %}
+    <div class="confirm-card">
+        {% if not allow_remove %}
+            {{ message | linebreaks }}
+            <div class="confirm-actions">
+                <a class="btn btn-outline-primary" href="{% url 'members:profile' user.id %}">{% trans "Back" %}</a>
+            </div>
+        {% else %}
+            <p>
+                {% blocktranslate with first_name=child.first_name %}This will permanently delete {{ first_name }} and their account. This cannot be undone.{% endblocktranslate %}
+            </p>
+            <div class="confirm-actions">
+                <a class="btn btn-outline-danger"
+                   href="{% url 'members:remove_child_confirm' child.pk %}">{% trans "Remove" %}</a>
+                <a class="btn btn-outline-primary"
+                   href="{% url 'members:profile' user.id %}">{% trans "Cancel" %}</a>
+            </div>
+        {% endif %}
+    </div>
 {% endblock subcontent %}

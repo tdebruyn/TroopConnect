@@ -2189,6 +2189,334 @@ body {
 }
 
 /* ---------------------------------------------------------------------------
+   The reader's lists: message history and the documents page.
+
+   These pages list the unit's own things, so they borrow the board's objects
+   rather than a striped table: a white tile with one soft charter-blue shadow,
+   a date leaf for the thing a parent scans first, and the display serif for the
+   name of the thing — a message's subject or a document's title. Tables stay
+   where the reader is staff and the density is the point.
+--------------------------------------------------------------------------- */
+
+.message-list,
+.document-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.message-tile,
+.document-tile {
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+  padding: 1.25rem 1.5rem;
+  background-color: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 0.4rem 1.25rem rgba(10, 66, 117, 0.06);
+  color: #0a4275;
+}
+
+a.message-tile {
+  text-decoration: none;
+  transition: transform 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+a.message-tile:hover,
+a.message-tile:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 0.75rem 1.75rem rgba(10, 66, 117, 0.12);
+}
+
+a.message-tile:focus-visible {
+  outline: 2px solid #0a4275;
+  outline-offset: 2px;
+}
+
+.message-date {
+  flex: none;
+  width: 3.75rem;
+  padding: 0.45rem 0 0.35rem;
+  border-radius: 0.875rem;
+  background-color: color-mix(in srgb, #296f52 9%, #fff);
+  text-align: center;
+}
+
+.message-date-day {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.875rem;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.message-date-month {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.6875rem;
+  line-height: 1.2;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #515a63;
+}
+
+.message-main,
+.document-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.message-subject,
+.document-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.message-meta,
+.document-desc {
+  margin: 0.4rem 0 0;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: #515a63;
+  overflow-wrap: anywhere;
+}
+
+.message-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.6rem;
+}
+
+.message-meta-sep {
+  color: #809aaf;
+}
+
+/* Status is a label, not the page's colour: success stays a tinted green and
+   ignored a neutral, so a recipient list does not read as a wall of badges. */
+.message-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--site-pill);
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.message-status-sent {
+  background-color: color-mix(in srgb, #95c11f 20%, #fff);
+  color: #304a3c;
+}
+
+.message-status-ignored {
+  background-color: #eceff2;
+  color: #515a63;
+}
+
+.message-open {
+  flex: none;
+  align-self: center;
+  margin-left: 0.5rem;
+  color: #0a4275;
+  opacity: 0.4;
+  transition: opacity 0.15s ease-in-out, transform 0.15s ease-in-out;
+}
+
+a.message-tile:hover .message-open,
+a.message-tile:focus-visible .message-open {
+  opacity: 1;
+  transform: translateX(2px);
+}
+
+.document-tile {
+  align-items: center;
+}
+
+.document-icon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.75rem;
+  background-color: rgba(10, 66, 117, 0.07);
+  font-size: 1.05rem;
+}
+
+.document-actions {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.list-empty {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  background-color: #fff;
+  box-shadow: 0 0.4rem 1.25rem rgba(10, 66, 117, 0.06);
+  color: #515a63;
+}
+
+.list-empty-icon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.75rem;
+  background-color: rgba(10, 66, 117, 0.07);
+  color: #0a4275;
+  font-size: 1.05rem;
+}
+
+.list-empty-text {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+/* The message detail: one white sheet for the message, one for the people it
+   went to. The body takes a reading measure and a little more leading than the
+   board's labels, because this is the one place the message is read rather
+   than scanned. */
+.message-sheet {
+  padding: 1.5rem;
+  border-radius: 1.25rem;
+  background-color: #fff;
+  box-shadow: 0 0.5rem 1.5rem rgba(10, 66, 117, 0.07);
+}
+
+.message-sheet + .message-sheet {
+  margin-top: 1rem;
+}
+
+.message-sender {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.message-avatar {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.875rem;
+  background-color: color-mix(in srgb, #00a0de 13%, #fff);
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.message-sender-name {
+  margin: 0;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.message-content {
+  max-width: 68ch;
+  margin: 1.25rem 0 0;
+  line-height: 1.65;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.message-sheet-title {
+  margin: 1.5rem 0 0.75rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.message-attachments {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.message-attachment {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.6rem 0.85rem;
+  border-radius: 0.5rem;
+  background-color: #f2f5f8;
+}
+
+.message-attachment a {
+  overflow-wrap: anywhere;
+}
+
+.message-recipients-table {
+  margin-bottom: 0;
+}
+
+/* A confirmation is one decision, so it gets one tile rather than the theme's
+   bare flow. Every action that removes something is an outline: the system
+   never fills one. */
+.confirm-card {
+  max-width: 60rem;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  background-color: #fff;
+  box-shadow: 0 0.4rem 1.25rem rgba(10, 66, 117, 0.06);
+}
+
+.confirm-card > :last-child {
+  margin-bottom: 0;
+}
+
+.confirm-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+}
+
+@media (max-width: 575.98px) {
+  .message-tile,
+  .document-tile {
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .document-tile {
+    flex-wrap: wrap;
+  }
+
+  .document-actions {
+    width: 100%;
+    padding-left: 3.25rem;
+  }
+
+  .message-open {
+    display: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
    Hardening: the input this UI does not get to choose.
 
    A person's name may be 150 characters and an activity's title 200, and both
@@ -2312,6 +2640,21 @@ body {
 
   .member-tool:hover .member-tool-arrow,
   .member-tool:focus-visible .member-tool-arrow {
+    transform: none;
+  }
+
+  a.message-tile,
+  .message-open {
+    transition: none;
+  }
+
+  a.message-tile:hover,
+  a.message-tile:focus-visible {
+    transform: none;
+  }
+
+  a.message-tile:hover .message-open,
+  a.message-tile:focus-visible .message-open {
     transform: none;
   }
 }

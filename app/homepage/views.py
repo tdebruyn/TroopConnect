@@ -781,9 +781,8 @@ def _member_tools(user, person, sections, children, leads):
                 False,
             )
         )
-    # These were the header dropdown's only copy. The account menu is now the
-    # way out alone, so the board has to carry them or a superuser loses the
-    # editor and the admin entirely.
+    # The account menu is the way out alone, so the board carries the editor
+    # and the admin; without these tiles a superuser has no link to either.
     if user.is_superuser:
         unit_items += [
             (

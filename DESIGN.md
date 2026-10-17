@@ -1194,6 +1194,27 @@ nobody scans.
   span say which action leads; the dark gradient is spent only when the tile is
   the page's one dark note, so the page never has two competing anchors.
 
+### The reader's lists
+
+The pages reached from the board — a section's message history, the sent
+messages, the documents page — are lists of the unit's own things, so they use
+the board's objects rather than the theme's striped table. Each entry is a
+white tile at 1rem radius with the same soft charter-blue shadow as the tools: a
+date leaf at 9% Louveteaux green for a message (the thing a parent scans first),
+the subject in the display serif at the Title step, and the sender and time in
+the muted-on-field voice. A document swaps the leaf for a 2.25rem icon square.
+
+The tiles are plain list items, not rows: a message the reader may open is a
+whole-tile link with the board's 2px ink focus outline, and one they may not is
+a div, so no row pretends to be clickable. The empty state is the same white
+tile with an icon and one sentence, never an empty striped row.
+
+The message detail turns the list inside out: one sheet carries the sender, the
+body at a 68ch reading measure and its attachments; a second carries the
+recipient table. A confirmation page is one sheet holding the decision and its
+actions, and a destructive action stays an outline — Deregister, Detach and
+Remove are never filled.
+
 ### Cards / Containers
 - **Corner Style:** 0.25rem, outlined in 12.5% black, no shadow.
 - **Background:** White, or `bg-white` on a header that would otherwise inherit

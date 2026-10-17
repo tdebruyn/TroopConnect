@@ -7,19 +7,29 @@
 {% endblock hat_text %}
 {% block subcontent %}
     {% if documents %}
-    <div class="list-group">
-        {% for doc in documents %}
-        <div class="list-group-item">
-            <h5 class="mb-1">{{ doc.title }}</h5>
-            {% if doc.description %}<p class="mb-1">{{ doc.description }}</p>{% endif %}
-            <small>
-                {% if doc.url %}<a href="{{ doc.url }}" target="_blank">{% trans "Link" %}</a>{% endif %}
-                {% if doc.file %}<a href="{{ doc.file.url }}">{% trans "Download" %}</a>{% endif %}
-            </small>
-        </div>
-        {% endfor %}
-    </div>
+        <ul class="document-list">
+            {% for doc in documents %}
+                <li class="document-tile">
+                    <span class="document-icon" aria-hidden="true"><i class="bi bi-file-earmark-text"></i></span>
+                    <div class="document-main">
+                        <p class="document-title">{{ doc.title }}</p>
+                        {% if doc.description %}<p class="document-desc">{{ doc.description }}</p>{% endif %}
+                    </div>
+                    <div class="document-actions">
+                        {% if doc.url %}
+                            <a class="btn btn-outline-primary btn-sm" href="{{ doc.url }}" target="_blank">{% trans "Link" %}</a>
+                        {% endif %}
+                        {% if doc.file %}
+                            <a class="btn btn-outline-primary btn-sm" href="{{ doc.file.url }}">{% trans "Download" %}</a>
+                        {% endif %}
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
     {% else %}
-    <p>{% trans "No documents available." %}</p>
+        <div class="list-empty">
+            <span class="list-empty-icon" aria-hidden="true"><i class="bi bi-folder2-open"></i></span>
+            <p class="list-empty-text">{% trans "No documents available." %}</p>
+        </div>
     {% endif %}
 {% endblock subcontent %}

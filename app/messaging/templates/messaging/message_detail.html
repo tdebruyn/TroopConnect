@@ -3,69 +3,73 @@
 {% block hat_title %}{{ message.subject }}{% endblock hat_title %}
 {% block hat_text %}{% trans "Message detail" %}{% endblock hat_text %}
 {% block subcontent %}
-    <a href="{% url 'messaging:animateur_history' %}" class="btn btn-secondary mb-3">&larr; {% trans "Back to history" %}</a>
+    <a href="{% url 'messaging:animateur_history' %}" class="btn btn-outline-primary btn-sm mb-4">
+        <i class="bi bi-arrow-left me-1" aria-hidden="true"></i>{% trans "Back to history" %}
+    </a>
 
-    <dl class="row mb-4">
-        <dt class="col-sm-3">{% trans "Date" %}</dt>
-        <dd class="col-sm-9">{{ message.created_at|date:"d/m/Y H:i" }}</dd>
-
-        <dt class="col-sm-3">{% trans "Sender" %}</dt>
-        <dd class="col-sm-9">{{ message.sender.first_name }} {{ message.sender.last_name }}</dd>
-
-        <dt class="col-sm-3">{% trans "Recipients" %}</dt>
-        <dd class="col-sm-9">
-            {% if message.section %}
-                {{ message.section.name }}
-            {% else %}
-                {% trans "All members" %}
-            {% endif %}
-        </dd>
-
-        <dt class="col-sm-3">{% trans "Subject" %}</dt>
-        <dd class="col-sm-9">{{ message.subject }}</dd>
-    </dl>
-
-    <h5>{% trans "Content" %}</h5>
-    <div class="card mb-4">
-        <div class="card-body">
-            <p class="card-text mb-0" style="white-space: pre-wrap;">{{ message.body }}</p>
-        </div>
-    </div>
-
-    {% if message.attachments.all %}
-        <h5>{% trans "Attachments" %}</h5>
-        <ul class="list-group mb-4">
-            {% for attachment in message.attachments.all %}
-                <li class="list-group-item">
-                    <a href="{{ attachment.file.url }}" target="_blank">{{ attachment.original_name }}</a>
-                </li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-
-    <h5>{% trans "Recipients" %} ({{ recipients|length }})</h5>
-    <table class="table table-sm table-striped">
-        <thead>
-            <tr>
-                <th>{% trans "Name" %}</th>
-                <th>{% trans "Email" %}</th>
-                <th>{% trans "Status" %}</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for r in recipients %}
-                <tr>
-                    <td>{{ r.parent.first_name }} {{ r.parent.last_name }}</td>
-                    <td>{{ r.parent.account.email|default:"—" }}</td>
-                    <td>
-                        {% if r.sent_at %}
-                            {% blocktranslate with sent_at=r.sent_at|date:"d/m/Y H:i" %}Sent {{ sent_at }}{% endblocktranslate %}
+    <section class="message-sheet">
+        <header class="message-sender">
+            <span class="message-avatar" aria-hidden="true">{{ message.sender.first_name|first }}{{ message.sender.last_name|first }}</span>
+            <div class="message-main">
+                <p class="message-sender-name">{{ message.sender.first_name }} {{ message.sender.last_name }}</p>
+                <p class="message-meta">
+                    <span>{{ message.created_at|date:"d/m/Y H:i" }}</span>
+                    <span class="message-meta-sep" aria-hidden="true">·</span>
+                    <span>
+                        {% if message.section %}
+                            {{ message.section.name }}
                         {% else %}
-                            <span class="badge bg-secondary">{% trans "Ignored" %}</span>
+                            {% trans "All members" %}
                         {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                    </span>
+                </p>
+            </div>
+        </header>
+
+        <div class="message-content">{{ message.body }}</div>
+
+        {% if message.attachments.all %}
+            <h2 class="message-sheet-title">{% trans "Attachments" %}</h2>
+            <ul class="message-attachments">
+                {% for attachment in message.attachments.all %}
+                    <li class="message-attachment">
+                        <i class="bi bi-paperclip" aria-hidden="true"></i>
+                        <a href="{{ attachment.file.url }}" target="_blank">{{ attachment.original_name }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </section>
+
+    <section class="message-sheet">
+        <h2 class="message-sheet-title">{% trans "Recipients" %} ({{ recipients|length }})</h2>
+        <div class="table-responsive">
+            <table class="table table-sm align-middle message-recipients-table">
+                <thead>
+                    <tr>
+                        <th>{% trans "Name" %}</th>
+                        <th>{% trans "Email" %}</th>
+                        <th>{% trans "Status" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in recipients %}
+                        <tr>
+                            <td>{{ r.parent.first_name }} {{ r.parent.last_name }}</td>
+                            <td>{{ r.parent.account.email|default:"—" }}</td>
+                            <td>
+                                {% if r.sent_at %}
+                                    <span class="message-status message-status-sent">
+                                        {% blocktranslate with sent_at=r.sent_at|date:"d/m/Y H:i" %}Sent {{ sent_at }}{% endblocktranslate %}
+                                    </span>
+                                {% else %}
+                                    <span class="message-status message-status-ignored">{% trans "Ignored" %}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
 {% endblock subcontent %}
