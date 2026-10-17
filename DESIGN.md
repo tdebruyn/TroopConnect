@@ -1041,9 +1041,11 @@ troop uploaded one — its own picture of a map.
 ### The member board
 
 The signed-in homepage is a board of the reader's year, not a form report. Its
-subject follows the role — a parent's children, a leader's sections, the unit's
-tools for staff — but every item keeps the tile shape, so the page is predictable
-whatever the reader answers for. The head is the surface display title over one
+subject follows the role — a parent's children, a leader's single section, the
+unit's tools for staff — but every item keeps the tile shape, so the page is
+predictable whatever the reader answers for. An animateur leads exactly one
+section; the page renders one section panel from the first section the reader
+can edit, even if bad data holds a second. The head is the surface display title over one
 summary line: the reader's name in the ink at 700, then the counts that explain
 the page ("3 children linked to your account", "2 sections you answer for"). The
 greeting is part of the summary because the page is a tool that knows who is

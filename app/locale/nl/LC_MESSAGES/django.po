@@ -3749,6 +3749,9 @@ msgstr "Uw hulpmiddelen"
 msgid "Your sections"
 msgstr "Uw secties"
 
+msgid "Your section"
+msgstr "Uw sectie"
+
 msgid "Your account"
 msgstr "Uw account"
 

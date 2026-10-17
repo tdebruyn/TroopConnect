@@ -703,7 +703,14 @@ def _member_tools(user, person, sections, children, leads):
         if section_items:
             groups.append(
                 {
-                    "title": _("Your sections"),
+                    # An animateur's page is their one section; staff may hold
+                    # several. The title follows the role rather than the list
+                    # length, because the list is only ever longer by mistake.
+                    "title": (
+                        _("Your section")
+                        if has_primary_role(user, ANIMATEUR_ROLES)
+                        else _("Your sections")
+                    ),
                     "items": section_items,
                     "priority": priority("sections"),
                     "kind": "sections",
@@ -791,9 +798,12 @@ def _member_context(user):
     """What a signed-in reader sees on ``/``, by role.
 
     The panel's subject follows the reader — a parent's children, a leader's own
-    sections — while the panel itself stays the same shape, so the page is
-    predictable whatever the role. A reader who is both a parent and a leader
-    gets both groups, children first, rather than one silently winning.
+    section — while the panel itself stays the same shape, so the page is
+    predictable whatever the role. A leader has exactly one section; the query
+    below takes the first even if bad data holds a second, because the page
+    composes that section as a hero rather than a list. A reader who is both a
+    parent and a leader gets both subjects, children first, rather than one
+    silently winning.
 
     A panel is a thing the reader *answers for*, not a thing they may read. That
     is why the unit's staff get no section panels: they can read every agenda,
@@ -816,7 +826,16 @@ def _member_context(user):
     # sections and give every parent a leader's panels.
     leads = can_manage_unit(user) or has_primary_role(user, ANIMATEUR_ROLES)
     readable = list(visible_sections(user)) if leads else []
-    led = [section for section in readable if can_edit_section_agenda(user, section)]
+    # An animateur leads exactly one section; the model can hold more only
+    # through bad data, and the member homepage composes a leader's section as
+    # a single hero tile rather than a list. Taking the first keeps the page
+    # honest instead of growing a second panel from a state that cannot happen.
+    # The agenda tools still reach every section the reader may read.
+    led = [
+        section
+        for section in readable
+        if can_edit_section_agenda(user, section)
+    ][:1]
 
     events = _upcoming_events(
         [child.get_section() for child in children if child.get_section()] + led

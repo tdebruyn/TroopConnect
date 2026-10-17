@@ -3752,6 +3752,9 @@ msgstr "Vos outils"
 msgid "Your sections"
 msgstr "Vos sections"
 
+msgid "Your section"
+msgstr "Votre section"
+
 msgid "Your account"
 msgstr "Votre compte"
 

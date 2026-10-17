@@ -116,6 +116,11 @@ remains the brief; these are the values and behaviours the build settled on.
   identity and attendance in the left column, the next event in the right behind
   a 1px divider, the actions across both feet. Below `lg` it is the stacked
   person tile.
+- **One section.** An animateur leads exactly one section, so `_member_context`
+  takes the first section the reader can edit and the page renders one section
+  panel; the tools group is titled "Your section" in the singular. A second
+  enrolment is data a real troop cannot have and must not grow a second panel.
+  The agenda tools still reach every section the reader may read.
 - **Type.** The surface title uses `clamp(2rem, 3.4vw, 2.75rem)` in Source Serif
   4; panel names 1.75rem; the balance `clamp(2.5rem, 4.6vw, 3.25rem)`; a
   section's member count 2rem; a date leaf's day 1.875rem. Board numerals use
