@@ -50,8 +50,10 @@
                                          src="{% static group.logo %}"
                                          alt="" />
                                 {% endif %}
-                                <span class="desk-segment-name">{{ group.branch.name }}</span>
-                                <span class="desk-segment-ages">{% blocktranslate with min=group.branch.min_age_dec_31 max=group.branch.max_age_dec_31 %}{{ min }} to {{ max }} years{% endblocktranslate %}</span>
+                                <span class="desk-segment-title">
+                                    <span class="desk-segment-name">{{ group.branch.name }}</span>
+                                    <span class="desk-segment-ages">{% blocktranslate with min=group.branch.min_age_dec_31 max=group.branch.max_age_dec_31 %}{{ min }} to {{ max }} years{% endblocktranslate %}</span>
+                                </span>
                             </p>
                             <div class="desk-years" role="group"
                                  aria-label="{% blocktranslate with branch=group.branch.name %}{{ branch }}: year of birth{% endblocktranslate %}">
