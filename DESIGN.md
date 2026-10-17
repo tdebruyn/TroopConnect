@@ -959,9 +959,13 @@ inside one of the four answers would be asked twice.
   value for two of the four branches — see `BRANCH_INKS`. A branch no preset made
   has neither: its room is the page's own ground and its rule is the section's.
 - **The branch's own mark sits beside its name.** The federation's
-  `logo_<Branch>.png` is spent at 1.75rem beside the room's name. A branch no
+  `logo_<Branch>.png` is spent at 2.625rem beside the room's name. A branch no
   preset made has no mark and keeps its words alone — the same rule as its
   colour and its topping.
+- **The years sit on one line across the strip.** The rooms share their height
+  and each year row takes the spare height, so a head that wrapped its ages to a
+  second line does not push its own years below its neighbours'. Stacked, the
+  room has no spare height and the row follows its head at the normal step.
 - **The question sits above the strip, not on it**, in the display face and at
   the largest size on the page. The section is what a parent came for; it is not
   allowed to whisper, and it is not allowed to ask from inside an answer.

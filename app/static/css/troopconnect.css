@@ -942,6 +942,8 @@ body {
 }
 
 .desk-segment {
+  display: flex;
+  flex-direction: column;
   flex: var(--span, 1) 1 0;
   min-width: 0;
   /* The room, in the branch's own colour, laid into the page rather than
@@ -975,6 +977,12 @@ body {
   margin: 0;
 }
 
+/* The rooms sit side by side on one strip, so their years have to start on one
+   line: a head that wrapped its ages to a second line would otherwise push its
+   own years down and break the row. The years take the room's spare height, so
+   every room's block sits at the same floor however its head wrapped; stacked,
+   the room has no spare height and the gap returns to its natural step. */
+
 /* The name and its ages are written in the branch's *ink*. The room states the
    colour at full strength; the words state it at the strength words can be.
    That is not the same value for two of the four branches — see `BRANCH_INKS`,
@@ -991,7 +999,7 @@ body {
 .desk-segment-logo {
   flex: none;
   align-self: center;
-  height: 1.75rem;
+  height: 2.625rem;
   width: auto;
 }
 
@@ -1043,7 +1051,8 @@ body {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  margin-top: 1rem;
+  margin-top: auto;
+  padding-top: 1rem;
 }
 
 .desk-year {
