@@ -3602,10 +3602,10 @@ msgid "This unit has not set up its branches yet."
 msgstr "Cette unité n'a pas encore configuré ses branches."
 
 msgid "Born in %(year)s"
-msgstr "Né en %(year)s"
+msgstr "Naissance : %(year)s"
 
 msgid "Your child would join %(branch)s, the branch for %(min)s to %(max)s year olds."
-msgstr "Votre enfant rejoindrait les %(branch)s, la branche des %(min)s à %(max)s ans."
+msgstr "Votre enfant rejoindrait la branche %(branch)s, celle des %(min)s à %(max)s ans."
 
 msgid "Register my child"
 msgstr "Inscrire mon enfant"

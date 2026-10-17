@@ -66,7 +66,7 @@ except one crimson line where money is overdue.
 **STORY.** The reader sees each person's next commitment and what is outstanding,
 and acts on a row of that panel without leaving the page.
 
-**FIRST VIEWPORT.** The 110px navbar, "Vos enfants" at 34px over a one-line
+**FIRST VIEWPORT.** The 84px navbar, "Vos enfants" at 34px over a one-line
 household summary, a bordered band stating the 45,00 € balance with its Payer
 action, then two panels of labelled fact rows each ending in its own actions.
 

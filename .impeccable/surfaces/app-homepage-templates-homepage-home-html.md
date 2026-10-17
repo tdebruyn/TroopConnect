@@ -54,9 +54,10 @@ fill. One white result band, one primary action, nothing else coloured.
 **STORY.** The visitor sees that this is the unit's enrolment, and believes it is
 for their child because the page names their child's branch — then registers.
 
-**FIRST VIEWPORT.** The 110px navbar, then the unit's own photo band with its
-description card — the troop introducing itself comes first — then the question
-"En quelle année votre enfant est-il né ?" at 48px over two lines, a chip row
+**FIRST VIEWPORT.** The 84px navbar, then the unit's own photo band with its
+description card and its year-line — the troop introducing itself comes first —
+then the question "En quelle année votre enfant est-il né ?" at 48px over two
+lines, a chip row
 with one chip filled, and a white band carrying the named branch with "Inscrire
 mon enfant" at its right. (Corrected by the user after the first build: the desk
 had been placed above the band.)

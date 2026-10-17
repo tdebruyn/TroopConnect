@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n static %}
 {% comment %}
   The desk's answer, alone on purpose: this is the fragment HTMX swaps when a
   year is picked, and the same include renders it on the full page load so the
@@ -18,6 +18,12 @@
 {% if desk_answer %}
     <div class="desk-answer{% if desk_answer.colour %} desk-answer-branch{% endif %}"
          {% if desk_answer.colour %}style="--branch: {{ desk_answer.colour }}{% if desk_answer.ink %}; --branch-ink: {{ desk_answer.ink }}{% endif %}"{% endif %}>
+      {% if desk_answer.topping_image %}
+          {# The federation's mark for this branch, as the sheet's own paper. #}
+          <span class="desk-answer-topping"
+                style="--topping: url('{% static desk_answer.topping_image %}')"
+                aria-hidden="true"></span>
+      {% endif %}
       <div class="desk-answer-paper">
         <div class="desk-answer-text">
             <p class="desk-answer-label">
@@ -29,8 +35,8 @@
                     it is not, which is the whole point of the line: a parent who
                     has never heard of this troop reads one word of it.
                 {% endcomment %}
-                {% blocktranslate with min=desk_answer.min_age max=desk_answer.max_age trimmed %}
-                    Your child would join <span class="desk-answer-name">{{ branch }}</span>, the branch for {{ min }} to {{ max }} year olds.
+                {% blocktranslate with branch=desk_answer.branch_html min=desk_answer.min_age max=desk_answer.max_age trimmed %}
+                    Your child would join {{ branch }}, the branch for {{ min }} to {{ max }} year olds.
                 {% endblocktranslate %}
             </h2>
             {# The scout years, which is what a parent is deciding about. #}
@@ -47,10 +53,6 @@
             </p>
         </div>
         {% include "homepage/snippets/desk_action.html" %}
-        {% if desk_answer.topping %}
-            {# The federation's mark for this branch, cut to a square. #}
-            <span class="desk-answer-mark {{ desk_answer.topping }}" aria-hidden="true"></span>
-        {% endif %}
       </div>
     </div>
 {% else %}

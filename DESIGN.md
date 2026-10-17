@@ -150,7 +150,7 @@ and the logo it uploads.
 - Thin 1px lines and soft 0.25rem corners; depth by border, not by shadow
 - Paper-filled fields on a paper-coloured page, separated by a border and a blue focus halo
 - The homepage's desk standing on the four branches' colours, at the one place the page spends them
-- Two shells: the site (fixed 110px navbar) and the first-run wizard (its own page, same theme)
+- Two shells: the site (fixed 84px navbar) and the first-run wizard (its own page, same theme)
 
 ## Colors
 
@@ -249,9 +249,12 @@ own branch colour.
 They are spent on the homepage, where the branches are the subject, and in five
 strengths of one idea: the desk field's columns at 15%, the rail's 4px rules at
 full, the year chips' rings and fills at full and 32%, and the answer band's
-ground at full. A branch no preset made has no colour and gets none: a made-up
-one would claim a meaning it does not carry, so its rule is the structural line,
-its column is nothing, and its answer band is the plain outlined one.
+ground at full. The answer sheet also carries the branch's coloured topping,
+from the theme's vendored 100px tiles, at 12% as texture behind the sentence.
+A branch no preset made has no colour and gets none: a made-up one would claim a
+meaning it does not carry, so its rule is the structural line, its column is
+nothing, its answer band is the plain outlined one, and it has no topping to
+wear.
 
 The field's 15% is a *veil over the home ground*, not a colour in its own right —
 the tints are mixed with `transparent` and never with `paper` — and that is the
@@ -373,7 +376,7 @@ already shares the body's ink.
 A single Bootstrap 12-column grid inside a `.container`, with two page shells
 sharing it.
 
-**The site shell** is fixed: a 110px navbar (set inline in `base.html`, and
+**The site shell** is fixed: an 84px navbar (set inline in `base.html`, and
 mirrored as `--site-navbar-height` in CSS in **px, not rem**, because the navbar
 itself does not follow the root font size), then an optional banner, then a
 `.container` holding the page.
@@ -393,6 +396,18 @@ it. The two properties are named in `:root` and *applied* by `base.html`
 (`--site-navbar-fill`, `--site-navbar-backdrop`), which is what lets a page
 restate them without a style attribute of its own.
 
+- **The bar is shallow enough to be chrome rather than a header.** 84px with a
+  66px mark leaves the unit's name and the two doors on one line and gives the
+  photograph the rest of the first viewport; the height is stated once inline
+  and once in `--site-navbar-height`, and the band's pull reads the variable so
+  the two can never disagree.
+- **The two doors do not share a jamb.** The filled invitation and its outlined
+  peer are separated by one system step (0.5rem) from `md` up, and by the same
+  step vertically when the menu stacks them on a phone.
+- **The collapsed menu is a panel, not the glass.** Below `md` the menu floats
+  over the page rather than over the bar's backdrop, so it takes an opaque
+  charter fill and rounded bottom corners; white links over a photograph are a
+  contrast accident, not a design.
 - **What is behind the glass is what you see.** A `backdrop-filter` blurs and
   dims the backdrop — the band the page opens with — and the fill is only a tint
   laid over the result. That is why the bar reads as the band seen through
@@ -485,14 +500,18 @@ branch occupies, the year chip ringed at full over a 32% fill once it is chosen,
 and the answer band's ground at full. One colour, five strengths, and the
 strength tracks how close the visitor is to it.
 
-Circular forms appear exactly once, in the wizard's progress markers, where the
-shape is doing semantic work (done / current / pending) rather than decoration.
+Circular forms appear in two places, both times where the shape does semantic
+work rather than decoration: the wizard's progress markers (done / current /
+pending) and the band's year-line dots, which mark a rendezvous on the axis;
+their approximation lives in their position, not in a soft edge.
 
 The one ornamental geometry in the system is the **topping**: the federation's
 flag silhouette, repeated as a background image at 10% opacity behind a coloured
-band (`.bg-topping-federation` with `.bg-topping-opacity-10`). It is a watermark,
-not a texture — it never carries meaning, never appears at full strength, and
-never appears on a white surface.
+band (`.bg-topping-federation` with `.bg-topping-opacity-10`). There it is a
+watermark, not a texture — it carries no meaning and never appears at full
+strength. The branch's own topping on the answer sheet is the one that *does*
+carry meaning, so it is spent differently: the coloured 100px tile at 12% on
+paper, behind the sentence rather than in a frame beside it.
 
 ## Motion
 
@@ -624,6 +643,33 @@ members page opens with it: a charter sky band carrying the federation flag at
   the site; what it does not have is the hard edge into the desk, so its band
   ends on the page colour the blocks are dropped onto.
 
+### The band's year-line
+
+The unit's year, drawn as one thin axis under its introduction: September to
+July, a tick for every month and a dot for every rendezvous where in its month
+it falls. The words are the troop's, written in the editor; the axis they hang
+on is the system's.
+
+- **The axis is the calendar; the dots are the events.** A 1px white rule runs
+  across the eleven months, each with a 1px × 6px tick and a lowercase name at
+  the Fact label step. Each rendezvous is a filled 7px dot placed by `--at`, a
+  percentage of the year, so early and late in a month are positions rather
+  than claims.
+- **No day is ever named.** The dot's place inside its month says "start",
+  "middle" or "second half" and nothing more; the note under the axis says the
+  rest. This is the one place the system states a time without stating a day.
+- **Labels take whichever side has room.** Inscription, Veillée de Noël and
+  Camps sit above the line; Passage and Fête d'unité below. The choice is made
+  per stop so the September pair never collides, and the last stop's label runs
+  back from its dot rather than off the card.
+- **The axis compresses; it does not stack.** Below `md` the event names step
+  down to 0.875rem, and below `sm` every other month keeps its name while all
+  eleven keep their ticks — the graphic survives at phone width instead of
+  turning into a list.
+- **It speaks in the band's own white**, at the Body note step for the event
+  names, the Fact label step for the dates and the Eyebrow step for the note.
+  The line lives inside the unit's card, so it has no colour of its own.
+
 ### The desk's rooms
 
 The first thing the public page says before it says anything in words: the four
@@ -663,15 +709,24 @@ A sheet of paper on the section's ground, and the one place in the band where a
 branch's *full-strength* colour is spent. It is stated twice, and never in words
 alone:
 
-- **A slim rule down the sheet's left edge, in the branch's colour**, and **a
-  square in the corner carrying the federation's mark for that branch** at the
-  10% a watermark is allowed. The rule is 3px and inset from the corners: a frame
-  as thick as the branch's colour deserves reads as a plate the sheet is mounted
-  in rather than as the sheet's own edge, and the branch is already stated by the
-  name in the sentence and by the chip the visitor chose.
-- **The mark is a square, not a run of pattern.** The theme draws a topping as an
-  absolutely positioned pseudo-element that fills whatever it is put on; across a
-  whole sheet a pattern stops being a mark and becomes wallpaper.
+- **A slim rule down the sheet's left edge, in the branch's colour**, and **the
+  branch's own topping as the sheet's paper**: the tile starts at that edge, runs
+  behind the sentence and fades out before the action. The rule is 3px and inset
+  from the corners: a frame as thick as the branch's colour deserves reads as a
+  plate the sheet is mounted in rather than as the sheet's own edge, and the
+  branch is already stated by the name in the sentence and by the chip the
+  visitor chose.
+- **The topping is the coloured 100px tile the federation ships**, repeated at
+  12% behind the words and masked to nothing across the right half of the sheet.
+  The theme's own `.bg-topping-*` classes only reach the white cut, so the
+  coloured tile is loaded from the vendored
+  `template-unite/images/toppings/…_100.png` files, keyed by the same
+  `Branch.key` as `BRANCH_COLOURS`. It is paper, not a picture: a texture behind
+  the sentence rather than a stamp beside it, and a branch no preset made still
+  gets no mark.
+- **Faded is not unread.** White paper under a 12% tint leaves the sheet's inks
+  well past AA, and the mask is what keeps the pattern from ending on a
+  rectangle behind the text.
 - **The branch's name is written in its ink and the sentence around it is not.**
   It is the one place on the page where the colour is the point of the sentence:
   a parent who has never heard of this troop reads one word of it.
@@ -811,7 +866,7 @@ cell per day.
 - **Do** open every members page with the banner (`hat_title` + `hat_text`).
 - **Do** ship a plain `href` or `action` alongside every HTMX attribute, so the
   page still works when the swap does not.
-- **Do** set the navbar's 110px height in px and keep `--site-navbar-height` in
+- **Do** set the navbar's 84px height in px and keep `--site-navbar-height` in
   px to match; the navbar does not scale with the root font size.
 
 ### Don't:

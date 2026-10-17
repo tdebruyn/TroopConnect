@@ -43,12 +43,12 @@
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
-/* The site navbar is a fixed 110px tall — base.html sets that height inline on
+/* The site navbar is a fixed 84px tall — base.html sets that height inline on
    .navbar, and only there. The hero sits directly underneath it. In px, not
-   rem: the navbar's own 110px does not follow the root font size, so this must
+   rem: the navbar's own 84px does not follow the root font size, so this must
    not either. */
 :root {
-  --site-navbar-height: 110px;
+  --site-navbar-height: 84px;
   /* The display face, and the one place this product uses a second one. The
      theme ships Muli for everything and four decorative faces for pages this
      project does not build; a *serif* for headings is a departure from both, and
@@ -102,11 +102,10 @@
  * behind the photo; in the homepage editor every dropped block landed there
  * instead of where it was dropped.
  *
- * The photograph now starts at the very top of the page and runs up behind the
- * navbar — the band the theme's own `-110px` background offset was always
- * pointing at. It gets there by a negative top margin rather than by leaving
- * the flow: the shell needs the hero in flow (see above), so this is a pull,
- * not a position.
+ * The photograph starts at the very top of the page and runs up behind the
+ * navbar. It gets there by a negative top margin sized from
+ * `--site-navbar-height` rather than by leaving the flow: the shell needs the
+ * hero in flow (see above), so this is a pull, not a position.
  *
  * The homepage editor's frame loads this file and has no navbar; it undoes the
  * pull in `editor-canvas.css`, where that difference belongs. */
@@ -132,7 +131,7 @@ header.masthead {
      question has been given a poster instead of a registration desk — and a
      troop's own description is however long it is. Shorter than the reference
      this was drawn from: a hero is a way in, not a room. */
-  padding: calc(var(--site-navbar-height) + 2.25rem) 0 2.75rem;
+  padding: calc(var(--site-navbar-height) + 1.75rem) 0 2rem;
   text-align: center;
   color: #fff;
   background-image: url("../images/troop/brouettes.jpg");
@@ -251,6 +250,150 @@ header.masthead .card p {
   text-wrap: pretty;
 }
 
+/* The unit's year as an axis: September to July, one tick per month, one dot
+   per rendezvous placed where in its month it falls. The day is never named —
+   the dot's position is the whole of the precision, and the note says the
+   rest. A year with four busy months should read as a long year, not as four
+   dates with gaps between them. */
+header.masthead .card .hero-timeline {
+  margin-top: 1.75rem;
+}
+
+header.masthead .card .hero-timeline__chart {
+  position: relative;
+  height: 6.75rem;
+}
+
+/* The line itself, at the height the ticks meet it. */
+header.masthead .card .hero-timeline__chart::before {
+  content: "";
+  position: absolute;
+  top: 3.5rem;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.48);
+}
+
+header.masthead .card .hero-timeline__events {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Each event is a point on the axis; its label hangs above or below, and the
+   dot is the point itself. */
+header.masthead .card .hero-timeline__event {
+  position: absolute;
+  top: 3.5rem;
+  left: var(--at);
+  width: 0;
+  height: 0;
+}
+
+header.masthead .card .hero-timeline__event::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #fff;
+  transform: translate(-50%, -50%);
+}
+
+header.masthead .card .hero-timeline__what {
+  position: absolute;
+  left: 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: #fff;
+  white-space: nowrap;
+}
+
+/* The label sits one small gap from its dot, on whichever side has room. */
+header.masthead .card .hero-timeline__event--above .hero-timeline__what {
+  bottom: 0.75rem;
+}
+
+header.masthead .card .hero-timeline__event--below .hero-timeline__what {
+  top: 2rem;
+}
+
+/* The year ends near the card's right edge, so its label runs back from the
+   dot rather than off the page. */
+header.masthead .card .hero-timeline__event--end .hero-timeline__what {
+  left: auto;
+  right: 0;
+  text-align: right;
+}
+
+/* A tick per month, and the month's name under it. The tick is the mark; the
+   name is the caption, and the quieter of the two. */
+header.masthead .card .hero-timeline__axis {
+  position: absolute;
+  top: 3.5rem;
+  right: 0;
+  left: 0;
+}
+
+header.masthead .card .hero-timeline__month {
+  position: absolute;
+  top: 0;
+  left: var(--at);
+  padding-top: 0.55rem;
+  transform: translateX(-50%);
+  font-size: 0.75rem;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  color: rgba(255, 255, 255, 0.82);
+  white-space: nowrap;
+}
+
+header.masthead .card .hero-timeline__month::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 1px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+header.masthead .card .hero-timeline__note {
+  margin: 0.5rem 0 0;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.82);
+  text-align: center;
+}
+
+@media (max-width: 767.98px) {
+  header.masthead .card .hero-timeline {
+    margin-top: 1.5rem;
+  }
+
+  /* One step down, so the September pair and its neighbours stay apart at the
+     narrowest the card gets. */
+  header.masthead .card .hero-timeline__what {
+    font-size: 0.875rem;
+  }
+}
+
+/* Below `sm` the eleven names would sit on each other: every other month keeps
+   its name, and every month keeps its tick. */
+@media (max-width: 575.98px) {
+  header.masthead .card .hero-timeline__month {
+    font-size: 0;
+  }
+
+  header.masthead .card .hero-timeline__month:nth-child(odd) {
+    font-size: 0.75rem;
+  }
+}
 .navbar {
   position: relative;
   /* The navbar is painted over the band, and the band runs up behind it. Both
@@ -275,6 +418,14 @@ header.masthead .card p {
   font-size: 1.2em !important;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
     border-color 0.15s ease-in-out;
+}
+
+/* The unit's name has to share one 84px line with its mark and the menu on the
+   narrowest phones; a step down is cheaper than dropping either. */
+@media (max-width: 575.98px) {
+  .navbar-brand {
+    font-size: 0.9375rem;
+  }
 }
 
 /* The public homepage is the one page whose top is a photograph, so it is the
@@ -354,6 +505,33 @@ header.masthead .card p {
 .page-home .navbar .nav-secondary:focus-visible {
   border-color: #fff;
   background-color: rgba(255, 255, 255, 0.14);
+}
+
+/* The pair reads as two doors, and two doors do not share a jamb. Only from
+   `md` up, where they sit side by side; stacked in the collapsed menu they are
+   already separated by the flow. */
+@media (min-width: 768px) {
+  .page-home .navbar .nav-secondary {
+    margin-left: 0.5rem;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .page-home .navbar .nav-secondary {
+    margin-top: 0.5rem;
+  }
+
+  /* The bar's glass is sized for one line of links; the menu that opens out of
+     it floats over the page instead, so it takes a ground of its own. White
+     links on a photograph are a contrast accident waiting to happen. */
+  .navbar-collapse {
+    /* The eight pixels are the bar's bottom padding; the panel starts at the
+       bar's edge, not below it, so the two read as one surface opening. */
+    margin-top: -0.5rem;
+    padding: 0.5rem 0.75rem 0.75rem;
+    border-radius: 0 0 0.5rem 0.5rem;
+    background-color: rgba(10, 66, 117, 0.94);
+  }
 }
 
 .bg-transparent {
@@ -886,7 +1064,7 @@ body {
    two unrelated blocks. */
 .desk-answer {
   position: relative;
-  margin-top: 2rem;
+  margin-top: 1.5rem;
   padding-left: 0.375rem;
   border-radius: 0.5rem;
   background-color: #fff;
@@ -896,6 +1074,7 @@ body {
 .desk-answer::before {
   content: "";
   position: absolute;
+  z-index: 2;
   top: 0.75rem;
   bottom: 0.75rem;
   left: 0;
@@ -904,10 +1083,35 @@ body {
   background-color: var(--branch, var(--section-rule));
 }
 
+/* The branch's own topping, as the sheet's paper rather than a stamp beside
+   the answer: it starts at the frame's left edge, runs under the sentence,
+   and lets go before it reaches the action, so it is felt behind the words
+   rather than looked at. The federation publishes the tile in each branch's
+   colour; the vendored theme only carries the white 400px cut, which is why
+   the image arrives by URL rather than through `.bg-topping-*`.
+
+   A repeating tile at 12% on white is a texture, not a picture — the same
+   strength the system spends on a watermark, and the mask is what keeps it
+   from ending as a rectangle behind the text. */
+.desk-answer-topping {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 46%;
+  border-radius: 0.5rem 0 0 0.5rem;
+  background-image: var(--topping);
+  background-repeat: repeat;
+  background-size: 7.5rem auto;
+  opacity: 0.12;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(90deg, #000 0, #000 28%, transparent 94%);
+  mask-image: linear-gradient(90deg, #000 0, #000 28%, transparent 94%);
+}
+
 /* The answer, as a sheet of paper. It carries its own layout so the frame
    around it can be nothing but the rule. */
 .desk-answer-paper {
   position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   gap: 1.5rem;
@@ -917,30 +1121,6 @@ body {
 .desk-answer-text {
   flex: 1 1 auto;
   min-width: 0;
-}
-
-/* The branch's own mark, as a square: the federation's topping drawn for that
-   branch, faint, at the size of a stamp and in its own corner. The theme draws
-   every topping as an absolutely positioned pseudo-element at full strength,
-   and this is the strength the system spends on a watermark — but cut to a
-   square, because a pattern run across the whole sheet stops being a mark and
-   becomes wallpaper. */
-.desk-answer-mark {
-  flex: 0 0 auto;
-  align-self: stretch;
-  width: 4.5rem;
-  border-radius: 0.4rem;
-  background-color: color-mix(in srgb, var(--branch, var(--section-rule)) 10%, #fff);
-  overflow: hidden;
-}
-
-/* The topping is the theme's, drawn as an absolutely positioned pseudo-element
-   filling whatever it is put on, and the theme defaults it to full strength.
-   This is the strength the system spends on a watermark and the only one it
-   allows — set on the mark rather than through the theme's own opacity classes,
-   so the strength is decided in one place. */
-.desk-answer-mark::before {
-  opacity: 10%;
 }
 
 .desk-answer-label {
@@ -1046,8 +1226,10 @@ body {
     padding: 1.25rem 1.25rem 1.5rem 1.5rem;
   }
 
-  .desk-answer-mark {
-    display: none;
+  .desk-answer-topping {
+    width: 68%;
+    background-size: 6rem auto;
+    opacity: 0.1;
   }
 
   .desk-answer-action {

@@ -3,13 +3,16 @@
 The assertions are on structure and on the troop's own data, never on
 translated copy — the source strings are English while a French instance
 renders the catalogue, so a test that matched a sentence would pass in one
-language and fail in the others.
+language and fail in the others. The one exception pins the French catalogue
+on purpose: the answer sentence carries markup, and that markup must not keep
+the sentence out of the catalogue.
 """
 
 from datetime import date, timedelta
 from decimal import Decimal
 
 from django.urls import reverse
+from django.utils import translation
 
 from finance.models import FeeRule
 from homepage.models import SiteContent
@@ -233,6 +236,47 @@ class PublicHomepageTest(DeskTestBase):
         response = self.client.get("/", {"annee": year})
         self.assertContains(response, "desk-answer-title")
         self.assertContains(response, "Louveteaux")
+
+    def test_the_answer_sentence_comes_from_the_catalogue(self):
+        """The branch name rides inside the translated sentence.
+
+        Markup in a `blocktranslate` changes its msgid, so a span around the
+        branch silently took the sentence out of the catalogue; the name was
+        also missing from the `with` clause and rendered as a gap.
+        """
+        year = self.year_in(self.louveteaux)
+        with translation.override("fr"):
+            response = self.client.get("/", {"annee": year})
+        self.assertContains(
+            response,
+            'Votre enfant rejoindrait la branche <span class="desk-answer-name">'
+            "Louveteaux</span>",
+        )
+
+    def test_the_answer_reads_with_a_renamed_branch(self):
+        """The sentence must not assume the preset's plural branch names.
+
+        A troop can rename a branch to anything, and "les Meute" is the kind
+        of grammar a preset cannot promise; the construction names the branch
+        without giving it an article of its own.
+        """
+        Branch.objects.create(
+            name="Meute", key="louveteaux", min_age_dec_31=8, max_age_dec_31=12
+        )
+        with translation.override("fr"):
+            response = self.client.get("/", {"annee": self.reference_year - 12})
+        self.assertContains(
+            response,
+            'la branche <span class="desk-answer-name">Meute</span>',
+        )
+
+    def test_the_answer_carries_the_branch_topping(self):
+        """The coloured tile, keyed by the preset slug like the colour is."""
+        Branch.objects.create(
+            name="Meute", key="louveteaux", min_age_dec_31=8, max_age_dec_31=12
+        )
+        response = self.client.get("/", {"annee": self.reference_year - 12})
+        self.assertContains(response, "topping_Louveteaux_vert_100.png")
 
     def test_the_chosen_year_is_marked(self):
         year = self.year_in(self.baladins)

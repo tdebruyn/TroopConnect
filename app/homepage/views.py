@@ -11,6 +11,7 @@ from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import override
 from django.views import View
@@ -364,16 +365,18 @@ BRANCH_INKS = {
     "pionniers": "#aa0f12",
 }
 
-#: The theme's own topping for each branch — the federation's flag drawn for
-#: that branch, shipped as a white watermark in the vendored theme
-#: (`.bg-topping-<branch>`, per the mapping in its README). Same keys and the
-#: same rule as the colours above: a branch no preset made has no topping to
-#: wear, and borrowing another branch's mark would name a branch it is not.
-BRANCH_TOPPINGS = {
-    "baladins": "bg-topping-baladins",
-    "louveteaux": "bg-topping-louveteaux",
-    "eclaireurs": "bg-topping-eclaireurs",
-    "pionniers": "bg-topping-pionniers",
+#: The federation's own topping for each branch, in the branch's colour. The
+#: theme's `.bg-topping-*` classes only reach the white cut; the answer sheet
+#: wants the coloured 100px tile, which is shipped beside it in the vendored
+#: theme. The tile is repeated behind the sentence at a strength that reads as
+#: paper, not as a picture. Same keys and the same rule as the colours above:
+#: a branch no preset made has no topping to wear, and borrowing another
+#: branch's mark would name a branch it is not.
+BRANCH_TOPPING_IMAGES = {
+    "baladins": "vendor/template-unite/images/toppings/topping_Baladins_bleu_100.png",
+    "louveteaux": "vendor/template-unite/images/toppings/topping_Louveteaux_vert_100.png",
+    "eclaireurs": "vendor/template-unite/images/toppings/topping_Eclaireurs_bleu_100.png",
+    "pionniers": "vendor/template-unite/images/toppings/topping_Pionniers_rouge_100.png",
 }
 
 
@@ -492,11 +495,19 @@ def _desk_answer(rows, requested, school_year):
         return {
             "year": year,
             "branch": branch,
+            # The name carries its own span because it is the one word in the
+            # sentence written in the branch's ink. Passing it in already
+            # marked up keeps the tag out of the translated msgid: the catalogs
+            # hold the sentence with a plain %(branch)s, so a translator reads
+            # words and never HTML.
+            "branch_html": format_html(
+                '<span class="desk-answer-name">{}</span>', branch.name
+            ),
             "min_age": branch.min_age_dec_31,
             "max_age": branch.max_age_dec_31,
             "colour": BRANCH_COLOURS.get(branch.key),
             "ink": BRANCH_INKS.get(branch.key),
-            "topping": BRANCH_TOPPINGS.get(branch.key),
+            "topping_image": BRANCH_TOPPING_IMAGES.get(branch.key),
             "first_year": _school_year_label(first),
             "last_year": _school_year_label(last),
             "is_final_year": first == last,
