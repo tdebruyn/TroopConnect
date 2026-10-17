@@ -959,7 +959,7 @@ inside one of the four answers would be asked twice.
   value for two of the four branches — see `BRANCH_INKS`. A branch no preset made
   has neither: its room is the page's own ground and its rule is the section's.
 - **The branch's own mark sits beside its name.** The federation's
-  `logo_<Branch>.png` is spent at 2.625rem beside the room's name. A branch no
+  `logo_<Branch>.png` is spent at 4.59375rem beside the room's name. A branch no
   preset made has no mark and keeps its words alone — the same rule as its
   colour and its topping.
 - **The years sit on one line across the strip.** The rooms share their height

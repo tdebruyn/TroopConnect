@@ -999,7 +999,8 @@ body {
 .desk-segment-logo {
   flex: none;
   align-self: center;
-  height: 2.625rem;
+  /* 75% above the 2.625rem step. */
+  height: 4.59375rem;
   width: auto;
 }
 
