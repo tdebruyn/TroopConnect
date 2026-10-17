@@ -3640,6 +3640,12 @@ msgstr "Votre unité"
 msgid "Your children"
 msgstr "Vos enfants"
 
+msgid "Hello %(name)s."
+msgstr "Bonjour %(name)s."
+
+msgid "No absences"
+msgstr "Aucune absence"
+
 msgid "Household balance"
 msgstr "Solde du foyer"
 
@@ -3647,7 +3653,7 @@ msgid "The deadline has passed."
 msgstr "L'échéance est dépassée."
 
 msgid "Membership fees, this scout year."
-msgstr "Frais de membership, cette année scoute."
+msgstr "Frais d'adhésion, cette année scoute."
 
 msgid "Nothing is attached to your account yet. Your unit's leaders can link your children to it."
 msgstr "Rien n'est encore rattaché à votre compte. Les animateurs de votre unité peuvent y lier vos enfants."
@@ -3683,10 +3689,20 @@ msgid_plural "%(counter)s reported for that activity"
 msgstr[0] "%(counter)s signalée pour cette activité"
 msgstr[1] "%(counter)s signalées pour cette activité"
 
+msgid "%(counter)s absence reported for that activity"
+msgid_plural "%(counter)s absences reported for that activity"
+msgstr[0] "%(counter)s absence signalée pour cette activité"
+msgstr[1] "%(counter)s absences signalées pour cette activité"
+
 msgid "%(counter)s member"
 msgid_plural "%(counter)s members"
 msgstr[0] "%(counter)s membre"
 msgstr[1] "%(counter)s membres"
+
+msgid "member"
+msgid_plural "members"
+msgstr[0] "membre"
+msgstr[1] "membres"
 
 msgid "Our unit"
 msgstr "Notre unité"
@@ -3735,6 +3751,9 @@ msgstr "Vos outils"
 
 msgid "Your sections"
 msgstr "Vos sections"
+
+msgid "Your section"
+msgstr "Votre section"
 
 msgid "Your account"
 msgstr "Votre compte"

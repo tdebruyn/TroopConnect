@@ -1,34 +1,19 @@
-{% extends "base.html" %}
+{% extends "members/base.html" %}
 {% load i18n %}
-{% block content %}
-    <div class="bg-ls-bleu-clair bg-topping-federation topping-white bg-topping-opacity-10">
-        <div class="container">
-            <div class="row ">
-                <div class="col-11 offset-md-1 pb-1 mt-1">
-                    {% comment %}
-                        The band names the page, and the navbar already says
-                        "FAQ" one line above it. A band that repeats the link
-                        that led here tells the reader nothing they did not just
-                        read, so the band says what the page holds instead — the
-                        words that used to sit under it, promoted to the title.
-                    {% endcomment %}
-                    <h1 class="mt-2 pb-5">{% trans "Frequently asked questions." %}</h1>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="container mb-5">
-        {% if page_html %}
-            {{ page_html|safe }}
-            <style>{{ page_css|safe }}</style>
-        {% else %}
-            {% include "homepage/snippets/faq_default.html" %}
-        {% endif %}
-    </div>
+{% block hat_title %}
+    {% trans "Frequently asked questions." %}
+{% endblock hat_title %}
+{% block subcontent %}
+    {% if page_html %}
+        {{ page_html|safe }}
+        <style>{{ page_css|safe }}</style>
+    {% else %}
+        {% include "homepage/snippets/faq_default.html" %}
+    {% endif %}
     {% if user.is_superuser %}
         <a href="{% url 'homepage_editor' %}?page=faq"
            class="btn btn-outline-secondary position-absolute bottom-0 end-0 m-3">
             ✎ {% trans "Edit this page" %}
         </a>
     {% endif %}
-{% endblock content %}
+{% endblock subcontent %}

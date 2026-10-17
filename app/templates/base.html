@@ -97,38 +97,16 @@
                             tools are on the page at `/`, and a link kept in
                             both places is two things to keep honest. What
                             stays is what a page cannot carry for itself: the
-                            account, and the language beside it.
+                            account — now only the way out — and the language
+                            beside it.
                         {% endcomment %}
                         {% if user.is_authenticated %}
-                            <div class="btn-group ms-auto">
-
-                                <a role="button"
-                                   class="btn btn-info"
-                                   href="{% url 'members:profile' user.id %}">{{ user }}</a>
+                            <div class="dropdown ms-auto">
                                 <button type="button"
-                                        class="btn btn-info dropdown-toggle dropdown-toggle-split"
+                                        class="btn btn-info dropdown-toggle"
                                         data-bs-toggle="dropdown"
-                                        aria-expanded="false">
-                                    <span class="visually-hidden">{% trans "Toggle dropdown" %}</span>
-                                </button>
-                                <ul class="dropdown-menu bg-info">
-                                    <li>
-                                        <a class="dropdown-item" href="{% url 'members:profile' user.id %}">{% trans "My profile" %}</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="{% url 'members:documents' %}">{% trans "My documents" %}</a>
-                                    </li>
-                                    {% if user.is_superuser %}
-                                        <li>
-                                            <a class="dropdown-item" href="{% url 'admin:index' %}">{% trans "Site administration" %}</a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item" href="{% url 'homepage_editor' %}">{% trans "Edit homepage" %}</a>
-                                        </li>
-                                    {% endif %}
-                                    <li>
-                                        <hr class="dropdown-divider">
-                                    </li>
+                                        aria-expanded="false">{{ user }}</button>
+                                <ul class="dropdown-menu dropdown-menu-end bg-info">
                                     <li>
                                         <a class="dropdown-item" href="{% url 'account_logout' %}">
                                             <svg xmlns="http://www.w3.org/2000/svg"

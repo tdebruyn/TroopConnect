@@ -26,6 +26,11 @@
       {% endif %}
       <div class="desk-answer-paper">
         <div class="desk-answer-text">
+            {% if desk_answer.logo %}
+                <img class="desk-answer-logo"
+                     src="{% static desk_answer.logo %}"
+                     alt="" />
+            {% endif %}
             <p class="desk-answer-label">
                 {% blocktranslate with year=desk_answer.year %}Born in {{ year }}{% endblocktranslate %}
             </p>

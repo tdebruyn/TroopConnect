@@ -1,16 +1,21 @@
-{% load i18n %}
+{% load i18n static %}
 {% comment %}
   One child: what they are committed to next, what the unit knows about their
   attendance, and the two things a parent does about it. The household's money
   is deliberately absent — fees are billed per household, not per child, and it
-  is stated once above these panels.
+  is stated once in the dark tile above these panels.
+
+  The date is drawn as a leaf rather than repeated in prose: the large day and
+  month are what a parent checks first, and "samedi" is the only word the leaf
+  cannot carry. A screen reader still gets the full date from the <time> value
+  and the hidden phrase, so the visual shorthand never becomes the only version.
 {% endcomment %}
-<section class="member-panel">
+<section class="member-panel" data-kind="child" data-rank="{{ rank }}">
     <header class="member-panel-head">
         <span class="member-avatar" aria-hidden="true">{{ panel.person.first_name|first }}{{ panel.person.last_name|first }}</span>
-        <div>
+        <div class="member-panel-id">
             <h2 class="member-panel-name">{{ panel.person }}</h2>
-            <p class="member-panel-meta text-muted">
+            <p class="member-panel-meta">
                 {% if panel.section %}
                     {{ panel.section.name }}
                 {% else %}
@@ -18,49 +23,61 @@
                 {% endif %}
             </p>
         </div>
+        {% if panel.branch_logo %}
+            <img class="member-panel-logo member-child-logo"
+                 src="{% static panel.branch_logo %}"
+                 alt="" />
+        {% endif %}
     </header>
 
     {% comment %}
         Activities and absences are the agenda's, so a troop with that module
         switched off gets the panel without them rather than links that 404.
-        The whole list goes, not just the links: an empty fact sheet is worse
+        The whole block goes, not just the links: an empty date leaf is worse
         than none.
     {% endcomment %}
     {% if agenda_enabled %}
-        <dl class="member-facts">
-            <dt>{% trans "Next activity" %}</dt>
-            <dd>
-                {% if panel.event %}
-                    {{ panel.event.title }}
-                    <span class="member-chip {{ panel.event.type_css_class }}">{{ panel.event.get_activity_type_display }}</span>
+        {% if panel.event %}
+            <div class="member-event">
+                <time class="member-event-date"
+                      datetime="{{ panel.event.start_date|date:'Y-m-d' }}">
+                    <span class="member-event-day">{{ panel.event.start_date|date:"j" }}</span>
+                    <span class="member-event-month">{{ panel.event.start_date|date:"M" }}</span>
+                </time>
+                <div class="member-event-body">
+                    <p class="member-event-title">{{ panel.event.title }}</p>
+                    <p class="member-event-when">
+                        <span class="member-chip {{ panel.event.type_css_class }}">{{ panel.event.get_activity_type_display }}</span>
+                        <span>{{ panel.event.start_date|date:"l" }}</span>
+                        {% if panel.event.start_time %}
+                            <span aria-hidden="true">·</span><span>{{ panel.event.start_time|time }}</span>
+                        {% endif %}
+                        <span class="visually-hidden">{{ panel.event.start_date|date:"j F Y" }}</span>
+                    </p>
+                </div>
+            </div>
+
+            <p class="member-presence{% if panel.absences %} member-presence-on{% endif %}">
+                {% if panel.absences %}
+                    <span class="member-presence-dot" aria-hidden="true"></span>
+                    {% blocktranslate count counter=panel.absences %}{{ counter }} absence reported{% plural %}{{ counter }} absences reported{% endblocktranslate %}
                 {% else %}
-                    <span class="text-muted">{% trans "Nothing scheduled" %}</span>
+                    <i class="bi bi-check2" aria-hidden="true"></i>{% trans "No absences" %}
                 {% endif %}
-            </dd>
-
-            {% if panel.event %}
-                <dt>{% trans "When" %}</dt>
-                <dd>
-                    {{ panel.event.start_date|date:"l j F" }}{% if panel.event.start_time %}, {{ panel.event.start_time|time }}{% endif %}
-                </dd>
-
-                <dt>{% trans "Absences" %}</dt>
-                <dd>
-                    {% if panel.absences %}
-                        <span class="member-late">
-                        {% blocktranslate count counter=panel.absences %}{{ counter }} absence reported{% plural %}{{ counter }} absences reported{% endblocktranslate %}
-                    </span>
-                    {% else %}
-                        <span class="text-muted">{% trans "None" %}</span>
-                    {% endif %}
-                </dd>
-            {% endif %}
-        </dl>
+            </p>
+        {% else %}
+            <div class="member-event member-event-quiet">
+                <span class="member-event-icon" aria-hidden="true"><i class="bi bi-cup-hot"></i></span>
+                <div class="member-event-body">
+                    <p class="member-event-title">{% trans "Nothing scheduled" %}</p>
+                </div>
+            </div>
+        {% endif %}
     {% endif %}
 
     <footer class="member-panel-foot">
         {% if agenda_enabled and panel.section %}
-            <a class="btn btn-outline-primary btn-sm" href="{% url 'members:agenda' %}?section={{ panel.section.pk }}">
+            <a class="btn btn-outline-primary btn-sm member-action-main" href="{% url 'members:agenda' %}?section={{ panel.section.pk }}">
                 {% trans "Report an absence" %}
             </a>
         {% endif %}
@@ -73,7 +90,10 @@
                 {% trans "Messages" %}
             </a>
         {% endif %}
-        <a class="btn btn-outline-primary btn-sm" href="{% url 'members:edit_child' pk=panel.person.pk %}">
+        <a class="btn btn-outline-primary btn-sm"
+           href="{% url 'members:edit_child' pk=panel.person.pk %}"
+           hx-get="{% url 'members:edit_child' pk=panel.person.pk %}"
+           hx-target="#dialog">
             {% trans "Edit details" %}
         </a>
     </footer>

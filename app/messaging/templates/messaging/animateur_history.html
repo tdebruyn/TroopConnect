@@ -4,38 +4,50 @@
 {% block hat_text %}{% trans "Sent messages" %}{% endblock hat_text %}
 {% block subcontent %}
     {% if user_is_animateur or user_can_send_all %}
-        <a href="{% url 'messaging:compose' %}" class="btn btn-primary mb-3">{% trans "Send a message" %}</a>
+        <a href="{% url 'messaging:compose' %}" class="btn btn-primary mb-4">
+            <i class="bi bi-send me-2" aria-hidden="true"></i>{% trans "Send a message" %}
+        </a>
     {% endif %}
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>{% trans "Date" %}</th>
-                <th>{% trans "Recipients" %}</th>
-                <th>{% trans "Subject" %}</th>
-                <th>{% trans "Sent" %}</th>
-                <th>{% trans "Ignored" %}</th>
-            </tr>
-        </thead>
-        <tbody>
+    {% if messages_data %}
+        <ul class="message-list">
             {% for entry in messages_data %}
-                <tr onclick="window.location.href='{% url 'messaging:message_detail' entry.message.pk %}'" style="cursor: pointer;">
-                    <td>{{ entry.message.created_at|date:"d/m/Y H:i" }}</td>
-                    <td>
-                        {% if entry.message.section %}
-                            {{ entry.message.section.name }}
-                        {% else %}
-                            {% trans "All members" %}
-                        {% endif %}
-                    </td>
-                    <td>{{ entry.message.subject }}</td>
-                    <td>{{ entry.sent }}</td>
-                    <td>{{ entry.total|add:"-" }}{{ entry.sent }}</td>
-                </tr>
-            {% empty %}
-                <tr>
-                    <td colspan="5">{% trans "No message sent." %}</td>
-                </tr>
+                <li>
+                    <a class="message-tile"
+                       href="{% url 'messaging:message_detail' entry.message.pk %}">
+                        <time class="message-date"
+                              datetime="{{ entry.message.created_at|date:'c' }}">
+                            <span class="message-date-day">{{ entry.message.created_at|date:"j" }}</span>
+                            <span class="message-date-month">{{ entry.message.created_at|date:"M" }}</span>
+                            <span class="visually-hidden">{{ entry.message.created_at|date:"j F Y H:i" }}</span>
+                        </time>
+                        <div class="message-main">
+                            <p class="message-subject">{{ entry.message.subject }}</p>
+                            <p class="message-meta">
+                                <span>
+                                    {% if entry.message.section %}
+                                        {{ entry.message.section.name }}
+                                    {% else %}
+                                        {% trans "All members" %}
+                                    {% endif %}
+                                </span>
+                                <span class="message-meta-sep" aria-hidden="true">·</span>
+                                {% if entry.sent %}
+                                    <span class="message-status message-status-sent">{% trans "Sent" %} {{ entry.sent }}</span>
+                                {% endif %}
+                                {% if entry.ignored %}
+                                    <span class="message-status message-status-ignored">{% trans "Ignored" %} {{ entry.ignored }}</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                        <span class="message-open" aria-hidden="true"><i class="bi bi-arrow-right"></i></span>
+                    </a>
+                </li>
             {% endfor %}
-        </tbody>
-    </table>
+        </ul>
+    {% else %}
+        <div class="list-empty">
+            <span class="list-empty-icon" aria-hidden="true"><i class="bi bi-chat-left-text"></i></span>
+            <p class="list-empty-text">{% trans "No message sent." %}</p>
+        </div>
+    {% endif %}
 {% endblock subcontent %}

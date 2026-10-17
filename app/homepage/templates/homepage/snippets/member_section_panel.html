@@ -1,18 +1,40 @@
-{% load i18n %}
+{% load i18n static %}
 {% comment %}
-  One section, for a leader or for someone who runs the unit. The same panel as
-  a child's, with the section's own facts and the two things its leaders do —
-  the shape does not change with the role, only the subject does.
+  One section, for a leader or for someone who runs the unit. The same tile as a
+  child's, with the section's own facts and the two things its leaders do — the
+  shape does not change with the role, only the subject does.
+
+  The member count is a numeral in the tile's corner rather than a phrase in its
+  header: on a board where every tile says a date and a name, the number is the
+  one fact a leader scans for, and it deserves its own weight.
 {% endcomment %}
-<section class="member-panel">
+<section class="member-panel" data-kind="section" data-rank="{{ rank }}">
     <header class="member-panel-head">
-        <div>
-            <h2 class="member-panel-name">{{ panel.section.name }}</h2>
-            <p class="member-panel-meta text-muted">
-                {{ panel.section.branch.name }}
-                · {% blocktranslate count counter=panel.members %}{{ counter }} member{% plural %}{{ counter }} members{% endblocktranslate %}
-            </p>
+        <div class="member-panel-id">
+            <div class="member-panel-title">
+                {% if panel.branch_logo %}
+                    <img class="member-panel-logo"
+                         src="{% static panel.branch_logo %}"
+                         alt="" />
+                {% endif %}
+                <h2 class="member-panel-name">{{ panel.section.name }}</h2>
+            </div>
+            {% comment %}
+                A section is often named after its branch ("Louveteaux"), and
+                printing both turns the tile's second line into a stutter. The
+                line is dropped rather than filled with a different fact: the
+                count already sits beside it.
+            {% endcomment %}
+            {% if panel.section.branch.name != panel.section.name %}
+                <p class="member-panel-meta">{{ panel.section.branch.name }}</p>
+            {% endif %}
         </div>
+        <p class="member-panel-count">
+            <span class="member-panel-count-num">{{ panel.members }}</span>
+            <span class="member-panel-count-label">
+                {% blocktranslate count counter=panel.members %}member{% plural %}members{% endblocktranslate %}
+            </span>
+        </p>
     </header>
 
     {% comment %}
@@ -21,33 +43,42 @@
         rather than links that 404.
     {% endcomment %}
     {% if agenda_enabled %}
-        <dl class="member-facts">
-            <dt>{% trans "Next activity" %}</dt>
-            <dd>
-                {% if panel.event %}
-                    {{ panel.event.title }}
-                    <span class="member-chip {{ panel.event.type_css_class }}">{{ panel.event.get_activity_type_display }}</span>
+        {% if panel.event %}
+            <div class="member-event">
+                <time class="member-event-date"
+                      datetime="{{ panel.event.start_date|date:'Y-m-d' }}">
+                    <span class="member-event-day">{{ panel.event.start_date|date:"j" }}</span>
+                    <span class="member-event-month">{{ panel.event.start_date|date:"M" }}</span>
+                </time>
+                <div class="member-event-body">
+                    <p class="member-event-title">{{ panel.event.title }}</p>
+                    <p class="member-event-when">
+                        <span class="member-chip {{ panel.event.type_css_class }}">{{ panel.event.get_activity_type_display }}</span>
+                        <span>{{ panel.event.start_date|date:"l" }}</span>
+                        {% if panel.event.start_time %}
+                            <span aria-hidden="true">·</span><span>{{ panel.event.start_time|time }}</span>
+                        {% endif %}
+                        <span class="visually-hidden">{{ panel.event.start_date|date:"j F Y" }}</span>
+                    </p>
+                </div>
+            </div>
+
+            <p class="member-presence{% if panel.absences %} member-presence-on{% endif %}">
+                {% if panel.absences %}
+                    <span class="member-presence-dot" aria-hidden="true"></span>
+                    {% blocktranslate count counter=panel.absences %}{{ counter }} absence reported for that activity{% plural %}{{ counter }} absences reported for that activity{% endblocktranslate %}
                 {% else %}
-                    <span class="text-muted">{% trans "Nothing scheduled" %}</span>
+                    <i class="bi bi-check2" aria-hidden="true"></i>{% trans "No absences" %}
                 {% endif %}
-            </dd>
-
-            {% if panel.event %}
-                <dt>{% trans "When" %}</dt>
-                <dd>
-                    {{ panel.event.start_date|date:"l j F" }}{% if panel.event.start_time %}, {{ panel.event.start_time|time }}{% endif %}
-                </dd>
-
-                <dt>{% trans "Absences" %}</dt>
-                <dd>
-                    {% if panel.absences %}
-                        {% blocktranslate count counter=panel.absences %}{{ counter }} reported for that activity{% plural %}{{ counter }} reported for that activity{% endblocktranslate %}
-                    {% else %}
-                        <span class="text-muted">{% trans "None reported" %}</span>
-                    {% endif %}
-                </dd>
-            {% endif %}
-        </dl>
+            </p>
+        {% else %}
+            <div class="member-event member-event-quiet">
+                <span class="member-event-icon" aria-hidden="true"><i class="bi bi-cup-hot"></i></span>
+                <div class="member-event-body">
+                    <p class="member-event-title">{% trans "Nothing scheduled" %}</p>
+                </div>
+            </div>
+        {% endif %}
     {% endif %}
 
     <footer class="member-panel-foot">
@@ -58,7 +89,7 @@
             agenda and leads none, gets no section panels and so no link.
         {% endcomment %}
         {% if agenda_enabled %}
-            <a class="btn btn-outline-primary btn-sm" href="{% url 'members:agenda_event_create' %}?section={{ panel.section.pk }}">
+            <a class="btn btn-outline-primary btn-sm member-action-main" href="{% url 'members:agenda_event_create' %}?section={{ panel.section.pk }}">
                 {% trans "Add an activity" %}
             </a>
         {% endif %}

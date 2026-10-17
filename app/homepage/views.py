@@ -405,6 +405,16 @@ BRANCH_TOPPING_IMAGES = {
     "pionniers": "vendor/template-unite/images/toppings/topping_Pionniers_rouge_100.png",
 }
 
+#: The federation's own mark for each branch, shipped in the vendored theme.
+#: Same keys and the same rule as the colours: a branch no preset made has no
+#: mark, because borrowing another branch's would name a branch it is not.
+BRANCH_LOGOS = {
+    "baladins": "vendor/template-unite/images/logos/logo_Baladins.png",
+    "louveteaux": "vendor/template-unite/images/logos/logo_Louveteaux.png",
+    "eclaireurs": "vendor/template-unite/images/logos/logo_Eclaireurs.png",
+    "pionniers": "vendor/template-unite/images/logos/logo_Pionniers.png",
+}
+
 
 def _desk_rows(school_year):
     """``(birth_year, branch)`` for every year some branch accepts, ascending.
@@ -471,6 +481,7 @@ def _desk_groups(rows):
                 # The same colour as words. A branch with no colour has no ink
                 # either, and its name and years fall back to the page's own.
                 "ink": BRANCH_INKS.get(branch.key),
+                "logo": BRANCH_LOGOS.get(branch.key),
             },
         )["years"].append(year)
     # `_desk_rows` hands the years over ascending. The rail draws a branch's
@@ -534,6 +545,7 @@ def _desk_answer(rows, requested, school_year):
             "colour": BRANCH_COLOURS.get(branch.key),
             "ink": BRANCH_INKS.get(branch.key),
             "topping_image": BRANCH_TOPPING_IMAGES.get(branch.key),
+            "logo": BRANCH_LOGOS.get(branch.key),
             "first_year": _school_year_label(first),
             "last_year": _school_year_label(last),
             "is_final_year": first == last,
@@ -661,13 +673,30 @@ def _member_tools(user, person, sections, children, leads):
 
     parent_items = []
     if module_enabled(modules.AGENDA):
-        parent_items.append((_("Agenda"), reverse("members:agenda")))
+        parent_items.append(
+            (_("Agenda"), reverse("members:agenda"), "calendar3", False)
+        )
     # No entry for the children list itself: `members:child_list` renders an
     # HTMX fragment and answers 400 to a plain request, and the panels above
     # are that list anyway.
+    #
+    # The two add tools render modal fragments too, so the tile opens the
+    # system's one dialog rather than navigating to a page that is only the
+    # inside of one. The fourth item is that flag; a fixed-length tuple keeps
+    # the template's unpacking simple.
     parent_items += [
-        (_("Add a child"), reverse("members:add_new_child")),
-        (_("Link a child with a key"), reverse("members:add_key_child")),
+        (
+            _("Add a child"),
+            reverse("members:add_new_child"),
+            "person-plus",
+            True,
+        ),
+        (
+            _("Link a child with a key"),
+            reverse("members:add_key_child"),
+            "key",
+            True,
+        ),
     ]
     if person is not None and (children or has_primary_role(user, (PARENT,))):
         groups.append(
@@ -675,6 +704,7 @@ def _member_tools(user, person, sections, children, leads):
                 "title": _("Your children"),
                 "items": parent_items,
                 "priority": priority("children"),
+                "kind": "children",
             }
         )
 
@@ -682,45 +712,132 @@ def _member_tools(user, person, sections, children, leads):
         section_items = []
         if can_access_messaging(user):
             section_items += [
-                (_("Send a message"), reverse("messaging:compose")),
-                (_("Message history"), reverse("messaging:animateur_history")),
+                (_("Send a message"), reverse("messaging:compose"), "send", False),
+                (
+                    _("Message history"),
+                    reverse("messaging:animateur_history"),
+                    "chat-left-text",
+                    False,
+                ),
             ]
         if module_enabled(modules.AGENDA):
-            section_items.append((_("Section agendas"), reverse("members:agenda")))
+            section_items.append(
+                (
+                    _("Section agendas"),
+                    reverse("members:agenda"),
+                    "calendar-week",
+                    False,
+                )
+            )
         if section_items:
             groups.append(
                 {
-                    "title": _("Your sections"),
+                    # An animateur's page is their one section; staff may hold
+                    # several. The title follows the role rather than the list
+                    # length, because the list is only ever longer by mistake.
+                    "title": (
+                        _("Your section")
+                        if has_primary_role(user, ANIMATEUR_ROLES)
+                        else _("Your sections")
+                    ),
                     "items": section_items,
                     "priority": priority("sections"),
+                    "kind": "sections",
                 }
             )
 
     unit_items = []
     if user.is_staff:
         unit_items += [
-            (_("Member management"), reverse("members:admin_list")),
-            (_("Section passage"), reverse("members:passage")),
-            (_("Import and export"), reverse("members:member_import")),
-            (_("Settings"), reverse("members:troop_settings")),
-            (_("Email queue"), reverse("members:mail_queue")),
+            (
+                _("Member management"),
+                reverse("members:admin_list"),
+                "people",
+                False,
+            ),
+            (
+                _("Section passage"),
+                reverse("members:passage"),
+                "arrow-left-right",
+                False,
+            ),
+            (
+                _("Import and export"),
+                reverse("members:member_import"),
+                "arrow-down-up",
+                False,
+            ),
+            (
+                _("Settings"),
+                reverse("members:troop_settings"),
+                "sliders2",
+                False,
+            ),
+            (
+                _("Email queue"),
+                reverse("members:mail_queue"),
+                "envelope",
+                False,
+            ),
         ]
     if can_access_finance(user) and module_enabled(modules.FEES):
-        unit_items.append((_("Membership fees"), reverse("finance:billing")))
+        unit_items.append(
+            (_("Membership fees"), reverse("finance:billing"), "cash-coin", False)
+        )
     if can_manage_unit(user) and module_enabled(modules.SIGNING):
-        unit_items.append((_("Attestations"), reverse("attestations:index")))
+        unit_items.append(
+            (
+                _("Attestations"),
+                reverse("attestations:index"),
+                "file-earmark-check",
+                False,
+            )
+        )
+    # The account menu is the way out alone, so the board carries the editor
+    # and the admin; without these tiles a superuser has no link to either.
+    if user.is_superuser:
+        unit_items += [
+            (
+                _("Edit homepage"),
+                reverse("homepage_editor"),
+                "pencil-square",
+                False,
+            ),
+            (
+                _("Site administration"),
+                reverse("admin:index"),
+                "gear",
+                False,
+            ),
+        ]
     if unit_items:
         groups.append(
-            {"title": _("The unit"), "items": unit_items, "priority": priority("unit")}
+            {
+                "title": _("The unit"),
+                "items": unit_items,
+                "priority": priority("unit"),
+                "kind": "unit",
+            }
         )
 
     groups.append(
         {
             "priority": priority("account"),
             "title": _("Your account"),
+            "kind": "account",
             "items": [
-                (_("My profile"), reverse("members:profile", kwargs={"pk": user.pk})),
-                (_("My documents"), reverse("members:documents")),
+                (
+                    _("My profile"),
+                    reverse("members:profile", kwargs={"pk": user.pk}),
+                    "person-circle",
+                    False,
+                ),
+                (
+                    _("My documents"),
+                    reverse("members:documents"),
+                    "folder2-open",
+                    False,
+                ),
             ],
         }
     )
@@ -728,23 +845,35 @@ def _member_tools(user, person, sections, children, leads):
         {
             "priority": priority("site"),
             "title": _("The unit's page"),
+            "kind": "site",
             "items": [
-                (_("Our unit"), reverse("unit_page")),
-                (_("FAQ"), reverse("faq")),
+                (_("Our unit"), reverse("unit_page"), "house-door", False),
+                (_("FAQ"), reverse("faq"), "question-circle", False),
             ],
         }
     )
     # A stable sort: groups of equal standing keep the order they are built in.
-    return sorted(groups, key=lambda group: group["priority"])
+    groups.sort(key=lambda group: group["priority"])
+    # The wide cluster and the dark tile go to the group with the most to offer,
+    # not blindly to the first: a leader who also holds the attestations role
+    # had a one-link "unit" group take the page's loudest tile while their
+    # three-link sections group squeezed into a corner.
+    featured = max(groups, key=lambda group: len(group["items"]))
+    for group in groups:
+        group["featured"] = group is featured
+    return groups
 
 
 def _member_context(user):
     """What a signed-in reader sees on ``/``, by role.
 
     The panel's subject follows the reader — a parent's children, a leader's own
-    sections — while the panel itself stays the same shape, so the page is
-    predictable whatever the role. A reader who is both a parent and a leader
-    gets both groups, children first, rather than one silently winning.
+    section — while the panel itself stays the same shape, so the page is
+    predictable whatever the role. A leader has exactly one section; the query
+    below takes the first even if bad data holds a second, because the page
+    composes that section as a hero rather than a list. A reader who is both a
+    parent and a leader gets both subjects, children first, rather than one
+    silently winning.
 
     A panel is a thing the reader *answers for*, not a thing they may read. That
     is why the unit's staff get no section panels: they can read every agenda,
@@ -754,7 +883,11 @@ def _member_context(user):
     person = get_person(user)
     school_year = SchoolYear.current()
     if person is None or school_year is None:
-        return {"member_panels": [], "member_heading": _("Your unit")}
+        return {
+            "member_panels": [],
+            "member_heading": _("Your unit"),
+            "member_first_name": "",
+        }
 
     children = list(Person.objects.filter(as_child__parent=person))
     # An animateur's role is a *primary* one, which is the predicate the nav and
@@ -763,7 +896,16 @@ def _member_context(user):
     # sections and give every parent a leader's panels.
     leads = can_manage_unit(user) or has_primary_role(user, ANIMATEUR_ROLES)
     readable = list(visible_sections(user)) if leads else []
-    led = [section for section in readable if can_edit_section_agenda(user, section)]
+    # An animateur leads exactly one section; the model can hold more only
+    # through bad data, and the member homepage composes a leader's section as
+    # a single hero tile rather than a list. Taking the first keeps the page
+    # honest instead of growing a second panel from a state that cannot happen.
+    # The agenda tools still reach every section the reader may read.
+    led = [
+        section
+        for section in readable
+        if can_edit_section_agenda(user, section)
+    ][:1]
 
     events = _upcoming_events(
         [child.get_section() for child in children if child.get_section()] + led
@@ -781,6 +923,11 @@ def _member_context(user):
                 "section": section,
                 "event": event,
                 "absences": absences.get(event.pk, 0) if event else 0,
+                "branch_logo": (
+                    BRANCH_LOGOS.get(section.branch.key)
+                    if section and section.branch
+                    else None
+                ),
             }
         )
 
@@ -802,18 +949,27 @@ def _member_context(user):
                     "event": event,
                     "absences": absences.get(event.pk, 0) if event else 0,
                     "members": sizes.get(section.pk, 0),
+                    "branch_logo": (
+                        BRANCH_LOGOS.get(section.branch.key)
+                        if section.branch
+                        else None
+                    ),
                 }
             )
 
     return {
         "member_panels": panels,
         "member_tools": _member_tools(user, person, readable, children, leads),
-        # A reader who answers for sections gets the unit's heading whether or
-        # not they also have children: "Your children" over a list of sections
-        # would be a lie, and a leader with no section yet is still a leader.
+        # A reader who leads gets the unit's heading whether or not they also
+        # have children: "Your children" over a section tile would be a lie,
+        # and a leader with no section yet is still a leader.
         "member_heading": _("Your unit") if leads else _("Your children"),
+        # The greeting is the reader's own name, not a label over the heading:
+        # the head reads "Vos enfants" then "Bonjour Marc. 3 enfants…" because
+        # the page is a tool that knows who is holding it, and a page opener
+        # that says so costs one line it already has room for.
+        "member_first_name": person.first_name,
         "member_children": sum(1 for panel in panels if panel["kind"] == "child"),
-        "member_sections": len(led),
         # The empty state explains an empty account to a family. A reader whose
         # page is their tools is not missing anything, so it is not shown to
         # them — it would tell an administrator their unit is not attached.

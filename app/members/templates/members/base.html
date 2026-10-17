@@ -1,36 +1,29 @@
 {% extends "base.html" %}
+{% block body_class %}page-member{% endblock body_class %}
 {% block content %}
     <article>
-        <div class="bg-ls-bleu-clair bg-topping-federation topping-white bg-topping-opacity-10">
+        {% comment %}
+            The page's name is a title on the board's own ground, not a second
+            ground laid above it. The old sky-blue band made every page open
+            under a colour the signed-in homepage never used; the serif on the
+            member ground is the identifier the whole site shares.
+        {% endcomment %}
+        <header class="page-head">
             <div class="container">
-                <div class="row ">
-                    <div class="col-11 offset-md-1 pb-1 mt-1">
-                        <h1 class="mt-2">
-                            {% block hat_title %}
-                            {% endblock hat_title %}
-                        </h1>
-                        <div class="pb-5">
-                            <p>
-                                {% block hat_text %}
-                                {% endblock hat_text %}
-                            </p>
-                        </div>
-                    </div>
+                <h1 class="page-title">
+                    {% block hat_title %}
+                    {% endblock hat_title %}
+                </h1>
+                <div class="page-lede">
+                    {% block hat_text %}
+                    {% endblock hat_text %}
                 </div>
             </div>
-        </div>
-        <div class="container mb-5">
-            <div class="row mt-5">
-                <div class="col-md-12 mb-5">
-                    {% comment %} <div class="topping-federation topping-top topping-right topping-large d-none d-lg-block"></div> {% endcomment %}
-                    <div class="above-topping">
-                        {% block subcontent %}
-                        {% endblock subcontent %}
-                    </div>
-                </div>
-            </div>
-            <div class="row mt-2 mb-5">
-                <div class="col-md-12"></div>
+        </header>
+        <div class="container page-body mb-5">
+            <div class="above-topping">
+                {% block subcontent %}
+                {% endblock subcontent %}
             </div>
         </div>
     </article>

@@ -613,6 +613,31 @@ class MemberHomepageTest(DeskTestBase):
 
         self.assertNotContains(self.client.get("/"), "Zoe")
 
+    def test_an_animateur_gets_one_section_panel(self):
+        """An animateur leads exactly one section.
+
+        A second enrolment is data a real troop cannot have; it must not grow
+        a second panel and turn the page into a list of sections.
+        """
+        person = Person.objects.create(
+            first_name="One", last_name="Section",
+            primary_role=self.leader_role, status="a",
+        )
+        account = Account.objects.create_user(
+            email="one-section@test.com", password="testpass", person=person,
+        )
+        other = Section.objects.create(name="Zone", branch=self.louveteaux)
+        for section in (self.section, other):
+            Enrollment.objects.create(
+                user=person, section=section, school_year=self.school_year,
+            )
+        self.client.force_login(account)
+
+        body = self.client.get("/").content.decode()
+        self.assertEqual(body.count('class="member-panel"'), 1)
+        self.assertIn(self.section.name, body)
+        self.assertNotIn(other.name, body)
+
     def test_a_leader_gets_section_panels(self):
         person = Person.objects.create(
             first_name="Lea", last_name="Animatrice",
@@ -778,7 +803,7 @@ class MemberHomepageTest(DeskTestBase):
             sections = list(visible_sections(account))
             leads = can_manage_unit(account) or has_primary_role(account, ANIMATEUR_ROLES)
             for group in _member_tools(account, person, sections, children, leads):
-                for label, url in group["items"]:
+                for label, url, _icon, _modal in group["items"]:
                     with self.subTest(role=role, tool=label):
                         self.client.force_login(account)
                         self.assertEqual(
