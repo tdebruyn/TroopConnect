@@ -661,13 +661,15 @@ def _member_tools(user, person, sections, children, leads):
 
     parent_items = []
     if module_enabled(modules.AGENDA):
-        parent_items.append((_("Agenda"), reverse("members:agenda")))
+        parent_items.append(
+            (_("Agenda"), reverse("members:agenda"), "calendar3")
+        )
     # No entry for the children list itself: `members:child_list` renders an
     # HTMX fragment and answers 400 to a plain request, and the panels above
     # are that list anyway.
     parent_items += [
-        (_("Add a child"), reverse("members:add_new_child")),
-        (_("Link a child with a key"), reverse("members:add_key_child")),
+        (_("Add a child"), reverse("members:add_new_child"), "person-plus"),
+        (_("Link a child with a key"), reverse("members:add_key_child"), "key"),
     ]
     if person is not None and (children or has_primary_role(user, (PARENT,))):
         groups.append(
@@ -675,6 +677,7 @@ def _member_tools(user, person, sections, children, leads):
                 "title": _("Your children"),
                 "items": parent_items,
                 "priority": priority("children"),
+                "kind": "children",
             }
         )
 
@@ -682,45 +685,82 @@ def _member_tools(user, person, sections, children, leads):
         section_items = []
         if can_access_messaging(user):
             section_items += [
-                (_("Send a message"), reverse("messaging:compose")),
-                (_("Message history"), reverse("messaging:animateur_history")),
+                (_("Send a message"), reverse("messaging:compose"), "send"),
+                (
+                    _("Message history"),
+                    reverse("messaging:animateur_history"),
+                    "chat-left-text",
+                ),
             ]
         if module_enabled(modules.AGENDA):
-            section_items.append((_("Section agendas"), reverse("members:agenda")))
+            section_items.append(
+                (
+                    _("Section agendas"),
+                    reverse("members:agenda"),
+                    "calendar-week",
+                )
+            )
         if section_items:
             groups.append(
                 {
                     "title": _("Your sections"),
                     "items": section_items,
                     "priority": priority("sections"),
+                    "kind": "sections",
                 }
             )
 
     unit_items = []
     if user.is_staff:
         unit_items += [
-            (_("Member management"), reverse("members:admin_list")),
-            (_("Section passage"), reverse("members:passage")),
-            (_("Import and export"), reverse("members:member_import")),
-            (_("Settings"), reverse("members:troop_settings")),
-            (_("Email queue"), reverse("members:mail_queue")),
+            (
+                _("Member management"),
+                reverse("members:admin_list"),
+                "people",
+            ),
+            (_("Section passage"), reverse("members:passage"), "arrow-left-right"),
+            (
+                _("Import and export"),
+                reverse("members:member_import"),
+                "arrow-down-up",
+            ),
+            (_("Settings"), reverse("members:troop_settings"), "sliders2"),
+            (_("Email queue"), reverse("members:mail_queue"), "envelope"),
         ]
     if can_access_finance(user) and module_enabled(modules.FEES):
-        unit_items.append((_("Membership fees"), reverse("finance:billing")))
+        unit_items.append(
+            (_("Membership fees"), reverse("finance:billing"), "cash-coin")
+        )
     if can_manage_unit(user) and module_enabled(modules.SIGNING):
-        unit_items.append((_("Attestations"), reverse("attestations:index")))
+        unit_items.append(
+            (
+                _("Attestations"),
+                reverse("attestations:index"),
+                "file-earmark-check",
+            )
+        )
     if unit_items:
         groups.append(
-            {"title": _("The unit"), "items": unit_items, "priority": priority("unit")}
+            {
+                "title": _("The unit"),
+                "items": unit_items,
+                "priority": priority("unit"),
+                "kind": "unit",
+            }
         )
 
     groups.append(
         {
             "priority": priority("account"),
             "title": _("Your account"),
+            "kind": "account",
             "items": [
-                (_("My profile"), reverse("members:profile", kwargs={"pk": user.pk})),
-                (_("My documents"), reverse("members:documents")),
+                (
+                    _("My profile"),
+                    reverse("members:profile", kwargs={"pk": user.pk}),
+                    "person-circle",
+                ),
+                (_("My documents"), reverse("members:documents"), "folder2-open"),
             ],
         }
     )
@@ -728,14 +768,23 @@ def _member_tools(user, person, sections, children, leads):
         {
             "priority": priority("site"),
             "title": _("The unit's page"),
+            "kind": "site",
             "items": [
-                (_("Our unit"), reverse("unit_page")),
-                (_("FAQ"), reverse("faq")),
+                (_("Our unit"), reverse("unit_page"), "house-door"),
+                (_("FAQ"), reverse("faq"), "question-circle"),
             ],
         }
     )
     # A stable sort: groups of equal standing keep the order they are built in.
-    return sorted(groups, key=lambda group: group["priority"])
+    groups.sort(key=lambda group: group["priority"])
+    # The wide cluster and the dark tile go to the group with the most to offer,
+    # not blindly to the first: a leader who also holds the attestations role
+    # had a one-link "unit" group take the page's loudest tile while their
+    # three-link sections group squeezed into a corner.
+    featured = max(groups, key=lambda group: len(group["items"]))
+    for group in groups:
+        group["featured"] = group is featured
+    return groups
 
 
 def _member_context(user):
@@ -754,7 +803,11 @@ def _member_context(user):
     person = get_person(user)
     school_year = SchoolYear.current()
     if person is None or school_year is None:
-        return {"member_panels": [], "member_heading": _("Your unit")}
+        return {
+            "member_panels": [],
+            "member_heading": _("Your unit"),
+            "member_first_name": "",
+        }
 
     children = list(Person.objects.filter(as_child__parent=person))
     # An animateur's role is a *primary* one, which is the predicate the nav and
@@ -812,6 +865,11 @@ def _member_context(user):
         # not they also have children: "Your children" over a list of sections
         # would be a lie, and a leader with no section yet is still a leader.
         "member_heading": _("Your unit") if leads else _("Your children"),
+        # The greeting is the reader's own name, not a label over the heading:
+        # the head reads "Vos enfants" then "Bonjour Marc. 3 enfants…" because
+        # the page is a tool that knows who is holding it, and a page opener
+        # that says so costs one line it already has room for.
+        "member_first_name": person.first_name,
         "member_children": sum(1 for panel in panels if panel["kind"] == "child"),
         "member_sections": len(led),
         # The empty state explains an empty account to a family. A reader whose

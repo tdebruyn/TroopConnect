@@ -3637,6 +3637,12 @@ msgstr "Uw eenheid"
 msgid "Your children"
 msgstr "Uw kinderen"
 
+msgid "Hello %(name)s."
+msgstr "Hallo %(name)s."
+
+msgid "No absences"
+msgstr "Geen afwezigheden"
+
 msgid "Household balance"
 msgstr "Saldo van het gezin"
 
@@ -3680,10 +3686,20 @@ msgid_plural "%(counter)s reported for that activity"
 msgstr[0] "%(counter)s gemeld voor die activiteit"
 msgstr[1] "%(counter)s gemeld voor die activiteit"
 
+msgid "%(counter)s absence reported for that activity"
+msgid_plural "%(counter)s absences reported for that activity"
+msgstr[0] "%(counter)s afwezigheid gemeld voor die activiteit"
+msgstr[1] "%(counter)s afwezigheden gemeld voor die activiteit"
+
 msgid "%(counter)s member"
 msgid_plural "%(counter)s members"
 msgstr[0] "%(counter)s lid"
 msgstr[1] "%(counter)s leden"
+
+msgid "member"
+msgid_plural "members"
+msgstr[0] "lid"
+msgstr[1] "leden"
 
 msgid "Our unit"
 msgstr "Onze eenheid"

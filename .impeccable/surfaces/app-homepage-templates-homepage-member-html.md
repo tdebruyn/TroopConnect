@@ -55,24 +55,74 @@ balance band is absent when it is.
 
 ## Direction contract
 
-**THESIS.** The page is the children themselves: a panel each, under the
-household's single balance. It refuses the row of equal metric cards that every
-app dashboard opens with.
+**THESIS.** The page is a board of the reader's year, not a form report: one
+tile per person and one per action, sized by what the reader actually answers
+for. It refuses the equal-width card grid — no two tiles carry the same weight,
+and the first row is deliberately 7/5 rather than 6/6.
 
-**OWN-WORLD.** Paper ground, white 1px-bordered panels, one panel per person.
-The activity type in the charter's three colours and nothing else coloured,
-except one crimson line where money is overdue.
+**OWN-WORLD.** A full-bleed gradient in the two branch colours this unit's
+homepage already speaks — Baladins blue (#00a0de) into Louveteaux green
+(#296f52) over paper. White tiles with 1.25rem corners and a soft charter-blue
+shadow; tinted tiles at 6–8% of one branch colour; one dark tile per page
+(green→deep-blue) carrying either the household balance or, when there is no
+money, the reader's lead action. Activity types keep the charter's three
+colours; crimson appears only where money or an absence is overdue.
 
-**STORY.** The reader sees each person's next commitment and what is outstanding,
-and acts on a row of that panel without leaving the page.
+**STORY.** The reader sees each person's next commitment at a glance, settles
+the household's one balance, and reaches every tool they answer for from a tile
+rather than a menu. Nothing needs hover to be understood.
 
-**FIRST VIEWPORT.** The 84px navbar, "Vos enfants" at 34px over a one-line
-household summary, a bordered band stating the 45,00 € balance with its Payer
-action, then two panels of labelled fact rows each ending in its own actions.
+**FIRST VIEWPORT.** The 84px bar, then "Vos enfants" / "Votre unité" in the
+display serif at 44px over a greeting and household line. Immediately below, the
+dark balance tile (4-5 columns) beside the first child's tile; the next child
+wraps at 5 columns and the third at 7, so the board runs asymmetrically. Each
+person tile carries a date leaf, the activity title, its type chip and absence
+state, then its actions.
 
-**FORM.** Position 6 of 7 grounded structures, second hand; the re-roll carried
-the steer that money stays visible. seed:5ce6a7fc8487a175
+**FORM.** Position 3 of 7 grounded structures; the tile board is the brief's own
+world. seed:5ce6a7fc8487a175
 
 **FINISH.** unreviewed and undocumented is unfinished; this build ends with the
 finish review, the verdict, DESIGN.md, and every shipping raster carrying its
 provenance.
+
+## Finished build
+
+Recorded from the shipped source after the finish review. The contract above
+remains the brief; these are the values and behaviours the build settled on.
+
+- **Board.** `.member-board` is a flex row at a 26rem basis with a 1rem gap,
+  not a Bootstrap column grid. Grow weights: household balance `1.75`, first
+  person tile `1.25`, second `0.9`. Two tiles read about 7/5; three read about
+  45/32/23. Below `md` every tile takes its own row and the weights are dropped.
+  The brief's column language ("4–5 columns", "third at 7") is shorthand for
+  these weights, not for `col-*` classes.
+- **Ground.** `paper` plus two radial blooms mixed with `transparent` — Baladins
+  blue at 22% upper right, Louveteaux green at 20% lower left — over a 168°
+  wash (#e3eff8 → #f0f6f2 → #e3efe7). Tiles carry a 1.25rem radius and one
+  `0 0.5rem 1.5rem rgba(10, 66, 117, .07)` shadow, never a border.
+- **One dark tile.** The household balance uses a 145° gradient from Louveteaux
+  green (82% with #0b1a12) to charter blue (76% with #0b1a12) with one 32%
+  charter-sky bloom. When `_household_dues` returns no amount — settled, or fees
+  off — the balance tile is absent and the featured tool group's first tile
+  takes the same dark gradient. Staff and leaders with no balance get the dark
+  note in the tools.
+- **Tools.** Groups are a flex row at a 17rem basis; the most-populated group
+  takes `1.5` grow and a 24rem basis, its list is two columns, and its first
+  tile spans both. Other lists are `auto-fill` at a 9rem minimum. Children tiles
+  are tinted 7% Baladins blue, sections and unit 6% Louveteaux green, account
+  and site white.
+- **Section tile.** At `lg` (992px) and up it becomes a three-area grid:
+  identity and attendance in the left column, the next event in the right behind
+  a 1px divider, the actions across both feet. Below `lg` it is the stacked
+  person tile.
+- **Type.** The surface title uses `clamp(2rem, 3.4vw, 2.75rem)` in Source Serif
+  4; panel names 1.75rem; the balance `clamp(2.5rem, 4.6vw, 3.25rem)`; a
+  section's member count 2rem; a date leaf's day 1.875rem. Board numerals use
+  tabular figures. Labels, meta, absence lines and notes stay Muli.
+- **Absence and lateness.** A reported absence uses #b30d31 ink with a
+  charter-crimson dot; the overdue note on the dark tile uses #ffd1db. No other
+  state spends crimson.
+- **No hover dependency.** The whole tool tile is the link; its label, icon and
+  corner arrow are visible at rest. Hover lifts 2px and removes the arrow's 40%
+  opacity. Focus is a 2px solid ink outline offset 2 (white on the dark tile).

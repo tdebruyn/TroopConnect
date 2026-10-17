@@ -1,36 +1,41 @@
 {% extends "base.html" %}
 {% load i18n money %}
 {% comment %}
-  The member homepage: one panel per thing this reader answers for.
+  The member homepage: a board of the things this reader answers for.
 
-  The subject follows the role — a parent's children, a leader's sections, every
-  section for the people running the unit — while the panel keeps the same shape
-  so the page stays predictable. See homepage.views._member_context for the rule;
-  the decisions are there, not here.
+  The subject follows the role — a parent's children, a leader's sections, the
+  reader's tools for the people running the unit — while every item keeps the
+  tile shape so the page stays predictable. See homepage.views._member_context
+  for the rule; the decisions are there, not here.
+
+  The board is a flex row rather than a grid on purpose: one, two or four tiles
+  must each fill their row, and the tiles carry deliberately unequal grow
+  weights so no two rows are symmetric. A fixed grid left a hole whenever a
+  troop had an odd number of children.
 {% endcomment %}
+{% block body_class %}page-member{% endblock body_class %}
 {% block content %}
     <main class="container member-page">
         <header class="member-head">
             <h1 class="member-title">{{ member_heading }}</h1>
-            {% if member_panels %}
-                <p class="member-summary">
+            <p class="member-summary">
+                {% if member_first_name %}
+                    <span class="member-hello">{% blocktranslate with name=member_first_name %}Hello {{ name }}.{% endblocktranslate %}</span>
+                {% endif %}
                 {% if member_sections %}
                     {% blocktranslate count counter=member_sections %}{{ counter }} section you answer for.{% plural %}{{ counter }} sections you answer for.{% endblocktranslate %}
                 {% endif %}
                 {% if member_children %}
                     {% blocktranslate count counter=member_children %}{{ counter }} child linked to your account.{% plural %}{{ counter }} children linked to your account.{% endblocktranslate %}
-                    {% endif %}
-                </p>
-            {% endif %}
+                {% endif %}
+            </p>
         </header>
 
-        {% if member_dues %}
-            <section class="member-house{% if member_dues.late %} member-house-late{% endif %}">
-                <div>
-                    <p class="member-house-label">{% trans "Household balance" %}</p>
+        <div class="member-board">
+            {% if member_dues %}
+                <section class="member-house{% if member_dues.late %} member-house-late{% endif %}">
+                    <h2 class="member-house-label">{% trans "Household balance" %}</h2>
                     <p class="member-house-amount">{{ member_dues.owed|money }}</p>
-                </div>
-                <div class="member-house-grow">
                     {% if member_dues.late %}
                         <p class="member-house-note member-late">
                             {% blocktranslate with date=member_dues.deadline|date:"j F Y" trimmed %}
@@ -44,7 +49,13 @@
                             {% endblocktranslate %}
                         </p>
                     {% endif %}
-                    <p class="member-house-note text-muted">
+                    {% comment %}
+                        The money is the one dark tile on a parent's page, so
+                        the rule that produced the number travels with it: the
+                        household pays once, and the eldest child is the one
+                        billed in full.
+                    {% endcomment %}
+                    <p class="member-house-note member-house-quiet">
                         {% trans "Membership fees, this scout year." %}
                         {% if member_dues.discounted %}
                             {% trans "The first child in a household pays in full; the others pay less." %}
@@ -58,50 +69,61 @@
                         step: payments are recorded by hand.
                     {% endcomment %}
                     {% if not member_can_pay %}
-                        <p class="member-house-note text-muted">
+                        <p class="member-house-note member-house-quiet">
                             {% trans "Payments are recorded by the unit's treasurer." %}
                         </p>
                     {% endif %}
-                </div>
-                {% if member_can_pay and fees_enabled %}
-                    <a class="btn btn-primary" href="{% url 'finance:billing' %}">
-                        {% trans "Open the ledger" %}
-                    </a>
-                {% endif %}
-            </section>
-        {% endif %}
-
-        {% if member_panels %}
-            <div class="member-panels">
-                {% for panel in member_panels %}
-                    {% if panel.kind == "child" %}
-                        {% include "homepage/snippets/member_child_panel.html" %}
-                    {% else %}
-                        {% include "homepage/snippets/member_section_panel.html" %}
+                    {% if member_can_pay and fees_enabled %}
+                        <a class="member-house-action" href="{% url 'finance:billing' %}">
+                            <span>{% trans "Open the ledger" %}</span>
+                            <i class="bi bi-arrow-up-right" aria-hidden="true"></i>
+                        </a>
                     {% endif %}
-                {% endfor %}
-            </div>
-        {% elif member_show_empty %}
-            <p class="member-empty text-muted">
-                {% trans "Nothing is attached to your account yet. Your unit's leaders can link your children to it." %}
-            </p>
-        {% endif %}
+                </section>
+            {% endif %}
+
+            {% for panel in member_panels %}
+                {% cycle 'a' 'b' as rank silent %}
+                {% if panel.kind == "child" %}
+                    {% include "homepage/snippets/member_child_panel.html" with rank=rank %}
+                {% else %}
+                    {% include "homepage/snippets/member_section_panel.html" with rank=rank %}
+                {% endif %}
+            {% endfor %}
+
+            {% if member_show_empty %}
+                <p class="member-empty">
+                    {% trans "Nothing is attached to your account yet. Your unit's leaders can link your children to it." %}
+                </p>
+            {% endif %}
+        </div>
 
         {% comment %}
             The reader's other tools. The header no longer carries a menu, so
             this is where everything lives — see homepage.views._member_tools
-            for what appears for which role, and why.
+            for what appears for which role, and why. The reader's own group
+            comes first; the cluster with the most entries takes the wide tiles
+            and the dark one, and the account and the site keep the smallest,
+            because they are visited least.
         {% endcomment %}
         {% if member_tools %}
-            <section class="member-tools" aria-labelledby="member-tools-title">
+            <section class="member-tools{% if not member_panels %} member-tools-first{% endif %}" aria-labelledby="member-tools-title">
                 <h2 class="member-tools-title" id="member-tools-title">{% trans "Your tools" %}</h2>
                 <div class="member-tools-groups">
                     {% for group in member_tools %}
-                        <div class="member-tools-group">
+                        <div class="member-tools-group"
+                             data-kind="{{ group.kind }}"
+                             {% if group.featured %}data-lead="true"{% endif %}>
                             <h3 class="member-tools-group-title">{{ group.title }}</h3>
                             <ul class="member-tools-list">
-                                {% for label, url in group.items %}
-                                    <li><a class="member-tool" href="{{ url }}">{{ label }}</a></li>
+                                {% for label, url, icon in group.items %}
+                                    <li{% if forloop.first and group.featured and not member_dues %} class="member-tool-slot-anchor"{% endif %}>
+                                        <a class="member-tool" href="{{ url }}">
+                                            <span class="member-tool-icon"><i class="bi bi-{{ icon }}" aria-hidden="true"></i></span>
+                                            <span class="member-tool-label">{{ label }}</span>
+                                            <i class="bi bi-arrow-up-right member-tool-arrow" aria-hidden="true"></i>
+                                        </a>
+                                    </li>
                                 {% endfor %}
                             </ul>
                         </div>
