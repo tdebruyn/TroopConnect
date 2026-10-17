@@ -502,8 +502,9 @@ strength tracks how close the visitor is to it.
 
 Circular forms appear in two places, both times where the shape does semantic
 work rather than decoration: the wizard's progress markers (done / current /
-pending) and the band's year-line dots, which mark a rendezvous on the axis;
-their approximation lives in their position, not in a soft edge.
+pending) and the band's year-line dots, which mark a one-day activity on the
+axis. A multi-day activity is the axis itself made 3px thick for its span; it
+is the same mark at the strength a span asks for, not a second kind of badge.
 
 The one ornamental geometry in the system is the **topping**: the federation's
 flag silhouette, repeated as a background image at 10% opacity behind a coloured
@@ -646,22 +647,29 @@ members page opens with it: a charter sky band carrying the federation flag at
 ### The band's year-line
 
 The unit's year, drawn as one thin axis under its introduction: September to
-July, a tick for every month and a dot for every rendezvous where in its month
-it falls. The words are the troop's, written in the editor; the axis they hang
-on is the system's.
+July, a tick for every month, and the year's activities at the dates a
+superuser entered for them. The hero carries an empty `data-home-timeline`
+slot; the view fills it for the current school year, so the page and the
+activity list cannot hold two versions of the same dates.
 
-- **The axis is the calendar; the dots are the events.** A 1px white rule runs
-  across the eleven months, each with a 1px × 6px tick and a lowercase name at
-  the Fact label step. Each rendezvous is a filled 7px dot placed by `--at`, a
-  percentage of the year, so early and late in a month are positions rather
-  than claims.
-- **No day is ever named.** The dot's place inside its month says "start",
-  "middle" or "second half" and nothing more; the note under the axis says the
-  rest. This is the one place the system states a time without stating a day.
-- **Labels take whichever side has room.** Inscription, Veillée de Noël and
-  Camps sit above the line; Passage and Fête d'unité below. The choice is made
-  per stop so the September pair never collides, and the last stop's label runs
-  back from its dot rather than off the card.
+- **The axis is the calendar; the activity is the marker.** A 1px white rule
+  runs across the eleven months, each with a 1px × 6px tick at its *true*
+  midpoint (a month's real days, not one eleventh of the axis) and a lowercase
+  name at the Fact label step. A one-day activity is a filled 7px dot at its
+  start date's day fraction; a multi-day activity is the same line made 3px
+  thick, from its first day to its last inclusive. Both are placed by `--at`,
+  a percentage of the real date span, and the bar's `--w` is its inclusive
+  width.
+- **No day is ever named in the text.** The label names the activity and, to a
+  screen reader, its month; the exact day is read from the marker's position.
+  This is the one place the system states a time by placing it rather than
+  spelling it out, and "Dates indicatives" is the one qualification.
+- **Labels take whichever side has room.** The server estimates each label's
+  width from its name, alternates above/below, and moves a label to the other
+  side when its span would touch the last one there. The September pair
+  splits; a label that would leave the card runs back from the marker; a name
+  longer than the single-line box asks the chart for its tall step, which
+  gives the wrapped second line room.
 - **The axis compresses; it does not stack.** Below `md` the event names step
   down to 0.875rem, and below `sm` every other month keeps its name while all
   eleven keep their ticks — the graphic survives at phone width instead of
@@ -669,6 +677,10 @@ on is the system's.
 - **It speaks in the band's own white**, at the Body note step for the event
   names, the Fact label step for the dates and the Eyebrow step for the note.
   The line lives inside the unit's card, so it has no colour of its own.
+- **The window is fixed; the dates are not.** The axis is September 1 to
+  August 1, and the superuser's activity dates are validated inside it. The
+  homepage shows the current school year only, so next year's dates can be
+  prepared without appearing early.
 
 ### The desk's rooms
 

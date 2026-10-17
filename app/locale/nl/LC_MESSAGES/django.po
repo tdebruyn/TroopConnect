@@ -3774,3 +3774,30 @@ msgstr "De naam die de eenheid geeft aan de plaats waar ze samenkomt, als ze er 
 
 msgid "A picture of where the unit meets, shown beside the address on the homepage. Leave empty to show the address on its own."
 msgstr "Een afbeelding van waar de eenheid samenkomt, naast het adres op de startpagina. Laat leeg om alleen het adres te tonen."
+
+msgid "The year's dates"
+msgstr "De data van het jaar"
+
+msgid "Dates indicative"
+msgstr "Indicatieve data"
+
+msgid "Timeline activity"
+msgstr "Activiteit in de jaarkalender"
+
+msgid "Timeline activities"
+msgstr "Activiteiten in de jaarkalender"
+
+msgid "Keep it short: the year-line has room for a short label and does not truncate it."
+msgstr "Houd het kort: de jaarlijn heeft ruimte voor een korte tekst en kapt die niet af."
+
+msgid "The day the activity starts; that day's position draws the dot."
+msgstr "De dag waarop de activiteit begint; die dag bepaalt de positie van de stip."
+
+msgid "The last day, for an activity spanning several days. Leave empty for a single-day activity."
+msgstr "De laatste dag, voor een activiteit van meerdere dagen. Laat leeg voor een eendaagse activiteit."
+
+msgid "The year-line runs from 1 September to 31 July. Enter a date inside that window."
+msgstr "De jaarlijn loopt van 1 september tot 31 juli. Voer een datum binnen die periode in."
+
+msgid "The activity must end by 31 July to fit the year-line."
+msgstr "De activiteit moet uiterlijk op 31 juli eindigen om op de jaarlijn te passen."

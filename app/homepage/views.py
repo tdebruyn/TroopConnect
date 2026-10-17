@@ -18,6 +18,7 @@ from django.views import View
 from django.views.generic import TemplateView
 
 from homepage.models import ImageAsset, SiteContent
+from homepage.timeline import timeline_for
 from members import modules
 from members.models import (
     Absence,
@@ -132,6 +133,31 @@ def _split_hero(html):
     end = close + len(_MASTHEAD_CLOSE)
     hero, promoted = _promote_heading(html[start:end])
     return hero, (html[:start] + html[end:]).strip(), promoted
+
+
+# The empty div the hero carries where the year-line goes. It is matched by its
+# data attribute rather than by class order so an editor save that rearranges
+# attributes cannot silently stop the line being drawn.
+_TIMELINE_SLOT_RE = re.compile(
+    r"<div\b[^>]*\bdata-home-timeline\b[^>]*>\s*</div>", re.IGNORECASE
+)
+
+
+def _with_timeline(hero):
+    """Fill the authored year-line slot with the current school year's line.
+
+    The hero is the troop's markup and the dates are configuration, so the
+    slot stays empty in the editor and is filled here. A page that predates the
+    slot is left alone rather than being given a second copy of the line, and a
+    year with no activities removes the slot rather than leaving a gap.
+    """
+    timeline = timeline_for(SchoolYear.current())
+    html = (
+        render_to_string("homepage/snippets/timeline.html", {"timeline": timeline})
+        if timeline
+        else ""
+    )
+    return _TIMELINE_SLOT_RE.sub(lambda match: html, hero, count=1)
 
 
 # A heading element, its attributes (quote-aware so `>` inside one cannot end
@@ -859,6 +885,7 @@ class HomePage(TemplateView):
                 EDITOR_SEED_TEMPLATES[SiteContent.Page.HOME], request=self.request
             )
         hero, rest, promoted = _split_hero(html)
+        hero = _with_timeline(hero)
         return {
             "hero_html": hero,
             "hero_heading": promoted,
@@ -906,7 +933,7 @@ class UnitPage(TemplateView):
                 EDITOR_SEED_TEMPLATES[SiteContent.Page.HOME], request=self.request
             )
         hero, rest, promoted = _split_hero(html)
-        context["hero_html"] = hero
+        context["hero_html"] = _with_timeline(hero)
         context["hero_heading"] = promoted
         context["page_html"] = rest
         context["page_css"] = content["page_css"]

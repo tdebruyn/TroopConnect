@@ -26,7 +26,10 @@ the branch, and is handed the registration.
 
 The unit's real name, the federation's four branches with their ages, and the
 registration state — all already held by the instance in `TroopSettings` and
-`Branch`. No prices, no testimonials, no invented dates.
+`Branch`. The year-line's dates are activities a superuser enters in the
+admin (a start date, an optional end date for a multi-day activity); the site
+draws the current school year's rows against the band's axis. No prices, no
+testimonials, no invented dates.
 
 The desk opens on its question and nothing else. A line naming the scout year
 and the federation sat under the heading and was **removed on the user's

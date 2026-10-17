@@ -47,3 +47,12 @@ header.masthead {
   --home-ground: #f2f5f8;
 }
 
+
+/* The live page fills `data-home-timeline` with the current school year's
+ * activities. The editor has no server render, so the slot is an empty box;
+ * outline it so the superuser can see where the line will be drawn. */
+[data-home-timeline]:empty {
+  min-height: 4rem;
+  border: 1px dashed rgba(255, 255, 255, 0.45);
+  border-radius: 0.25rem;
+}

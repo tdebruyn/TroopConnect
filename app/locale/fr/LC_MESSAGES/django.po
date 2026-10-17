@@ -3777,3 +3777,30 @@ msgstr "Le nom que l'unité donne au lieu où elle se réunit, si elle en donne 
 
 msgid "A picture of where the unit meets, shown beside the address on the homepage. Leave empty to show the address on its own."
 msgstr "Une image de l'endroit où l'unité se réunit, affichée à côté de l'adresse sur la page d'accueil. Laissez vide pour n'afficher que l'adresse."
+
+msgid "The year's dates"
+msgstr "Les rendez-vous de l'année"
+
+msgid "Dates indicative"
+msgstr "Dates indicatives"
+
+msgid "Timeline activity"
+msgstr "Activité du calendrier"
+
+msgid "Timeline activities"
+msgstr "Activités du calendrier"
+
+msgid "Keep it short: the year-line has room for a short label and does not truncate it."
+msgstr "Restez bref : la ligne de l'année a la place d'un libellé court et ne le tronque pas."
+
+msgid "The day the activity starts; that day's position draws the dot."
+msgstr "Le jour où l'activité commence ; ce jour détermine la position du point."
+
+msgid "The last day, for an activity spanning several days. Leave empty for a single-day activity."
+msgstr "Le dernier jour, pour une activité de plusieurs jours. Laissez vide pour une activité d'un jour."
+
+msgid "The year-line runs from 1 September to 31 July. Enter a date inside that window."
+msgstr "La ligne de l'année va du 1er septembre au 31 juillet. Entrez une date dans cette période."
+
+msgid "The activity must end by 31 July to fit the year-line."
+msgstr "L'activité doit se terminer au plus tard le 31 juillet pour figurer sur la ligne de l'année."

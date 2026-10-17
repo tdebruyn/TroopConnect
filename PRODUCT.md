@@ -82,6 +82,10 @@ competitor cannot make without abandoning its own architecture.
   synchronous, and logged.
 - **Agenda.** Per section, with absence reports from families. Events older than
   30 days are purged automatically; recent past events are shown muted.
+- **Public year-line.** The homepage's timeline is configured by a superuser as
+  named activities with a start date and an optional end date. The current
+  school year's activities are drawn against a September–July axis: a dot for a
+  one-day activity, a short thicker bar for a multi-day one.
 - **Fees.** The household is the child's address. The eldest child pays in full,
   siblings get a discount, leaders pay a flat rate and are outside the sibling
   rule. An optional late penalty applies after a deadline. The trésorier

@@ -1,0 +1,28 @@
+{% load i18n l10n %}
+{% comment %}
+  The year-line, drawn from the current school year's TimelineActivity rows.
+
+  The axis is filled in by the view through the hero's `data-home-timeline`
+  slot, not authored in the editor: the dates and their positions are one
+  fact, and letting the page and the activity list each hold a copy of them is
+  how they drift. A multi-day activity is a bar rather than a dot, drawn from
+  its first day to its last.
+{% endcomment %}
+<div class="hero-timeline{% if timeline.tall %} hero-timeline--tall{% endif %}">
+    <div class="hero-timeline__chart">
+        <ol class="hero-timeline__events" aria-label="{% trans "The year's dates" %}">
+            {% for event in timeline.events %}
+                <li class="hero-timeline__event hero-timeline__event--{{ event.side }}{% if event.end_aligned %} hero-timeline__event--end{% endif %}{% if event.is_range %} hero-timeline__event--range{% endif %}"
+                    style="--at: {{ event.at|unlocalize }}%{% if event.is_range %}; --w: {{ event.width|unlocalize }}%{% endif %}">
+                    <span class="hero-timeline__what">{{ event.name }}<span class="visually-hidden">, {{ event.month }}</span></span>
+                </li>
+            {% endfor %}
+        </ol>
+        <div class="hero-timeline__axis" aria-hidden="true">
+            {% for month in timeline.months %}
+                <span class="hero-timeline__month" style="--at: {{ month.at|unlocalize }}%">{{ month.label }}</span>
+            {% endfor %}
+        </div>
+    </div>
+    <p class="hero-timeline__note">{% trans "Dates indicative" %}</p>
+</div>

@@ -251,12 +251,23 @@ header.masthead .card p {
 }
 
 /* The unit's year as an axis: September to July, one tick per month, one dot
-   per rendezvous placed where in its month it falls. The day is never named —
-   the dot's position is the whole of the precision, and the note says the
-   rest. A year with four busy months should read as a long year, not as four
-   dates with gaps between them. */
+   per activity and a bar for an activity that lasts several days. The date is
+   the position, but the text names only the month — the day is read off the
+   line, not spelled out — and the note says the schedule may move.
+
+   `--axis-y` is the line's height in the chart. The tall step gives a wrapped
+   label a second line to live on without changing the default band's height. */
 header.masthead .card .hero-timeline {
+  --axis-y: 3.5rem;
   margin-top: 1.75rem;
+}
+
+header.masthead .card .hero-timeline--tall {
+  --axis-y: 3.75rem;
+}
+
+header.masthead .card .hero-timeline--tall .hero-timeline__chart {
+  height: 8rem;
 }
 
 header.masthead .card .hero-timeline__chart {
@@ -268,7 +279,7 @@ header.masthead .card .hero-timeline__chart {
 header.masthead .card .hero-timeline__chart::before {
   content: "";
   position: absolute;
-  top: 3.5rem;
+  top: var(--axis-y);
   left: 0;
   right: 0;
   height: 1px;
@@ -285,7 +296,8 @@ header.masthead .card .hero-timeline__events {
    dot is the point itself. */
 header.masthead .card .hero-timeline__event {
   position: absolute;
-  top: 3.5rem;
+  z-index: 1;
+  top: var(--axis-y);
   left: var(--at);
   width: 0;
   height: 0;
@@ -303,14 +315,41 @@ header.masthead .card .hero-timeline__event::before {
   transform: translate(-50%, -50%);
 }
 
+/* A multi-day activity is the line itself, slightly thicker: the same white,
+   three pixels instead of one, from the first day to the last. The event box
+   takes the span (`--w`) so the bar can be 100% of it: a percentage on the
+   pseudo-element itself would resolve against the zero-width dot box and
+   collapse to the minimum. The minimum keeps a two-day activity visible at
+   phone width. */
+header.masthead .card .hero-timeline__event--range {
+  width: var(--w);
+}
+
+header.masthead .card .hero-timeline__event--range::before {
+  left: 0;
+  width: 100%;
+  min-width: 7px;
+  height: 3px;
+  border-radius: var(--site-pill);
+  transform: translateY(-50%);
+}
+
 header.masthead .card .hero-timeline__what {
   position: absolute;
   left: 0;
+  /* A configured name may be longer than the old fixed labels. The explicit
+     max-content width is load-bearing: the label's containing block is the
+     zero-width point on the line, and without it a wrapping label collapses
+     to one word per line. `max-width` is where a long name wraps; the `--tall`
+     step above gives the second line room. */
+  width: max-content;
+  max-width: 10rem;
   font-size: 0.9375rem;
   font-weight: 600;
   line-height: 1.25;
   color: #fff;
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: break-word;
 }
 
 /* The label sits one small gap from its dot, on whichever side has room. */
@@ -334,7 +373,7 @@ header.masthead .card .hero-timeline__event--end .hero-timeline__what {
    name is the caption, and the quieter of the two. */
 header.masthead .card .hero-timeline__axis {
   position: absolute;
-  top: 3.5rem;
+  top: var(--axis-y);
   right: 0;
   left: 0;
 }

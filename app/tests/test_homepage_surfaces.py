@@ -11,11 +11,14 @@ the sentence out of the catalogue.
 from datetime import date, timedelta
 from decimal import Decimal
 
+from django.core.exceptions import ValidationError
 from django.urls import reverse
 from django.utils import translation
+from django.utils.html import escape
 
 from finance.models import FeeRule
-from homepage.models import SiteContent
+from homepage.models import SiteContent, TimelineActivity
+from homepage.timeline import axis_for, timeline_for
 from homepage.views import (
     _desk_groups,
     _desk_rows,
@@ -278,6 +281,7 @@ class PublicHomepageTest(DeskTestBase):
         response = self.client.get("/", {"annee": self.reference_year - 12})
         self.assertContains(response, "topping_Louveteaux_vert_100.png")
 
+
     def test_the_chosen_year_is_marked(self):
         year = self.year_in(self.baladins)
         response = self.client.get("/", {"annee": year})
@@ -403,6 +407,152 @@ class PublicHomepageTest(DeskTestBase):
         response = self.client.get("/unite/")
         self.assertEqual(response.status_code, 200)
         self.assertNotContains(response, "desk-question")
+
+
+class TimelineTest(TroopSettingsTestCase):
+    """The year-line is drawn from dates, not from markup someone typed.
+
+    The current school year is whatever the test run's date makes it; the
+    assertions derive their expected fractions from that axis so the tests do
+    not rot when the calendar moves.
+    """
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.school_year = SchoolYear.current()
+        year = cls.school_year.name
+        cls.inscription = TimelineActivity.objects.create(
+            name="Inscription", name_fr="Inscription",
+            start_date=date(year, 9, 5),
+        )
+        cls.passage = TimelineActivity.objects.create(
+            name="Passage", name_fr="Passage",
+            start_date=date(year, 9, 19),
+        )
+        cls.veillee = TimelineActivity.objects.create(
+            name="Veillée de Noël", name_fr="Veillée de Noël",
+            start_date=date(year, 12, 12),
+        )
+        cls.fete = TimelineActivity.objects.create(
+            name="Fête d'unité", name_fr="Fête d'unité",
+            start_date=date(year + 1, 4, 3),
+        )
+        cls.camps = TimelineActivity.objects.create(
+            name="Camps", name_fr="Camps",
+            start_date=date(year + 1, 7, 18),
+            end_date=date(year + 1, 7, 25),
+        )
+
+    def timeline(self):
+        with translation.override("fr"):
+            return timeline_for(self.school_year)
+
+    def events_by_name(self):
+        return {event["name"]: event for event in self.timeline()["events"]}
+
+    def test_a_date_is_placed_by_its_day_fraction(self):
+        axis_start, axis_end = axis_for(self.inscription.start_date)
+        total = (axis_end - axis_start).days
+        expected = (self.inscription.start_date - axis_start).days / total * 100
+        self.assertAlmostEqual(
+            self.events_by_name()["Inscription"]["at"], expected, places=2
+        )
+
+    def test_a_multiday_activity_is_an_inclusive_span(self):
+        axis_start, axis_end = axis_for(self.camps.start_date)
+        total = (axis_end - axis_start).days
+        camps = self.events_by_name()["Camps"]
+        self.assertTrue(camps["is_range"])
+        self.assertAlmostEqual(
+            camps["width"], 8 / total * 100, places=2
+        )  # the 18th through the 25th
+
+    def test_month_ticks_sit_at_their_months_midpoints(self):
+        months = self.timeline()["months"]
+        axis_start, axis_end = axis_for(self.inscription.start_date)
+        total = (axis_end - axis_start).days
+
+        def midpoint(month, next_month):
+            return (
+                (month - axis_start).days
+                + (next_month - month).days / 2
+            ) / total * 100
+
+        year = self.school_year.name
+        self.assertEqual([month["label"] for month in months], [
+            "sept", "oct", "nov", "déc", "janv", "févr",
+            "mars", "avr", "mai", "juin", "juil",
+        ])
+        self.assertAlmostEqual(
+            months[0]["at"], midpoint(date(year, 9, 1), date(year, 10, 1)),
+            places=2,
+        )
+        self.assertAlmostEqual(
+            months[5]["at"],
+            midpoint(date(year + 1, 2, 1), date(year + 1, 3, 1)),
+            places=2,
+        )
+
+    def test_the_september_pair_splits_across_the_line(self):
+        events = self.events_by_name()
+        self.assertEqual(events["Inscription"]["side"], "above")
+        self.assertEqual(events["Passage"]["side"], "below")
+
+    def test_another_school_years_activities_are_not_drawn(self):
+        year = self.school_year.name
+        TimelineActivity.objects.create(
+            name="Trop tôt", name_fr="Trop tôt",
+            start_date=date(year + 1, 9, 5),
+        )
+        self.assertNotIn("Trop tôt", self.events_by_name())
+
+    def test_a_long_name_asks_for_the_tall_chart(self):
+        TimelineActivity.objects.create(
+            name="Un nom vraiment trop long", name_fr="Un nom vraiment trop long",
+            start_date=date(self.school_year.name, 10, 3),
+        )
+        self.assertTrue(self.timeline()["tall"])
+
+    def test_an_activity_cannot_end_before_it_starts(self):
+        activity = TimelineActivity(
+            name="X", name_fr="X",
+            start_date=date(self.school_year.name, 9, 5),
+            end_date=date(self.school_year.name, 9, 4),
+        )
+        with self.assertRaises(ValidationError) as caught:
+            activity.full_clean()
+        self.assertIn("end_date", caught.exception.message_dict)
+
+    def test_a_date_outside_september_to_july_is_rejected(self):
+        activity = TimelineActivity(
+            name="X", name_fr="X", start_date=date(self.school_year.name, 8, 15)
+        )
+        with self.assertRaises(ValidationError) as caught:
+            activity.full_clean()
+        self.assertIn("start_date", caught.exception.message_dict)
+
+    def test_the_page_draws_the_configured_line(self):
+        response = self.client.get("/")
+        self.assertNotContains(response, "data-home-timeline")
+        for name in ("Inscription", "Passage", "Veillée de Noël",
+                     "Fête d'unité", "Camps"):
+            # The template autoescapes the apostrophe in "Fête d'unité".
+            self.assertContains(response, escape(name))
+        camps = self.events_by_name()["Camps"]
+        self.assertContains(response, "hero-timeline__event--range")
+        # The style values stay machine-readable: a localized decimal comma
+        # would make the browser drop the whole declaration.
+        self.assertContains(response, f'--at: {camps["at"]}%')
+        self.assertContains(response, f'--w: {camps["width"]}%')
+        self.assertNotContains(
+            response, f'--at: {str(camps["at"]).replace(".", ",")}%'
+        )
+
+    def test_an_empty_year_removes_the_slot(self):
+        TimelineActivity.objects.all().delete()
+        response = self.client.get("/")
+        self.assertNotContains(response, "data-home-timeline")
+        self.assertNotContains(response, "hero-timeline__chart")
 
 
 class MemberHomepageTest(DeskTestBase):
