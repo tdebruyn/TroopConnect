@@ -4,7 +4,7 @@
     {% trans "Sign Out" %}
 {% endblock %}
 {% block hat_title %}
-    <h1>{% trans "Sign Out" %}</h1>
+    {% trans "Sign Out" %}
 {% endblock hat_title %}
 {% block subcontent %}
     <p>{% trans 'Are you sure you want to sign out?' %}</p>
@@ -17,5 +17,4 @@
         {% endif %}
         <button class="btn btn-outline-danger" type="submit">{% trans 'Sign Out' %}</button>
     </form>
-</div>
 {% endblock subcontent %}

@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n static %}
 {% comment %}
   One section, for a leader or for someone who runs the unit. The same tile as a
   child's, with the section's own facts and the two things its leaders do — the
@@ -11,7 +11,14 @@
 <section class="member-panel" data-kind="section" data-rank="{{ rank }}">
     <header class="member-panel-head">
         <div class="member-panel-id">
-            <h2 class="member-panel-name">{{ panel.section.name }}</h2>
+            <div class="member-panel-title">
+                {% if panel.branch_logo %}
+                    <img class="member-panel-logo"
+                         src="{% static panel.branch_logo %}"
+                         alt="" />
+                {% endif %}
+                <h2 class="member-panel-name">{{ panel.section.name }}</h2>
+            </div>
             {% comment %}
                 A section is often named after its branch ("Louveteaux"), and
                 printing both turns the tile's second line into a stutter. The

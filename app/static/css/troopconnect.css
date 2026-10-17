@@ -60,19 +60,19 @@
      belongs to the page's door — the two actions in the bar — and to the two
      round marks the desk draws; nowhere else in the product is round. */
   --site-pill: 999px;
-  /* The bar is a pane of glass, and these two are what is in it: how much of
-     its own colour it lays over the backdrop, and what it does to the backdrop
-     itself. base.html applies them, because `.bg-primary` carries the navbar's
-     fill with `!important` and only an inline `!important` out-ranks it — but
-     they are written here so a page can restate them.
-
-     The public homepage lowers the fill to let the troop's photograph through,
-     and can afford to because its band is dark underneath; a page with paper
-     behind the bar cannot, which is why this default stays as opaque as it is.
-     The dimming is what keeps white nav links legible over a photograph that
-     may be bright anywhere in it — the fill's alpha never was. */
-  --site-navbar-fill: rgba(10, 66, 117, 0.72);
-  --site-navbar-backdrop: blur(14px) brightness(0.45);
+  /* One bar for the whole site: the board's Louveteaux green into charter
+     blue, taken down until white navigation type is comfortable. base.html
+     paints it with `background`, not `background-color`, which is why the
+     value is a gradient. The dimming stays as the guarantee behind the glass —
+     it is what keeps the white links legible whatever a troop's photograph
+     puts underneath. */
+  --site-navbar-fill: linear-gradient(
+    110deg,
+    rgba(41, 111, 82, 0.94) 0%,
+    rgba(24, 68, 88, 0.94) 52%,
+    rgba(10, 66, 117, 0.94) 100%
+  );
+  --site-navbar-backdrop: blur(14px) brightness(0.82);
   /* The ground the top of the public page stands on: the page's own paper with
      a trace of the charter ink in it. Two things meet on it — the unit's
      photograph lets go of itself into it, and the four branches' tints are read
@@ -475,29 +475,6 @@ header.masthead .card .hero-timeline__note {
   .navbar-brand {
     font-size: 0.9375rem;
   }
-}
-
-/* The public homepage is the one page whose top is a photograph, so it is the
-   one page that can let the bar be mostly that photograph: at 30% the fill is a
-   tint on the glass rather than the glass's colour, and the troop's own picture
-   is what the visitor sees behind the logo and the menu.
-
-   The dimming stays at full strength, and that is the point — it is what keeps
-   the white links legible over a picture that is bright somewhere in it. The
-   alpha here is a look; the brightness filter is the guarantee.
-
-   Scoped to the page rather than applied everywhere because every other page
-   has paper behind the bar, where the same alpha would wash it out to a pale
-   slate and the two would no longer look like one site. */
-.page-home {
-  /* Barely a fill at all: at 18% the glass is a haze over a band that is
-     already dark, and the troop's photograph comes through it. The dimming is
-     *not* repeated here either — the band has dimmed and greened the picture
-     once already, and repeating it in the glass turned the bar into a near-black
-     strip lying across the top of the picture, which is the opposite of a bar
-     made of the picture. */
-  --site-navbar-fill: rgba(10, 66, 117, 0.18);
-  --site-navbar-backdrop: blur(14px) brightness(1.02) saturate(114%);
 }
 
 /* The bar's two actions, and they are a *pair*: the page exists to get a child
@@ -1009,6 +986,15 @@ body {
   color: var(--branch-ink, #0a4275);
 }
 
+/* The federation's mark for the branch, beside its name. A branch no preset
+   made has no mark and keeps its words alone. */
+.desk-segment-logo {
+  flex: none;
+  align-self: center;
+  height: 1.75rem;
+  width: auto;
+}
+
 .desk-segment-ages {
   font-size: 0.8125rem;
   color: var(--branch-ink, #5d666e);
@@ -1170,6 +1156,13 @@ body {
 .desk-answer-text {
   flex: 1 1 auto;
   min-width: 0;
+}
+
+.desk-answer-logo {
+  display: block;
+  height: 3.5rem;
+  width: auto;
+  margin-bottom: 0.75rem;
 }
 
 .desk-answer-label {
@@ -1435,17 +1428,9 @@ body {
 --------------------------------------------------------------------------- */
 
 .page-member {
-  /* The bar joins the board: the same Louveteaux green into charter blue,
-     taken down until white navigation type is comfortable. The fill is a
-     gradient because base.html paints it with `background`, not
-     `background-color`; the dimming stays as the guarantee behind the glass. */
-  --site-navbar-fill: linear-gradient(
-    110deg,
-    rgba(41, 111, 82, 0.94) 0%,
-    rgba(24, 68, 88, 0.94) 52%,
-    rgba(10, 66, 117, 0.94) 100%
-  );
-  --site-navbar-backdrop: blur(14px) brightness(0.82);
+  /* Every signed-in page stands on the board's ground, not on bare paper: the
+     bar, the page head and the tiles are one surface. The bar itself is the
+     site's default in `:root`, so the ground is what this class exists for. */
   background-color: #f2f5f8;
   background-image:
     radial-gradient(
@@ -1528,6 +1513,26 @@ body {
   }
 }
 
+/* The page head replaces the old sky-blue band: the page's name opens the page
+   on the board's own ground, in the serif the board uses for its title. There
+   is no second ground above the content — the head and the page are one
+   surface, which is what lets the white tiles and cards carry the separation. */
+.page-head {
+  padding: 2.5rem 0 0;
+}
+
+.page-lede {
+  max-width: 68ch;
+  margin: 0.5rem 0 0;
+  font-size: 1.0625rem;
+  line-height: 1.5;
+  color: #515a63;
+}
+
+.page-body {
+  padding-top: 1.75rem;
+}
+
 .member-page {
   padding-top: 2.5rem;
   padding-bottom: 3.5rem;
@@ -1539,7 +1544,8 @@ body {
 
 /* The serif carries the page's name, as it carries the public page's unit
    name: the board is a place, and the title is its sign. */
-.member-title {
+.member-title,
+.page-title {
   font-family: var(--font-display);
   font-size: clamp(2rem, 3.4vw, 2.75rem);
   font-weight: 700;
@@ -1633,6 +1639,27 @@ body {
   font-weight: 700;
 }
 
+.member-panel-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.member-panel-logo {
+  flex: none;
+  height: 2.5rem;
+  width: auto;
+}
+
+/* A child's logo matches the two lines it sits beside — the name and the
+   section — rather than the monogram, so the header reads as two marks of one
+   height around the name. */
+.member-child-logo {
+  margin-left: auto;
+  height: 3.5rem;
+}
+
 .member-panel-name {
   font-family: var(--font-display);
   font-size: 1.75rem;
@@ -1640,6 +1667,7 @@ body {
   line-height: 1.1;
   letter-spacing: -0.01em;
   margin: 0;
+  min-width: 0;
 }
 
 .member-panel-meta {
@@ -2065,6 +2093,17 @@ body {
   list-style: none;
   margin: 0;
   padding: 0;
+}
+
+/* A label that wraps to two lines made its tile taller than the one beside it;
+   the row is one object, so every anchor fills the row's height. */
+.member-tools-list > li {
+  display: flex;
+  min-width: 0;
+}
+
+.member-tools-list > li > .member-tool {
+  flex: 1;
 }
 
 .member-tools-group[data-lead="true"] .member-tools-list {

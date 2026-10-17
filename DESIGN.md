@@ -117,10 +117,10 @@ components:
     textColor: "#800924"
     rounded: "{rounded.md}"
     padding: "1rem"
-  banner:
-    backgroundColor: "{colors.charter-sky}"
-    textColor: "{colors.white}"
-    padding: "3.625rem 0.75rem 0.5rem"
+  page-head:
+    backgroundColor: "transparent"
+    textColor: "{colors.charter-blue-deep}"
+    padding: "2.5rem 0 0"
   member-tile:
     backgroundColor: "{colors.white}"
     textColor: "{colors.charter-blue-deep}"
@@ -190,12 +190,12 @@ The result is deliberately unglamorous and consistently so. Density follows the
 task rather than the brand: a settings page is a stack of cards, a member list is
 a striped table, a form is one labelled field per block. The federation shows up
 in flat charter colour and in bold Muli — and, in four places, at field scale
-rather than as an accent: the banner's flag silhouette behind a page title, the
+rather than as an accent: the green-to-blue bar that opens every page, the
 ground the enrolment desk stands on, which is the four branches drawn as four
 columns, the desk's answer, which takes the matched branch's own colour as its
-ground, and the member board's full-bleed paper ground, which lifts the two
-branch colours the unit's public page already speaks into a wash behind white
-tiles. There is no troop-level colour, no theme picker, no second accent: the
+ground, and the member ground every signed-in page stands on, which lifts the
+two branch colours the unit's public page already speaks into a wash behind
+white tiles. There is no troop-level colour, no theme picker, no second accent: the
 palette is the federation's, and the unit's identity is carried by its name and
 the logo it uploads.
 
@@ -209,7 +209,7 @@ reading a page.
 **Key Characteristics:**
 - Bootstrap's own primitives, used as intended, restyled only where a task needs it
 - One typeface (Muli) and one flat charter palette, both inherited, neither configurable
-- A sky-blue banner with the federation flag behind it as the recurring page opener
+- One green-to-blue bar and a serif page head on the member ground as the recurring opener
 - Thin 1px lines and 0.25rem corners on the product; the member board's 1.25rem tiles trade the border for one soft charter-blue shadow
 - Paper-filled fields on a paper-coloured page, separated by a border and a blue focus halo
 - The homepage's desk standing on the four branches' colours, at the one place the page spends them
@@ -227,8 +227,9 @@ federation's; none was chosen by this project.
   primary button, the navbar gradient, and the focus halo. It is also the page's
   *only* text colour — there is no separate near-black; headings and body differ
   by size and weight, not by colour.
-- **Charter Sky** (#15adea): The banner band. Used behind the page title on every
-  members page, and nowhere else. See Components → Banner.
+- **Charter Sky** (#15adea): The theme's light blue. It survives in the member
+  dark tile's corner bloom; it is no longer a page band. See Components → Page
+  head.
 
 ### Secondary
 - **Charter Green Deep** (#304a3c): The quiet second voice — the navbar's
@@ -302,9 +303,9 @@ federation's; none was chosen by this project.
 
 ### The member board
 
-The signed-in homepage is the one surface that changes ground edge to edge. It is
-still paper and branch colour, but mixed rather than laid on, so the tiles keep
-their own edges without a line.
+Every signed-in page stands on this ground edge to edge, and the homepage is
+where the board's tiles fill it. It is still paper and branch colour, but mixed
+rather than laid on, so the tiles keep their own edges without a line.
 
 - **Member Ground**: `paper` with two radial blooms — Baladins blue at 22% in the
   upper right, Louveteaux green at 20% in the lower left — over a 168° wash from
@@ -341,6 +342,12 @@ own branch colour.
 
 - **Baladins** #00a0de, **Louveteaux** #296f52, **Éclaireurs** #004f9f,
   **Pionniers** #d51317.
+
+The federation also ships a mark per branch, `logo_<Branch>.png` (mapped by
+`BRANCH_LOGOS` in `homepage/views.py`). It is spent beside the branch's name
+wherever that name is a title — the desk's four rooms, the answer sheet and a
+section tile — and only where `Branch.key` matches a preset. A branch no preset
+made has no mark, exactly as it has no colour and no topping.
 
 They are spent on the homepage, where the branches are the subject, and in five
 strengths of one idea: the desk field's columns at 15%, the rail's 4px rules at
@@ -435,13 +442,10 @@ third case exists. Colour is still not a hierarchy tool —
 see the Weight-Not-Colour Rule.
 
 ### Hierarchy
-- **Display** (700, `calc(1.375rem + 1.5vw)` → 2.5rem, 1.2): The page title
-  inside the banner on members pages without a board. Fluid between roughly
-  1.6rem and 2.5rem. One per page.
-- **Surface display** (700, `clamp(2rem, 3.4vw, 2.75rem)`, 1.08): The member
-  page's `h1` — "Vos enfants" / "Votre unité" — and the desktop's question. It
-  opens the page without a band, so it carries the page's name at the size the
-  band would have.
+- **Surface display** (700, `clamp(2rem, 3.4vw, 2.75rem)`, 1.08): Every page's
+  `h1` in its page head — "Vos enfants", "Historique des messages" — and the
+  desktop's question. It opens the page without a band, so it carries the page's
+  name at the largest step on the surface.
 - **Headline** (700, `calc(1.325rem + 0.9vw)` → 2rem, 1.2): Section headings —
   the h2s the theme's `.h5` and card titles do not cover.
 - **Title** (700, 1.25rem, 1.2): Card titles, wizard step titles, settings group
@@ -524,8 +528,8 @@ sharing it.
 
 **The site shell** is fixed: an 84px navbar (set inline in `base.html`, and
 mirrored as `--site-navbar-height` in CSS in **px, not rem**, because the navbar
-itself does not follow the root font size), then an optional banner, then a
-`.container` holding the page.
+itself does not follow the root font size), then the page head — or, on the
+public page, the troop's photo band — then a `.container` holding the page.
 
 It is a **full-height column** — `body` is `display: flex; flex-direction:
 column; min-height: 100vh` — so that a page shorter than the window still ends
@@ -535,12 +539,11 @@ does not use. The slot exists so the *footer* keeps its own 3rem gap: an auto
 margin on the footer itself would eat that gap on every long page, and on a page
 that already fills the screen the whole mechanism is inert.
 
-**The navbar is a pane of glass.** Its height and the two properties that make
-it what it is live in inline style on the element, because `.bg-primary` carries
-the navbar's fill with `!important` and only an inline `!important` out-ranks
-it. The two properties are named in `:root` and *applied* by `base.html`
-(`--site-navbar-fill`, `--site-navbar-backdrop`), which is what lets a page
-restate them without a style attribute of its own.
+**The navbar is one green-to-blue band on every page.** Its height and the two
+properties that make it what it is live in inline style on the element, because
+`.bg-primary` carries the navbar's fill with `!important` and only an inline
+`!important` out-ranks it. The two properties are named once in `:root` and
+*applied* by `base.html` (`--site-navbar-fill`, `--site-navbar-backdrop`).
 
 - **The bar is shallow enough to be chrome rather than a header.** 84px with a
   66px mark leaves the unit's name and the two doors on one line and gives the
@@ -555,36 +558,29 @@ restate them without a style attribute of its own.
   charter fill and rounded bottom corners; white links over a photograph are a
   contrast accident, not a design.
 - **What is behind the glass is what you see.** A `backdrop-filter` blurs and
-  dims the backdrop — the band the page opens with — and the fill is only a tint
-  laid over the result. That is why the bar reads as the band seen through
-  glass rather than as a bar of its own colour.
+  dims the backdrop — the ground the page opens with — and the fill is the
+  gradient laid over the result. The bar reads as the site's own chrome on every
+  page, rather than as a different colour per surface.
 - **The dimming is the guarantee, the alpha is the look.** White nav links are
   legible only while their ground stays dark, and a troop's photograph may be
   bright anywhere in it. The fill's alpha can never promise that; the
-  `brightness()` in the backdrop filter can, and it is what lets the default bar
-  work over paper and the homepage's over a photograph.
+  `brightness()` in the backdrop filter can, and it is what lets the one bar work
+  over paper, over the member ground and over the public page's photograph.
 - **The glass only sees what is painted before it.** `z-index: 2` on `.navbar`
   is load-bearing rather than tidy: the hero band is a positioned sibling that
   comes later in the document, and without the order stated the band paints over
   the bar and swallows the logo and the menu.
-- **The homepage restates both values** (`.page-home`, read off the `body_class`
-  block). Its band is dark underneath, so it can drop the fill to 30% and let the
-  photograph through; every other page has paper behind the bar, where the same
-  alpha washes it out to a pale slate and the two stop looking like one site.
-- **The member page restates them too** (`.page-member`, read off its own
-  `body_class` block). Its board is a green-to-blue ground, so the bar takes the
-  same two branch colours: a 110° fill from Louveteaux green through a slate
-  midpoint to charter blue, every stop at 94%, with a `brightness(0.82)` dimming
-  behind it. The bar reads as the board seen through glass rather than as a bar
-  of its own colour. Below `md` the collapsed menu keeps that gradient instead of
-  base.html's navy panel, so the account never opens onto a third ground. The
-  public page's bar is untouched: `.page-home` keeps its own restatement.
+- **No page restates the bar.** The gradient is a default in `:root`; a page
+  supplies the ground beneath it — the public page's photograph, the member
+  ground — and the `page-member` class carries only that ground now. Below `md`
+  the collapsed menu keeps the gradient instead of base.html's navy panel, so the
+  account never opens onto a third ground.
 
 Content is laid out at `col-md-12` by default and
 split into halves or thirds only where two things genuinely sit side by side; a
 form is one full-width field per block.
 
-**The member board.** A signed-in reader gets the same shell without a banner:
+**The member board.** A signed-in reader gets the same shell without a band:
 the 84px bar, then a `.container` whose `.member-page` sets 2.5rem above the
 head and 3.5rem below (1.75rem on a phone). The head is a surface display title
 over one summary line; the board follows it at 1.75rem, and the tools at 2.75rem
@@ -842,20 +838,21 @@ Nothing about a button is custom.
   outline offset 2 for focus, because a 25%-alpha halo on white is only about
   1.5:1 and a keyboard reader can lose it; on the dark tile the outline is white.
 
-### Banner
+### Page head
 
-The signature component, and the only page chrome this project owns. Every
-members page opens with it: a charter sky band carrying the federation flag at
-10% opacity, holding the page's `h1` and a one-line lede.
+Every signed-in page opens with its name in the display serif on the member
+ground, with an optional one-line lede under it. There is no coloured band
+between the bar and the content: the head and the page are one surface, and the
+white tiles and cards carry the separation.
 
-- **Markup:** `bg-ls-bleu-clair bg-topping-federation topping-white bg-topping-opacity-10`,
-  with the title and lede supplied through the `hat_title` and `hat_text` blocks.
-- **Type:** White display type on the band, the `h1` first and the lede directly
-  under it, indented one column from the left on `md` and up.
-- **Behaviour:** It is the page's *identifier*, not its content. It always says
-  what page you are on, it is the same on every page, and it never carries
-  actions — the buttons live in the content below it.
-- **The homepage is the exception:** its band is a photo rather than a flat band,
+- **Markup:** `members/base.html` renders `hat_title` / `hat_text` inside
+  `.page-head`; the title is the page's `h1` and the lede is `.page-lede`.
+- **Type:** The title takes the surface-display step in Source Serif 4; the lede
+  takes the Lede step in `muted-on-field`.
+- **No ground of its own.** A head that laid a second ground above the board's
+  ground made the site open on a colour the signed-in homepage never used. The
+  head is the identifier; the bar above and the tiles below are the chrome.
+- **The public band is the exception:** its band is a photo rather than a flat band,
   and it stays an ordinary block in the flow (not absolutely positioned), because
   the homepage editor drops content directly beneath it. It is also the one band
   a troop writes itself: the unit's own name and description seed it, its text
@@ -897,9 +894,10 @@ members page opens with it: a charter sky band carrying the federation flag at
   photograph and the same green, so the words read there exactly as they do on
   the site; what it does not have is the hard edge into the desk, so its band
   ends on the page colour the blocks are dropped onto.
-- **The signed-in homepage has no banner.** Its board is the page's identifier;
-  a band that repeats "your unit" above a page whose subject is the reader's own
-  people would be a second title. The 84px bar, then the surface display title.
+- **The signed-in pages have no band.** Their page head is the identifier; a band
+  that repeated "your unit" above a page whose subject is the reader's own people
+  would be a second title. The 84px bar, then the surface display title on the
+  member ground.
 
 ### The band's year-line
 
@@ -960,6 +958,10 @@ inside one of the four answers would be asked twice.
   rule only has to be seen and the name has to be read, and they are not the same
   value for two of the four branches — see `BRANCH_INKS`. A branch no preset made
   has neither: its room is the page's own ground and its rule is the section's.
+- **The branch's own mark sits beside its name.** The federation's
+  `logo_<Branch>.png` is spent at 1.75rem beside the room's name. A branch no
+  preset made has no mark and keeps its words alone — the same rule as its
+  colour and its topping.
 - **The question sits above the strip, not on it**, in the display face and at
   the largest size on the page. The section is what a parent came for; it is not
   allowed to whisper, and it is not allowed to ask from inside an answer.
@@ -984,6 +986,9 @@ alone:
   plate the sheet is mounted in rather than as the sheet's own edge, and the
   branch is already stated by the name in the sentence and by the chip the
   visitor chose.
+- **The mark is stated again at the sheet's scale.** The branch's
+  `logo_<Branch>.png` stands at 3.5rem above the answer's label, so the mark a
+  parent scanned in the rail is the one naming the branch in words.
 - **The topping is the coloured 100px tile the federation ships**, repeated at
   12% behind the words and masked to nothing across the right half of the sheet.
   The theme's own `.bg-topping-*` classes only reach the white cut, so the
@@ -1078,7 +1083,7 @@ leads exactly one, and the tile below already says which.
   date leaf, the event block, the presence line and the foot. Only the monogram
   and the count change. A page that changed its card shape with the role would
   make a parent and a leader learn two objects.
-- **The board is the first thing under the head.** There is no banner and no
+- **The board is the first thing under the head.** There is no band and no
   toolbar between them. The balance tile (when it exists) and the first person
   tile are the first viewport's content; the tools follow the board.
 - **Only one group is loud.** The dark note is either the balance or the
@@ -1094,11 +1099,14 @@ last.
 
 - **The head.** A child gets a 3.5rem rounded-square monogram, two initials in
   the display serif, tinted 13% Baladins blue — a piece of the board, not a
-  profile avatar. A section gets no monogram: its member count is the mark, set
-  at 2rem in the display serif with tabular figures at the right edge, over an
-  uppercase label at 0.75rem. The name is 1.75rem display serif; the line under
-  it is 0.9375rem muted. A section named after its branch drops the branch line
-  rather than stuttering it.
+  profile avatar — and the branch's own mark at 3.5rem on the right, the height
+  of the name and section lines together. A section gets the same mark at
+  2.5rem beside its name, and its member count as a numeral at 2rem in the
+  display serif with tabular figures at the right edge, over an uppercase label
+  at 0.75rem. A branch no preset made has no mark, and a section with no branch
+  gets none. The name is 1.75rem display serif; the line under it is 0.9375rem
+  muted. A section named after its branch drops the branch line rather than
+  stuttering it.
 - **The date leaf.** The next commitment is a 3.75rem leaf: the day at 1.875rem
   display serif with tabular figures, the month at 0.6875rem uppercase, on a 9%
   Louveteaux-green tint with a 0.875rem radius. It is the only tint inside a
@@ -1186,6 +1194,9 @@ nobody scans.
   veil), a 1rem bold label, and a corner arrow at 40% opacity. The label and the
   arrow are visible at rest; hover lifts the tile 2px and brings the arrow to
   full, but nothing has to be hovered to be understood.
+- **A wrapped label does not make its tile taller.** The list is a grid and its
+  items are flex containers, so the anchor fills the row's height; two tiles
+  side by side stay one object even when one label runs to a second line.
 - **Focus is an outline, not a halo.** A whole-tile link needs a mark that
   survives the white and tinted grounds: a 2px solid ink outline offset 2, white
   on the dark tile. A 25%-alpha halo measures about 1.5:1 over white and is a
@@ -1292,8 +1303,8 @@ cell per day.
   keep errors as text under the control rather than as a red field.
 - **Do** wrap every `.table` in `.table-responsive`, and put a `max-width` on a
   free-text cell instead of letting the row grow.
-- **Do** open every members page with the banner (`hat_title` + `hat_text`) —
-  except the signed-in homepage, whose board is its identifier.
+- **Do** open every members page with the page head (`hat_title` + `hat_text`):
+  the title in the display serif on the member ground, never a coloured band.
 - **Do** ship a plain `href` or `action` alongside every HTMX attribute, so the
   page still works when the swap does not.
 - **Do** set the navbar's 84px height in px and keep `--site-navbar-height` in

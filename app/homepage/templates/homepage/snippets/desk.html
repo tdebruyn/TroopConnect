@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n static %}
 {% comment %}
   The enrolment desk, and the one part of the public homepage the troop does
   not edit: naming the branch a child would join means reading the branches'
@@ -45,6 +45,11 @@
                         <li class="desk-segment{% if desk_answer.branch.pk == group.branch.pk %} desk-segment-on{% endif %}"
                             style="--span: {{ group.span }}{% if group.colour %}; --branch: {{ group.colour }}{% endif %}{% if group.ink %}; --branch-ink: {{ group.ink }}{% endif %}">
                             <p class="desk-segment-head">
+                                {% if group.logo %}
+                                    <img class="desk-segment-logo"
+                                         src="{% static group.logo %}"
+                                         alt="" />
+                                {% endif %}
                                 <span class="desk-segment-name">{{ group.branch.name }}</span>
                                 <span class="desk-segment-ages">{% blocktranslate with min=group.branch.min_age_dec_31 max=group.branch.max_age_dec_31 %}{{ min }} to {{ max }} years{% endblocktranslate %}</span>
                             </p>

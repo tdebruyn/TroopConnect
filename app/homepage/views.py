@@ -405,6 +405,16 @@ BRANCH_TOPPING_IMAGES = {
     "pionniers": "vendor/template-unite/images/toppings/topping_Pionniers_rouge_100.png",
 }
 
+#: The federation's own mark for each branch, shipped in the vendored theme.
+#: Same keys and the same rule as the colours: a branch no preset made has no
+#: mark, because borrowing another branch's would name a branch it is not.
+BRANCH_LOGOS = {
+    "baladins": "vendor/template-unite/images/logos/logo_Baladins.png",
+    "louveteaux": "vendor/template-unite/images/logos/logo_Louveteaux.png",
+    "eclaireurs": "vendor/template-unite/images/logos/logo_Eclaireurs.png",
+    "pionniers": "vendor/template-unite/images/logos/logo_Pionniers.png",
+}
+
 
 def _desk_rows(school_year):
     """``(birth_year, branch)`` for every year some branch accepts, ascending.
@@ -471,6 +481,7 @@ def _desk_groups(rows):
                 # The same colour as words. A branch with no colour has no ink
                 # either, and its name and years fall back to the page's own.
                 "ink": BRANCH_INKS.get(branch.key),
+                "logo": BRANCH_LOGOS.get(branch.key),
             },
         )["years"].append(year)
     # `_desk_rows` hands the years over ascending. The rail draws a branch's
@@ -534,6 +545,7 @@ def _desk_answer(rows, requested, school_year):
             "colour": BRANCH_COLOURS.get(branch.key),
             "ink": BRANCH_INKS.get(branch.key),
             "topping_image": BRANCH_TOPPING_IMAGES.get(branch.key),
+            "logo": BRANCH_LOGOS.get(branch.key),
             "first_year": _school_year_label(first),
             "last_year": _school_year_label(last),
             "is_final_year": first == last,
@@ -911,6 +923,11 @@ def _member_context(user):
                 "section": section,
                 "event": event,
                 "absences": absences.get(event.pk, 0) if event else 0,
+                "branch_logo": (
+                    BRANCH_LOGOS.get(section.branch.key)
+                    if section and section.branch
+                    else None
+                ),
             }
         )
 
@@ -932,6 +949,11 @@ def _member_context(user):
                     "event": event,
                     "absences": absences.get(event.pk, 0) if event else 0,
                     "members": sizes.get(section.pk, 0),
+                    "branch_logo": (
+                        BRANCH_LOGOS.get(section.branch.key)
+                        if section.branch
+                        else None
+                    ),
                 }
             )
 

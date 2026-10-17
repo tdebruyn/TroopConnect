@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n static %}
 {% comment %}
   One child: what they are committed to next, what the unit knows about their
   attendance, and the two things a parent does about it. The household's money
@@ -23,6 +23,11 @@
                 {% endif %}
             </p>
         </div>
+        {% if panel.branch_logo %}
+            <img class="member-panel-logo member-child-logo"
+                 src="{% static panel.branch_logo %}"
+                 alt="" />
+        {% endif %}
     </header>
 
     {% comment %}
