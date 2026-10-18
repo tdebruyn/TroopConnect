@@ -36,13 +36,20 @@ and the federation sat under the heading and was **removed on the user's
 instruction**: the question and the years say what the page is for, and the
 sentence restated the navbar. The branch legend below the answer stays.
 
+**The page is composed from blocks, not authored in a canvas.** The GrapesJS
+editor and the CMS tables are gone. A superadmin chooses on `/users/settings`
+→ Public page which blocks the visitor sees — introduction (name, description
+and the year-line's dates), enrolment desk, where to find us, About and FAQ —
+and edits the words and the place's address and map inside the same card. The
+two content blocks are plain text and are left out when empty. The desk and the
+band remain fixed, data-driven blocks: the desk reads the branches' own ages,
+which no canvas could do.
+
 ## Open decision
 
-The desk needs real branch ages, so it cannot be authored content in the
-GrapesJS canvas, which is what the public page was previously decided to be.
-Proposed resolution, not yet confirmed: the desk becomes a fixed data-driven
-band at the top of `/` for anonymous visitors, and everything below it stays the
-editable canvas exactly as it is today.
+Resolved: the desk is a fixed data-driven band at the top of `/` for anonymous
+visitors, and the page around it is composed from switched blocks rather than
+from editable canvas content.
 
 ## Direction contract
 

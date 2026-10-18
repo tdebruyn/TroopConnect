@@ -1,0 +1,14 @@
+{% load i18n %}
+{% comment %}
+  The troop's longer introduction, as a sheet of paper after the place.
+
+  The band already says who the unit is in two or three lines on a photograph;
+  this is the paragraph a family reads once the page has their attention. It is
+  plain text on purpose — one sheet, one voice — so the troop writes words and
+  never lays out a page.
+{% endcomment %}
+<article class="note-sheet">
+    <p class="note-eyebrow">{% trans "The unit" %}</p>
+    <h2 class="note-title">{% trans "About us" %}</h2>
+    <div class="note-body">{{ homepage_about_text|linebreaks }}</div>
+</article>

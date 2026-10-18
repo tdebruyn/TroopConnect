@@ -1,0 +1,46 @@
+{% load i18n widget_tweaks %}
+{% comment %}
+  One date on the year-line. Shared by the rows already stored and by the
+  empty form the "add another" button clones, so a new row is the same object
+  as an old one down to its labels and error treatment.
+{% endcomment %}
+<div class="page-activity">
+  {{ activity.id }}
+  {% comment %}
+    The column headings are hidden below `md`, so each row names its own
+    fields there; on a wider card the one heading row above the list is
+    enough and the labels go back to being screen-reader-only.
+  {% endcomment %}
+  <div class="page-activity-name">
+    <label class="page-activity-label d-md-none" for="{{ activity.name.id_for_label }}">{{ activity.name.label }}</label>
+    <label class="visually-hidden d-none d-md-block" for="{{ activity.name.id_for_label }}">{{ activity.name.label }}</label>
+    {% render_field activity.name class="form-control form-control-sm" %}
+    {% for error in activity.name.errors %}
+      <div class="alert-danger small mt-1" role="alert">{{ error }}</div>
+    {% endfor %}
+  </div>
+  <div class="page-activity-date">
+    <label class="page-activity-label d-md-none" for="{{ activity.start_date.id_for_label }}">{{ activity.start_date.label }}</label>
+    <label class="visually-hidden d-none d-md-block" for="{{ activity.start_date.id_for_label }}">{{ activity.start_date.label }}</label>
+    {% render_field activity.start_date class="form-control form-control-sm" %}
+    {% for error in activity.start_date.errors %}
+      <div class="alert-danger small mt-1" role="alert">{{ error }}</div>
+    {% endfor %}
+  </div>
+  <div class="page-activity-date">
+    <label class="page-activity-label d-md-none" for="{{ activity.end_date.id_for_label }}">{{ activity.end_date.label }}</label>
+    <label class="visually-hidden d-none d-md-block" for="{{ activity.end_date.id_for_label }}">{{ activity.end_date.label }}</label>
+    {% render_field activity.end_date class="form-control form-control-sm" %}
+    {% for error in activity.end_date.errors %}
+      <div class="alert-danger small mt-1" role="alert">{{ error }}</div>
+    {% endfor %}
+  </div>
+  <div class="page-activity-remove">
+    {% if activity.instance.pk %}
+      <div class="form-check">
+        {% render_field activity.DELETE class="form-check-input mt-0" %}
+        <label class="form-check-label" for="{{ activity.DELETE.id_for_label }}">{% trans "Remove" %}</label>
+      </div>
+    {% endif %}
+  </div>
+</div>

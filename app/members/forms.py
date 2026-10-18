@@ -4,6 +4,8 @@ from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
+from homepage.models import TimelineActivity
+
 from . import modules
 from .constants import (
     ROLE_CHOICES,
@@ -765,12 +767,8 @@ class OrganisationSettingsForm(forms.ModelForm):
             "contact_email",
             "reply_to_email",
             "contact_phone",
-            "footer_address",
-            # Kept with the address rather than down with the images: all
-            # three answer "where does the unit meet", and that is the
-            # question someone editing this page has in mind.
-            "meeting_place",
-            "map_image",
+            # The hall, its address and its picture belong to the public
+            # page's "Where to find us" block, and are edited in that card.
             "privacy_policy",
             "logo",
             "favicon",
@@ -782,9 +780,6 @@ class OrganisationSettingsForm(forms.ModelForm):
             "contact_email": _("Public contact email"),
             "reply_to_email": _("Reply-to address"),
             "contact_phone": _("Public phone"),
-            "footer_address": _("Address shown in the footer"),
-            "meeting_place": _("Meeting place"),
-            "map_image": _("Map of the meeting place"),
             "privacy_policy": _("Privacy policy"),
             "logo": _("Logo"),
             "favicon": _("Favicon"),
@@ -862,9 +857,145 @@ class ModuleSettingsForm(forms.ModelForm):
         fields = ("fees_enabled", "signing_enabled", "agenda_enabled")
         labels = {
             "fees_enabled": _("Membership fees"),
-            "signing_enabled": _("Signature campaigns"),
+            # The module sends attestations; "campaign" was the internal model's
+            # word for the batch, and naming the switch after it asked a troop
+            # to learn that word before it could turn the feature on.
+            "signing_enabled": _("Sending attestations"),
             "agenda_enabled": _("Agenda"),
         }
+
+
+class PublicPageSettingsForm(forms.ModelForm):
+    """What a visitor sees on `/`, block by block.
+
+    The content modules are validated together with their switch: a module
+    turned on with no words would render a heading over nothing, which reads as
+    a page that is broken rather than as one the troop is still writing.
+    """
+
+    class Meta:
+        model = TroopSettings
+        fields = (
+            "homepage_band_enabled",
+            "homepage_desk_enabled",
+            "homepage_place_enabled",
+            "homepage_about_enabled",
+            "homepage_about_text",
+            "homepage_faq_enabled",
+            "homepage_faq_text",
+            # The introduction's words and everything the place block shows.
+            # They live on this form because this is the page that renders
+            # them, and an address edited a card away from its own map is a
+            # setting nobody finds twice.
+            "site_description",
+            "footer_address",
+            "meeting_place",
+            "map_image",
+        )
+        labels = {
+            "homepage_band_enabled": _("Introduction"),
+            "homepage_desk_enabled": _("Enrolment desk"),
+            "homepage_place_enabled": _("Where to find us"),
+            "homepage_about_enabled": _("About us"),
+            "homepage_about_text": _("About text"),
+            "homepage_faq_enabled": _("FAQ"),
+            "homepage_faq_text": _("Questions and answers"),
+            "site_description": _("Introduction text"),
+            "footer_address": _("Address"),
+            "meeting_place": _("Meeting place"),
+            "map_image": _("Map of the meeting place"),
+        }
+        help_texts = {
+            "homepage_band_enabled": _(
+                "Drawn over the photograph, under the unit's name."
+            ),
+            "homepage_desk_enabled": _(
+                "The branches' own ages answer it, so the desk follows the "
+                "branches edited in the admin."
+            ),
+            "homepage_place_enabled": _(
+                "The hall, the address and the map below, under the desk."
+            ),
+            "homepage_about_enabled": _(
+                "A longer introduction, after the desk and the place."
+            ),
+            "homepage_faq_enabled": _("Questions parents ask, with your answers."),
+            "site_description": _(
+                "Shown in the band under the unit's name, and used as the "
+                "site's description in search results."
+            ),
+            "footer_address": _(
+                "Shown under “Where to find us” and in the site footer."
+            ),
+            "meeting_place": _(
+                "What the unit calls the place it meets. Empty shows the "
+                "address alone."
+            ),
+        }
+        widgets = {
+            "map_image": forms.ClearableFileInput(attrs={"accept": "image/*"}),
+        }
+
+    def clean(self):
+        cleaned = super().clean()
+        for enabled, text, label in (
+            ("homepage_about_enabled", "homepage_about_text", _("About us")),
+            ("homepage_faq_enabled", "homepage_faq_text", _("FAQ")),
+        ):
+            if cleaned.get(enabled) and not (cleaned.get(text) or "").strip():
+                self.add_error(
+                    text,
+                    _("Write the text before turning %(module)s on.")
+                    % {"module": label},
+                )
+        return cleaned
+
+
+class TimelineActivityForm(forms.ModelForm):
+    """One date on the year-line, as the settings card lists it.
+
+    The labels are the card's column headings rather than the model's field
+    names, and the model's own help texts are cleared: the card explains the
+    list once above it, and a help line repeated under every row would turn a
+    list of dates into a paragraph of instructions.
+    """
+
+    class Meta:
+        model = TimelineActivity
+        fields = ("name", "start_date", "end_date")
+        labels = {
+            "name": _("Activity"),
+            "start_date": _("Starts"),
+            "end_date": _("Ends"),
+        }
+        widgets = {
+            # `type=date` needs an ISO value; without the explicit format the
+            # widget writes the local DD/MM/YYYY and the browser renders an
+            # empty control over a date that is actually stored.
+            "start_date": forms.DateInput(
+                attrs={"type": "date"}, format="%Y-%m-%d"
+            ),
+            "end_date": forms.DateInput(
+                attrs={"type": "date"}, format="%Y-%m-%d"
+            ),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.help_text = ""
+
+
+#: The year-line's dates, edited on the settings page beside the block that
+#: draws them. A model formset rather than a nested admin: the dates are the
+#: module's content, and a superuser composing a page should not have to leave
+#: it to add next autumn's weekend.
+TimelineActivityFormSet = forms.modelformset_factory(
+    TimelineActivity,
+    form=TimelineActivityForm,
+    extra=1,
+    can_delete=True,
+)
 
 
 class SectionEventForm(forms.ModelForm):

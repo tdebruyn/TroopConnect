@@ -1078,6 +1078,38 @@ troop uploaded one — its own picture of a map.
   and no border, and the anchor around it is what draws the focus halo — without
   that radius the halo would be a rectangle around a rounded picture.
 
+### The closing notes
+
+The public page's last two blocks are the troop's own words, and the only plain
+text on the page: a longer introduction and the questions a parent asks before
+registering. Each is a white sheet on the home ground, under the place, with
+the address card's soft shadow and the page's own eyebrow-then-title opening.
+
+- **One sheet per block, one measure.** About and the FAQ share the 60rem
+  column the place card occupies; the words inside stop at 68ch. The sheet is
+  the object and the measure is the reading; neither pretends to be the other.
+- **The FAQ is a definition list.** A question in the display serif at the
+  Title step, its answer in Muli, and one structural 1px rule between entries.
+  The rule runs the sheet's full width while the answer keeps its measure, so
+  a long list scans as questions rather than as a column of prose.
+- **Plain text, parsed once.** The troop writes one paragraph per block for
+  About; for the FAQ, one question per block separated by an empty line, the
+  first line the question and the rest the answer. The template tag that splits
+  it is the same rule the help text promises, so a volunteer never learns
+  markup to answer a parent.
+- **A block with nothing written in it is left out.** A content module carries
+  its switch and its words together in the settings card; the page tests both,
+  and an empty sheet is never rendered.
+- **The band is the page's `h1`.** Switching it off leaves a visually hidden
+  `h1` carrying the unit's name, so the outline stays correct and the visible
+  blocks keep their own levels rather than one of them being promoted.
+
+The page is composed on the settings card rather than in a template: the
+introduction (with the year-line's dates), the desk, the place, About and the
+FAQ each carry their switch and the fields that configure them. The year-line
+is the one list, saved as a formset with the rest of the card, so a page
+composed and a date added cannot half-apply.
+
 ### The member board
 
 The signed-in homepage is a board of the reader's year, not a form report. Its

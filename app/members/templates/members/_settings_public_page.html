@@ -1,0 +1,177 @@
+{% load i18n widget_tweaks %}
+{% comment %}
+  The public page's card: the blocks in the order a visitor meets them, each
+  with its switch and the fields that configure what it shows.
+
+  A switch with its content a card away would be two things to keep honest, so
+  everything a block renders is edited inside its own block. The year-line is
+  the one list: a model formset saved with the card, so adding a date and
+  composing a page cannot half-apply.
+
+  The whole card is the HTMX swap target, the same as every other section. The
+  "add another date" control only clones the empty row; with script off the
+  card still carries one blank row, so a date can always be added on save.
+{% endcomment %}
+<div class="card border-0 shadow-sm mb-4" id="settings-public_page">
+  <div class="card-header bg-white">
+    <h2 class="h5 mb-0">{{ section.title }}</h2>
+  </div>
+  <div class="card-body">
+    {% if section.saved %}
+      <div class="alert alert-success py-2" role="status">{% trans "Saved." %}</div>
+    {% endif %}
+    {% for error in section.form.non_field_errors %}
+      <div class="alert alert-danger py-2" role="alert">{{ error }}</div>
+    {% endfor %}
+    {% for error in section.activities.non_form_errors %}
+      <div class="alert alert-danger py-2" role="alert">{{ error }}</div>
+    {% endfor %}
+    <p class="form-text mt-0 mb-4">
+      {% trans "What a visitor sees before signing in. A block switched off leaves the page; what it holds is kept, so switching it back on restores it." %}
+    </p>
+
+    <form method="post"
+          action="{% url 'members:troop_settings' %}"
+          hx-post="{% url 'members:troop_settings' %}"
+          hx-target="#settings-public_page"
+          hx-swap="outerHTML"
+          enctype="multipart/form-data"
+          hx-encoding="multipart/form-data">
+      {% csrf_token %}
+      <input type="hidden" name="section" value="{{ section.key }}" />
+
+      <div class="page-module">
+        <div class="form-check form-switch">
+          {% render_field section.form.homepage_band_enabled class="form-check-input" %}
+          <label class="form-check-label"
+                 for="{{ section.form.homepage_band_enabled.id_for_label }}">{{ section.form.homepage_band_enabled.label }}</label>
+        </div>
+        <p class="form-text">{{ section.form.homepage_band_enabled.help_text }}</p>
+
+        <div class="page-module-body">
+          <label class="form-label" for="{{ section.form.site_description.id_for_label }}">{{ section.form.site_description.label }}</label>
+          {% render_field section.form.site_description class="form-control" rows="3" %}
+          <div class="form-text">{{ section.form.site_description.help_text }}</div>
+          {% for error in section.form.site_description.errors %}
+            <div class="alert-danger small mt-1" role="alert">{{ error }}</div>
+          {% endfor %}
+
+          <h3 class="page-module-title">{% trans "Year-line" %}</h3>
+          <p class="form-text">
+            {% trans "The school year's dates, at their place on the band. Tick Remove and save to take one off." %}
+          </p>
+          {{ section.activities.management_form }}
+          <div class="page-activities">
+            <div class="page-activity page-activity-head" aria-hidden="true">
+              <div class="page-activity-name">{% trans "Activity" %}</div>
+              <div class="page-activity-date">{% trans "Starts" %}</div>
+              <div class="page-activity-date">{% trans "Ends" %}</div>
+              <div class="page-activity-remove"></div>
+            </div>
+            <div id="page-activity-rows">
+              {% for activity in section.activities %}
+                {% include "members/_settings_activity_row.html" %}
+              {% endfor %}
+            </div>
+          </div>
+          <template id="page-activity-empty">
+            {% include "members/_settings_activity_row.html" with activity=section.activities.empty_form %}
+          </template>
+          <button type="button"
+                  class="btn btn-outline-primary btn-sm mt-2"
+                  hx-on:click="const source = document.getElementById('page-activity-empty'); const rows = document.getElementById('page-activity-rows'); const total = document.getElementById('id_activities-TOTAL_FORMS'); const index = parseInt(total.value, 10); rows.insertAdjacentHTML('beforeend', source.innerHTML.replace(/__prefix__/g, index)); total.value = index + 1;">
+            {% trans "Add another date" %}
+          </button>
+        </div>
+      </div>
+
+      <div class="page-module">
+        <div class="form-check form-switch">
+          {% render_field section.form.homepage_desk_enabled class="form-check-input" %}
+          <label class="form-check-label"
+                 for="{{ section.form.homepage_desk_enabled.id_for_label }}">{{ section.form.homepage_desk_enabled.label }}</label>
+        </div>
+        <p class="form-text">{{ section.form.homepage_desk_enabled.help_text }}</p>
+      </div>
+
+      <div class="page-module">
+        <div class="form-check form-switch">
+          {% render_field section.form.homepage_place_enabled class="form-check-input" %}
+          <label class="form-check-label"
+                 for="{{ section.form.homepage_place_enabled.id_for_label }}">{{ section.form.homepage_place_enabled.label }}</label>
+        </div>
+        <p class="form-text">{{ section.form.homepage_place_enabled.help_text }}</p>
+
+        <div class="page-module-body">
+          <div class="mb-3">
+            <label class="form-label" for="{{ section.form.meeting_place.id_for_label }}">{{ section.form.meeting_place.label }}</label>
+            {% render_field section.form.meeting_place class="form-control" %}
+            <div class="form-text">{{ section.form.meeting_place.help_text }}</div>
+            {% for error in section.form.meeting_place.errors %}
+              <div class="alert-danger small mt-1" role="alert">{{ error }}</div>
+            {% endfor %}
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="{{ section.form.footer_address.id_for_label }}">{{ section.form.footer_address.label }}</label>
+            {% render_field section.form.footer_address class="form-control" rows="2" %}
+            <div class="form-text">{{ section.form.footer_address.help_text }}</div>
+            {% for error in section.form.footer_address.errors %}
+              <div class="alert-danger small mt-1" role="alert">{{ error }}</div>
+            {% endfor %}
+          </div>
+          <div>
+            <label class="form-label" for="{{ section.form.map_image.id_for_label }}">{{ section.form.map_image.label }}</label>
+            {% render_field section.form.map_image class="form-control" %}
+            {% if section.form.instance.map_url %}
+              <img class="page-map-preview"
+                   src="{{ section.form.instance.map_url }}"
+                   alt="{% trans 'The map currently shown on the public page' %}" />
+            {% endif %}
+            <div class="form-text">{{ section.form.map_image.help_text }}</div>
+            {% for error in section.form.map_image.errors %}
+              <div class="alert-danger small mt-1" role="alert">{{ error }}</div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <div class="page-module">
+        <div class="form-check form-switch">
+          {% render_field section.form.homepage_about_enabled class="form-check-input" %}
+          <label class="form-check-label"
+                 for="{{ section.form.homepage_about_enabled.id_for_label }}">{{ section.form.homepage_about_enabled.label }}</label>
+        </div>
+        <p class="form-text">{{ section.form.homepage_about_enabled.help_text }}</p>
+
+        <div class="page-module-body">
+          <label class="form-label" for="{{ section.form.homepage_about_text.id_for_label }}">{{ section.form.homepage_about_text.label }}</label>
+          {% render_field section.form.homepage_about_text class="form-control" rows="4" %}
+          <div class="form-text">{{ section.form.homepage_about_text.help_text }}</div>
+          {% for error in section.form.homepage_about_text.errors %}
+            <div class="alert-danger small mt-1" role="alert">{{ error }}</div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="page-module">
+        <div class="form-check form-switch">
+          {% render_field section.form.homepage_faq_enabled class="form-check-input" %}
+          <label class="form-check-label"
+                 for="{{ section.form.homepage_faq_enabled.id_for_label }}">{{ section.form.homepage_faq_enabled.label }}</label>
+        </div>
+        <p class="form-text">{{ section.form.homepage_faq_enabled.help_text }}</p>
+
+        <div class="page-module-body">
+          <label class="form-label" for="{{ section.form.homepage_faq_text.id_for_label }}">{{ section.form.homepage_faq_text.label }}</label>
+          {% render_field section.form.homepage_faq_text class="form-control" rows="5" %}
+          <div class="form-text">{{ section.form.homepage_faq_text.help_text }}</div>
+          {% for error in section.form.homepage_faq_text.errors %}
+            <div class="alert-danger small mt-1" role="alert">{{ error }}</div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary mt-3">{% trans "Save" %}</button>
+    </form>
+  </div>
+</div>

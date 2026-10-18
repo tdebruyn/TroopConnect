@@ -10,7 +10,12 @@
   <div class="row">
     <div class="col-lg-8">
       {% for section in sections %}
-        {% include "members/_settings_section.html" %}
+        {% comment %}
+          Each section names its own partial: most are a stack of fields, and
+          the public page composes its blocks. Including the variable keeps
+          this page from learning each one's shape.
+        {% endcomment %}
+        {% include section.template %}
       {% endfor %}
     </div>
   </div>

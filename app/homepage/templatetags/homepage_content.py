@@ -25,3 +25,25 @@ def band_seed():
         "text": troop.site_description
         or _("This is where the unit introduces itself to the families of the commune."),
     }
+
+
+@register.simple_tag
+def faq_entries(text):
+    """Split the FAQ's plain text into question/answer pairs.
+
+    One block per question, separated by an empty line; the first line is the
+    question and the lines under it the answer. A block with a single line is a
+    question with no answer yet, which the template prints alone rather than
+    inventing an empty paragraph.
+
+    The format lives here rather than in the template so the rule the help text
+    promises and the rule the page applies are the same line of code.
+    """
+    entries = []
+    for block in (text or "").replace("\r\n", "\n").split("\n\n"):
+        lines = [line.strip() for line in block.splitlines() if line.strip()]
+        if lines:
+            entries.append(
+                {"question": lines[0], "answer": "\n".join(lines[1:])}
+            )
+    return entries

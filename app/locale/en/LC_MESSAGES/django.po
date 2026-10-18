@@ -2236,7 +2236,7 @@ msgid "Section passage runs"
 msgstr ""
 
 #: settings page (hand-added; see docs/dev/CONTRACT.md)
-msgid "Signature campaigns"
+msgid "Sending attestations"
 msgstr ""
 
 #: settings page (hand-added; see docs/dev/CONTRACT.md)
@@ -3146,3 +3146,131 @@ msgstr ""
 #: homepage/views.py
 msgid "%(count)s awaiting processing"
 msgstr ""
+#: app/members/models.py
+msgid "The unit's name, its description and the school year's year-line, drawn over the photograph."
+msgstr ""
+
+#: app/members/models.py
+msgid "Asks the child's birth year and names the branch they would join."
+msgstr ""
+
+#: app/members/models.py
+msgid "The hall, the address and the picture of where the unit meets."
+msgstr ""
+
+#: app/members/models.py
+msgid "A longer introduction, after the enrolment desk."
+msgstr ""
+
+#: app/members/models.py
+msgid "One paragraph per block of text; leave an empty line between."
+msgstr ""
+
+#: app/members/models.py
+msgid "Questions parents ask, with the unit's answers."
+msgstr ""
+
+#: app/members/models.py
+msgid "One question per block, separated by an empty line. The first line is the question; the lines under it are the answer."
+msgstr ""
+
+#: app/members/views.py
+msgid "Public page"
+msgstr ""
+
+#: app/members/forms.py
+msgid "Introduction"
+msgstr ""
+
+#: app/members/forms.py
+msgid "Enrolment desk"
+msgstr ""
+
+#: app/members/forms.py
+msgid "About us"
+msgstr ""
+
+#: app/members/forms.py
+msgid "About text"
+msgstr ""
+
+#: app/members/forms.py
+msgid "Questions and answers"
+msgstr ""
+
+#: app/members/forms.py
+msgid "Introduction text"
+msgstr ""
+
+#: app/members/forms.py
+msgid "Drawn over the photograph, under the unit's name."
+msgstr ""
+
+#: app/members/forms.py
+msgid "The branches' own ages answer it, so the desk follows the branches edited in the admin."
+msgstr ""
+
+#: app/members/forms.py
+msgid "The hall, the address and the map below, under the desk."
+msgstr ""
+
+#: app/members/forms.py
+msgid "A longer introduction, after the desk and the place."
+msgstr ""
+
+#: app/members/forms.py
+msgid "Questions parents ask, with your answers."
+msgstr ""
+
+#: app/members/forms.py
+msgid "Shown in the band under the unit's name, and used as the site's description in search results."
+msgstr ""
+
+#: app/members/forms.py
+msgid "Shown under “Where to find us” and in the site footer."
+msgstr ""
+
+#: app/members/forms.py
+msgid "What the unit calls the place it meets. Empty shows the address alone."
+msgstr ""
+
+#: app/members/forms.py
+msgid "Write the text before turning %(module)s on."
+msgstr ""
+
+#: app/members/forms.py
+msgid "Starts"
+msgstr ""
+
+#: app/members/forms.py
+msgid "Ends"
+msgstr ""
+
+#: app/members/templates/members/_settings_public_page.html
+msgid "Add another date"
+msgstr ""
+
+#: app/members/templates/members/_settings_public_page.html
+msgid "Year-line"
+msgstr ""
+
+#: app/members/templates/members/_settings_public_page.html
+msgid "The school year's dates, at their place on the band. Tick Remove and save to take one off."
+msgstr ""
+
+#: app/members/templates/members/_settings_public_page.html
+msgid "What a visitor sees before signing in. A block switched off leaves the page; what it holds is kept, so switching it back on restores it."
+msgstr ""
+
+#: app/members/templates/members/_settings_public_page.html
+msgid "The map currently shown on the public page"
+msgstr ""
+
+#: app/homepage/templates/homepage/snippets/faq.html
+msgid "Frequently asked questions"
+msgstr ""
+
+#: app/homepage/templates/homepage/snippets/faq.html
+msgid "Questions"
+msgstr ""
+

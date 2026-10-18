@@ -15,9 +15,11 @@ from django.core.exceptions import ValidationError
 from django.urls import reverse
 from django.utils import timezone, translation
 from django.utils.html import escape
+from django.utils.translation import gettext as _
 
 from finance.models import FeeRule
 from homepage.models import TimelineActivity
+from homepage.templatetags.homepage_content import faq_entries
 from homepage.timeline import axis_for, timeline_for
 from homepage.views import (
     _desk_groups,
@@ -227,6 +229,109 @@ class FederationMappingTest(TroopSettingsTestCase):
         self.assertEqual(
             [year for year, _ in rows],
             list(range(self.reference_year - 17, self.reference_year - 6 + 1)),
+        )
+
+
+class PublicPageModulesTest(TroopSettingsTestCase):
+    """The blocks a troop composes on the public page card.
+
+    Each switch is read by the page rather than by a template tag of its own,
+    so the tests assert the rendered page, not the stored flag.
+    """
+
+    def set_troop(self, **fields):
+        troop = TroopSettings.get_settings()
+        for name, value in fields.items():
+            setattr(troop, name, value)
+        troop.save()
+        return troop
+
+    def test_the_band_can_be_turned_off(self):
+        self.set_troop(homepage_band_enabled=False)
+
+        response = self.client.get("/")
+
+        self.assertNotContains(response, 'class="masthead"')
+        # The page still names itself for a screen reader: the band is its h1.
+        self.assertContains(response, "visually-hidden")
+
+    def test_the_desk_and_the_place_can_be_turned_off(self):
+        self.set_troop(
+            homepage_desk_enabled=False,
+            homepage_place_enabled=False,
+            meeting_place="La ferme",
+            footer_address="Rue Achille Bauduin 89\n1300 Limal",
+        )
+
+        response = self.client.get("/")
+
+        self.assertNotContains(response, "desk-question")
+        self.assertNotContains(response, "place-eyebrow")
+
+    def test_the_place_can_be_turned_off_on_its_own(self):
+        self.set_troop(
+            meeting_place="La ferme",
+            footer_address="Rue Achille Bauduin 89\n1300 Limal",
+        )
+        self.assertContains(self.client.get("/"), "place-eyebrow")
+
+        self.set_troop(homepage_place_enabled=False)
+        self.assertNotContains(self.client.get("/"), "place-eyebrow")
+
+    def test_about_and_faq_render_their_plain_text(self):
+        self.set_troop(
+            homepage_about_enabled=True,
+            homepage_about_text="Un paragraphe.\n\nUn deuxième.",
+            homepage_faq_enabled=True,
+            homepage_faq_text="Comment ?\nComme ceci.\n\nQuand ?\nLe samedi.",
+        )
+
+        response = self.client.get("/")
+
+        self.assertContains(response, "note-sheet")
+        self.assertContains(response, "Un paragraphe.")
+        self.assertContains(response, "Un deuxième.")
+        self.assertContains(response, "Comment ?")
+        self.assertContains(response, "Comme ceci.")
+        self.assertContains(response, _("Frequently asked questions"))
+
+    def test_a_content_module_with_no_text_is_left_out(self):
+        self.set_troop(homepage_about_enabled=True, homepage_about_text="")
+
+        response = self.client.get("/")
+
+        self.assertNotContains(response, "note-sheet")
+        self.assertNotContains(response, _("About us"))
+
+    def test_closed_modules_make_no_notes_band(self):
+        response = self.client.get("/")
+
+        self.assertNotContains(response, 'class="notes"')
+
+    def test_the_units_own_page_carries_the_content_blocks(self):
+        self.set_troop(
+            homepage_about_enabled=True,
+            homepage_about_text="Notre unité.",
+        )
+
+        response = self.client.get(reverse("unit_page"))
+
+        self.assertContains(response, "note-sheet")
+        self.assertContains(response, "Notre unité.")
+
+    def test_faq_blocks_split_into_a_question_and_its_answer(self):
+        self.assertEqual(
+            faq_entries("Question ?\nRéponse.\nSuite.\n\nSeule ?"),
+            [
+                {"question": "Question ?", "answer": "Réponse.\nSuite."},
+                {"question": "Seule ?", "answer": ""},
+            ],
+        )
+
+    def test_faq_text_with_windows_newlines_still_splits(self):
+        self.assertEqual(
+            [entry["question"] for entry in faq_entries("Une ?\r\nOui.\r\n\r\nDeux ?")],
+            ["Une ?", "Deux ?"],
         )
 
 

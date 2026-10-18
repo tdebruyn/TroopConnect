@@ -2249,8 +2249,8 @@ msgid "Section passage runs"
 msgstr "Le passage de section se fait"
 
 #: settings page (hand-added; see docs/dev/CONTRACT.md)
-msgid "Signature campaigns"
-msgstr "Campagnes de signatures"
+msgid "Sending attestations"
+msgstr "Envoi d’attestations"
 
 #: settings page (hand-added; see docs/dev/CONTRACT.md)
 msgid "Settings"
@@ -2694,6 +2694,134 @@ msgstr "Foyer « %(name)s » supprimé. Ses membres sont à nouveau facturés pa
 #: finance/views.py:590
 msgid "Adjustment deleted."
 msgstr "Ajustement supprimé."
+
+#: app/members/models.py
+msgid "The unit's name, its description and the school year's year-line, drawn over the photograph."
+msgstr "Le nom de l'unité, sa description et la ligne de l'année scoute, dessinés sur la photo."
+
+#: app/members/models.py
+msgid "Asks the child's birth year and names the branch they would join."
+msgstr "Demande l'année de naissance de l'enfant et nomme la branche qu'il rejoindrait."
+
+#: app/members/models.py
+msgid "The hall, the address and the picture of where the unit meets."
+msgstr "Le local, l'adresse et la photo du lieu où l'unité se réunit."
+
+#: app/members/models.py
+msgid "A longer introduction, after the enrolment desk."
+msgstr "Une présentation plus longue, après le bureau d'inscription."
+
+#: app/members/models.py
+msgid "One paragraph per block of text; leave an empty line between."
+msgstr "Un paragraphe par bloc de texte ; laissez une ligne vide entre eux."
+
+#: app/members/models.py
+msgid "Questions parents ask, with the unit's answers."
+msgstr "Les questions des parents, avec les réponses de l'unité."
+
+#: app/members/models.py
+msgid "One question per block, separated by an empty line. The first line is the question; the lines under it are the answer."
+msgstr "Une question par bloc, séparée par une ligne vide. La première ligne est la question ; les lignes suivantes sont la réponse."
+
+#: app/members/views.py
+msgid "Public page"
+msgstr "Page publique"
+
+#: app/members/forms.py
+msgid "Introduction"
+msgstr "Introduction"
+
+#: app/members/forms.py
+msgid "Enrolment desk"
+msgstr "Bureau d'inscription"
+
+#: app/members/forms.py
+msgid "About us"
+msgstr "À propos"
+
+#: app/members/forms.py
+msgid "About text"
+msgstr "Texte de présentation"
+
+#: app/members/forms.py
+msgid "Questions and answers"
+msgstr "Questions et réponses"
+
+#: app/members/forms.py
+msgid "Introduction text"
+msgstr "Texte d'introduction"
+
+#: app/members/forms.py
+msgid "Drawn over the photograph, under the unit's name."
+msgstr "Dessinée sur la photo, sous le nom de l'unité."
+
+#: app/members/forms.py
+msgid "The branches' own ages answer it, so the desk follows the branches edited in the admin."
+msgstr "Les âges des branches y répondent : le bureau suit les branches modifiées dans l'administration."
+
+#: app/members/forms.py
+msgid "The hall, the address and the map below, under the desk."
+msgstr "Le local, l'adresse et le plan ci-dessous, sous le bureau."
+
+#: app/members/forms.py
+msgid "A longer introduction, after the desk and the place."
+msgstr "Une présentation plus longue, après le bureau et le lieu de réunion."
+
+#: app/members/forms.py
+msgid "Questions parents ask, with your answers."
+msgstr "Les questions des parents, avec vos réponses."
+
+#: app/members/forms.py
+msgid "Shown in the band under the unit's name, and used as the site's description in search results."
+msgstr "Affiché dans la bande sous le nom de l'unité, et utilisé comme description du site dans les résultats de recherche."
+
+#: app/members/forms.py
+msgid "Shown under “Where to find us” and in the site footer."
+msgstr "Affichée sous « Où nous trouver » et dans le pied de page."
+
+#: app/members/forms.py
+msgid "What the unit calls the place it meets. Empty shows the address alone."
+msgstr "Le nom que l'unité donne à son local. Vide, seule l'adresse s'affiche."
+
+#: app/members/forms.py
+msgid "Write the text before turning %(module)s on."
+msgstr "Écrivez le texte avant d'activer %(module)s."
+
+#: app/members/forms.py
+msgid "Starts"
+msgstr "Début"
+
+#: app/members/forms.py
+msgid "Ends"
+msgstr "Fin"
+
+#: app/members/templates/members/_settings_public_page.html
+msgid "Add another date"
+msgstr "Ajouter une autre date"
+
+#: app/members/templates/members/_settings_public_page.html
+msgid "Year-line"
+msgstr "Ligne de l'année"
+
+#: app/members/templates/members/_settings_public_page.html
+msgid "The school year's dates, at their place on the band. Tick Remove and save to take one off."
+msgstr "Les dates de l'année scoute, à leur place sur la bande. Cochez Retirer et enregistrez pour en supprimer une."
+
+#: app/members/templates/members/_settings_public_page.html
+msgid "What a visitor sees before signing in. A block switched off leaves the page; what it holds is kept, so switching it back on restores it."
+msgstr "Ce que voit un visiteur avant de se connecter. Un bloc désactivé quitte la page ; son contenu est conservé, le réactiver le restaure."
+
+#: app/members/templates/members/_settings_public_page.html
+msgid "The map currently shown on the public page"
+msgstr "Le plan actuellement affiché sur la page publique"
+
+#: app/homepage/templates/homepage/snippets/faq.html
+msgid "Frequently asked questions"
+msgstr "Questions fréquentes"
+
+#: app/homepage/templates/homepage/snippets/faq.html
+msgid "Questions"
+msgstr "Questions"
 
 #~ msgid "Configure attestation"
 #~ msgstr "Configurer l'attestation"

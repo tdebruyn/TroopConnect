@@ -2249,8 +2249,8 @@ msgid "Section passage runs"
 msgstr "Overgang van afdeling gebeurt"
 
 #: settings page (hand-added; see docs/dev/CONTRACT.md)
-msgid "Signature campaigns"
-msgstr "Handtekeningcampagnes"
+msgid "Sending attestations"
+msgstr "Attesten versturen"
 
 #: settings page (hand-added; see docs/dev/CONTRACT.md)
 msgid "Settings"
@@ -2691,6 +2691,134 @@ msgstr "Huishouden “%(name)s” verwijderd. De leden worden opnieuw per adres 
 #: finance/views.py:590
 msgid "Adjustment deleted."
 msgstr "Aanpassing verwijderd."
+
+#: app/members/models.py
+msgid "The unit's name, its description and the school year's year-line, drawn over the photograph."
+msgstr "De naam van de eenheid, haar beschrijving en de lijn van het scoutjaar, over de foto."
+
+#: app/members/models.py
+msgid "Asks the child's birth year and names the branch they would join."
+msgstr "Vraagt het geboortejaar van het kind en noemt de tak die het zou vervoegen."
+
+#: app/members/models.py
+msgid "The hall, the address and the picture of where the unit meets."
+msgstr "Het lokaal, het adres en de foto van de plaats waar de eenheid samenkomt."
+
+#: app/members/models.py
+msgid "A longer introduction, after the enrolment desk."
+msgstr "Een langere voorstelling, na de inschrijvingstafel."
+
+#: app/members/models.py
+msgid "One paragraph per block of text; leave an empty line between."
+msgstr "Eén alinea per tekstblok; laat een lege regel tussen."
+
+#: app/members/models.py
+msgid "Questions parents ask, with the unit's answers."
+msgstr "Vragen die ouders stellen, met de antwoorden van de eenheid."
+
+#: app/members/models.py
+msgid "One question per block, separated by an empty line. The first line is the question; the lines under it are the answer."
+msgstr "Eén vraag per blok, gescheiden door een lege regel. De eerste regel is de vraag; de regels eronder zijn het antwoord."
+
+#: app/members/views.py
+msgid "Public page"
+msgstr "Publieke pagina"
+
+#: app/members/forms.py
+msgid "Introduction"
+msgstr "Inleiding"
+
+#: app/members/forms.py
+msgid "Enrolment desk"
+msgstr "Inschrijvingstafel"
+
+#: app/members/forms.py
+msgid "About us"
+msgstr "Over ons"
+
+#: app/members/forms.py
+msgid "About text"
+msgstr "Voorstellingstekst"
+
+#: app/members/forms.py
+msgid "Questions and answers"
+msgstr "Vragen en antwoorden"
+
+#: app/members/forms.py
+msgid "Introduction text"
+msgstr "Inleidingstekst"
+
+#: app/members/forms.py
+msgid "Drawn over the photograph, under the unit's name."
+msgstr "Over de foto, onder de naam van de eenheid."
+
+#: app/members/forms.py
+msgid "The branches' own ages answer it, so the desk follows the branches edited in the admin."
+msgstr "De leeftijden van de takken bepalen het antwoord; de tafel volgt de takken die in het beheer zijn aangepast."
+
+#: app/members/forms.py
+msgid "The hall, the address and the map below, under the desk."
+msgstr "Het lokaal, het adres en de kaart hieronder, onder de tafel."
+
+#: app/members/forms.py
+msgid "A longer introduction, after the desk and the place."
+msgstr "Een langere voorstelling, na de tafel en de ontmoetingsplaats."
+
+#: app/members/forms.py
+msgid "Questions parents ask, with your answers."
+msgstr "Vragen die ouders stellen, met jullie antwoorden."
+
+#: app/members/forms.py
+msgid "Shown in the band under the unit's name, and used as the site's description in search results."
+msgstr "Getoond in de band onder de naam van de eenheid, en gebruikt als beschrijving van de site in zoekresultaten."
+
+#: app/members/forms.py
+msgid "Shown under “Where to find us” and in the site footer."
+msgstr "Getoond onder ‘Waar je ons vindt’ en in de voettekst."
+
+#: app/members/forms.py
+msgid "What the unit calls the place it meets. Empty shows the address alone."
+msgstr "De naam die de eenheid aan haar lokaal geeft. Leeg toont alleen het adres."
+
+#: app/members/forms.py
+msgid "Write the text before turning %(module)s on."
+msgstr "Schrijf de tekst voordat je %(module)s aanzet."
+
+#: app/members/forms.py
+msgid "Starts"
+msgstr "Begint"
+
+#: app/members/forms.py
+msgid "Ends"
+msgstr "Eindigt"
+
+#: app/members/templates/members/_settings_public_page.html
+msgid "Add another date"
+msgstr "Nog een datum toevoegen"
+
+#: app/members/templates/members/_settings_public_page.html
+msgid "Year-line"
+msgstr "Jaarlijn"
+
+#: app/members/templates/members/_settings_public_page.html
+msgid "The school year's dates, at their place on the band. Tick Remove and save to take one off."
+msgstr "De data van het scoutjaar, op hun plaats op de band. Vink Verwijderen aan en sla op om er een te verwijderen."
+
+#: app/members/templates/members/_settings_public_page.html
+msgid "What a visitor sees before signing in. A block switched off leaves the page; what it holds is kept, so switching it back on restores it."
+msgstr "Wat een bezoeker ziet vóór het inloggen. Een uitgeschakeld blok verdwijnt van de pagina; de inhoud blijft bewaard, opnieuw aanzetten herstelt het."
+
+#: app/members/templates/members/_settings_public_page.html
+msgid "The map currently shown on the public page"
+msgstr "De kaart die nu op de publieke pagina staat"
+
+#: app/homepage/templates/homepage/snippets/faq.html
+msgid "Frequently asked questions"
+msgstr "Veelgestelde vragen"
+
+#: app/homepage/templates/homepage/snippets/faq.html
+msgid "Questions"
+msgstr "Vragen"
 
 #~ msgid "Configure attestation"
 #~ msgstr "Attestatie configureren"

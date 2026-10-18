@@ -230,6 +230,20 @@ class TroopSettingsAdmin(TranslationAdmin):
             {"fields": ("fees_enabled", "signing_enabled", "agenda_enabled")},
         ),
         (
+            _("Public page"),
+            {
+                "fields": (
+                    "homepage_band_enabled",
+                    "homepage_desk_enabled",
+                    "homepage_place_enabled",
+                    "homepage_about_enabled",
+                    "homepage_about_text",
+                    "homepage_faq_enabled",
+                    "homepage_faq_text",
+                )
+            },
+        ),
+        (
             _("Site information"),
             {"fields": ("site_description", "site_keywords")},
         ),

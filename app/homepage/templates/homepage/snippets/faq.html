@@ -1,0 +1,22 @@
+{% load i18n homepage_content %}
+{% comment %}
+  The questions a parent asks before registering, as one sheet of paper.
+
+  The source is a plain text field: one question per block, separated by an
+  empty line, the first line the question and the lines under it the answer.
+  Parsing it here rather than asking a volunteer to learn markup keeps the
+  content editable by anyone who can write an email.
+{% endcomment %}
+{% faq_entries homepage_faq_text as entries %}
+<article class="note-sheet">
+    <p class="note-eyebrow">{% trans "Questions" %}</p>
+    <h2 class="note-title">{% trans "Frequently asked questions" %}</h2>
+    <dl class="note-faq">
+        {% for entry in entries %}
+            <div class="note-faq-entry">
+                <dt>{{ entry.question }}</dt>
+                {% if entry.answer %}<dd>{{ entry.answer|linebreaksbr }}</dd>{% endif %}
+            </div>
+        {% endfor %}
+    </dl>
+</article>

@@ -23,6 +23,10 @@ class TroopSettingsTranslationOptions(TranslationOptions):
         "registration_message",
         "photo_consent_text",
         "address_placeholder",
+        # The public page's two content modules: a troop writes these once per
+        # language, like every other word a visitor reads.
+        "homepage_about_text",
+        "homepage_faq_text",
     )
 
 

@@ -1057,6 +1057,51 @@ class TroopSettings(models.Model):
     signing_enabled = models.BooleanField(default=True)
     agenda_enabled = models.BooleanField(default=True)
 
+    # --- Public page -------------------------------------------------------
+    # The blocks a visitor sees on `/`. A troop composes its public page here
+    # rather than in a template or an editor: each block can be turned off,
+    # and what it holds is left alone, exactly like the module switches above.
+    #
+    # The two content blocks are plain text on purpose. A page a volunteer
+    # writes is a page they can fix; rich text and a visual editor were removed
+    # because they made an ordinary sentence into a design project.
+    homepage_band_enabled = models.BooleanField(
+        default=True,
+        help_text=_(
+            "The unit's name, its description and the school year's year-line, "
+            "drawn over the photograph."
+        ),
+    )
+    homepage_desk_enabled = models.BooleanField(
+        default=True,
+        help_text=_(
+            "Asks the child's birth year and names the branch they would join."
+        ),
+    )
+    homepage_place_enabled = models.BooleanField(
+        default=True,
+        help_text=_("The hall, the address and the picture of where the unit meets."),
+    )
+    homepage_about_enabled = models.BooleanField(
+        default=False,
+        help_text=_("A longer introduction, after the enrolment desk."),
+    )
+    homepage_about_text = models.TextField(
+        blank=True,
+        help_text=_("One paragraph per block of text; leave an empty line between."),
+    )
+    homepage_faq_enabled = models.BooleanField(
+        default=False,
+        help_text=_("Questions parents ask, with the unit's answers."),
+    )
+    homepage_faq_text = models.TextField(
+        blank=True,
+        help_text=_(
+            "One question per block, separated by an empty line. The first line "
+            "is the question; the lines under it are the answer."
+        ),
+    )
+
     # --- Retained site content ---------------------------------------------
     site_description = models.TextField(
         default="Site officiel de votre unité scoute, permettant d'inscrire les enfants et de gérer les membres."

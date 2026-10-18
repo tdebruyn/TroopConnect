@@ -6,13 +6,16 @@ it, and the places the values have to actually reach: the language switcher, the
 phone fields, the money display and the mail pipeline.
 """
 
+from datetime import date
 from decimal import Decimal
 
 from django.template import Context, Template
 from django.urls import reverse
+from django.utils.html import escape
 from django.utils.translation import gettext as _
 from post_office.models import Email
 
+from homepage.models import TimelineActivity
 from members.models import Account, Person, Role, TroopSettings
 from members.money import format_money
 from members.phone import troop_region
@@ -79,7 +82,9 @@ class SettingsPageTest(StaffPageTestBase):
 
         self.assertEqual(response.status_code, 200)
         keys = [section["key"] for section in response.context["sections"]]
-        self.assertEqual(keys, ["organisation", "locale", "calendar", "modules"])
+        self.assertEqual(
+            keys, ["organisation", "locale", "calendar", "public_page", "modules"]
+        )
 
     def test_saving_organisation_persists_and_redirects(self):
         self.login_staff()
@@ -93,7 +98,6 @@ class SettingsPageTest(StaffPageTestBase):
                 "contact_email": "hello@limal.be",
                 "reply_to_email": "secretariat@limal.be",
                 "contact_phone": "010 12 34 56",
-                "footer_address": "Rue de l'Église 1, 1348 Louvain-la-Neuve",
                 "privacy_policy": "https://limal.be/privacy",
             },
         )
@@ -102,7 +106,6 @@ class SettingsPageTest(StaffPageTestBase):
         troop = TroopSettings.get_settings()
         self.assertEqual(troop.name, "Scouts de Limal")
         self.assertEqual(troop.reply_to_email, "secretariat@limal.be")
-        self.assertEqual(troop.footer_address, "Rue de l'Église 1, 1348 Louvain-la-Neuve")
         self.assertEqual(troop.privacy_policy_url(), "https://limal.be/privacy")
 
     def test_htmx_save_returns_only_that_section(self):
@@ -191,6 +194,160 @@ class SettingsPageTest(StaffPageTestBase):
         response = self.client.get(reverse("homepage"))
         self.assertEqual(sorted(response.context["available_languages"]), ["fr", "nl"])
         self.assertTrue(response.context["show_language_selector"])
+
+
+class PublicPageSettingsTest(StaffPageTestBase):
+    """The public page's blocks, and the year-line's dates, in one card.
+
+    The card is where a superuser composes what a visitor sees, so the tests
+    read its switches, its words and its list as one save.
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.url = reverse("members:troop_settings")
+        self.login_staff()
+
+    def public_page_data(self, **overrides):
+        """The card's formset management, plus whatever the test is changing.
+
+        Every save of this section has to carry the management form: the
+        formset decides how many rows it was given from these counts, and a
+        card posted without them silently looks empty.
+        """
+        data = {
+            "section": "public_page",
+            "site_description": "Bienvenue chez les Scouts.",
+            "activities-TOTAL_FORMS": "0",
+            "activities-INITIAL_FORMS": "0",
+            "activities-MIN_NUM_FORMS": "0",
+            "activities-MAX_NUM_FORMS": "1000",
+        }
+        data.update(overrides)
+        return data
+
+    def test_the_card_saves_the_blocks_words_and_place(self):
+        response = self.client.post(
+            self.url,
+            self.public_page_data(
+                homepage_band_enabled="on",
+                homepage_desk_enabled="on",
+                homepage_place_enabled="on",
+                homepage_about_enabled="on",
+                homepage_about_text="Notre unité, en deux paragraphes.",
+                homepage_faq_enabled="on",
+                homepage_faq_text="Une question ?\nUne réponse.",
+                footer_address="Rue de l'Église 1\n1348 Louvain-la-Neuve",
+                meeting_place="La ferme",
+            ),
+        )
+
+        self.assertRedirects(response, self.url)
+        troop = TroopSettings.get_settings()
+        self.assertTrue(troop.homepage_about_enabled)
+        self.assertEqual(troop.homepage_about_text, "Notre unité, en deux paragraphes.")
+        self.assertEqual(troop.homepage_faq_text, "Une question ?\nUne réponse.")
+        self.assertEqual(
+            troop.footer_address, "Rue de l'Église 1\n1348 Louvain-la-Neuve"
+        )
+        self.assertEqual(troop.meeting_place, "La ferme")
+
+    def test_a_content_module_cannot_be_turned_on_without_its_text(self):
+        response = self.client.post(
+            self.url,
+            self.public_page_data(
+                homepage_about_enabled="on",
+                homepage_about_text="   ",
+            ),
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(
+            response,
+            escape(
+                _("Write the text before turning %(module)s on.")
+                % {"module": _("About us")}
+            ),
+        )
+        self.assertFalse(TroopSettings.get_settings().homepage_about_enabled)
+
+    def test_the_year_line_adds_a_date(self):
+        response = self.client.post(
+            self.url,
+            self.public_page_data(
+                **{
+                    "activities-TOTAL_FORMS": "1",
+                    "activities-0-id": "",
+                    "activities-0-name": "Camps",
+                    "activities-0-start_date": "2027-07-18",
+                    "activities-0-end_date": "2027-07-25",
+                }
+            ),
+        )
+
+        self.assertRedirects(response, self.url)
+        activity = TimelineActivity.objects.get()
+        self.assertEqual(activity.start_date, date(2027, 7, 18))
+        self.assertEqual(activity.end_date, date(2027, 7, 25))
+
+    def test_the_year_line_removes_a_date(self):
+        activity = TimelineActivity.objects.create(
+            name="Inscription", start_date=date(2026, 9, 4)
+        )
+        response = self.client.post(
+            self.url,
+            self.public_page_data(
+                **{
+                    "activities-TOTAL_FORMS": "1",
+                    "activities-INITIAL_FORMS": "1",
+                    "activities-0-id": activity.pk,
+                    "activities-0-name": "Inscription",
+                    "activities-0-start_date": "2026-09-04",
+                    "activities-0-DELETE": "on",
+                }
+            ),
+        )
+
+        self.assertRedirects(response, self.url)
+        self.assertFalse(TimelineActivity.objects.exists())
+
+    def test_a_date_outside_the_year_line_is_refused(self):
+        response = self.client.post(
+            self.url,
+            self.public_page_data(
+                **{
+                    "activities-TOTAL_FORMS": "1",
+                    "activities-0-id": "",
+                    "activities-0-name": "Trop tard",
+                    "activities-0-start_date": "2027-08-15",
+                }
+            ),
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(
+            response,
+            escape(
+                _(
+                    "The year-line runs from 1 September to 31 July. "
+                    "Enter a date inside that window."
+                )
+            ),
+        )
+        self.assertFalse(TimelineActivity.objects.exists())
+
+    def test_htmx_returns_the_composed_card(self):
+        response = self.client.post(
+            self.url,
+            self.public_page_data(homepage_band_enabled="on"),
+            HTTP_HX_REQUEST="true",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, "<html")
+        self.assertContains(response, 'id="settings-public_page"')
+        self.assertContains(response, "id_activities-TOTAL_FORMS")
+        self.assertContains(response, _("Saved."))
 
 
 class MoneyDisplayTest(TroopSettingsTestCase):

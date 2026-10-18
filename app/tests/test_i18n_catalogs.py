@@ -133,7 +133,7 @@ NEW_STRINGS = [
     ("Phone country", "Pays des téléphones", "Land van telefoonnummers"),
     ("Currency", "Devise", "Munteenheid"),
     ("Enabled languages", "Langues actives", "Actieve talen"),
-    ("Signature campaigns", "Campagnes de signatures", "Handtekeningcampagnes"),
+    ("Sending attestations", "Envoi d’attestations", "Attesten versturen"),
     ("Automatic", "Automatique", "Automatisch"),
     ("Manual", "Manuel", "Handmatig"),
     (

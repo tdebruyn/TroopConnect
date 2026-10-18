@@ -61,6 +61,17 @@ def contact_info(request):
         "fees_enabled": module_enabled(modules.FEES),
         "signing_enabled": module_enabled(modules.SIGNING),
         "agenda_enabled": module_enabled(modules.AGENDA),
+        # The public page's blocks, composed on the public page card. The
+        # template tests the switch and the words together: a content module
+        # with nothing in it is not a block, and rendering its heading alone
+        # would read as a page that broke rather than as one not written yet.
+        "homepage_band_enabled": troop_settings.homepage_band_enabled,
+        "homepage_desk_enabled": troop_settings.homepage_desk_enabled,
+        "homepage_place_enabled": troop_settings.homepage_place_enabled,
+        "homepage_about_enabled": troop_settings.homepage_about_enabled,
+        "homepage_about_text": troop_settings.homepage_about_text,
+        "homepage_faq_enabled": troop_settings.homepage_faq_enabled,
+        "homepage_faq_text": troop_settings.homepage_faq_text,
         # Language selector support (set by AvailableLanguagesMiddleware).
         "available_languages": list(available),
         "current_language": translation.get_language(),

@@ -10,6 +10,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
+from django.db import transaction
 from django.db.models import Q
 from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
@@ -19,6 +20,8 @@ from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
 from django.views.generic import ListView, TemplateView, UpdateView, View
 from post_office.models import STATUS, Email
+
+from homepage.models import TimelineActivity
 
 from .absences import notify_section
 from .constants import (
@@ -37,7 +40,9 @@ from .forms import (
     OnboardingForm,
     OrganisationSettingsForm,
     ProfileEditForm,
+    PublicPageSettingsForm,
     SectionEventForm,
+    TimelineActivityFormSet,
 )
 from .importexport import columns as cols
 from .importexport import exporter
@@ -970,12 +975,17 @@ class MailQueueView(UserPassesTestMixin, TemplateView):
 
 
 class TroopSettingsView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
-    """Staff page for the troop's own settings, in four grouped sections.
+    """Staff page for the troop's own settings, in five grouped sections.
 
     Each section is an independent form posting to this same view, so editing
     the calendar cannot quietly overwrite mail settings nobody looked at. An
     HTMX post gets that one section back; a plain post — JavaScript off, or a
     stray Enter key — gets a redirect.
+
+    The public page is the one section with two forms' worth of work: its card
+    carries the blocks' switches and words, and the year-line's dates as a
+    formset. They are saved together, so a page composed and a date added cannot
+    half-apply.
 
     ``LoginRequiredMixin`` first, so an anonymous visitor is sent to the login
     page rather than shown a bare 403.
@@ -997,22 +1007,59 @@ class TroopSettingsView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
             ("organisation", _("Organisation"), OrganisationSettingsForm),
             ("locale", _("Locale"), LocaleSettingsForm),
             ("calendar", _("Calendar"), CalendarSettingsForm),
+            ("public_page", _("Public page"), PublicPageSettingsForm),
             ("modules", _("Modules"), ModuleSettingsForm),
         )
 
-    def _section_context(self, key, form, saved=False):
+    def _section_template(self, key):
+        """The partial that renders ``key``, for a save that swaps one card.
+
+        The public page's card is composed rather than a stack of fields, so it
+        carries its own template; every other section uses the shared one.
+        """
+        if key == "public_page":
+            return "members/_settings_public_page.html"
+        return self.section_template_name
+
+    def _activity_formset(self, data=None, files=None):
+        return TimelineActivityFormSet(
+            data=data,
+            files=files,
+            queryset=TimelineActivity.objects.order_by("start_date", "id"),
+            prefix="activities",
+        )
+
+    def _section_context(self, key, form, saved=False, activities=None):
         title = next(title for k, title, _cls in self._sections() if k == key)
-        return {"key": key, "title": title, "form": form, "saved": saved}
+        context = {
+            "key": key,
+            "title": title,
+            "form": form,
+            "saved": saved,
+            "template": self._section_template(key),
+        }
+        if key == "public_page":
+            context["activities"] = (
+                activities if activities is not None else self._activity_formset()
+            )
+        return context
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         instance = TroopSettings.get_settings()
         bound_key = kwargs.get("bound_key")
         bound_form = kwargs.get("bound_form")
+        bound_activities = kwargs.get("bound_activities")
 
         context["sections"] = [
             self._section_context(
-                key, bound_form if key == bound_key else form_class(instance=instance)
+                key,
+                bound_form if key == bound_key else form_class(instance=instance),
+                activities=(
+                    bound_activities
+                    if key == bound_key and key == "public_page"
+                    else None
+                ),
             )
             for key, _title, form_class in self._sections()
         ]
@@ -1025,18 +1072,33 @@ class TroopSettingsView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
             return HttpResponseBadRequest(_("Unknown settings section."))
 
         # request.FILES as well as request.POST: the organisation section
-        # carries the logo and favicon uploads, and a bound ModelForm that is
-        # not handed the files treats an unchanged upload as "cleared".
+        # carries the logo and favicon uploads, and the public page carries the
+        # map. A bound ModelForm that is not handed the files treats an
+        # unchanged upload as "cleared".
         form = form_class(
             request.POST, request.FILES, instance=TroopSettings.get_settings()
         )
+        activities = (
+            self._activity_formset(request.POST, request.FILES)
+            if key == "public_page"
+            else None
+        )
 
-        if form.is_valid():
-            form.save()
+        form_valid = form.is_valid()
+        # Validate both before deciding anything: short-circuiting here would
+        # skip the formset's errors and hand back a card with half its
+        # complaints missing.
+        activities_valid = activities.is_valid() if activities is not None else True
+
+        if form_valid and activities_valid:
+            with transaction.atomic():
+                form.save()
+                if activities is not None:
+                    activities.save()
             if is_htmx(request):
                 return render(
                     request,
-                    self.section_template_name,
+                    self._section_template(key),
                     {
                         "section": self._section_context(
                             key,
@@ -1053,11 +1115,13 @@ class TroopSettingsView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
         if is_htmx(request):
             return render(
                 request,
-                self.section_template_name,
-                {"section": self._section_context(key, form)},
+                self._section_template(key),
+                {"section": self._section_context(key, form, activities=activities)},
             )
         return self.render_to_response(
-            self.get_context_data(bound_key=key, bound_form=form)
+            self.get_context_data(
+                bound_key=key, bound_form=form, bound_activities=activities
+            )
         )
 
 

@@ -956,7 +956,8 @@ body {
    colour, which is what makes it read as a label rather than as a small
    heading: it names the section before the heading says what it asks. */
 .desk-eyebrow,
-.place-eyebrow {
+.place-eyebrow,
+.note-eyebrow {
   margin: 0 0 0.625rem;
   font-size: 0.75rem;
   font-weight: 700;
@@ -1488,6 +1489,95 @@ body {
   display: block;
   width: 100%;
   border-radius: 0.5rem;
+}
+
+/* ---------------------------------------------------------------------------
+   The public page's closing notes (homepage/snippets/about.html, faq.html).
+
+   Two sheets of paper on the ground the desk and the place stand on: the
+   longer introduction and the questions a parent asks before registering.
+   They are the visitor's reading rather than the troop's chrome, so they take
+   the address card's soft shadow and the measure the desk's note already
+   reads at — one light, one column, no new surface.
+--------------------------------------------------------------------------- */
+
+.notes {
+  /* The section's label colour, restated where the other visitor blocks set
+     it. The sheets are siblings of the desk, not children, so the desk's own
+     custom property cannot reach them. */
+  --section-label: #304a3c;
+  background-color: var(--home-ground);
+  padding: 2.5rem 0 3rem;
+}
+
+.notes-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: min(100%, 60rem);
+}
+
+.note-sheet {
+  padding: 1.5rem;
+  background-color: #fff;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.125rem 0.375rem rgba(10, 66, 117, 0.1);
+}
+
+.note-title {
+  margin: 0 0 1rem;
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.note-body {
+  max-width: 68ch;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+}
+
+.note-body p {
+  margin: 0 0 1rem;
+}
+
+.note-body p:last-child {
+  margin-bottom: 0;
+}
+
+/* One question per block, a rule between entries. The definition list is the
+   semantic pair; the rule is what makes a long FAQ scan as questions rather
+   than as a column of prose. */
+.note-faq {
+  margin: 0;
+}
+
+/* The measure belongs to the words, not to the list: a rule that stopped at
+   68ch would leave the sheet's right half reading as a blank column. */
+.note-faq dt,
+.note-faq dd {
+  max-width: 68ch;
+}
+
+.note-faq-entry + .note-faq-entry {
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid #dee2e6;
+}
+
+.note-faq dt {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.note-faq dd {
+  margin: 0.375rem 0 0;
+  font-size: 1rem;
+  line-height: 1.6;
 }
 
 
@@ -2939,5 +3029,124 @@ a.message-tile:focus-visible .message-open {
   a.message-tile:hover .message-open,
   a.message-tile:focus-visible .message-open {
     transform: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   The public page card (members/_settings_public_page.html).
+
+   Settings is a stack of cards, and this is the one card that composes rather
+   than lists: each block's switch, its one-line explanation and the fields
+   that configure it sit together. The nested fields are drawn against a rule
+   so a switch and the text under it read as one object.
+--------------------------------------------------------------------------- */
+
+.page-module {
+  padding: 1rem 0;
+  border-top: 1px solid #eceff2;
+}
+
+.page-module:first-of-type {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.page-module .form-check-label {
+  font-weight: 700;
+}
+
+.page-module > .form-text {
+  margin-top: 0.25rem;
+}
+
+.page-module-body {
+  margin-top: 0.75rem;
+  padding-left: 1rem;
+  border-left: 3px solid var(--bs-border-color, #dee2e6);
+}
+
+.page-module-title {
+  margin: 1.25rem 0 0.25rem;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+/* The year-line's dates: one row per activity, with the columns named once
+   above them. The remove cell carries its own label because on a phone the
+   column headings are gone and a bare checkbox would say nothing. */
+.page-activities {
+  margin-top: 0.75rem;
+}
+
+.page-activity {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 3fr) minmax(0, 3fr) auto;
+  gap: 0.5rem;
+  align-items: start;
+  padding: 0.5rem 0;
+}
+
+.page-activity + .page-activity {
+  border-top: 1px solid #eceff2;
+}
+
+.page-activity-head {
+  padding-top: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #5d666e;
+}
+
+/* The per-field label the row shows once the heading row is gone. The same
+   label is visually hidden on a wide card, so the accessible name never
+   changes with the width — only its visibility does. */
+.page-activity-label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #5d666e;
+}
+
+.page-activity-remove .form-check {
+  display: flex;
+  gap: 0.375rem;
+  align-items: center;
+  min-height: 1.75rem;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.page-activity-remove .form-check-label {
+  font-size: 0.875rem;
+}
+
+/* The map currently on the page, so "update the map" starts from the picture
+   it is replacing rather than from a filename. */
+.page-map-preview {
+  display: block;
+  max-width: 16rem;
+  margin-top: 0.75rem;
+  border-radius: 0.5rem;
+}
+
+@media (max-width: 767.98px) {
+  .page-module-body {
+    padding-left: 0.75rem;
+  }
+
+  .page-activity {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .page-activity-name,
+  .page-activity-remove {
+    grid-column: 1 / -1;
+  }
+
+  .page-activity-head {
+    display: none;
   }
 }
