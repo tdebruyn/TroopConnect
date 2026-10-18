@@ -13,6 +13,11 @@
   must each fill their row, and the tiles carry deliberately unequal grow
   weights so no two rows are symmetric. A fixed grid left a hole whenever a
   troop had an odd number of children.
+
+  More than one child is the exception: siblings are peers, so the balance
+  takes the first row alone and the children stand under it in equal columns.
+  On the flex row the first child shared the balance's line and the next
+  stretched alone beneath, and the two were different sizes.
 {% endcomment %}
 {% block body_class %}page-member{% endblock body_class %}
 {% block content %}
@@ -35,7 +40,8 @@
             </p>
         </header>
 
-        <div class="member-board">
+        <div class="member-board"
+             {% if member_children > 1 %}data-many-children="true" data-child-count="{{ member_children }}"{% endif %}>
             {% if member_dues %}
                 <section class="member-house{% if member_dues.late %} member-house-late{% endif %}">
                     <h2 class="member-house-label">{% trans "Household balance" %}</h2>

@@ -606,6 +606,28 @@ class MemberHomepageTest(DeskTestBase):
         response = self.client.get("/")
         self.assertEqual(response.content.decode().count('class="member-panel"'), 2)
 
+    def test_siblings_share_an_equal_children_row(self):
+        """Siblings are peers: the balance takes the first row and the children
+        stand under it in equal columns, instead of the asymmetric weights
+        that make one child share the balance's line and the next stretch alone
+        beneath it."""
+        account = self.make_parent(
+            "siblings@test.com",
+            self.make_child("Ana", self.baladins),
+            self.make_child("Bo", self.baladins),
+        )
+        self.client.force_login(account)
+
+        response = self.client.get("/")
+        self.assertContains(response, 'data-many-children="true"')
+        self.assertContains(response, 'data-child-count="2"')
+
+    def test_a_single_child_keeps_the_asymmetric_board(self):
+        account = self.make_parent("only@test.com", self.make_child("Ana"))
+        self.client.force_login(account)
+
+        self.assertNotContains(self.client.get("/"), "data-many-children")
+
     def test_a_parent_does_not_see_another_familys_child(self):
         self.make_parent("other@test.com", self.make_child("Zoe", self.baladins))
         account = self.make_parent("mine@test.com", self.make_child("Ana", self.baladins))

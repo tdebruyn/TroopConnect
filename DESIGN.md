@@ -202,9 +202,11 @@ the logo it uploads.
 The member page is the one surface that composes rather than lists. Its board
 refuses the equal card grid: tiles carry unequal grow weights, the household's
 one dark tile sits beside a person's white one, and the tool mosaic repeats the
-same asymmetry for actions. The composition is still the handbook's — same paper,
-same inks, same serif — but it is laid out for scanning a family rather than for
-reading a page.
+same asymmetry for actions. The exception is a family with more than one child:
+there the balance takes the first row alone and the children stand under it in
+equal columns, because siblings are peers. The composition is still the
+handbook's — same paper, same inks, same serif — but it is laid out for scanning
+a family rather than for reading a page.
 
 **Key Characteristics:**
 - Bootstrap's own primitives, used as intended, restyled only where a task needs it
@@ -592,6 +594,12 @@ over one summary line; the board follows it at 1.75rem, and the tools at 2.75rem
   45/32/23, so the second row's wide tile lands on the right and the board never
   settles into the equal-card symmetry it is refusing. A fixed grid left a hole
   whenever a family had an odd number of children.
+- **Siblings are peers.** A family with more than one child is the one place the
+  asymmetric weights are dropped: the balance takes the first row alone and the
+  children stand under it in equal columns — two from `lg`, three from `xxl`,
+  one per row below `lg`. The column count is explicit rather than auto-fit,
+  because the balance spans every column and an auto-fit track it spans never
+  collapses. A leader's section tile keeps a full row of its own.
 - **Every count fills its row.** One, two or four tiles each wrap into a filled
   line; below `md` every tile takes its own row and the unequal weights are
   dropped with the columns.
@@ -631,7 +639,9 @@ unequal grow weights, never an equal-width grid: the balance tile is the widest,
 the first person tile next, the second narrower again, so a row of two reads
 about 7/5 and a row of three about 45/32/23. The weights wrap; below 768px every
 tile takes the row. A fixed grid is a hole whenever a family has an odd number of
-children.
+children. The one exception is a family with more than one child: siblings are
+peers, so the balance stands alone on the first row and the children share equal
+columns under it — an equal group, not an equal page.
 
 **The Page-Is-The-Menu Rule.** A signed-in reader's tools live on the member
 page, gated one by one on the same predicate their view enforces; the header
@@ -1091,7 +1101,9 @@ leads exactly one, and the tile below already says which.
   make a parent and a leader learn two objects.
 - **The board is the first thing under the head.** There is no band and no
   toolbar between them. The balance tile (when it exists) and the first person
-  tile are the first viewport's content; the tools follow the board.
+  tile are the first viewport's content — except in a multi-child family, where
+  the balance takes the row alone and the children follow in an equal row; the
+  tools follow the board.
 - **Only one group is loud.** The dark note is either the balance or the
   featured tool, never both, and the featured group is the reader's own work:
   staff lead with the unit, a leader with sections, a parent with children.
@@ -1318,7 +1330,8 @@ cell per day.
 - **Do** state the household balance once, above the person tiles, and never per
   child — the household is the billing unit, and the eldest child pays in full.
 - **Do** build the member board as a flex row with unequal grow weights, so one,
-  two or four tiles each fill their row without the equal-card symmetry.
+  two or four tiles each fill their row without the equal-card symmetry — except
+  a multi-child family's children, which are equal peers under the balance tile.
 - **Do** spend exactly one dark tile per member page: the balance when there is
   money owed, otherwise the featured group's first action.
 - **Do** give each person tile a date leaf, a type chip and an absence state when
@@ -1362,7 +1375,8 @@ cell per day.
   sentence is the honest version for a parent.
 - **Don't** replace the member board with an equal-width card grid. The unequal
   grow weights are the composition, and a fixed grid leaves a hole on an odd
-  number of children.
+  number of children. Equal columns belong only to siblings under a balance
+  tile, never to the board as a whole.
 - **Don't** add a header menu for signed-in readers. The page is the menu, and a
   link kept in two places is two things to keep honest.
 - **Don't** use a branch's full-strength colour as a tile ground. Tints stay at

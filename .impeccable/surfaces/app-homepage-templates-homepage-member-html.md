@@ -58,7 +58,9 @@ balance band is absent when it is.
 **THESIS.** The page is a board of the reader's year, not a form report: one
 tile per person and one per action, sized by what the reader actually answers
 for. It refuses the equal-width card grid — no two tiles carry the same weight,
-and the first row is deliberately 7/5 rather than 6/6.
+and the first row is deliberately 7/5 rather than 6/6. The one equal group is a
+multi-child family's siblings, who stand under the balance tile in equal
+columns because they are peers.
 
 **OWN-WORLD.** A full-bleed gradient in the two branch colours this unit's
 homepage already speaks — Baladins blue (#00a0de) into Louveteaux green
@@ -75,9 +77,11 @@ rather than a menu. Nothing needs hover to be understood.
 **FIRST VIEWPORT.** The 84px bar, then "Vos enfants" / "Votre unité" in the
 display serif at 44px over a greeting and household line. Immediately below, the
 dark balance tile (4-5 columns) beside the first child's tile; the next child
-wraps at 5 columns and the third at 7, so the board runs asymmetrically. Each
-person tile carries a date leaf, the activity title, its type chip and absence
-state, then its actions.
+wraps at 5 columns and the third at 7, so the board runs asymmetrically. A
+family with more than one child is the exception: the balance takes the first
+row alone and the children stand under it in equal columns — two from `lg`,
+three from `xxl`. Each person tile carries a date leaf, the activity title, its
+type chip and absence state, then its actions.
 
 **FORM.** Position 3 of 7 grounded structures; the tile board is the brief's own
 world. seed:5ce6a7fc8487a175
@@ -97,6 +101,11 @@ remains the brief; these are the values and behaviours the build settled on.
   45/32/23. Below `md` every tile takes its own row and the weights are dropped.
   The brief's column language ("4–5 columns", "third at 7") is shorthand for
   these weights, not for `col-*` classes.
+- **Multi-child families.** With more than one child the board becomes a grid:
+  the balance (and a leader's section tile) spans the first row, and the
+  children share equal columns beneath it — two from `lg`, three from `xxl`,
+  one per row below `lg`. The container carries `data-many-children` and
+  `data-child-count`; a single child keeps the flex row above.
 - **Ground.** `paper` plus two radial blooms mixed with `transparent` — Baladins
   blue at 22% upper right, Louveteaux green at 20% lower left — over a 168°
   wash (#e3eff8 → #f0f6f2 → #e3efe7). Tiles carry a 1.25rem radius and one

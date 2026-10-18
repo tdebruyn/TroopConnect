@@ -1644,6 +1644,41 @@ body {
   flex-grow: 0.9;
 }
 
+/* More than one child: siblings are peers, so the balance takes the first row
+   alone and the children stand under it in equal columns. On the flex row the
+   first child shared the balance's line and the next stretched alone beneath,
+   which made the same family's children two different sizes. The house and a
+   leader's section tile keep a row of their own.
+
+   Columns follow the count rather than the container: a third of a tablet is
+   narrower than an activity title and its time, so three children only share
+   a row from `xxl`, where a tile is still a card. */
+.member-board[data-many-children="true"] {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.member-board[data-many-children="true"] > .member-house,
+.member-board[data-many-children="true"] > .member-panel[data-kind="section"] {
+  grid-column: 1 / -1;
+}
+
+@media (min-width: 992px) {
+  .member-board[data-many-children="true"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .member-board[data-child-count="3"] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (min-width: 1200px) {
+  .member-board[data-child-count="3"] {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
 /* Tiles: white on the gradient, one soft charter-blue shadow, no border. The
    shadow is the system's functional-card lift at a lighter opacity, because
    a dozen of these share one ground. */
