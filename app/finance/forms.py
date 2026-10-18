@@ -143,7 +143,7 @@ class HouseholdAssignmentForm(forms.Form):
         queryset=Household.objects.order_by("name"),
         required=False,
         label=_("Household"),
-        empty_label=_("Inferred from address"),
+        empty_label=_("Inferred from address (recommended)"),
         widget=forms.Select(attrs={"class": "form-select"}),
     )
 

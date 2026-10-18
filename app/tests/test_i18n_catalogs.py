@@ -479,6 +479,47 @@ NEW_STRINGS = [
     ("Household", "Foyer", "Huishouden"),
     ("Inferred from the address", "adresse", "adres"),
     (
+        "Inferred from address (recommended)",
+        "recommandé",
+        "aanbevolen",
+    ),
+    (
+        "Fees are billed per household. Households are generated automatically "
+        "from the shared address, so members living together are billed "
+        "together, eldest first. That is the recommended setup: leave "
+        "households to be generated automatically.",
+        "recommandée",
+        "aanbevolen",
+    ),
+    (
+        "Create a household manually only to correct the sibling discount, for "
+        "example when children of the same family live at different addresses "
+        "but should still be billed together. Only the households you create "
+        "appear below.",
+        "adresses différentes",
+        "verschillende adressen",
+    ),
+    (
+        "Households are generated automatically from the shared address: the "
+        "members are billed together, eldest first. That is the recommended "
+        "setup.",
+        "recommandée",
+        "aanbevolen",
+    ),
+    (
+        "Households are generated automatically from the shared address. That "
+        "is the recommended setup.",
+        "recommandée",
+        "aanbevolen",
+    ),
+    (
+        "Only assign a manual household to correct the sibling discount, for "
+        "example when children of the same family live at different addresses "
+        "but should still be billed together.",
+        "adresses différentes",
+        "verschillende adressen",
+    ),
+    (
         "Negative writes off, positive adds to what the household owes",
         "remise",
         "kwijtschelding",

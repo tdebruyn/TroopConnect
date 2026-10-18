@@ -2915,7 +2915,7 @@ msgid "Households"
 msgstr ""
 
 #: finance/forms.py:146
-msgid "Inferred from address"
+msgid "Inferred from address (recommended)"
 msgstr ""
 
 #: members/templates/members/admin_list.html:118

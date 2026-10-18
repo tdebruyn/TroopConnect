@@ -2454,8 +2454,8 @@ msgid "Households"
 msgstr "Foyers"
 
 #: finance/forms.py:146
-msgid "Inferred from address"
-msgstr "Déduit de l'adresse"
+msgid "Inferred from address (recommended)"
+msgstr "Déduit de l'adresse (recommandé)"
 
 #: members/templates/members/admin_list.html:118
 msgid "Inferred from the address"
@@ -2605,17 +2605,29 @@ msgstr "Personne n'est inscrit cette année."
 msgid "No household defined — every member is billed by address."
 msgstr "Aucun foyer défini — chaque membre est facturé par adresse."
 
-#: members/templates/members/admin_update.html:147
-msgid "No household set, so one is inferred from the address."
-msgstr "Aucun foyer défini : il est déduit de l'adresse."
-
 #: finance/templates/finance/household_detail.html:35
 msgid "A member can only be in one household: adding them here takes them out of any other."
 msgstr "Un membre ne peut appartenir qu'à un seul foyer : l'ajouter ici le retire de tout autre."
 
 #: finance/templates/finance/household_list.html:7
-msgid "Fees are billed per household: members sharing an address are billed together, eldest first. Create a household here only when that guess is wrong — to bill members at different addresses together, or to split one out of their family."
-msgstr "Les cotisations sont facturées par foyer : les membres qui partagent une adresse sont facturés ensemble, du plus âgé au plus jeune. Créez un foyer ici uniquement lorsque cette déduction est fausse — pour facturer ensemble des membres à des adresses différentes, ou pour en sortir un de sa famille."
+msgid "Fees are billed per household. Households are generated automatically from the shared address, so members living together are billed together, eldest first. That is the recommended setup: leave households to be generated automatically."
+msgstr "Les cotisations sont facturées par foyer. Les foyers sont générés automatiquement à partir de l'adresse partagée : les membres qui vivent ensemble sont donc facturés ensemble, du plus âgé au plus jeune. C'est la configuration recommandée : laissez les foyers se générer automatiquement."
+
+#: finance/templates/finance/household_list.html:10
+msgid "Create a household manually only to correct the sibling discount, for example when children of the same family live at different addresses but should still be billed together. Only the households you create appear below."
+msgstr "Ne créez un foyer manuellement que pour corriger la réduction familiale, par exemple lorsque des enfants d'une même famille vivent à des adresses différentes mais doivent rester facturés ensemble. Seuls les foyers que vous créez apparaissent ci-dessous."
+
+#: members/templates/members/admin_update.html:155
+msgid "Households are generated automatically from the shared address: the members are billed together, eldest first. That is the recommended setup."
+msgstr "Les foyers sont générés automatiquement à partir de l'adresse partagée : les membres sont facturés ensemble, du plus âgé au plus jeune. C'est la configuration recommandée."
+
+#: members/templates/members/admin_update.html:157
+msgid "Households are generated automatically from the shared address. That is the recommended setup."
+msgstr "Les foyers sont générés automatiquement à partir de l'adresse partagée. C'est la configuration recommandée."
+
+#: members/templates/members/admin_update.html:159
+msgid "Only assign a manual household to correct the sibling discount, for example when children of the same family live at different addresses but should still be billed together."
+msgstr "N'attribuez un foyer manuellement que pour corriger la réduction familiale, par exemple lorsque des enfants d'une même famille vivent à des adresses différentes mais doivent rester facturés ensemble."
 
 #: finance/templates/finance/billing_overview.html:74
 msgid "Members sharing an address are billed together, unless a household below says otherwise. The adjustment column is the manual correction added to that household's fees."
@@ -2632,10 +2644,6 @@ msgstr "Supprimer le foyer ne touche pas à ses membres : ils sont à nouveau fa
 #: members/templates/members/admin_update.html:159
 msgid "Nobody with this member is billed this year — a household only counts members enrolled in the current school year."
 msgstr "Personne n'est facturé avec ce membre cette année — un foyer ne compte que les membres inscrits pour l'année scolaire en cours."
-
-#: members/templates/members/admin_update.html:145
-msgid "No household set, so one is inferred from the address: the members below share it and are billed together, eldest first."
-msgstr "Aucun foyer défini : il est déduit de l'adresse, et les membres ci-dessous le partagent et sont facturés ensemble, du plus âgé au plus jeune."
 
 #: members/templates/members/admin_update.html:142
 #, python-format

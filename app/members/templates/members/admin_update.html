@@ -151,13 +151,12 @@
             <p class="text-muted">
                 {% if household_explicit %}
                     {% blocktranslate with name=household_explicit.name %}Billed in the household “{{ name }}”. Fees are split with the members below, eldest first.{% endblocktranslate %}
+                {% elif household_school_year %}
+                    {% trans "Households are generated automatically from the shared address: the members are billed together, eldest first. That is the recommended setup." %}
                 {% else %}
-                    {% if household_school_year %}
-                        {% trans "No household set, so one is inferred from the address: the members below share it and are billed together, eldest first." %}
-                    {% else %}
-                        {% trans "No household set, so one is inferred from the address." %}
-                    {% endif %}
+                    {% trans "Households are generated automatically from the shared address. That is the recommended setup." %}
                 {% endif %}
+                {% trans "Only assign a manual household to correct the sibling discount, for example when children of the same family live at different addresses but should still be billed together." %}
             </p>
             {% if household_others %}
                 <p>

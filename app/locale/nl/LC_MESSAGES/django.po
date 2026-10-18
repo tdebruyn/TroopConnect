@@ -2451,8 +2451,8 @@ msgid "Households"
 msgstr "Huishoudens"
 
 #: finance/forms.py:146
-msgid "Inferred from address"
-msgstr "Afgeleid uit het adres"
+msgid "Inferred from address (recommended)"
+msgstr "Afgeleid uit het adres (aanbevolen)"
 
 #: members/templates/members/admin_list.html:118
 msgid "Inferred from the address"
@@ -2602,17 +2602,29 @@ msgstr "Niemand ingeschreven dit jaar."
 msgid "No household defined — every member is billed by address."
 msgstr "Geen huishouden gedefinieerd — elk lid wordt per adres gefactureerd."
 
-#: members/templates/members/admin_update.html:147
-msgid "No household set, so one is inferred from the address."
-msgstr "Geen huishouden ingesteld, dus het wordt afgeleid uit het adres."
-
 #: finance/templates/finance/household_detail.html:35
 msgid "A member can only be in one household: adding them here takes them out of any other."
 msgstr "Een lid kan maar in één huishouden zitten: het hier toevoegen haalt het uit elk ander."
 
 #: finance/templates/finance/household_list.html:7
-msgid "Fees are billed per household: members sharing an address are billed together, eldest first. Create a household here only when that guess is wrong — to bill members at different addresses together, or to split one out of their family."
-msgstr "De bijdragen worden per huishouden gefactureerd: leden die een adres delen, worden samen gefactureerd, van oud naar jong. Maak hier alleen een huishouden aan als die afleiding fout is — om leden op verschillende adressen samen te factureren, of om er een uit zijn gezin te halen."
+msgid "Fees are billed per household. Households are generated automatically from the shared address, so members living together are billed together, eldest first. That is the recommended setup: leave households to be generated automatically."
+msgstr "De bijdragen worden per huishouden gefactureerd. Huishoudens worden automatisch aangemaakt op basis van het gedeelde adres, dus leden die samenwonen worden samen gefactureerd, van oud naar jong. Dat is de aanbevolen instelling: laat huishoudens automatisch aangemaakt worden."
+
+#: finance/templates/finance/household_list.html:10
+msgid "Create a household manually only to correct the sibling discount, for example when children of the same family live at different addresses but should still be billed together. Only the households you create appear below."
+msgstr "Maak alleen handmatig een huishouden aan om de gezinskorting te corrigeren, bijvoorbeeld wanneer kinderen van hetzelfde gezin op verschillende adressen wonen maar samen gefactureerd moeten blijven. Alleen huishoudens die je zelf aanmaakt, verschijnen hieronder."
+
+#: members/templates/members/admin_update.html:155
+msgid "Households are generated automatically from the shared address: the members are billed together, eldest first. That is the recommended setup."
+msgstr "Huishoudens worden automatisch aangemaakt op basis van het gedeelde adres: de leden worden samen gefactureerd, van oud naar jong. Dat is de aanbevolen instelling."
+
+#: members/templates/members/admin_update.html:157
+msgid "Households are generated automatically from the shared address. That is the recommended setup."
+msgstr "Huishoudens worden automatisch aangemaakt op basis van het gedeelde adres. Dat is de aanbevolen instelling."
+
+#: members/templates/members/admin_update.html:159
+msgid "Only assign a manual household to correct the sibling discount, for example when children of the same family live at different addresses but should still be billed together."
+msgstr "Wijs alleen een handmatig huishouden toe om de gezinskorting te corrigeren, bijvoorbeeld wanneer kinderen van hetzelfde gezin op verschillende adressen wonen maar samen gefactureerd moeten blijven."
 
 #: finance/templates/finance/billing_overview.html:74
 msgid "Members sharing an address are billed together, unless a household below says otherwise. The adjustment column is the manual correction added to that household's fees."
@@ -2629,10 +2641,6 @@ msgstr "Het huishouden verwijderen raakt zijn leden niet: ze worden opnieuw per 
 #: members/templates/members/admin_update.html:159
 msgid "Nobody with this member is billed this year — a household only counts members enrolled in the current school year."
 msgstr "Niemand wordt dit jaar samen met dit lid gefactureerd — een huishouden telt alleen leden die voor het huidige schooljaar ingeschreven zijn."
-
-#: members/templates/members/admin_update.html:145
-msgid "No household set, so one is inferred from the address: the members below share it and are billed together, eldest first."
-msgstr "Geen huishouden ingesteld, dus het wordt afgeleid uit het adres: de leden hieronder delen het en worden samen gefactureerd, van oud naar jong."
 
 #: members/templates/members/admin_update.html:142
 #, python-format
