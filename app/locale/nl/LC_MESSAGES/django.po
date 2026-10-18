@@ -4170,3 +4170,10 @@ msgstr "“%(name)s” wordt nog gebruikt door leden, activiteiten of berichten 
 #: finance/templates/finance/_payment_delete_row.html
 msgid "Delete the payment of %(amount)s on %(date)s? The balance changes with it."
 msgstr "De betaling van %(amount)s op %(date)s verwijderen? Het saldo verandert mee."
+
+#: homepage/views.py
+msgid "Advanced settings"
+msgstr "Geavanceerde instellingen"
+
+msgid "Technical settings, rarely needed"
+msgstr "Technische instellingen, zelden nodig"

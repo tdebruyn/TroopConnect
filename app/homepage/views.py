@@ -44,9 +44,12 @@ from members.permissions import (
 # first read as the headline fact and the rest dimmed by the template.
 # `alert` marks the one tile that reports work rather than offering a tool;
 # it carries its own treatment instead of borrowing the page's single dark
-# note, which belongs to whichever group leads.
+# note, which belongs to whichever group leads. `quiet` marks a door the
+# reader normally does not open — the Django admin — so it sits in the mosaic
+# without competing with the unit's daily work.
 Tool = namedtuple(
-    "Tool", "label url icon modal details alert", defaults=((), False)
+    "Tool", "label url icon modal details alert quiet",
+    defaults=((), False, False),
 )
 
 
@@ -448,6 +451,11 @@ def _member_tools(
             }
         )
 
+    # A unit admin's section tools are unit-wide work: the same three doors
+    # reach every section, so they belong with the unit's tools rather than in
+    # a "Your sections" group that implies the reader leads them. A section's
+    # own animateur keeps the group, because for them it is their own work.
+    admin_section_items = []
     if sections:
         section_items = []
         if can_access_messaging(user):
@@ -470,21 +478,19 @@ def _member_tools(
                 )
             )
         if section_items:
-            groups.append(
-                {
-                    # An animateur's page is their one section; staff may hold
-                    # several. The title follows the role rather than the list
-                    # length, because the list is only ever longer by mistake.
-                    "title": (
-                        _("Your section")
-                        if has_primary_role(user, ANIMATEUR_ROLES)
-                        else _("Your sections")
-                    ),
-                    "items": section_items,
-                    "priority": priority("sections"),
-                    "kind": "sections",
-                }
-            )
+            if can_manage_unit(user):
+                admin_section_items = section_items
+            else:
+                groups.append(
+                    {
+                        # An animateur's page is their one section; the group
+                        # is their own work, not the unit's.
+                        "title": _("Your section"),
+                        "items": section_items,
+                        "priority": priority("sections"),
+                        "kind": "sections",
+                    }
+                )
 
     unit_items = []
     if can_manage_members(user):
@@ -517,6 +523,10 @@ def _member_tools(
                 False,
             )
         )
+    # The section tools moved here for a unit admin; they follow the member
+    # list because writing to a section is the unit team's next most common
+    # act.
+    unit_items += admin_section_items
     if can_manage_unit(user):
         unit_items += [
             Tool(
@@ -542,24 +552,17 @@ def _member_tools(
             )
         )
     if user.is_staff:
-        unit_items += [
+        unit_items.append(
             Tool(
                 _("Settings"),
                 reverse("members:troop_settings"),
                 "sliders2",
                 False,
-            ),
-            Tool(
-                _("Email queue"),
-                reverse("members:mail_queue"),
-                "envelope",
-                False,
-            ),
-        ]
-    if can_access_finance(user) and module_enabled(modules.FEES):
-        unit_items.append(
-            Tool(_("Membership fees"), reverse("finance:billing"), "cash-coin", False)
+            )
         )
+    # The two module tools sit together on the second-to-last line; the
+    # advanced door and the email queue close the list, the queue last of all
+    # because it is read when something has failed, not as a destination.
     if can_manage_unit(user) and module_enabled(modules.SIGNING):
         unit_items.append(
             Tool(
@@ -569,14 +572,33 @@ def _member_tools(
                 False,
             )
         )
+    if can_access_finance(user) and module_enabled(modules.FEES):
+        unit_items.append(
+            Tool(_("Membership fees"), reverse("finance:billing"), "cash-coin", False)
+        )
     # The account menu is the way out alone, so the board carries the admin;
-    # without this tile a superuser has no way to reach it.
+    # without this tile a superuser has no way to reach it. It is named for
+    # what it holds rather than for where it comes from, and drawn quiet: it
+    # is the door to advanced settings, not one of the unit's daily tools.
     if user.is_superuser:
         unit_items.append(
             Tool(
-                _("Site administration"),
+                _("Advanced settings"),
                 reverse("admin:index"),
                 "gear",
+                False,
+                (_("Technical settings, rarely needed"),),
+                False,
+                True,
+            )
+        )
+    # Last of all: a queue is read when something failed, not a destination.
+    if user.is_staff:
+        unit_items.append(
+            Tool(
+                _("Email queue"),
+                reverse("members:mail_queue"),
+                "envelope",
                 False,
             )
         )

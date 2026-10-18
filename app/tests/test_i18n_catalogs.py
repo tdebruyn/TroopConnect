@@ -886,6 +886,13 @@ NEW_STRINGS = [
         "Le solde change",
         "Het saldo verandert",
     ),
+    # The quiet door to the Django admin, renamed for what it holds.
+    ("Advanced settings", "Paramètres avancés", "Geavanceerde instellingen"),
+    (
+        "Technical settings, rarely needed",
+        "rarement nécessaires",
+        "zelden nodig",
+    ),
 ]
 
 

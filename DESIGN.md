@@ -1244,6 +1244,20 @@ nobody scans.
   tiles (`1.5` grow, 24rem basis); its first tile spans both columns and, when no
   balance has spent the dark note, becomes the dark tile. Its label is 1.25rem
   instead of 1rem.
+- **A unit admin's section tools join the unit group.** "Send a message",
+  "Message history" and "Section agendas" reach every section for a unit admin,
+  so they are unit tools; only a section's own animateur gets the "Your
+  section" group, because for them the links are their own work.
+- **The advanced door is quieter than a tool.** The superuser's link into the
+  Django admin is named for what it holds ("Advanced settings") and carries
+  the line "Technical settings, rarely needed". It is the one tile with no
+  ground, no shadow, a hairline outline and the label one weight down: a white
+  card would be *more* visible than the tinted tools beside it. It keeps the
+  tile shape so the mosaic stays one system; hover returns the card and the
+  ink.
+- **The rare tools close the unit group.** Attestations and fees share the
+  second-to-last line, the advanced door follows, and the email queue is last:
+  a queue is read when something failed, not a destination.
 - **The tint names the group.** Children at 7% Baladins blue, sections and the
   unit at 6% Louveteaux green, account and site white. The tints are mixed over
   white, not over the page ground, so a tile stays a tile wherever it lands.

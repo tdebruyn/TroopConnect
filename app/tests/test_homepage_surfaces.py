@@ -960,6 +960,64 @@ class MemberHomepageTest(DeskTestBase):
             self.client.get("/").content.decode(),
         )
 
+    def test_a_unit_admin_gets_the_section_tools_under_the_unit(self):
+        """A unit admin's section tools reach every section, not their own."""
+        account = self.make_staff("admin-tools@test.com")
+        self.client.force_login(account)
+
+        groups = self.client.get("/").context["member_tools"]
+        self.assertNotIn("sections", [group["kind"] for group in groups])
+        unit = next(group for group in groups if group["kind"] == "unit")
+        urls = [item.url for item in unit["items"]]
+        self.assertIn(reverse("messaging:compose"), urls)
+        self.assertIn(reverse("messaging:animateur_history"), urls)
+        self.assertIn(reverse("members:agenda"), urls)
+
+    def test_a_sections_own_leader_keeps_the_section_group(self):
+        account = self.make_leader("own-tools@test.com", self.section)
+        self.client.force_login(account)
+
+        groups = self.client.get("/").context["member_tools"]
+        section_group = next(
+            group for group in groups if group["kind"] == "sections"
+        )
+        urls = [item.url for item in section_group["items"]]
+        self.assertIn(reverse("messaging:compose"), urls)
+        self.assertIn(reverse("members:agenda"), urls)
+
+    def test_the_admin_door_is_quiet_and_named_for_advanced_settings(self):
+        account = self.make_staff("advanced@test.com")
+        account.is_superuser = True
+        account.save()
+        self.client.force_login(account)
+
+        response = self.client.get("/")
+        unit = next(
+            group
+            for group in response.context["member_tools"]
+            if group["kind"] == "unit"
+        )
+        advanced = next(
+            item for item in unit["items"] if item.url == reverse("admin:index")
+        )
+        self.assertEqual(
+            str(advanced.label), str(translation.gettext("Advanced settings"))
+        )
+        self.assertTrue(advanced.quiet)
+        self.assertEqual(
+            [str(detail) for detail in advanced.details],
+            [str(translation.gettext("Technical settings, rarely needed"))],
+        )
+        self.assertContains(response, "member-tool-quiet")
+
+        # The tail of the unit group: attestations and fees together, then
+        # the advanced door, and the queue last of all.
+        urls = [item.url for item in unit["items"]]
+        self.assertEqual(urls[-1], reverse("members:mail_queue"))
+        self.assertEqual(urls[-2], reverse("admin:index"))
+        self.assertEqual(urls[-3], reverse("finance:billing"))
+        self.assertEqual(urls[-4], reverse("attestations:index"))
+
     def make_leader(self, email, *sections):
         person = Person.objects.create(
             first_name="Lea", last_name="Leader",
@@ -1195,7 +1253,7 @@ class MemberHomepageTest(DeskTestBase):
             for group in _member_tools(
                 account, person, sections, children, leads, own_section
             ):
-                for label, url, _icon, _modal, _details, _alert in group["items"]:
+                for label, url, _icon, _modal, _details, _alert, _quiet in group["items"]:
                     with self.subTest(role=role, tool=label):
                         self.client.force_login(account)
                         self.assertEqual(

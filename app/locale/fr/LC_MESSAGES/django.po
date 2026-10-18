@@ -4173,3 +4173,10 @@ msgstr "« %(name)s » est encore utilisé par des membres, des activités ou de
 #: finance/templates/finance/_payment_delete_row.html
 msgid "Delete the payment of %(amount)s on %(date)s? The balance changes with it."
 msgstr "Supprimer le paiement de %(amount)s du %(date)s ? Le solde change avec lui."
+
+#: homepage/views.py
+msgid "Advanced settings"
+msgstr "Paramètres avancés"
+
+msgid "Technical settings, rarely needed"
+msgstr "Réglages techniques, rarement nécessaires"
