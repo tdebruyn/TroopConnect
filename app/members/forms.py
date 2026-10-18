@@ -1049,6 +1049,12 @@ class WordingSettingsForm(forms.ModelForm):
                 "The greyed-out example under an address field."
             ),
         }
+        # Both are a sentence or two; the default textarea would give each
+        # eight rows of empty paper on a card that already has six fields.
+        widgets = {
+            "email_signature": forms.Textarea(attrs={"rows": 3}),
+            "photo_consent_text": forms.Textarea(attrs={"rows": 3}),
+        }
 
 
 class TimelineActivityForm(forms.ModelForm):

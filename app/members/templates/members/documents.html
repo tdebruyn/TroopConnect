@@ -10,15 +10,18 @@
 {% endblock hat_text %}
 {% block subcontent %}
     {% comment %}
-      The list is its own swap target: a save or a delete triggers
-      `documentsChanged`, and this container fetches the page again and keeps
-      only the list from it. The modal closes on the same trigger.
+      The refresh lives on an empty sibling, not on the list itself: htmx
+      attributes are inherited, so a list carrying hx-select and hx-swap
+      would hand them to the Add and Edit buttons inside it and the modal
+      response would be filtered and swapped away.
     {% endcomment %}
-    <div id="documents-list"
+    <div id="documents-refresh"
          hx-get="{% url 'members:documents' %}"
          hx-trigger="documentsChanged from:body"
          hx-select="#documents-list"
-         hx-swap="outerHTML">
+         hx-target="#documents-list"
+         hx-swap="outerHTML"></div>
+    <div id="documents-list">
         {% if can_manage %}
             <div class="mb-3">
                 <a class="btn btn-primary"

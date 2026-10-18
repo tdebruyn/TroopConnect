@@ -15,16 +15,16 @@
             {% endfor %}
             <div class="row g-2 align-items-end">
                 <div class="col-sm-3">
-                    <label class="form-label small mb-1" for="{{ form.amount.id_for_label }}">{{ form.amount.label }}</label>
-                    {{ form.amount }}
-                    {% for error in form.amount.errors %}
+                    <label class="form-label small mb-1" for="{{ form.date.id_for_label }}">{{ form.date.label }}</label>
+                    {{ form.date }}
+                    {% for error in form.date.errors %}
                         <div class="alert-danger small mt-1" role="alert">{{ error }}</div>
                     {% endfor %}
                 </div>
                 <div class="col-sm-3">
-                    <label class="form-label small mb-1" for="{{ form.date.id_for_label }}">{{ form.date.label }}</label>
-                    {{ form.date }}
-                    {% for error in form.date.errors %}
+                    <label class="form-label small mb-1" for="{{ form.amount.id_for_label }}">{{ form.amount.label }}</label>
+                    {{ form.amount }}
+                    {% for error in form.amount.errors %}
                         <div class="alert-danger small mt-1" role="alert">{{ error }}</div>
                     {% endfor %}
                 </div>
