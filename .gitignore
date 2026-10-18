@@ -11,6 +11,9 @@ dump.rdb
 config.yml
 .settings.json
 .env
+# Environment backups (.env.bak and friends); the example is the template to copy.
+.env.*
+!.env.example
 __pypackages__
 .python-version
 node_modules/
@@ -22,3 +25,23 @@ app/media/
 # MEDIA_ROOT and STATIC_ROOT (what the media/static volumes are mounted over)
 app/mediafiles/
 app/staticfiles/
+
+# Assistant and design tooling regenerated per machine. The impeccable skill
+# installs a copy into .claude/ and .github/ for each harness, and its Linux
+# binary alone is 21 MB, so neither copy belongs in the repository.
+.claude/
+.github/agents/
+.github/hooks/
+.github/skills/
+
+# Impeccable working artifacts. config.json, design.json and surfaces/ stay
+# tracked: they are the design system and the comps a build is reviewed against.
+.impeccable/config.local.json
+.impeccable/hook.cache.json
+.impeccable/critique/
+.impeccable/live/
+.impeccable/mocks/
+.impeccable/review/
+
+# Documented scratch: the legacy import database and one-off attestation scripts.
+workspace/
