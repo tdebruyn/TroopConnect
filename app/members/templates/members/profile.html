@@ -23,6 +23,8 @@
                   <small class="text-muted d-block mt-1">{% blocktranslate with reason=form.lock_reason %}Account type cannot be changed. Reason: {{ reason }}.{% endblocktranslate %}</small>
                 </div>
                 {{ form.primary_role }}
+                {# Hidden, but still submitted: otherwise a locked Parent loses "Parent actif". #}
+                {{ form.parent_active }}
               {% else %}
                 <div class="form-label">{% trans "Account type" %}</div>
                 <div class="input-group">

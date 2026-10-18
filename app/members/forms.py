@@ -22,21 +22,33 @@ from .models import (
     TroopSettings,
 )
 from .modules import module_enabled
-from .permissions import TRESORIER, get_person, reportable_children
+from .permissions import (
+    PARENT,
+    PARENT_ACTIF,
+    TRESORIER,
+    get_person,
+    reportable_children,
+)
 
 
-def secondary_role_queryset():
-    """The secondary roles a troop can hand out.
+def secondary_role_queryset(primary_role=None):
+    """The secondary roles a troop can hand out to a person of `primary_role`.
 
     The Treasurer role is hidden while the membership-fees module is switched
     off: with the finance screens gone it grants nothing, so offering it would
     only invite a troop to file someone under a responsibility that does not
     exist. The role itself is untouched — see AdminUserUpdateForm.save(), which
     keeps roles this form does not offer.
+
+    "Parent actif" means a parent who helps the unit occasionally, so it is
+    only offered to a Parent; AdminUserUpdateForm.save() clears it from anyone
+    whose primary role moves away from Parent.
     """
     roles = Role.objects.filter(is_primary=False)
     if not module_enabled(modules.FEES):
         roles = roles.exclude(short=TRESORIER)
+    if primary_role is None or primary_role.short != PARENT:
+        roles = roles.exclude(short=PARENT_ACTIF)
     return roles
 
 
@@ -142,12 +154,33 @@ class AdminUserUpdateForm(forms.ModelForm):
             else:
                 self.fields["primary_role"].initial = self.instance.primary_role
 
+            # Which roles can be offered follows the primary role that will be
+            # submitted, not the one still stored: on a rejected POST the
+            # reader changed it already. A locked role cannot change, so its
+            # stored value is the submitted one.
+            suggested_role = self.instance.primary_role
+            if self.is_bound and not locked:
+                try:
+                    submitted = Role.objects.filter(
+                        pk=self.data.get(self.add_prefix("primary_role"))
+                    ).first()
+                except (TypeError, ValueError):
+                    submitted = None
+                suggested_role = submitted or suggested_role
+
             # Secondary roles are never shown or configurable for a Participant
             # (rule 1). Drop the field entirely so it is not rendered.
-            if self.instance.primary_role.short == Person.CHILD_ROLE_SHORT:
+            if suggested_role.short == Person.CHILD_ROLE_SHORT:
                 self.fields.pop("secondary_roles", None)
             else:
-                self.fields["secondary_roles"].queryset = secondary_role_queryset()
+                # The stored role is accepted as well as the suggested one:
+                # a Parent dropped to Animator still has "Parent actif" ticked
+                # from the render, and clean() drops it instead of the field
+                # rejecting a box the reader was never asked to untick.
+                self.fields["secondary_roles"].queryset = (
+                    secondary_role_queryset(suggested_role)
+                    | secondary_role_queryset(self.instance.primary_role)
+                )
                 secondary_roles = self.instance.roles.filter(is_primary=False)
                 if secondary_roles.exists():
                     self.fields["secondary_roles"].initial = secondary_roles.all()
@@ -174,6 +207,14 @@ class AdminUserUpdateForm(forms.ModelForm):
         # submit. save() then clears the stored roles.
         if primary_role and primary_role.short == Person.CHILD_ROLE_SHORT:
             cleaned_data["secondary_roles"] = Role.objects.none()
+        elif primary_role and primary_role.short != PARENT:
+            # "Parent actif" only exists alongside the Parent primary role, so
+            # a role change in this submit must take it with it.
+            cleaned_data["secondary_roles"] = [
+                role
+                for role in cleaned_data.get("secondary_roles") or []
+                if role.short != PARENT_ACTIF
+            ]
 
         return cleaned_data
 
@@ -198,6 +239,12 @@ class AdminUserUpdateForm(forms.ModelForm):
             if "secondary_roles" in self.fields:
                 stored = stored.filter(role__in=self.fields["secondary_roles"].queryset)
             stored.delete()
+            if primary_role and primary_role.short != PARENT:
+                # The form no longer offers "Parent actif" to a non-Parent, so
+                # the filter above would leave a stale assignment in place.
+                PersonRole.objects.filter(
+                    person=person, role__short=PARENT_ACTIF
+                ).delete()
             for role in (secondary_roles or []):
                 PersonRole.objects.create(person=person, role=role)
 
@@ -342,12 +389,16 @@ class ProfileEditForm(UserChangeForm):
                 self.fields["primary_role"].initial = Person.CHILD_ROLE_SHORT
             elif person.primary_role.short == "p":
                 self.fields["primary_role"].initial = "p"
-                if parent_active_role in person.roles.all():
-                    self.fields["parent_active"].initial = True
             elif person.primary_role.short == "a":
                 self.fields["primary_role"].initial = "a"
             elif person.primary_role.short == "e":
                 self.fields["primary_role"].initial = "e"
+
+        # Seeded regardless of locking: the checkbox is hidden for a locked
+        # role, and an unseeded hidden checkbox would read as un-ticked and
+        # drop the role on the next save.
+        if parent_active_role in person.roles.all():
+            self.fields["parent_active"].initial = True
 
     def clean(self):
         cleaned_data = super().clean()
@@ -362,6 +413,11 @@ class ProfileEditForm(UserChangeForm):
             raise ValidationError(
                 _("A person of branch age can only be a Participant.")
             )
+        # "Parent actif" only exists alongside the Parent primary role. The
+        # checkbox is hidden for other roles, but hiding it does not un-tick
+        # it, so a role switch in this same submit could otherwise keep it.
+        if primary_role and primary_role != PARENT:
+            cleaned_data["parent_active"] = False
         return cleaned_data
 
     def save(self, commit=True):
