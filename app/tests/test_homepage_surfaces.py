@@ -1253,7 +1253,8 @@ class MemberHomepageTest(DeskTestBase):
             for group in _member_tools(
                 account, person, sections, children, leads, own_section
             ):
-                for label, url, _icon, _modal, _details, _alert, _quiet in group["items"]:
+                for tool in group["items"]:
+                    label, url = tool.label, tool.url
                     with self.subTest(role=role, tool=label):
                         self.client.force_login(account)
                         self.assertEqual(

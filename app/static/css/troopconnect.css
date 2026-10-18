@@ -2590,6 +2590,13 @@ body {
   opacity: 1;
 }
 
+/* The detail that continues its label's sentence. It sits inside the bold
+   title, so it drops to the body weight: the size step alone reads as the
+   quieter half of the same sentence. */
+.member-tool-detail-inline {
+  font-weight: 400;
+}
+
 .member-tool-arrow {
   position: absolute;
   top: 1rem;

@@ -46,10 +46,12 @@ from members.permissions import (
 # it carries its own treatment instead of borrowing the page's single dark
 # note, which belongs to whichever group leads. `quiet` marks a door the
 # reader normally does not open — the Django admin — so it sits in the mosaic
-# without competing with the unit's daily work.
+# without competing with the unit's daily work. `detail_inline` runs a detail
+# on after the label, for one that continues the label's sentence rather than
+# reporting a fact of its own; stacked, it reads as a second option.
 Tool = namedtuple(
-    "Tool", "label url icon modal details alert quiet",
-    defaults=((), False, False),
+    "Tool", "label url icon modal details alert quiet detail_inline",
+    defaults=((), False, False, False),
 )
 
 
@@ -414,7 +416,9 @@ def _member_tools(
     #
     # The key tool names the situation, not the key: a second parent recognises
     # "already registered" where "link with a key" only states the mechanism.
-    # The detail says who did the registering, which the label cannot.
+    # The detail says who did the registering, which the label cannot, and it
+    # is a grammatical continuation of the label, so it runs on in the same
+    # sentence rather than stacking as a second line under the title.
     add_items = [
         Tool(_("Add a child"), reverse("members:add_new_child"), "person-plus", True),
         Tool(
@@ -423,6 +427,7 @@ def _member_tools(
             "person-down",
             True,
             (_("by the other parent or a relative"),),
+            detail_inline=True,
         ),
     ]
     agenda_items = (
