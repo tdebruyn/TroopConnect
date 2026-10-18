@@ -16,16 +16,12 @@
                     <th>{% trans "Amount" %}</th>
                     <th>{% trans "Note" %}</th>
                     <th>{% trans "Recorded by" %}</th>
+                    <th>{% trans "Actions" %}</th>
                 </tr>
             </thead>
             <tbody>
-                {% for p in payments %}
-                <tr>
-                    <td>{{ p.date }}</td>
-                    <td>{{ p.amount |money }}</td>
-                    <td>{{ p.note|default:"—" }}</td>
-                    <td>{{ p.recorded_by|default:"—" }}</td>
-                </tr>
+                {% for payment in payments %}
+                    {% include "finance/_payment_row.html" %}
                 {% endfor %}
             </tbody>
         </table>

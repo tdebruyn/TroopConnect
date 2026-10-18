@@ -4166,3 +4166,7 @@ msgstr "%(branch)s: het e-mailadres van %(section)s is ongeldig."
 
 msgid "“%(name)s” is still used by members, activities or messages, so it cannot be removed here. The Django admin can delete it."
 msgstr "“%(name)s” wordt nog gebruikt door leden, activiteiten of berichten en kan hier daarom niet worden verwijderd. De Django-beheeromgeving kan dat wel."
+
+#: finance/templates/finance/_payment_delete_row.html
+msgid "Delete the payment of %(amount)s on %(date)s? The balance changes with it."
+msgstr "De betaling van %(amount)s op %(date)s verwijderen? Het saldo verandert mee."

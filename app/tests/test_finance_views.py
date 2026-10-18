@@ -182,6 +182,77 @@ class PaymentHistoryTest(FinanceTestBase):
         self.assertEqual(self.client.get(self.url).status_code, 404)
 
 
+class PaymentCorrectionTest(FinanceTestBase):
+    """A treasurer correcting a payment from its history row."""
+
+    def setUp(self):
+        super().setUp()
+        self._login_tresorier()
+        self.payment = Payment.objects.create(
+            person=self.child_eldest,
+            school_year=self.current_year,
+            amount=Decimal("40.00"),
+            date=timezone.now().date(),
+            note="espèces",
+        )
+        self.history_url = reverse(
+            "finance:payment_history", args=[self.child_eldest.pk]
+        )
+        self.edit_url = reverse("finance:payment_edit", args=[self.payment.pk])
+        self.delete_url = reverse("finance:payment_delete", args=[self.payment.pk])
+
+    def test_the_history_offers_edit_and_delete_on_each_row(self):
+        response = self.client.get(self.history_url)
+        self.assertContains(response, self.edit_url)
+        self.assertContains(response, self.delete_url)
+
+    def test_editing_corrects_the_amount_date_and_note(self):
+        response = self.client.post(
+            self.edit_url,
+            {"amount": "35.50", "date": "2026-09-02", "note": "virement"},
+            HTTP_HX_REQUEST="true",
+        )
+
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.headers["HX-Refresh"], "true")
+        self.payment.refresh_from_db()
+        self.assertEqual(self.payment.amount, Decimal("35.50"))
+        self.assertEqual(self.payment.date.isoformat(), "2026-09-02")
+        self.assertEqual(self.payment.note, "virement")
+
+    def test_an_invalid_amount_comes_back_in_the_row(self):
+        response = self.client.post(
+            self.edit_url,
+            {"amount": "0.00", "date": "2026-09-02", "note": ""},
+            HTTP_HX_REQUEST="true",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, f'id="payment-{self.payment.pk}"')
+        self.payment.refresh_from_db()
+        self.assertEqual(self.payment.amount, Decimal("40.00"))
+
+    def test_delete_asks_first_and_only_a_post_removes_it(self):
+        confirm = self.client.get(self.delete_url, HTTP_HX_REQUEST="true")
+        self.assertEqual(confirm.status_code, 200)
+        self.assertTrue(Payment.objects.filter(pk=self.payment.pk).exists())
+
+        response = self.client.post(self.delete_url, HTTP_HX_REQUEST="true")
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.headers["HX-Refresh"], "true")
+        self.assertFalse(Payment.objects.filter(pk=self.payment.pk).exists())
+
+    def test_a_plain_parent_cannot_correct_or_delete(self):
+        self.client.logout()
+        self.client.login(email="alice@test.com", password="testpass")
+
+        self.assertEqual(self.client.get(self.edit_url).status_code, 404)
+        self.assertEqual(self.client.get(self.delete_url).status_code, 404)
+        self.assertEqual(
+            self.client.post(self.delete_url).status_code, 404
+        )
+
+
 class SendRemindersTest(FinanceMailTestBase):
     def setUp(self):
         super().setUp()

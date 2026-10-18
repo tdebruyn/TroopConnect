@@ -30,6 +30,7 @@ from .forms import (
     HouseholdForm,
     HouseholdMemberForm,
     LatePaymentForm,
+    PaymentEditForm,
     PaymentForm,
     PriceGridForm,
     ReminderForm,
@@ -283,6 +284,57 @@ def payment_history(request, person_id):
         "household": household,
         "adjustments": adjustments,
     })
+
+
+def _payment_for_finance(request, pk):
+    """The payment, for a treasurer (and nobody else)."""
+    if not can_access_finance(request.user):
+        raise Http404
+    return get_object_or_404(Payment, pk=pk)
+
+
+@login_required
+@requires_module(FEES)
+def payment_row(request, pk):
+    """One payment, back in its read-only shape (the inline Cancel)."""
+    payment = _payment_for_finance(request, pk)
+    return render(request, "finance/_payment_row.html", {"payment": payment})
+
+
+@login_required
+@requires_module(FEES)
+def edit_payment(request, pk):
+    """Correct the amount, date or note of a payment already recorded."""
+    payment = _payment_for_finance(request, pk)
+
+    if request.method == "POST":
+        form = PaymentEditForm(request.POST, instance=payment)
+        if form.is_valid():
+            form.save()
+            # The balance on the page behind the modal changed with it; a
+            # refresh is the honest way to show the new figure.
+            return HttpResponse(status=204, headers={"HX-Refresh": "true"})
+    else:
+        form = PaymentEditForm(instance=payment)
+
+    return render(
+        request,
+        "finance/_payment_edit_row.html",
+        {"form": form, "payment": payment},
+    )
+
+
+@login_required
+@requires_module(FEES)
+def delete_payment(request, pk):
+    """Remove a payment recorded by mistake, after an inline confirmation."""
+    payment = _payment_for_finance(request, pk)
+
+    if request.method == "POST":
+        payment.delete()
+        return HttpResponse(status=204, headers={"HX-Refresh": "true"})
+
+    return render(request, "finance/_payment_delete_row.html", {"payment": payment})
 
 
 @login_required

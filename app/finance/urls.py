@@ -9,6 +9,10 @@ urlpatterns = [
     path("prices/", views.edit_prices, name="prices"),
     path("payment/", views.record_payment, name="record_payment"),
     path("payment/history/<uuid:person_id>/", views.payment_history, name="payment_history"),
+    # Correcting a payment recorded by mistake, from its history row.
+    path("payment/<int:pk>/row/", views.payment_row, name="payment_row"),
+    path("payment/<int:pk>/edit/", views.edit_payment, name="payment_edit"),
+    path("payment/<int:pk>/delete/", views.delete_payment, name="payment_delete"),
     path("reminders/", views.send_reminders, name="reminders"),
     path("households/", views.household_list, name="households"),
     path("households/assign/", views.assign_household, name="assign_household"),

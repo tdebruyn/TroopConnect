@@ -1,0 +1,20 @@
+{% load i18n money %}
+<tr id="payment-{{ payment.pk }}">
+    <td colspan="5">
+        <div class="d-flex flex-wrap align-items-center gap-2">
+            <span>
+                {% blocktranslate with amount=payment.amount|money date=payment.date %}Delete the payment of {{ amount }} on {{ date }}? The balance changes with it.{% endblocktranslate %}
+            </span>
+            <button type="button"
+                    class="btn btn-outline-danger btn-sm"
+                    hx-post="{% url 'finance:payment_delete' payment.pk %}"
+                    hx-target="#payment-{{ payment.pk }}"
+                    hx-swap="outerHTML">{% trans "Delete" %}</button>
+            <button type="button"
+                    class="btn btn-secondary btn-sm"
+                    hx-get="{% url 'finance:payment_row' payment.pk %}"
+                    hx-target="#payment-{{ payment.pk }}"
+                    hx-swap="outerHTML">{% trans "Cancel" %}</button>
+        </div>
+    </td>
+</tr>

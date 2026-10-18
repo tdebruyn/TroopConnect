@@ -1,0 +1,19 @@
+{% load i18n money %}
+<tr id="payment-{{ payment.pk }}">
+    <td>{{ payment.date }}</td>
+    <td>{{ payment.amount|money }}</td>
+    <td>{{ payment.note|default:"—" }}</td>
+    <td>{{ payment.recorded_by|default:"—" }}</td>
+    <td class="text-nowrap">
+        <button type="button"
+                class="btn btn-outline-primary btn-sm"
+                hx-get="{% url 'finance:payment_edit' payment.pk %}"
+                hx-target="#payment-{{ payment.pk }}"
+                hx-swap="outerHTML">{% trans "Edit" %}</button>
+        <button type="button"
+                class="btn btn-outline-danger btn-sm"
+                hx-get="{% url 'finance:payment_delete' payment.pk %}"
+                hx-target="#payment-{{ payment.pk }}"
+                hx-swap="outerHTML">{% trans "Delete" %}</button>
+    </td>
+</tr>

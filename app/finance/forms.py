@@ -6,7 +6,13 @@ from django.utils.translation import gettext_lazy as _
 from members.models import Person, SchoolYear
 from members.money import currency_symbol
 
-from .models import CotisationConfig, FeeRule, Household, HouseholdAdjustment
+from .models import (
+    CotisationConfig,
+    FeeRule,
+    Household,
+    HouseholdAdjustment,
+    Payment,
+)
 
 
 class PriceGridForm(forms.Form):
@@ -141,6 +147,42 @@ class PaymentForm(forms.Form):
         # the label is filled in per request instead of at import.
         self.fields["amount"].label = _("Amount (%(currency)s)") % {
             "currency": currency_symbol()
+        }
+
+
+class PaymentEditForm(forms.ModelForm):
+    """Correct a recorded payment without re-entering who it was for.
+
+    The person and the school year are what the row already says; only the
+    amount, the date and the note are a treasurer's to fix.
+    """
+
+    amount = forms.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+        min_value=Decimal("0.01"),
+        label=_("Amount"),
+        widget=forms.NumberInput(
+            attrs={"class": "form-control form-control-sm", "step": "0.01"}
+        ),
+    )
+
+    class Meta:
+        model = Payment
+        fields = ["amount", "date", "note"]
+        labels = {
+            "amount": _("Amount"),
+            "date": _("Date"),
+            "note": _("Note"),
+        }
+        widgets = {
+            "date": forms.DateInput(
+                attrs={"class": "form-control form-control-sm", "type": "date"},
+                format="%Y-%m-%d",
+            ),
+            "note": forms.TextInput(
+                attrs={"class": "form-control form-control-sm"}
+            ),
         }
 
 

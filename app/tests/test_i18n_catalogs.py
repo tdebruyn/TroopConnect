@@ -879,6 +879,13 @@ NEW_STRINGS = [
         "L'administration Django",
         "Django-beheeromgeving",
     ),
+    # Correcting a payment from its history row.
+    (
+        "Delete the payment of %(amount)s on %(date)s? The balance changes "
+        "with it.",
+        "Le solde change",
+        "Het saldo verandert",
+    ),
 ]
 
 

@@ -4169,3 +4169,7 @@ msgstr "%(branch)s : l'adresse e-mail de %(section)s n'est pas valide."
 
 msgid "“%(name)s” is still used by members, activities or messages, so it cannot be removed here. The Django admin can delete it."
 msgstr "« %(name)s » est encore utilisé par des membres, des activités ou des messages ; il ne peut donc pas être supprimé ici. L'administration Django peut le faire."
+
+#: finance/templates/finance/_payment_delete_row.html
+msgid "Delete the payment of %(amount)s on %(date)s? The balance changes with it."
+msgstr "Supprimer le paiement de %(amount)s du %(date)s ? Le solde change avec lui."

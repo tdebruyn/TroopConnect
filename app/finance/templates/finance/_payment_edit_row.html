@@ -1,0 +1,49 @@
+{% load i18n %}
+{% comment %}
+  One payment, edited in place. The modal is already the dialog, so the form
+  replaces its own table row rather than opening a second layer; Cancel asks
+  the server for the row back, which is the same markup the history rendered.
+{% endcomment %}
+<tr id="payment-{{ payment.pk }}">
+    <td colspan="5">
+        <form hx-post="{% url 'finance:payment_edit' payment.pk %}"
+              hx-target="#payment-{{ payment.pk }}"
+              hx-swap="outerHTML">
+            {% csrf_token %}
+            {% for error in form.non_field_errors %}
+                <div class="alert alert-danger py-2" role="alert">{{ error }}</div>
+            {% endfor %}
+            <div class="row g-2 align-items-end">
+                <div class="col-sm-3">
+                    <label class="form-label small mb-1" for="{{ form.amount.id_for_label }}">{{ form.amount.label }}</label>
+                    {{ form.amount }}
+                    {% for error in form.amount.errors %}
+                        <div class="alert-danger small mt-1" role="alert">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="col-sm-3">
+                    <label class="form-label small mb-1" for="{{ form.date.id_for_label }}">{{ form.date.label }}</label>
+                    {{ form.date }}
+                    {% for error in form.date.errors %}
+                        <div class="alert-danger small mt-1" role="alert">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="col-sm-4">
+                    <label class="form-label small mb-1" for="{{ form.note.id_for_label }}">{{ form.note.label }}</label>
+                    {{ form.note }}
+                    {% for error in form.note.errors %}
+                        <div class="alert-danger small mt-1" role="alert">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="col-sm-2 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary btn-sm">{% trans "Save" %}</button>
+                    <button type="button"
+                            class="btn btn-secondary btn-sm"
+                            hx-get="{% url 'finance:payment_row' payment.pk %}"
+                            hx-target="#payment-{{ payment.pk }}"
+                            hx-swap="outerHTML">{% trans "Cancel" %}</button>
+                </div>
+            </div>
+        </form>
+    </td>
+</tr>
