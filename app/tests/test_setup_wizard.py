@@ -396,9 +396,9 @@ class HappyPathTest(WizardTestCase):
         self.assertTrue(account.is_staff)
         self.assertTrue(check_password(PASSWORD, account.password))
         self.assertEqual(account.person.primary_role.short, permissions.ANIMATEUR)
-        self.assertTrue(
+        self.assertFalse(
             PersonRole.objects.filter(
-                person=account.person, role__short=permissions.ADMIN
+                person=account.person, role__is_primary=False
             ).exists()
         )
         self.assertTrue(

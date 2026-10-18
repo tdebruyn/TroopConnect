@@ -36,6 +36,7 @@ from members.permissions import (
     can_access_finance,
     can_access_messaging,
     can_edit_section_agenda,
+    can_manage_members,
     can_manage_unit,
     get_person,
     has_primary_role,
@@ -659,7 +660,12 @@ def _member_tools(user, person, sections, children, leads):
     # page that starts with "Your children" makes an administrator scroll past
     # a group that is not their job, and the header no longer offers a way
     # around it.
-    if user.is_staff or can_manage_unit(user):
+    if (
+        user.is_staff
+        or can_manage_unit(user)
+        or can_manage_members(user)
+        or can_access_finance(user)
+    ):
         leading = "unit"
     elif leads:
         leading = "sections"
@@ -747,26 +753,35 @@ def _member_tools(user, person, sections, children, leads):
             )
 
     unit_items = []
-    if user.is_staff:
-        unit_items += [
+    if can_manage_members(user):
+        unit_items.append(
             (
                 _("Member management"),
                 reverse("members:admin_list"),
                 "people",
                 False,
-            ),
+            )
+        )
+    if can_manage_unit(user):
+        unit_items.append(
             (
                 _("Section passage"),
                 reverse("members:passage"),
                 "arrow-left-right",
                 False,
-            ),
+            )
+        )
+    if can_manage_members(user):
+        unit_items.append(
             (
                 _("Import and export"),
                 reverse("members:member_import"),
                 "arrow-down-up",
                 False,
-            ),
+            )
+        )
+    if user.is_staff:
+        unit_items += [
             (
                 _("Settings"),
                 reverse("members:troop_settings"),
@@ -974,7 +989,14 @@ def _member_context(user):
         # page is their tools is not missing anything, so it is not shown to
         # them — it would tell an administrator their unit is not attached.
         "member_show_empty": (
-            not panels and not children and not (user.is_staff or can_manage_unit(user))
+            not panels
+            and not children
+            and not (
+                user.is_staff
+                or can_manage_unit(user)
+                or can_manage_members(user)
+                or can_access_finance(user)
+            )
         ),
         # The treasurer's screens 404 for everyone else, so a parent who is not
         # one must not be handed a Pay button that dead-ends.

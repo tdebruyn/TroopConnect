@@ -93,7 +93,7 @@ class SeedDemoTest(SeedDemoTestCase):
         # enrolled ones: somebody archived and a registration not yet validated.
         self.assertEqual(
             set(Person.objects.values_list("primary_role__short", flat=True)),
-            {"a", "e", "n", "p"},
+            {"a", "am", "e", "n", "p"},
         )
         self.assertEqual(Person.objects.filter(status="ar").count(), 1)
         self.assertEqual(Person.objects.filter(status="r").count(), 1)

@@ -1013,6 +1013,10 @@ msgstr "Aanpasbare tekst"
 msgid "Participant"
 msgstr "Deelnemer"
 
+#: members/constants.py:28
+msgid "Other member"
+msgstr "Ander lid"
+
 #: members/constants.py:30 members/filters.py:26 members/forms.py:232
 #: members/forms.py:245 members/forms.py:422 members/forms.py:519
 #: members/templates/members/admin_update.html:142

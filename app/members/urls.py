@@ -48,7 +48,8 @@ urlpatterns = [
         name="remove_child_confirm",
     ),
     # Admin-side deletion of a member: `delete` archives, `purge` destroys.
-    # Both are superuser/ADMIN-only and reached from the member's modify page.
+    # Both are reserved for site staff and the unit team's lead, and reached
+    # from the member's modify page.
     path("delete/<str:pk>", views.member_delete, name="member_delete"),
     path("purge/<str:pk>", views.member_purge, name="member_purge"),
     path("documents/", views.DocumentListView.as_view(), name="documents"),

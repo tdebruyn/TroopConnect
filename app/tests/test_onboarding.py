@@ -292,5 +292,6 @@ class OnboardingBranchAgeTest(TestCase):
         self.person.save()
         form = OnboardingForm(person=self.person)
         self.assertEqual(
-            [c[0] for c in form.fields["primary_role"].choices], ["p", "a", "e"]
+            [c[0] for c in form.fields["primary_role"].choices],
+            ["p", "a", "e", "am"],
         )

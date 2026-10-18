@@ -721,7 +721,9 @@ member's own column values are written regardless.
   member. A column present but **empty** clears what it names — an empty
   `section_current_year` removes that year's enrolment and an empty
   `secondary_roles` removes every secondary role, which is what the member edit
-  form does with an empty field and what an export of such a member says.
+  form does with an empty field and what an export of such a member says. A
+  role the member's primary role cannot hold (only Parents and Autres membres
+  may hold unit-team roles) is ignored on import.
 * **Never an account.** An empty email cell does not delete a login, and a row
   that carries an address gives the member an `Account` with **no usable
   password**.

@@ -83,7 +83,9 @@ class AdminUpdateParticipantSecondaryRolesTest(TestCase):
             instance=self.parent, data=self._switch_to_participant_data()
         )
         self.assertTrue(form.is_valid())
-        self.assertEqual(list(form.cleaned_data["secondary_roles"]), [])
+        # The field is removed for a Participant, so nothing survives to be
+        # assigned; save() clears the stored roles.
+        self.assertNotIn("secondary_roles", form.cleaned_data)
 
     def test_clean_keeps_roles_for_other_roles(self):
         data = self._switch_to_participant_data(primary_role=self.role_p.pk)

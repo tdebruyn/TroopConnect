@@ -642,10 +642,17 @@ class CanManageTest(AttestationDbTestBase):
     def test_plain_parent_is_not_a_manager(self):
         self.assertFalse(can_manage_unit(self.parent1_account))
 
-    def test_admin_secondary_role_is_a_manager(self):
-        self.animateur.roles.add(Role.objects.get(short="ad"))
-        self.animateur_account.refresh_from_db()
-        self.assertTrue(can_manage_unit(self.animateur_account))
+    def test_unit_team_lead_is_a_manager(self):
+        self.parent1.roles.add(Role.objects.get(short="ar"))
+        self.assertTrue(can_manage_unit(self.parent1_account))
+
+    def test_treasurer_is_not_a_unit_manager(self):
+        self.parent1.roles.add(Role.objects.get(short="t"))
+        self.assertFalse(can_manage_unit(self.parent1_account))
+
+    def test_registration_manager_is_not_a_unit_manager(self):
+        self.parent1.roles.add(Role.objects.get(short="ri"))
+        self.assertFalse(can_manage_unit(self.parent1_account))
 
     def test_animateur_without_secondary_role_is_not_a_manager(self):
         self.assertFalse(can_manage_unit(self.animateur_account))

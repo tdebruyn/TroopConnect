@@ -51,6 +51,7 @@ from .models import (
     Enrollment,
     ImportantDocument,
     Person,
+    Role,
     SchoolYear,
     SectionEvent,
     TroopSettings,
@@ -61,10 +62,13 @@ from .permissions import (
     can_access_finance,
     can_delete_member,
     can_edit_section_agenda,
+    can_manage_members,
+    can_manage_roles,
     can_manage_unit,
     get_person,
     is_htmx,
     reportable_children,
+    secondary_roles_for,
     visible_sections,
 )
 from .tasks import run_passage
@@ -279,7 +283,7 @@ class AdminListView(UserPassesTestMixin, ListView):
         return queryset
 
     def test_func(self):
-        return self.request.user.is_staff
+        return can_manage_members(self.request.user)
 
 
 class AdminUpdateView(UserPassesTestMixin, UpdateView):
@@ -292,12 +296,28 @@ class AdminUpdateView(UserPassesTestMixin, UpdateView):
         context = super().get_context_data(**kwargs)
         context["children"] = self.object.children.all()
         context["parents"] = self.object.parents.all()
-        # Gates the delete/purge buttons: staff reach this page, but only a
-        # superuser or an ADMIN may destroy a member's record.
+        # Gates the delete/purge buttons: the registration manager may edit
+        # records, but only the unit team's lead (or site staff) may destroy
+        # one.
         context["can_delete"] = can_delete_member(self.request.user)
         context["is_self"] = self.object.pk == getattr(
             get_person(self.request.user), "pk", None
         )
+        # The template hides the roles that do not belong beside the primary
+        # role currently selected, so the reader is not offered a checkbox the
+        # server would drop on submit.
+        primary_roles = list(Role.objects.filter(is_primary=True))
+        context["primary_role_shorts"] = {
+            str(role.pk): role.short for role in primary_roles
+        }
+        context["secondary_role_shorts"] = {
+            str(role.pk): role.short
+            for role in Role.objects.filter(is_primary=False)
+        }
+        context["secondary_roles_by_primary"] = {
+            role.short: list(secondary_roles_for(role.short))
+            for role in primary_roles
+        }
         context.update(self._household_context())
         return context
 
@@ -338,10 +358,18 @@ class AdminUpdateView(UserPassesTestMixin, UpdateView):
             ),
         }
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["can_assign_roles"] = can_manage_roles(self.request.user)
+        return kwargs
+
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         form_class = self.get_form_class()
-        form = form_class(instance=self.object)
+        form = form_class(
+            instance=self.object,
+            can_assign_roles=can_manage_roles(self.request.user),
+        )
 
         if hasattr(self.object, "account"):
             form.fields["email"].initial = self.object.account.email
@@ -379,7 +407,7 @@ class AdminUpdateView(UserPassesTestMixin, UpdateView):
         return super().form_valid(form)
 
     def test_func(self):
-        return self.request.user.is_staff
+        return can_manage_members(self.request.user)
 
 
 class ProfileView(LoginRequiredMixin, UpdateView):
@@ -772,7 +800,7 @@ def remove_child_confirm(request, pk):
     return redirect(reverse_lazy("members:profile", kwargs={"pk": request.user.pk}))
 
 
-# --- Deleting a member (superuser / ADMIN role only) ------------------------
+# --- Deleting a member (site staff / unit team lead only) -------------------
 #
 # Deleting a member from the admin side is a two-phase affair: `member_delete`
 # archives the person (history kept, login shut off) and `member_purge` is the
@@ -1038,7 +1066,7 @@ class PassageView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     template_name = "members/passage.html"
 
     def test_func(self):
-        return self.request.user.is_staff
+        return can_manage_unit(self.request.user)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -1605,7 +1633,7 @@ class MemberImportView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     template_name = "members/import.html"
 
     def test_func(self):
-        return self.request.user.is_staff
+        return can_manage_members(self.request.user)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -1686,10 +1714,10 @@ class MemberImportView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
 
 
 class ExportDownloadView(LoginRequiredMixin, UserPassesTestMixin, View):
-    """Staff-only download: the member table, the payment table or a template."""
+    """Member-admin download: the member table, the payment table or a template."""
 
     def test_func(self):
-        return self.request.user.is_staff
+        return can_manage_members(self.request.user)
 
     def get(self, request, kind, extension):
         if extension not in EXPORT_CONTENT_TYPES:

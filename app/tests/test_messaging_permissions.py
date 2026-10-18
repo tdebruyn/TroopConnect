@@ -13,7 +13,6 @@ class MessagingPermissionTest(TestCase):
         self.role_animateur = Role.objects.get(short="a")
         self.role_parent = Role.objects.get(short="p")
         self.role_ar = Role.objects.get(short="ar")
-        self.role_admin = Role.objects.get(short="ad")
 
         # Create section
         self.section = Section.objects.create(name="Louveteaux")

@@ -51,7 +51,6 @@ from .models import (
     Account,
     Branch,
     Person,
-    PersonRole,
     Role,
     SchoolYear,
     Section,
@@ -549,9 +548,8 @@ def ensure_admin_account(
         account.set_unusable_password()
     account.save()
 
-    PersonRole.objects.get_or_create(
-        person=person, role=Role.objects.get(short=permissions.ADMIN)
-    )
+    # No secondary role: the first account is the site's Django administrator,
+    # and `is_staff`/`is_superuser` already reach every screen.
     # allauth refuses a login until the address is verified
     # (ACCOUNT_EMAIL_VERIFICATION = "mandatory"), and this address was given by
     # whoever is setting the instance up.

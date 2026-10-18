@@ -44,6 +44,7 @@ from members.models import (
     Section,
     TroopSettings,
 )
+from members.permissions import secondary_roles_for
 
 from . import columns as cols
 from .files import LINE_KEY, FileError
@@ -732,11 +733,15 @@ def _apply_roles(person, roles):
     """Replace the member's secondary roles with the ones the file names.
 
     Only the secondary roles: the primary role is its own column, and the
-    division is the one ``PersonRole`` is already built on.
+    division is the one ``PersonRole`` is already built on. A role the
+    person's primary role cannot hold is ignored — an imported Animateur
+    cannot end up with the treasurer's role just because the file said so.
     """
     PersonRole.objects.filter(person=person, role__is_primary=False).delete()
+    allowed = set(secondary_roles_for(person.primary_role.short))
     for role in roles:
-        PersonRole.objects.get_or_create(person=person, role=role)
+        if role.short in allowed:
+            PersonRole.objects.get_or_create(person=person, role=role)
 
 
 def _apply_account(row, person):

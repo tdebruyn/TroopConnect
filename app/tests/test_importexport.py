@@ -631,7 +631,6 @@ class RoundTripTest(ImportExportTestBase):
             photo_consent=True,
             note="Allergic to nuts",
         )
-        child.roles.add(self.role_treasurer)
         sibling = self.make_child(
             external_id="CHILD-2",
             first_name="Camille",
@@ -648,6 +647,9 @@ class RoundTripTest(ImportExportTestBase):
             address="Rue des Fleurs 10, 1300 Limal",
             phone="+32475123456",
         ))
+        # A Parent is allowed to hold the treasurer's role; a participant is
+        # not, and the import would drop it on the way back in.
+        parent.roles.add(self.role_treasurer)
         ParentChild.objects.create(parent=parent, child=child, primary_contact=True)
         ParentChild.objects.create(parent=parent, child=sibling)
 

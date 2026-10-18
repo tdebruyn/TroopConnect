@@ -333,7 +333,10 @@ class Person(models.Model):
 
 class Role(models.Model):
     short = models.CharField(max_length=2, unique=True)
-    name = models.CharField(max_length=30, unique=True)
+    # Long enough for "Responsable inscriptions de l'équipe d'unité": the
+    # role names carry the unit-team qualifier, and a 30-character cap cut
+    # them off.
+    name = models.CharField(max_length=60, unique=True)
     description = models.TextField()
     is_primary = models.BooleanField(default=False)
 
@@ -836,12 +839,11 @@ class Absence(models.Model):
 def get_registration_admins():
     """Return the email addresses of the registration admins.
 
-    Registration admins hold the "Responsable inscriptions" (ri),
-    "Animateur responsable" (ar) or "Admin" (ad) secondary roles. Matching on
-    the role short code (not the translated name) keeps this correct across
-    languages.
+    Registration admins hold the "Responsable inscriptions" (ri) or
+    "Animateur responsable" (ar) secondary roles. Matching on the role short
+    code (not the translated name) keeps this correct across languages.
     """
-    admins = Person.objects.filter(roles__short__in=["ri", "ar", "ad"]).distinct()
+    admins = Person.objects.filter(roles__short__in=["ri", "ar"]).distinct()
     admins_accounts = Account.objects.filter(person__in=admins)
     return [admin.email for admin in admins_accounts]
 

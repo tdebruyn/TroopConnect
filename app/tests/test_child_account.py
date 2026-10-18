@@ -29,7 +29,7 @@ class ChildAccountTestBase(MailTestCase):
         )
         cls.role_parent = Role.objects.get(short="p")
         cls.role_child = Role.objects.get(short="e")
-        cls.role_admin = Role.objects.get(short="ad")
+        cls.role_registration = Role.objects.get(short="ri")
 
         cls.parent = Person.objects.create(
             first_name="Parent", last_name="One",
@@ -40,12 +40,12 @@ class ChildAccountTestBase(MailTestCase):
             email="parent@test.be", password="Test1234!", person=cls.parent,
         )
 
-        # Secondary role "Admin" so get_registration_admins() is not empty.
+        # A registration manager, so get_registration_admins() is not empty.
         cls.admin = Person.objects.create(
             first_name="Reg", last_name="Admin",
             primary_role=cls.role_parent, status="a",
         )
-        PersonRole.objects.create(person=cls.admin, role=cls.role_admin)
+        PersonRole.objects.create(person=cls.admin, role=cls.role_registration)
         Account.objects.create_user(
             email="admin@test.be", password="Test1234!", person=cls.admin,
         )

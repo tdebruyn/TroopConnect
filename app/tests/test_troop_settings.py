@@ -25,7 +25,7 @@ class StaffPageTestBase(TroopSettingsTestCase):
     """A staff account, for the page that is staff-only.
 
     ``is_staff`` is what the page gates on; the primary role is a real one
-    because a Person's role has to be primary, not one of the "ad"/"t" codes
+    because a Person's role has to be primary, not one of the "ar"/"t" codes
     (those are secondary roles, attached separately).
     """
 

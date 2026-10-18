@@ -24,12 +24,14 @@ from members.models import (
 
 
 class MemberDeleteTestBase(TestCase):
-    """A superuser, an ADMIN-role staffer and a plain staffer, plus a target."""
+    """A superuser, the unit team's lead, the registration manager and site
+    staff, plus a target."""
 
     @classmethod
     def setUpTestData(cls):
         cls.role_parent = Role.objects.get(short="p")
-        cls.role_admin = Role.objects.get(short="ad")
+        cls.role_lead = Role.objects.get(short="ar")
+        cls.role_registration = Role.objects.get(short="ri")
 
         cls.superuser_person = Person.objects.create(
             first_name="Super", last_name="User",
@@ -42,18 +44,31 @@ class MemberDeleteTestBase(TestCase):
             person=cls.superuser_person, is_staff=True, is_superuser=True,
         )
 
-        # Staff AND holding the ADMIN secondary role — the intended deleter.
-        cls.admin_person = Person.objects.create(
-            first_name="Role", last_name="Admin",
+        # The unit team's lead — may destroy records, with no staff flag.
+        cls.lead_person = Person.objects.create(
+            first_name="Unit", last_name="Lead",
             primary_role=cls.role_parent, status="a",
         )
-        PersonRole.objects.create(person=cls.admin_person, role=cls.role_admin)
-        cls.admin_user = Account.objects.create_user(
-            email="roleadmin@test.be", password="Test1234!",
-            person=cls.admin_person, is_staff=True,
+        PersonRole.objects.create(person=cls.lead_person, role=cls.role_lead)
+        cls.lead_user = Account.objects.create_user(
+            email="lead@test.be", password="Test1234!",
+            person=cls.lead_person,
         )
 
-        # Staff, but no ADMIN role and not a superuser: may not delete.
+        # The registration manager edits records but must not destroy them.
+        cls.registration_person = Person.objects.create(
+            first_name="Regi", last_name="Stration",
+            primary_role=cls.role_parent, status="a",
+        )
+        PersonRole.objects.create(
+            person=cls.registration_person, role=cls.role_registration
+        )
+        cls.registration_user = Account.objects.create_user(
+            email="ri@test.be", password="Test1234!",
+            person=cls.registration_person,
+        )
+
+        # Site staff can do everything, even without a unit-team role.
         cls.staff_person = Person.objects.create(
             first_name="Plain", last_name="Staff",
             primary_role=cls.role_parent, status="a",
@@ -96,7 +111,8 @@ class MemberDeleteTestBase(TestCase):
 
 
 class DeleteButtonVisibilityTest(MemberDeleteTestBase):
-    """Only superusers and ADMIN-role holders are offered the button."""
+    """Site staff and the unit team's lead are offered the button; the
+    registration manager is not."""
 
     def test_superuser_is_offered_the_delete_button(self):
         member = self.make_member()
@@ -107,20 +123,29 @@ class DeleteButtonVisibilityTest(MemberDeleteTestBase):
         # language (fr by default), so the English source is never on it.
         self.assertContains(response, reverse("members:member_delete", kwargs={"pk": member.pk}))
 
-    def test_admin_role_holder_is_offered_the_delete_button(self):
+    def test_unit_team_lead_is_offered_the_delete_button(self):
         member = self.make_member()
-        self.client.force_login(self.admin_user)
+        self.client.force_login(self.lead_user)
         response = self.client.get(
             reverse("members:admin_update", kwargs={"pk": member.pk})
         )
         self.assertContains(response, reverse("members:member_delete", kwargs={"pk": member.pk}))
 
-    def test_plain_staff_is_not_offered_the_delete_button(self):
+    def test_site_staff_is_offered_the_delete_button(self):
         member = self.make_member()
         self.client.force_login(self.staff_user)
         response = self.client.get(
             reverse("members:admin_update", kwargs={"pk": member.pk})
         )
+        self.assertContains(response, reverse("members:member_delete", kwargs={"pk": member.pk}))
+
+    def test_registration_manager_is_not_offered_the_delete_button(self):
+        member = self.make_member()
+        self.client.force_login(self.registration_user)
+        response = self.client.get(
+            reverse("members:admin_update", kwargs={"pk": member.pk})
+        )
+        self.assertContains(response, member.first_name)
         self.assertNotContains(
             response, reverse("members:member_delete", kwargs={"pk": member.pk})
         )
@@ -149,17 +174,17 @@ class DeleteButtonVisibilityTest(MemberDeleteTestBase):
 class MemberDeletePermissionTest(MemberDeleteTestBase):
     """The views are hard-gated, not merely hidden in the template."""
 
-    def test_plain_staff_cannot_open_the_delete_page(self):
+    def test_registration_manager_cannot_open_the_delete_page(self):
         member = self.make_member()
-        self.client.force_login(self.staff_user)
+        self.client.force_login(self.registration_user)
         response = self.client.get(
             reverse("members:member_delete", kwargs={"pk": member.pk})
         )
         self.assertEqual(response.status_code, 403)
 
-    def test_plain_staff_cannot_post_the_delete(self):
+    def test_registration_manager_cannot_post_the_delete(self):
         member = self.make_member()
-        self.client.force_login(self.staff_user)
+        self.client.force_login(self.registration_user)
         response = self.client.post(
             reverse("members:member_delete", kwargs={"pk": member.pk})
         )
@@ -167,18 +192,28 @@ class MemberDeletePermissionTest(MemberDeleteTestBase):
         member.refresh_from_db()
         self.assertEqual(member.status, "a")
 
-    def test_plain_staff_cannot_purge(self):
+    def test_registration_manager_cannot_purge(self):
         member = self.make_member(status="ar", archived_date=date(2026, 1, 1))
-        self.client.force_login(self.staff_user)
+        self.client.force_login(self.registration_user)
         response = self.client.post(
             reverse("members:member_purge", kwargs={"pk": member.pk})
         )
         self.assertEqual(response.status_code, 403)
         self.assertTrue(Person.objects.filter(pk=member.pk).exists())
 
-    def test_admin_role_holder_may_delete(self):
+    def test_unit_team_lead_may_delete(self):
         member = self.make_member()
-        self.client.force_login(self.admin_user)
+        self.client.force_login(self.lead_user)
+        response = self.client.post(
+            reverse("members:member_delete", kwargs={"pk": member.pk})
+        )
+        self.assertEqual(response.status_code, 302)
+        member.refresh_from_db()
+        self.assertEqual(member.status, "ar")
+
+    def test_site_staff_may_delete(self):
+        member = self.make_member()
+        self.client.force_login(self.staff_user)
         response = self.client.post(
             reverse("members:member_delete", kwargs={"pk": member.pk})
         )

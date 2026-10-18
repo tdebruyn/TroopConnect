@@ -23,32 +23,34 @@ from .models import (
 )
 from .modules import module_enabled
 from .permissions import (
+    AUTRE_MEMBRE,
     PARENT,
-    PARENT_ACTIF,
     TRESORIER,
     get_person,
     reportable_children,
+    secondary_roles_for,
 )
 
 
 def secondary_role_queryset(primary_role=None):
     """The secondary roles a troop can hand out to a person of `primary_role`.
 
-    The Treasurer role is hidden while the membership-fees module is switched
-    off: with the finance screens gone it grants nothing, so offering it would
-    only invite a troop to file someone under a responsibility that does not
-    exist. The role itself is untouched — see AdminUserUpdateForm.save(), which
-    keeps roles this form does not offer.
+    Only Parents and Autres membres hold unit-team roles. The Treasurer role
+    is hidden while the membership-fees module is switched off: with the
+    finance screens gone it grants nothing, so offering it would only invite a
+    troop to file someone under a responsibility that does not exist. The role
+    itself is untouched — see AdminUserUpdateForm.save(), which keeps roles
+    this form does not offer.
 
     "Parent actif" means a parent who helps the unit occasionally, so it is
     only offered to a Parent; AdminUserUpdateForm.save() clears it from anyone
     whose primary role moves away from Parent.
     """
-    roles = Role.objects.filter(is_primary=False)
+    roles = Role.objects.filter(short__in=secondary_roles_for(
+        getattr(primary_role, "short", None)
+    ))
     if not module_enabled(modules.FEES):
         roles = roles.exclude(short=TRESORIER)
-    if primary_role is None or primary_role.short != PARENT:
-        roles = roles.exclude(short=PARENT_ACTIF)
     return roles
 
 
@@ -113,8 +115,9 @@ class AdminUserUpdateForm(forms.ModelForm):
         label=_("Next section"),
     )
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, can_assign_roles=True, **kwargs):
         super().__init__(*args, **kwargs)
+        self.can_assign_roles = can_assign_roles
         self.fields["birthday"].widget.format = "%Y-%m-%d"
 
         current_year = SchoolYear.current()
@@ -168,15 +171,16 @@ class AdminUserUpdateForm(forms.ModelForm):
                     submitted = None
                 suggested_role = submitted or suggested_role
 
-            # Secondary roles are never shown or configurable for a Participant
-            # (rule 1). Drop the field entirely so it is not rendered.
-            if suggested_role.short == Person.CHILD_ROLE_SHORT:
+            # An animateur, a participant and a not-yet-validated account hold
+            # no secondary role at all. The field is dropped rather than left
+            # empty so save() clears any assignment left from an earlier role.
+            if not can_assign_roles or not secondary_roles_for(suggested_role.short):
                 self.fields.pop("secondary_roles", None)
             else:
                 # The stored role is accepted as well as the suggested one:
-                # a Parent dropped to Animator still has "Parent actif" ticked
-                # from the render, and clean() drops it instead of the field
-                # rejecting a box the reader was never asked to untick.
+                # a Parent dropped to Autre membre still has "Parent actif"
+                # ticked from the render, and clean() drops it instead of the
+                # field rejecting a box the reader was never asked to untick.
                 self.fields["secondary_roles"].queryset = (
                     secondary_role_queryset(suggested_role)
                     | secondary_role_queryset(self.instance.primary_role)
@@ -202,18 +206,18 @@ class AdminUserUpdateForm(forms.ModelForm):
                 )
             )
 
-        # A Participant can never have secondary roles (rule 1). Drop anything
-        # submitted, e.g. when staff switch the role to Participant in the same
-        # submit. save() then clears the stored roles.
-        if primary_role and primary_role.short == Person.CHILD_ROLE_SHORT:
-            cleaned_data["secondary_roles"] = Role.objects.none()
-        elif primary_role and primary_role.short != PARENT:
-            # "Parent actif" only exists alongside the Parent primary role, so
-            # a role change in this submit must take it with it.
+        # Keep only the roles the submitted primary role can hold. This is
+        # what drops "Parent actif" when a Parent becomes an Autre membre in
+        # the same submit, and it stops a crafted POST from giving a role the
+        # form never offered.
+        if "secondary_roles" in self.fields:
+            allowed = secondary_roles_for(
+                primary_role.short if primary_role else None
+            )
             cleaned_data["secondary_roles"] = [
                 role
                 for role in cleaned_data.get("secondary_roles") or []
-                if role.short != PARENT_ACTIF
+                if role.short in allowed
             ]
 
         return cleaned_data
@@ -229,24 +233,29 @@ class AdminUserUpdateForm(forms.ModelForm):
             person.primary_role = primary_role
             person.save()
 
-            # Handle roles. Only the roles this form offered are replaced: a
-            # role it hides — the Treasurer role while membership fees are
-            # switched off — must survive an unrelated edit rather than be
-            # deleted for not having been on screen to re-submit. The exception
-            # is a Participant, for whom the field is dropped on purpose: an
-            # empty submission then means "clear them" (rule 1).
-            stored = PersonRole.objects.filter(person=person, role__is_primary=False)
-            if "secondary_roles" in self.fields:
-                stored = stored.filter(role__in=self.fields["secondary_roles"].queryset)
-            stored.delete()
-            if primary_role and primary_role.short != PARENT:
-                # The form no longer offers "Parent actif" to a non-Parent, so
-                # the filter above would leave a stale assignment in place.
-                PersonRole.objects.filter(
-                    person=person, role__short=PARENT_ACTIF
-                ).delete()
-            for role in (secondary_roles or []):
-                PersonRole.objects.create(person=person, role=role)
+            # Replace the roles this form offered. A role it hid — the
+            # Treasurer role while membership fees are switched off, or every
+            # role when the reader may not assign them — must survive an
+            # unrelated edit rather than be deleted for not having been on
+            # screen to re-submit.
+            if self.can_assign_roles and "secondary_roles" in self.fields:
+                stored = PersonRole.objects.filter(
+                    person=person, role__is_primary=False
+                ).filter(role__in=self.fields["secondary_roles"].queryset)
+                stored.delete()
+                for role in secondary_roles or []:
+                    PersonRole.objects.create(person=person, role=role)
+
+            # Whatever path got us here, only the roles allowed beside the new
+            # primary role may remain: this clears a whole set when someone
+            # becomes an Animateur or Participant, and "Parent actif" when a
+            # Parent becomes an Autre membre.
+            allowed = secondary_roles_for(
+                primary_role.short if primary_role else None
+            )
+            PersonRole.objects.filter(
+                person=person, role__is_primary=False
+            ).exclude(role__short__in=allowed).delete()
 
             current_section = self.cleaned_data.get("current_section")
             next_section = self.cleaned_data.get("next_section")
@@ -393,6 +402,8 @@ class ProfileEditForm(UserChangeForm):
                 self.fields["primary_role"].initial = "a"
             elif person.primary_role.short == "e":
                 self.fields["primary_role"].initial = "e"
+            elif person.primary_role.short == AUTRE_MEMBRE:
+                self.fields["primary_role"].initial = AUTRE_MEMBRE
 
         # Seeded regardless of locking: the checkbox is hidden for a locked
         # role, and an unseeded hidden checkbox would read as un-ticked and

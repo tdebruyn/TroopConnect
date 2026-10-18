@@ -80,7 +80,7 @@
                         <div class="alert-danger">{{ form.primary_role.errors }}</div>
                         {% if "secondary_roles" in form.fields %}
                             <div class="form-label">{{ form.secondary_roles.label_tag }}</div>
-                            <div class="input-group">{% render_field form.secondary_roles %}</div>
+                            <div class="input-group" id="secondary-roles">{% render_field form.secondary_roles %}</div>
                             <div class="alert-danger">{{ form.secondary_roles.errors }}</div>
                         {% endif %}
                         <div class="form-label">{{ form.current_section.label_tag }}</div>
@@ -236,4 +236,29 @@
             {% endif %}
         </div>
     {% endif %}
+    {{ primary_role_shorts|json_script:"primary-role-shorts" }}
+    {{ secondary_role_shorts|json_script:"secondary-role-shorts" }}
+    {{ secondary_roles_by_primary|json_script:"secondary-roles-by-primary" }}
+    <script>
+        (function () {
+            var allowedByPrimary = JSON.parse(document.getElementById("secondary-roles-by-primary").textContent);
+            var primaryShorts = JSON.parse(document.getElementById("primary-role-shorts").textContent);
+            var secondaryShorts = JSON.parse(document.getElementById("secondary-role-shorts").textContent);
+            var primary = document.querySelector('[name="primary_role"]');
+            var container = document.getElementById("secondary-roles");
+            if (!primary || !container) return;
+
+            function filterRoles() {
+                var allowed = allowedByPrimary[primaryShorts[String(primary.value)]] || [];
+                container.querySelectorAll('input[type="checkbox"]').forEach(function (input) {
+                    var keep = allowed.indexOf(secondaryShorts[String(input.value)]) !== -1;
+                    input.closest("div").style.display = keep ? "" : "none";
+                    if (!keep) input.checked = false;
+                });
+            }
+
+            primary.addEventListener("change", filterRoles);
+            filterRoles();
+        })();
+    </script>
 {% endblock subcontent %}

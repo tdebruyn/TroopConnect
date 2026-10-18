@@ -6,8 +6,9 @@ behalf of the whole unit?").  Spelling those lookups out per module let the
 same predicate drift apart between call sites, so the role short-codes and the
 queries that use them live here.
 
-The short-codes themselves are seeded in
-`members/migrations/0002_add_static_values.py`.
+The short-codes were first seeded in
+`members/migrations/0002_add_static_values.py`; "Autre membre" was added in
+`0039_roles_for_the_unit_team.py`.
 """
 
 from django.db.models import Q
@@ -16,27 +17,42 @@ from django.db.models import Q
 PARENT = "p"
 ANIMATEUR = "a"
 ANIME = "e"
+AUTRE_MEMBRE = "am"
 
 # Secondary roles (Role.is_primary is False).
 PARENT_ACTIF = "pa"
 RESPONSABLE_ANIMATEUR = "ar"
 TRESORIER = "t"
 RESPONSABLE_INSCRIPTIONS = "ri"
-ADMIN = "ad"
+
+#: The secondary roles each primary role may hold.
+#:
+#: Animateurs and participants are deliberately absent: a section leader's
+#: responsibility is their section, not the unit's administration, and a
+#: participant is a child. "Parent actif" only means anything beside Parent.
+SECONDARY_ROLES_BY_PRIMARY = {
+    PARENT: (PARENT_ACTIF, RESPONSABLE_ANIMATEUR, TRESORIER, RESPONSABLE_INSCRIPTIONS),
+    AUTRE_MEMBRE: (RESPONSABLE_ANIMATEUR, TRESORIER, RESPONSABLE_INSCRIPTIONS),
+}
 
 #: Roles held by a section's animateurs.
-ANIMATEUR_ROLES = (ANIMATEUR, RESPONSABLE_ANIMATEUR)
+ANIMATEUR_ROLES = (ANIMATEUR,)
 
 #: Roles that may act on behalf of the whole unit (messaging, attestations).
-UNIT_ADMIN_ROLES = (RESPONSABLE_ANIMATEUR, ADMIN)
+UNIT_ADMIN_ROLES = (RESPONSABLE_ANIMATEUR,)
 
-#: Roles that count as "staff" on internal overview screens.
-STAFF_ROLES = (
-    RESPONSABLE_ANIMATEUR,
-    ADMIN,
-    TRESORIER,
-    RESPONSABLE_INSCRIPTIONS,
-)
+#: Secondary roles that make up the unit team. Used to resolve the messaging
+#: recipient groups, not to grant access by themselves.
+STAFF_ROLES = (RESPONSABLE_ANIMATEUR, TRESORIER, RESPONSABLE_INSCRIPTIONS)
+
+
+def secondary_roles_for(primary_short):
+    """The secondary-role short-codes allowed beside a primary role.
+
+    Empty for Animateur, Participant and Nouveau: those accounts hold no
+    secondary role at all.
+    """
+    return SECONDARY_ROLES_BY_PRIMARY.get(primary_short, ())
 
 
 def get_person(user):
@@ -76,23 +92,61 @@ def is_tresorier(user):
 
 
 def can_access_finance(user):
-    """Return True when the user may view and edit the cotisation screens."""
-    return user.is_staff or is_tresorier(user)
+    """Return True when the user may view and edit the cotisation screens.
+
+    The unit team's lead administers both members and money, so they sit
+    alongside the treasurer.
+    """
+    return user.is_staff or has_any_role(
+        user, (RESPONSABLE_ANIMATEUR, TRESORIER)
+    )
+
+
+def can_manage_members(user):
+    """Return True when the user may list, edit and import member records.
+
+    `ri` is the registration manager and `ar` leads the unit team; site staff
+    can do everything. This predicate is about the records, not about who may
+    hand out roles — see :func:`can_manage_roles`.
+    """
+    return user.is_staff or has_any_role(
+        user, (RESPONSABLE_ANIMATEUR, RESPONSABLE_INSCRIPTIONS)
+    )
+
+
+def can_manage_roles(user):
+    """Return True when the user may assign primary and secondary roles.
+
+    Kept narrower than :func:`can_manage_members`: a registration manager who
+    can edit member records must not be able to grant themselves the unit
+    team's lead role through the same form.
+    """
+    return user.is_staff or has_any_role(user, (RESPONSABLE_ANIMATEUR,))
 
 
 def can_manage_unit(user):
-    """Return True for site staff and unit admins (animateur responsable/admin)."""
+    """Return True for site staff and the unit team's lead.
+
+    Unit-wide tools (messaging everyone, attestations, every section's agenda,
+    the yearly passage) stay with `ar`. A treasurer or registration manager
+    gets their own administrative area, not the rest of the unit's.
+    """
     return user.is_staff or has_any_role(user, UNIT_ADMIN_ROLES)
 
 
 def can_delete_member(user):
     """Return True when the user may archive or purge a member's record.
 
-    Deliberately narrower than `can_manage_unit()`: purging a member destroys
-    their account, enrolments and payment history for good, so it is reserved
-    for Django superusers and holders of the ADMIN secondary role.
+    Deliberately narrower than :func:`can_manage_members()`: purging a member
+    destroys their account, enrolments and payment history for good, so it is
+    reserved for site staff and the unit team's lead. A registration manager
+    edits records but cannot destroy them.
     """
-    return user.is_superuser or has_any_role(user, (ADMIN,))
+    return (
+        user.is_staff
+        or user.is_superuser
+        or has_any_role(user, (RESPONSABLE_ANIMATEUR,))
+    )
 
 
 def can_access_messaging(user):

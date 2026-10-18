@@ -24,6 +24,7 @@ ROLE_CHOICES = [
     ("p", _("Parent")),
     ("a", _("Animator")),
     ("e", _("Participant")),
+    ("am", _("Other member")),
 ]
 
 

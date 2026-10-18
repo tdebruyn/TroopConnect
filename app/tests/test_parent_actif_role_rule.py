@@ -47,8 +47,9 @@ class AdminUpdateParentActifTest(TroopSettingsTestCase):
         self.assertIn("pa", self.offered_roles(form))
 
     def test_not_offered_to_an_animator(self):
+        """An Animateur holds no secondary role at all, so the field is gone."""
         form = AdminUserUpdateForm(instance=self.animator)
-        self.assertNotIn("pa", self.offered_roles(form))
+        self.assertNotIn("secondary_roles", form.fields)
 
     def test_offered_when_the_submitted_role_is_parent(self):
         """The queryset follows the role being submitted, not the one stored:
@@ -59,7 +60,9 @@ class AdminUpdateParentActifTest(TroopSettingsTestCase):
         )
         self.assertIn("pa", self.offered_roles(form))
 
-    def test_submitted_parent_actif_dropped_when_switching_away_from_parent(self):
+    def test_submitted_roles_dropped_when_switching_to_animator(self):
+        """An Animator holds no secondary role, so a Parent Actif or Treasurer
+        submitted in the same POST is discarded."""
         form = AdminUserUpdateForm(
             instance=self.parent,
             data=self.form_data(
@@ -69,8 +72,12 @@ class AdminUpdateParentActifTest(TroopSettingsTestCase):
             ),
         )
         self.assertTrue(form.is_valid(), form.errors)
-        self.assertEqual(
-            {role.short for role in form.cleaned_data["secondary_roles"]}, {"t"}
+        self.assertNotIn("secondary_roles", form.cleaned_data)
+        form.save()
+        self.assertFalse(
+            PersonRole.objects.filter(
+                person=self.parent, role__is_primary=False
+            ).exists()
         )
 
     def test_save_clears_a_stored_parent_actif_when_switching_away_from_parent(self):

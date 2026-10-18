@@ -20,6 +20,7 @@ from members.models import (
 )
 from members.permissions import (
     ANIMATEUR,
+    STAFF_ROLES,
     can_access_messaging,
     can_manage_unit,
     get_person,
@@ -107,7 +108,7 @@ def _get_all_animateurs():
 
 def _get_animateurs_plus_staff():
     """Return all animateurs + persons with staff secondary roles."""
-    staff_roles = Role.objects.filter(short__in=["ar", "ad", "t", "ri"])
+    staff_roles = Role.objects.filter(short__in=STAFF_ROLES)
     animateurs = Person.objects.filter(primary_role__short__in=["a", "ar"])
     staff = Person.objects.filter(roles__in=staff_roles)
     persons = (animateurs | staff).distinct().order_by("last_name", "first_name")
@@ -115,8 +116,8 @@ def _get_animateurs_plus_staff():
 
 
 def _get_staff():
-    """Return persons with staff secondary roles (ar, ad, t, ri)."""
-    staff_roles = Role.objects.filter(short__in=["ar", "ad", "t", "ri"])
+    """Return persons with unit-team secondary roles (ar, t, ri)."""
+    staff_roles = Role.objects.filter(short__in=STAFF_ROLES)
     persons = (
         Person.objects.filter(roles__in=staff_roles)
         .distinct()

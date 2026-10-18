@@ -688,7 +688,7 @@ class MemberHomepageTest(DeskTestBase):
             first_name="Ad", last_name="Min",
             primary_role=self.parent_role, status="a",
         )
-        person.roles.add(Role.objects.get(short="ad"))
+        person.roles.add(Role.objects.get(short="ar"))
         account = Account.objects.create_user(
             email="admin@test.com", password="testpass", person=person,
         )

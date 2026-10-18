@@ -514,9 +514,9 @@ class AdminAccountTest(EmptyInstanceTestCase):
         self.assertTrue(account.check_password(STRONG_PASSWORD))
         self.assertEqual(account.person.primary_role.short, permissions.ANIMATEUR)
         self.assertEqual(account.person.status, "a")
-        self.assertTrue(
+        self.assertFalse(
             PersonRole.objects.filter(
-                person=account.person, role__short=permissions.ADMIN
+                person=account.person, role__is_primary=False
             ).exists()
         )
         self.assertEqual(step.created, ["chef@example.org"])
