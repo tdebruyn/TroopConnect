@@ -459,6 +459,34 @@ header.masthead .card .hero-timeline__note {
   padding-bottom: 0.5rem;
   background-color: transparent;
 }
+
+/* A wrapping flex container turns its row into a flex *line*, and the line sits
+   at the top of the padded content box. The bar's row is taller than that
+   padding, so it overflowed the bottom instead of centring — which is what made
+   the lockup and the menu read low in the 84px bar. Centring the line and
+   letting the bar's own height do the work puts the row's centre on the bar's.
+   The vertical padding is the only declaration that needs `!important`: the
+   `py-3` utility carries its own, and the height is stated inline. */
+.site-header > .navbar {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  align-content: center;
+}
+
+.site-header > .navbar .container-fluid {
+  align-items: center;
+}
+
+.site-header > .navbar .navbar-brand {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* The unit's name shares the mark's line; centring it against the mark makes
+   the two read as one lockup instead of a name resting on the logo's baseline. */
+.site-header > .navbar .navbar-brand img {
+  vertical-align: middle;
+}
 .nav-link {
   display: block;
   padding: 0.5rem 0.5rem;
