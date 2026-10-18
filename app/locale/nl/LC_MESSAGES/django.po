@@ -3004,10 +3004,54 @@ msgid "Never"
 msgstr "Nooit"
 
 #: members/templates/members/passage.html
-msgid "The passage places every participant in their next section. Running it "
-"again is safe: members already placed stay where they are, and the choices "
-"made by hand are kept."
-msgstr "De overgang plaatst elk lid in de volgende sectie. Opnieuw uitvoeren is veilig: leden die al geplaatst zijn blijven staan en handmatige keuzes blijven behouden."
+#, python-format
+msgid "Next run on %(date)s"
+msgstr "Volgende uitvoering op %(date)s"
+
+#: members/templates/members/passage.html
+msgid "then monthly until the school year begins"
+msgstr "daarna maandelijks tot het scoutjaar begint"
+
+#: members/templates/members/passage.html
+msgid "Only when you run it"
+msgstr "Alleen als je het uitvoert"
+
+#: members/templates/members/passage.html
+msgid "How the passage works"
+msgstr "Hoe de overgang werkt"
+
+#: members/templates/members/passage.html
+msgid ""
+"The passage prepares the coming school year: it gives every participant a "
+"section for that year. A member who still fits their branch stays in it; a "
+"member who has outgrown it moves to the next branch. When the passage cannot "
+"decide, the member is listed below so you can choose."
+msgstr "De overgang bereidt het komende scoutjaar voor: elk lid krijgt een sectie voor dat jaar. Wie nog in zijn afdeling past, blijft er; wie ze ontgroeid is, gaat naar de volgende afdeling. Als de overgang geen beslissing kan nemen, staat het lid hieronder zodat jij kunt kiezen."
+
+#: members/templates/members/passage.html
+#, python-format
+msgid ""
+"The automatic run falls due on %(date)s and repeats on the first of every "
+"month until %(target)s begins. Each run only places participants who do not "
+"have a section for %(target)s yet, so it never moves anyone twice."
+msgstr "De automatische uitvoering valt op %(date)s en herhaalt zich op de eerste van elke maand tot %(target)s begint. Elke uitvoering plaatst alleen leden die nog geen sectie voor %(target)s hebben, dus niemand wordt twee keer verplaatst."
+
+#: members/templates/members/passage.html
+#, python-format
+msgid ""
+"The automatic run is off. A run happens only when you press the button "
+"below, and it places only participants who do not have a section for "
+"%(target)s yet."
+msgstr "De automatische uitvoering staat uit. De overgang wordt alleen uitgevoerd wanneer je op de knop hieronder drukt, en plaatst alleen leden die nog geen sectie voor %(target)s hebben."
+
+#: members/templates/members/passage.html
+#, python-format
+msgid ""
+"Example: a member who has outgrown their branch is placed in the next branch "
+"for %(target)s by the first run. A child registered later is placed by the "
+"next monthly run; children already placed — including any section chosen by "
+"hand — stay exactly where they are."
+msgstr "Voorbeeld: een lid dat zijn afdeling ontgroeid is, wordt bij de eerste uitvoering in de volgende afdeling voor %(target)s geplaatst. Een kind dat later ingeschreven wordt, wordt bij de volgende maandelijkse uitvoering geplaatst; kinderen die al geplaatst zijn — ook met een handmatig gekozen sectie — blijven precies waar ze zijn."
 
 #: members/templates/members/passage.html
 msgid "Run the passage now"

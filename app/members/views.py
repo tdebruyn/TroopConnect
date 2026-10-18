@@ -1126,7 +1126,8 @@ class TroopSettingsView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
 
 
 class PassageView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
-    """Staff page for the yearly passage: when it runs, and who it could not place.
+    """Staff page for the section passage: how it works, when it runs, and
+    who it could not place.
 
     The automatic run answers to the troop's calendar and ``passage_mode``; this
     page is the manual counterpart. Its button calls the very same task the
@@ -1144,12 +1145,20 @@ class PassageView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         troop = TroopSettings.get_settings()
-        context["target_year"] = SchoolYear.next_school_year()
+        target_year = SchoolYear.next_school_year()
+        context["target_year"] = target_year
         context["automatic"] = troop.passage_mode != PASSAGE_MODE_MANUAL
         # Formatted here rather than in the template: a date filter cannot be
         # used inside a blocktranslate block.
         context["next_due"] = formats.date_format(
             troop.next_passage_datetime(), "j F Y"
+        )
+        # The day the passage falls due for the coming year; the monthly
+        # retries run from it until that year starts.
+        context["passage_due"] = (
+            formats.date_format(troop.passage_datetime(target_year), "j F Y")
+            if target_year
+            else None
         )
         context["last_run_year"] = troop.last_passage_school_year
         context["flagged"] = Person.objects.exclude(passage_review="").order_by(

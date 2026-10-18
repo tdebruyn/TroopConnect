@@ -2435,9 +2435,53 @@ msgid "Never"
 msgstr ""
 
 #: members/templates/members/passage.html
-msgid "The passage places every participant in their next section. Running it "
-"again is safe: members already placed stay where they are, and the choices "
-"made by hand are kept."
+#, python-format
+msgid "Next run on %(date)s"
+msgstr ""
+
+#: members/templates/members/passage.html
+msgid "then monthly until the school year begins"
+msgstr ""
+
+#: members/templates/members/passage.html
+msgid "Only when you run it"
+msgstr ""
+
+#: members/templates/members/passage.html
+msgid "How the passage works"
+msgstr ""
+
+#: members/templates/members/passage.html
+msgid ""
+"The passage prepares the coming school year: it gives every participant a "
+"section for that year. A member who still fits their branch stays in it; a "
+"member who has outgrown it moves to the next branch. When the passage cannot "
+"decide, the member is listed below so you can choose."
+msgstr ""
+
+#: members/templates/members/passage.html
+#, python-format
+msgid ""
+"The automatic run falls due on %(date)s and repeats on the first of every "
+"month until %(target)s begins. Each run only places participants who do not "
+"have a section for %(target)s yet, so it never moves anyone twice."
+msgstr ""
+
+#: members/templates/members/passage.html
+#, python-format
+msgid ""
+"The automatic run is off. A run happens only when you press the button "
+"below, and it places only participants who do not have a section for "
+"%(target)s yet."
+msgstr ""
+
+#: members/templates/members/passage.html
+#, python-format
+msgid ""
+"Example: a member who has outgrown their branch is placed in the next branch "
+"for %(target)s by the first run. A child registered later is placed by the "
+"next monthly run; children already placed — including any section chosen by "
+"hand — stay exactly where they are."
 msgstr ""
 
 #: members/templates/members/passage.html

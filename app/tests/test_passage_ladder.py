@@ -12,6 +12,7 @@ from datetime import date
 from unittest import mock
 
 from django.urls import reverse
+from django.utils import formats
 from post_office.models import EmailTemplate
 
 from members.models import (
@@ -471,6 +472,44 @@ class PassagePageTest(LadderTestBase):
         self.assertEqual(response.status_code, 200)
         # The coming school year, so staff can see which run they are forcing.
         self.assertContains(response, self.next_year.range)
+
+    def test_the_page_explains_the_passage_with_an_example(self):
+        self.login_staff()
+
+        response = self.client.get(self.url)
+
+        # The page renders in the site language (French by default).
+        self.assertContains(response, "Comment fonctionne le passage")
+        self.assertContains(response, "Exemple :")
+        self.assertContains(
+            response, "il attribue à chaque animé une section pour cette année"
+        )
+
+    def test_the_automatic_card_shows_the_next_monthly_run(self):
+        next_due = formats.date_format(
+            TroopSettings.get_settings().next_passage_datetime(), "j F Y"
+        )
+        self.login_staff()
+
+        response = self.client.get(self.url)
+
+        self.assertContains(response, "Prochaine exécution le")
+        self.assertContains(response, next_due)
+        # The cadence itself, not just one date.
+        self.assertContains(
+            response, "puis chaque mois jusqu'au début de l'année scolaire"
+        )
+
+    def test_a_manual_troop_is_told_only_the_button_runs_it(self):
+        troop = TroopSettings.get_settings()
+        troop.passage_mode = "manual"
+        troop.save(update_fields=["passage_mode"])
+        self.login_staff()
+
+        response = self.client.get(self.url)
+
+        self.assertContains(response, "Uniquement sur votre lancement")
+        self.assertNotContains(response, "Prochaine exécution le")
 
     def test_the_button_runs_the_passage(self):
         self.login_staff()

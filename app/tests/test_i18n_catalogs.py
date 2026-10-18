@@ -149,6 +149,13 @@ NEW_STRINGS = [
     # Section passage: the staff page and the flags it raises.
     ("Section passage", "Passage de section", "Overgang van afdeling"),
     ("Run the passage now", "Lancer le passage", "overgang uitvoeren"),
+    ("How the passage works", "Comment fonctionne le passage", "Hoe de overgang werkt"),
+    ("Next run on %(date)s", "Prochaine exécution", "Volgende uitvoering"),
+    (
+        "then monthly until the school year begins",
+        "chaque mois",
+        "maandelijks",
+    ),
     ("Waiting for a decision", "attente d'une décision", "Wacht op een beslissing"),
     ("Nobody is waiting for a decision.", "Personne", "Niemand"),
     ("To review", "examiner", "bekijken"),

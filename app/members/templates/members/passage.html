@@ -25,10 +25,17 @@
           <div class="h4 mb-0">
             {% if automatic %}{% trans "On" %}{% else %}{% trans "Off" %}{% endif %}
           </div>
-          {% if next_due %}
-            <div class="small text-muted">
-              {% blocktranslate with date=next_due %}Due on {{ date }}{% endblocktranslate %}
-            </div>
+          {% if automatic %}
+            {% if target_year %}
+              <div class="small text-muted">
+                {% blocktranslate with date=next_due %}Next run on {{ date }}{% endblocktranslate %}
+              </div>
+              <div class="small text-muted">
+                {% trans "then monthly until the school year begins" %}
+              </div>
+            {% endif %}
+          {% else %}
+            <div class="small text-muted">{% trans "Only when you run it" %}</div>
           {% endif %}
         </div>
       </div>
@@ -45,9 +52,24 @@
     </div>
   </div>
 
+  <h2 class="h5">{% trans "How the passage works" %}</h2>
   <p>
-    {% trans "The passage places every participant in their next section. Running it again is safe: members already placed stay where they are, and the choices made by hand are kept." %}
+    {% blocktranslate %}The passage prepares the coming school year: it gives every participant a section for that year. A member who still fits their branch stays in it; a member who has outgrown it moves to the next branch. When the passage cannot decide, the member is listed below so you can choose.{% endblocktranslate %}
   </p>
+  {% if target_year %}
+    {% if automatic %}
+      <p>
+        {% blocktranslate with date=passage_due target=target_year.range %}The automatic run falls due on {{ date }} and repeats on the first of every month until {{ target }} begins. Each run only places participants who do not have a section for {{ target }} yet, so it never moves anyone twice.{% endblocktranslate %}
+      </p>
+    {% else %}
+      <p>
+        {% blocktranslate with target=target_year.range %}The automatic run is off. A run happens only when you press the button below, and it places only participants who do not have a section for {{ target }} yet.{% endblocktranslate %}
+      </p>
+    {% endif %}
+    <p class="border-start ps-3 text-muted">
+      {% blocktranslate with target=target_year.range %}Example: a member who has outgrown their branch is placed in the next branch for {{ target }} by the first run. A child registered later is placed by the next monthly run; children already placed — including any section chosen by hand — stay exactly where they are.{% endblocktranslate %}
+    </p>
+  {% endif %}
 
   <form method="post" class="mb-5">
     {% csrf_token %}
