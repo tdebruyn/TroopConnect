@@ -8,6 +8,18 @@ Dutch and English.
 Every troop runs its own independent instance: deploy the published images with
 a filled-in `.env`, and change no code.
 
+## What it looks like
+
+Someone without an account sees the unit's public page: its story, the branches
+by birth year, where it meets, and the invitation to register.
+
+![The public homepage](docs/images/homepage/public-homepage.jpg)
+
+After signing in, an administrator lands on a home screen with every tool their
+account can reach, grouped by unit, children, sections and account.
+
+![The homepage for a signed-in administrator](docs/images/homepage/superadmin-homepage.jpg)
+
 ## ⚠️ Early-stage software
 
 **TroopConnect is pre-1.0 and still moving.** Versions are `0.Y.Z`, and until
