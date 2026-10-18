@@ -282,7 +282,7 @@ rather than a hunt for local edits.
 | `app/static/vendor/template-unite/` | Les Scouts asbl | **Never edited.** Byte-identical to the commit recorded in that directory's `README.md`. `css/` + `scss/` + `fonts/` + `images/` are upstream's, in upstream's layout, because `css/base.css` addresses its assets relatively. |
 | `app/static/css/troopconnect.css` | ours | Every styling deviation from the theme. Loaded *after* the theme, so ours wins. |
 | `app/static/images/troop/` | ours | The mark the header falls back to, and our own illustration. |
-| `app/static/js/` | ours | Dialog, toast, homepage editor. |
+| `app/static/js/` | ours | Dialog and toast. |
 
 `templates/base.html` loads `<link>` tags in that order — theme, then override.
 Reversing them, or editing anything under `vendor/`, defeats the arrangement.
@@ -443,7 +443,6 @@ docker compose exec web python manage.py setup --answers answers.json
 | `preset` | Creates the branches and sections of a preset, and links the ladder. | `--no-preset` |
 | `school_years` | Creates the school year today falls in, and the next one, from the calendar helpers (§2). | `--no-school-years` |
 | `email_templates` | Writes the shipped email copy in every language (§2a). | `--no-email-templates` |
-| `site_pages` | Gives the homepage and the FAQ the markup the editor would seed them with, in every enabled language. | `--no-site-pages` |
 | `periodic_tasks` | Writes `settings.CELERY_BEAT_SCHEDULE` into the `django_celery_beat` tables, so the schedule is there — and editable — before beat's first start. `DatabaseScheduler` installs the same mapping itself on that first run, so this only moves the work earlier; the two cannot disagree because there is one mapping. | `--no-periodic-tasks` |
 | `admin` | Creates the first administrator: an `Account` on a `Person` holding the **Animateur** primary role and the **Admin** secondary one, with its `allauth` address marked verified — `ACCOUNT_EMAIL_VERIFICATION` is `mandatory`, so an unverified administrator could not log in. | `--no-admin` |
 

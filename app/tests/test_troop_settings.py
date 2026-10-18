@@ -414,7 +414,7 @@ class SiteFooterTest(TroopSettingsTestCase):
         """A footer is the site's steady strip, so it is not per-page."""
         self._troop(contact_email="contact@example.org")
 
-        response = self.client.get(reverse("faq"))
+        response = self.client.get(reverse("unit_page"))
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "site-footer")

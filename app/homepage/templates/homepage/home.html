@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% load static %}
-{% load i18n %}
 {% comment %}
     The one page that opens under the troop's own photograph instead of onto
     paper. Both surfaces that have to agree about it — the navbar, which is
@@ -14,26 +13,15 @@
 {% endblock header %}
 {% block content %}
     {% comment %}
-        The unit's own opening band, then the desk, then where it meets, then
-        the rest of the page. The band is the unit introducing itself, so it
-        comes first; the desk and the address under it are the visitor's half
-        of the page and appear only for a reader who is not signed in, since a
-        member's `/` is the tool and the troop's page is at `/unite/`.
-
-        The view splits the band out of the content because the editor keeps it
-        inside the markup it owns — see HomePage._troop_page.
+        The unit's own opening band, then the desk, then where it meets. The
+        band is the unit introducing itself, so it comes first; the desk and
+        the address under it are the visitor's half of the page and appear
+        only for a reader who is not signed in, since a member's `/` is the
+        tool and the unit's page is at `/unite/`.
     {% endcomment %}
-    {{ hero_html|safe }}
+    {% include "homepage/snippets/home_default.html" %}
     {% if show_desk %}
         {% include "homepage/snippets/desk.html" %}
         {% include "homepage/snippets/place.html" %}
-    {% endif %}
-    {{ page_html|safe }}
-    {% if page_css %}<style>{{ page_css|safe }}</style>{% endif %}
-    {% if user.is_superuser %}
-        <a href="{% url 'homepage_editor' %}?page=home"
-           class="btn btn-outline-secondary position-absolute bottom-0 end-0 m-3">
-            ✎ {% trans "Edit this page" %}
-        </a>
     {% endif %}
 {% endblock content %}

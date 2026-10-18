@@ -17,7 +17,7 @@ from django.utils import timezone, translation
 from django.utils.html import escape
 
 from finance.models import FeeRule
-from homepage.models import SiteContent, TimelineActivity
+from homepage.models import TimelineActivity
 from homepage.timeline import axis_for, timeline_for
 from homepage.views import (
     _desk_groups,
@@ -379,32 +379,6 @@ class PublicHomepageTest(DeskTestBase):
         year = self.year_in(self.louveteaux)
         response = self.client.get("/", {"annee": year})
         self.assertContains(response, f"{reverse('account_signup')}?annee={year}")
-
-    def test_a_band_with_no_heading_leaves_the_question_as_the_h1(self):
-        """The band is the troop's to edit, so it can arrive heading-less —
-        and the outline must not lose its top when it does."""
-        SiteContent.objects.create(
-            page=SiteContent.Page.HOME,
-            html_fr=(
-                '<header class="masthead"><div class="card">'
-                "<p>Une ligne sans titre.</p></div></header>"
-            ),
-        )
-        response = self.client.get("/")
-        self.assertContains(response, '<h1 class="desk-question">')
-
-    def test_a_band_with_a_heading_keeps_the_question_as_a_subheading(self):
-        """The other half of the same rule: with a heading up there, the
-        question is not the page's top level."""
-        SiteContent.objects.create(
-            page=SiteContent.Page.HOME,
-            html_fr=(
-                '<header class="masthead"><div class="card">'
-                "<h2>Le titre de l'unité</h2></div></header>"
-            ),
-        )
-        response = self.client.get("/")
-        self.assertContains(response, '<h2 class="desk-question">')
 
     def test_the_units_own_page_is_public_and_carries_no_desk(self):
         response = self.client.get("/unite/")

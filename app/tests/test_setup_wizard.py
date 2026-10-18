@@ -23,7 +23,6 @@ from django.urls import reverse
 from django_celery_beat.models import PeriodicTask
 from post_office.models import EmailTemplate
 
-from homepage.models import SiteContent
 from members import email_templates, permissions, setup
 from members.models import (
     Account,
@@ -110,7 +109,7 @@ class GateTest(WizardTestCase):
     """What the instance shows before it has an administrator."""
 
     def test_every_page_but_the_wizard_leads_to_it(self):
-        for url in ("/", "/faq/", reverse("members:admin_list"), "/accounts/login/"):
+        for url in ("/", "/unite/", reverse("members:admin_list"), "/accounts/login/"):
             with self.subTest(url=url):
                 response = self.client.get(url)
                 self.assertEqual(response.status_code, 302, url)
@@ -371,14 +370,13 @@ class HappyPathTest(WizardTestCase):
     def test_the_wizard_provisions_what_it_never_asks_about(self):
         """A browser-set-up instance ends up as complete as a shell one.
 
-        The school years, the templates, the starter pages and the beat
-        schedule have no questions worth asking, so they happen when the last
-        step lands rather than as pages of their own.
+        The school years, the templates and the beat schedule have no questions
+        worth asking, so they happen when the last step lands rather than as
+        pages of their own.
         """
         self.walk()
 
         self.assertEqual(EmailTemplate.objects.count(), len(list(email_templates.rows())))
-        self.assertEqual(SiteContent.objects.count(), 2)
         self.assertEqual(PeriodicTask.objects.count(), len(settings.CELERY_BEAT_SCHEDULE))
 
     def test_the_wizard_ends_with_the_site_serving(self):

@@ -43,8 +43,7 @@ from django.contrib.auth import password_validation
 from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
 from django.db import transaction
 from django.db.models import Q
-from django.template.loader import render_to_string
-from django.utils import timezone, translation
+from django.utils import timezone
 
 from . import email_templates, permissions
 from .models import (
@@ -67,7 +66,6 @@ STEPS = (
     "preset",
     "school_years",
     "email_templates",
-    "site_pages",
     "periodic_tasks",
     "admin",
 )
@@ -76,15 +74,6 @@ STEPS = (
 #: uploads (an answers file cannot carry a file) and the passage's own
 #: bookkeeping, which the model's help text asks nobody to edit by hand.
 NOT_ANSWERABLE = ("id", "logo", "favicon", "last_passage_school_year")
-
-#: Template holding the starting point for each editable page, matching what
-#: ``homepage.views`` seeds the editor with. Duplicated rather than imported:
-#: importing a view module from a service would drag URLs and modules into a
-#: management command's import graph.
-PAGE_SNIPPETS = {
-    "home": "homepage/snippets/home_default.html",
-    "faq": "homepage/snippets/faq_default.html",
-}
 
 
 def periodic_task_schedule():
@@ -403,41 +392,6 @@ def ensure_email_templates():
     return StepResult("email_templates", created=created, kept=kept)
 
 
-def ensure_site_pages():
-    """Give the editable pages somewhere to start, in every enabled language.
-
-    Each language gets the markup the GrapesJS editor would have seeded it
-    with, so the page holds real content from the first request instead of
-    being filled in on the fly — and an editor opening it sees what a visitor
-    sees. A language that already has content is left alone.
-    """
-    from homepage.models import SiteContent
-
-    languages = TroopSettings.get_settings().enabled_languages or ["fr"]
-    created, kept = [], []
-
-    for page, snippet in PAGE_SNIPPETS.items():
-        content = SiteContent.objects.filter(page=page).first()
-        if content is None:
-            content = SiteContent(page=page)
-
-        wrote = False
-        for language in languages:
-            column = f"html_{language}"
-            if getattr(content, column):
-                kept.append(f"{page}/{language}")
-                continue
-            with translation.override(language):
-                setattr(content, column, render_to_string(snippet))
-            created.append(f"{page}/{language}")
-            wrote = True
-
-        if wrote:
-            content.save()
-
-    return StepResult("site_pages", created=created, kept=kept)
-
-
 def ensure_periodic_tasks():
     """Write the beat schedule into the database.
 
@@ -603,8 +557,6 @@ def _run_steps(answers):
         steps.append(ensure_school_years())
     if wanted["email_templates"]:
         steps.append(ensure_email_templates())
-    if wanted["site_pages"]:
-        steps.append(ensure_site_pages())
     if wanted["periodic_tasks"]:
         steps.append(ensure_periodic_tasks())
     if wanted["admin"]:

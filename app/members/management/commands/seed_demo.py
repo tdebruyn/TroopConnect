@@ -704,7 +704,6 @@ class Command(BaseCommand):
         # (members.absences.section_recipients), and a demo must not mail.
 
         self._record("email templates", troop_setup.ensure_email_templates())
-        self._record("site pages", troop_setup.ensure_site_pages())
 
     def _add_staff(self):
         for spec in STAFF:

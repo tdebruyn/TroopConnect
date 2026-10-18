@@ -42,7 +42,6 @@ STEP_FLAGS = {
     "preset": "create the branches and sections of a preset",
     "school_years": "create the current and next school year",
     "email_templates": "write the shipped email templates",
-    "site_pages": "give the homepage and FAQ somewhere to start",
     "periodic_tasks": "schedule the recurring tasks Celery beat runs",
     "admin": "create the first administrator account",
 }
@@ -76,9 +75,9 @@ LANGUAGE_CODES = [code for code, _label in AVAILABLE_LANGUAGE_CHOICES]
 class Command(BaseCommand):
     help = (
         "Bring an empty database to a usable state: troop settings, branches "
-        "and sections from a preset, school years, email templates, starter "
-        "pages, the Celery beat schedule and the first administrator. Safe to "
-        "run again: it fills in only what is missing."
+        "and sections from a preset, school years, email templates, the Celery "
+        "beat schedule and the first administrator. Safe to run again: it "
+        "fills in only what is missing."
     )
 
     def add_arguments(self, parser):

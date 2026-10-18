@@ -19,7 +19,6 @@ from django.core.management.base import CommandError
 from django_celery_beat.models import CrontabSchedule, PeriodicTask
 from post_office.models import EmailTemplate
 
-from homepage.models import SiteContent
 from members import email_templates, permissions, setup
 from members.management.commands.setup import (
     DATE_FLAGS,
@@ -56,7 +55,6 @@ class EmptyInstanceTestCase(TroopSettingsTestCase):
         super().setUp()
         Branch.objects.all().delete()
         SchoolYear.objects.all().delete()
-        SiteContent.objects.all().delete()
         PeriodicTask.objects.all().delete()
         CrontabSchedule.objects.all().delete()
         EmailTemplate.objects.all().delete()
@@ -369,51 +367,6 @@ class EmailTemplateTest(MailTestCase):
         self.assertEqual(len(step.kept), len(list(email_templates.rows())))
 
 
-class SitePagesTest(EmptyInstanceTestCase):
-    """Something for the homepage and the FAQ to show before anybody edits them."""
-
-    def test_each_enabled_language_gets_a_page(self):
-        troop = TroopSettings.get_settings()
-        troop.enabled_languages = ["fr", "nl"]
-        troop.save()
-
-        step = setup.ensure_site_pages()
-
-        self.assertCountEqual(
-            step.created, ["home/fr", "home/nl", "faq/fr", "faq/nl"]
-        )
-        home = SiteContent.objects.get(page="home")
-        self.assertIn("<div", home.html_fr)
-        self.assertIn("<div", home.html_nl)
-
-    def test_a_page_that_was_never_rendered_is_left_alone(self):
-        SiteContent.objects.create(page="faq", html_fr="<p>Notre FAQ</p>")
-
-        step = setup.ensure_site_pages()
-
-        self.assertNotIn("faq/fr", step.created)
-        self.assertEqual(
-            SiteContent.objects.get(page="faq").html_fr, "<p>Notre FAQ</p>"
-        )
-
-    def test_it_is_idempotent(self):
-        setup.ensure_site_pages()
-        step = setup.ensure_site_pages()
-        self.assertEqual(step.created, [])
-
-    def test_a_language_enabled_later_gets_its_page_then(self):
-        troop = TroopSettings.get_settings()
-        troop.enabled_languages = ["fr"]
-        troop.save()
-        setup.ensure_site_pages()
-
-        troop.enabled_languages = ["fr", "en"]
-        troop.save()
-        step = setup.ensure_site_pages()
-
-        self.assertCountEqual(step.created, ["home/en", "faq/en"])
-
-
 class PeriodicTasksTest(EmptyInstanceTestCase):
     """The schedule Celery beat reads out of the database."""
 
@@ -620,7 +573,6 @@ class RunSetupTest(EmptyInstanceTestCase):
                 "preset",
                 "school_years",
                 "email_templates",
-                "site_pages",
                 "periodic_tasks",
                 "admin",
             ],
@@ -633,7 +585,6 @@ class RunSetupTest(EmptyInstanceTestCase):
         self.assertEqual(
             EmailTemplate.objects.count(), len(list(email_templates.rows()))
         )
-        self.assertEqual(SiteContent.objects.count(), 2)
         self.assertEqual(
             PeriodicTask.objects.count(), len(settings.CELERY_BEAT_SCHEDULE)
         )
@@ -646,7 +597,6 @@ class RunSetupTest(EmptyInstanceTestCase):
             Section.objects.count(),
             SchoolYear.objects.count(),
             EmailTemplate.objects.count(),
-            SiteContent.objects.count(),
             PeriodicTask.objects.count(),
             Account.objects.count(),
         )
@@ -660,7 +610,6 @@ class RunSetupTest(EmptyInstanceTestCase):
                 Section.objects.count(),
                 SchoolYear.objects.count(),
                 EmailTemplate.objects.count(),
-                SiteContent.objects.count(),
                 PeriodicTask.objects.count(),
                 Account.objects.count(),
             ),
@@ -674,7 +623,6 @@ class RunSetupTest(EmptyInstanceTestCase):
         self.assertEqual(Branch.objects.count(), 0)
         self.assertEqual(Section.objects.count(), 0)
         self.assertEqual(SchoolYear.objects.count(), 0)
-        self.assertEqual(SiteContent.objects.count(), 0)
         self.assertEqual(PeriodicTask.objects.count(), 0)
         self.assertEqual(Account.objects.count(), 0)
         self.assertEqual(TroopSettings.get_settings().name_fr, "Scouts")
@@ -794,14 +742,14 @@ class CommandTest(EmptyInstanceTestCase):
         self.run_setup_command(
             "--answers", path, "--unit-name", "From the flag", "--no-preset",
             "--no-admin", "--no-school-years", "--no-email-templates",
-            "--no-site-pages", "--no-periodic-tasks",
+            "--no-periodic-tasks",
         )
 
         self.assertEqual(TroopSettings.get_settings().name_fr, "From the flag")
 
     def test_a_step_can_be_skipped_from_the_command_line(self):
         self.run_setup_command(
-            "--no-preset", "--no-admin", "--no-site-pages", "--no-periodic-tasks",
+            "--no-preset", "--no-admin", "--no-periodic-tasks",
             "--no-email-templates", "--no-school-years",
         )
 
@@ -873,7 +821,7 @@ class PromptTest(EmptyInstanceTestCase):
             call_command(
                 "setup",
                 "--no-preset", "--no-school-years", "--no-email-templates",
-                "--no-site-pages", "--no-periodic-tasks",
+                "--no-periodic-tasks",
                 noinput=False,
             )
 
@@ -956,7 +904,7 @@ class PromptTest(EmptyInstanceTestCase):
                 "setup",
                 "--answers", str(path),
                 "--no-preset", "--no-school-years", "--no-email-templates",
-                "--no-site-pages", "--no-periodic-tasks",
+                "--no-periodic-tasks",
                 noinput=False,
             )
 
@@ -979,18 +927,6 @@ class TheTablesMatchTheCodeTest(TroopSettingsTestCase):
         for flag, fields in DATE_FLAGS.items():
             for field in fields:
                 self.assertIn(field, answerable, flag)
-
-    def test_the_starter_pages_are_the_ones_the_editor_knows(self):
-        from homepage.models import SiteContent
-        from homepage.views import EDITOR_SEED_TEMPLATES
-
-        self.assertEqual(
-            {page.value for page in SiteContent.Page}, set(setup.PAGE_SNIPPETS)
-        )
-        for page in SiteContent.Page:
-            self.assertEqual(
-                setup.PAGE_SNIPPETS[page.value], EDITOR_SEED_TEMPLATES[page], page
-            )
 
     def test_every_scheduled_task_is_registered_with_the_worker(self):
         """A name beat sends that the worker cannot resolve is a silent no-op.

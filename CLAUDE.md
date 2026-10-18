@@ -52,7 +52,7 @@ Package management uses `uv` (not pip directly). Dependencies are pinned in `app
 
 ### Django Apps
 - **members** (`app/members/`) — Core app: accounts, persons, roles, sections, enrollments, profiles, child management, admin views
-- **homepage** (`app/homepage/`) — Landing page (template-only, no models)
+- **homepage** (`app/homepage/`) — The unit's public page, its enrolment desk, and the timeline activities
 
 ### Key Model Design
 

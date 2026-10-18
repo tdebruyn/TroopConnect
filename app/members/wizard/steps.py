@@ -348,19 +348,17 @@ class EmailStep(Step):
         """Make it this instance's administrator, and so mark it set up.
 
         The last thing the wizard does, which is why the work it never asked
-        about happens here too: the school years, the email templates, the
-        starter pages and the beat schedule are the same steps
-        ``manage.py setup`` runs, and an instance set up in a browser has to
-        end up as provisioned as one set up at a shell. All of it in one
-        transaction, so a wizard that fails here leaves a retryable step
-        rather than half a finished instance.
+        about happens here too: the school years, the email templates and the
+        beat schedule are the same steps ``manage.py setup`` runs, and an
+        instance set up in a browser has to end up as provisioned as one set up
+        at a shell. All of it in one transaction, so a wizard that fails here
+        leaves a retryable step rather than half a finished instance.
         """
         from django.db import transaction
 
         with transaction.atomic():
             provisioning.ensure_school_years()
             provisioning.ensure_email_templates()
-            provisioning.ensure_site_pages()
             provisioning.ensure_periodic_tasks()
 
             if not account.is_superuser:

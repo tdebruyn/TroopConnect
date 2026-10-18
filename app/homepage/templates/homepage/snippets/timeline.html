@@ -2,11 +2,10 @@
 {% comment %}
   The year-line, drawn from the current school year's TimelineActivity rows.
 
-  The axis is filled in by the view through the hero's `data-home-timeline`
-  slot, not authored in the editor: the dates and their positions are one
-  fact, and letting the page and the activity list each hold a copy of them is
-  how they drift. A multi-day activity is a bar rather than a dot, drawn from
-  its first day to its last.
+  The dates come from the timeline activities, never from the page: the dates
+  and their positions are one fact, and letting the page and the activity list
+  each hold a copy of them is how they drift. A multi-day activity is a bar
+  rather than a dot, drawn from its first day to its last.
 {% endcomment %}
 <div class="hero-timeline{% if timeline.tall %} hero-timeline--tall{% endif %}">
     <div class="hero-timeline__chart">

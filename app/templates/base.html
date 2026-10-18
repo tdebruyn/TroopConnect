@@ -145,9 +145,6 @@
                                         </div>
                                     </li>
                                 {% endif %}
-                                <li class="nav-item">
-                                    <a class="nav-link active" href="{% url 'faq' %}">{% trans "FAQ" %}</a>
-                                </li>
                             </ul>
 {% comment %}
                                 The pair is named by role rather than by the
@@ -216,10 +213,9 @@
             line and the unit's social accounts were all stored — and all
             rendered by nothing — until now.
 
-            Never styled with a bare `footer` selector. The homepage editor
-            exports content that can carry its own <footer>, exactly as it can
-            a <header>; a bare selector reaches into what a troop authored.
-            See `header.masthead` for the same rule stated the other way.
+            Never styled with a bare `footer` selector: the public page's
+            content carries its own blocks, and a bare selector reaches into
+            them. See `header.masthead` for the same rule stated the other way.
         {% endcomment %}
         {% comment %}
             The footer sits in a slot so the page can reach the floor. The shell

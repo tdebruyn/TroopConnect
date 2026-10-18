@@ -105,15 +105,11 @@
  * The photograph starts at the very top of the page and runs up behind the
  * navbar. It gets there by a negative top margin sized from
  * `--site-navbar-height` rather than by leaving the flow: the shell needs the
- * hero in flow (see above), so this is a pull, not a position.
- *
- * The homepage editor's frame loads this file and has no navbar; it undoes the
- * pull in `editor-canvas.css`, where that difference belongs. */
+ * hero in flow (see above), so this is a pull, not a position. */
 header.masthead {
   /* Positioned and isolated for the two layers the band draws over its own
-     photograph. Both are painted rather than set as background layers, because
-     the troop's own picture arrives as an inline background-image and an inline
-     style beats anything a stylesheet says about it.
+     photograph. Both are painted rather than set as background layers so the
+     green wash can sit between the photograph and the words.
 
      `isolation` also makes the band a backdrop root, which is what the blur
      layer below needs: without it, it would reach past the band and blur the
@@ -176,14 +172,10 @@ header.masthead::before {
 
 /* The unit's own opening, and the card is only the block it was authored in.
 
-   The band's card used to be a sheet of near-white laid on the photograph: a
-   rectangle of placeholder colour over the unit's own picture, with the unit's
-   name and description inside it. It is the same words and the same markup
-   now, with no sheet — the photograph is the ground and the type stands on it,
-   which is what the band was always for. `background: none` on a `.card` the
-   troop can also style in the editor is deliberate: a card that arrives with
-   its own fill still wins, because that is the troop's decision and this is
-   only the seeded default. */
+   There is no sheet between the photograph and the words: the photograph is
+   the ground and the type stands on it, which is what the band is for. The
+   `background: none` and the zero border are what keep the theme's card
+   treatment from turning that block back into a panel. */
 header.masthead .card {
   /* Above the band's two layers. The card is already `position: relative` in the
      theme, but the z-index is what the stacking here actually rests on, so the

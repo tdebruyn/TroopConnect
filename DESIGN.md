@@ -868,16 +868,13 @@ white tiles and cards carry the separation.
   ground made the site open on a colour the signed-in homepage never used. The
   head is the identifier; the bar above and the tiles below are the chrome.
 - **The public band is the exception:** its band is a photo rather than a flat band,
-  and it stays an ordinary block in the flow (not absolutely positioned), because
-  the homepage editor drops content directly beneath it. It is also the one band
-  a troop writes itself: the unit's own name and description seed it, its text
-  and contents are editable in the editor, and its background image is a
-  property set there rather than a rule in a stylesheet nobody can reach. The
-  editor holds it in place as the anchor it repairs the rest of the canvas
-  around, so it may not be dragged, removed or copied — only edited into.
-- **The band is the federation's green, over the troop's own photograph.**
+  and it stays an ordinary block in the flow (not absolutely positioned), so the
+  desk under it sits directly beneath it. It is also the one band a troop writes
+  itself: the unit's own name and description fill it, while the photograph is
+  the one shipped with the application.
+- **The band is the federation's green, over the photograph.**
   `--home-green` is charter-green-deep taken down until it can hold white type
-  over any picture, laid over the troop's own image at 62–74%. It is the page's
+  over any picture, laid over the image at 62–74%. It is the page's
   only large surface of colour that is not a branch's, and it is deliberately
   green: a scout unit's header rule that is not green is a header rule that has
   forgotten who it is for.
@@ -894,9 +891,8 @@ white tiles and cards carry the separation.
   edge, like a band and not like a fade.
 - **It is shallower than the reference it was drawn from.** A hero is a way in,
   not a room.
-- **Painted as a pseudo-element and never as a background layer**, because a
-  troop's own picture arrives as an inline `background-image` and an inline style
-  beats anything a stylesheet says about it. `backdrop-filter` and not `filter`,
+- **Painted as a pseudo-element and never as a background layer**, so the green
+  wash can sit between the photograph and the words. `backdrop-filter` and not `filter`,
   which is the load-bearing choice: a `filter` would dim the band and every word
   in it, while a backdrop filter acts on what is *behind* the layer and leaves
   the type sharp.
@@ -905,10 +901,6 @@ white tiles and cards carry the separation.
   block stops being read as one statement and starts being read as a shape. The
   column is centred so the band stays symmetrical under the bar — the words
   inside it are not.
-- **The editor's canvas drops only the last of it.** The canvas has the same
-  photograph and the same green, so the words read there exactly as they do on
-  the site; what it does not have is the hard edge into the desk, so its band
-  ends on the page colour the blocks are dropped onto.
 - **The signed-in pages have no band.** Their page head is the identifier; a band
   that repeated "your unit" above a page whose subject is the reader's own people
   would be a second title. The 84px bar, then the surface display title on the
@@ -1384,9 +1376,8 @@ cell per day.
 - **Don't** put a border and a shadow on the same card — that is two signals for
   one surface.
 - **Don't** colour body or heading text to add emphasis. Weight is the tool.
-- **Don't** style the site header with a bare `header` selector. The homepage
-  editor exports content that can carry its own `<header>`, and a bare selector
-  reaches into authored content.
+- **Don't** style the site header with a bare `header` selector. The public
+  page's hero band is a `<header>` too, and a bare selector reaches into it.
 - **Don't** use `window.alert()` for feedback. Toasts and inline alerts exist,
   and a browser alert cannot be translated or styled.
 - **Don't** build a second modal. `#modal` / `#dialog` is the dialog, and every

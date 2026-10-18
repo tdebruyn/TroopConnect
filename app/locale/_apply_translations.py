@@ -116,50 +116,17 @@ TRANSLATIONS = {
         "%(branch)s : année de naissance",
         "%(branch)s: geboortejaar",
     ),
-    # The band's seed, shown only on a page nobody has edited yet. Its
-    # heading reuses "Our unit", which the catalog already carries.
+    # The band's description. Its heading reuses "Our unit", which the catalog
+    # already carries.
     "This is where the unit introduces itself to the families of the commune.": (
         "C'est ici que l'unité se présente aux familles de la commune.",
         "Hier stelt de eenheid zich voor aan de gezinnen van de gemeente.",
     ),
-    # --- homepage editor ---
-    "Homepage editor": ("Éditeur de la page d'accueil", "Editor voor de startpagina"),
-    "View site": ("Voir le site", "Site bekijken"),
-    "Site name and other settings are edited in the site settings.": (
-        "Le nom du site et d'autres réglages se modifient dans les paramètres du site.",
-        "De sitenaam en andere instellingen worden gewijzigd in de site-instellingen.",
-    ),
-    "Site settings": ("Paramètres du site", "Site-instellingen"),
     "Saved.": ("Enregistré.", "Opgeslagen."),
-    "Edit this page": ("Modifier cette page", "Deze pagina bewerken"),
-    "Edit homepage": ("Modifier la page d'accueil", "Startpagina bewerken"),
-    "Image upload failed.": ("Échec du téléversement de l'image.", "Uploaden van de afbeelding mislukt."),
-    "Save failed.": ("Échec de l'enregistrement.", "Opslaan mislukt."),
-    "Site content": ("Contenu du site", "Site-inhoud"),
-    "Site contents": ("Contenus du site", "Site-inhouden"),
-    "Image asset": ("Image", "Afbeelding"),
-    "Image assets": ("Images", "Afbeeldingen"),
-    "Home": ("Accueil", "Startpagina"),
     "Unsupported image extension. Allowed: %(extensions)s.": (
         "Extension d'image non prise en charge. Autorisées : %(extensions)s.",
         "Niet-ondersteunde afbeeldingsextensie. Toegestaan: %(extensions)s.",
     ),
-    # --- editor blocks/sectors (GrapesJS UI) ---
-    "Structure": ("Structure", "Structuur"),
-    "Basic": ("Basique", "Basis"),
-    "2 columns": ("2 colonnes", "2 kolommen"),
-    "3 columns": ("3 colonnes", "3 kolommen"),
-    "Heading": ("Titre", "Kop"),
-    "Text": ("Texte", "Tekst"),
-    "Your text here.": ("Votre texte ici.", "Jouw tekst hier."),
-    "Image": ("Image", "Afbeelding"),
-    "Button": ("Bouton", "Knop"),
-    "Click here": ("Cliquez ici", "Klik hier"),
-    "Divider": ("Séparateur", "Scheidingslijn"),
-    "Dimensions": ("Dimensions", "Afmetingen"),
-    "Typography": ("Typographie", "Typografie"),
-    "Decorations": ("Décorations", "Decoratie"),
-    "Extra": ("Extra", "Extra"),
     # --- participant (English source; fr=animé, nl=deelnemer) ---
     "Participant": ("Animé", "Deelnemer"),
     "Participants of a section": ("Animés d'une section", "Deelnemers van een sectie"),

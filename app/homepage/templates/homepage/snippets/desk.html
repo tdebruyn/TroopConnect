@@ -1,9 +1,8 @@
 {% load i18n static %}
 {% comment %}
-  The enrolment desk, and the one part of the public homepage the troop does
-  not edit: naming the branch a child would join means reading the branches'
-  own ages, which a GrapesJS canvas cannot do. Everything below it stays the
-  troop's own page.
+  The enrolment desk. Naming the branch a child would join means reading the
+  branches' own ages, so it is drawn from the branches rather than from any
+  page content a troop writes.
 
   The years are the branches' age ranges read backwards — a child born in year
   Y is `reference_year - Y` on the troop's age reference day — so a troop that
@@ -21,15 +20,10 @@
     <div class="container">
         <div class="desk-inner">
             <p class="desk-eyebrow">{% trans "The branches" %}</p>
-            {% comment %}
-                The question is the page's `h1` while the page has no heading
-                of its own above it; under the troop's own band — which is the
-                troop's to edit and can arrive heading-less — it is a
-                subheading. The class carries the size either way.
-            {% endcomment %}
-            {% if hero_heading %}<h2 class="desk-question">{% else %}<h1 class="desk-question">{% endif %}
+            {# A subheading: the unit's band above it is the page's `h1`. #}
+            <h2 class="desk-question">
                 {% trans "What year was your child born?" %}
-            {% if hero_heading %}</h2>{% else %}</h1>{% endif %}
+            </h2>
 
             {% if desk_groups %}
                 {% comment %}

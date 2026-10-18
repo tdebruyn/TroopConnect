@@ -1,21 +1,16 @@
-{% load i18n homepage_content %}
+{% load homepage_content %}
 {% comment %}
-  The hero, then the area the editor drops blocks into.
+  The unit's opening band: its own name and description over the unit's
+  photograph, with the current school year's line under them.
 
-  The hero is the troop's content: the editor lets its text be selected,
-  changed, and dropped into, and holds it in place as the anchor the rest of
-  the canvas is repaired around. Its words start as the unit's own — its name
-  and its description — so an instance nobody has edited yet still opens
-  saying something true about the unit, rather than showing a slot label to
-  the public.
+  The words are the troop's, taken from its settings, so the page opens saying
+  something true about the unit without anyone writing it a second time.
 {% endcomment %}
 {% band_seed as band %}
 <header class="masthead">
     <div class="card">
-        <h2>{{ band.heading }}</h2>
+        <h1 class="h2">{{ band.heading }}</h1>
         <p>{{ band.text }}</p>
-        {# Filled at render with the current school year's activities. #}
-        <div class="hero-timeline" data-home-timeline></div>
+        {% if timeline %}{% include "homepage/snippets/timeline.html" %}{% endif %}
     </div>
 </header>
-<main class="tc-page-content"></main>

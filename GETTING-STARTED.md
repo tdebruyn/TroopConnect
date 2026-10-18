@@ -471,9 +471,11 @@ will register and log in.
 
 ![The homepage of a fresh instance](docs/images/getting-started/11-site-2-homepage.png)
 
-The homepage starts with **placeholder text**, as in the screenshot above. It is
-there to be replaced: press **Edit this page** and write your own welcome. Until
-you do, that text is what the world sees.
+The homepage opens with the unit's own **name and description**, over the
+photograph shipped with the application, followed by the enrolment desk and
+where the unit meets. There is no page editor: those words come from **Site
+settings**, in the next section, and the address and map come from the same
+place.
 
 ### Settings
 
