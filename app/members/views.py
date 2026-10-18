@@ -303,6 +303,15 @@ class AdminUpdateView(UserPassesTestMixin, UpdateView):
         context["is_self"] = self.object.pk == getattr(
             get_person(self.request.user), "pk", None
         )
+        # The key is how a second parent attaches to a child, so whoever
+        # manages member records may need to read it back and relay it.
+        context["child_secret_key"] = (
+            self.object.secret_key
+            if self.object.primary_role
+            and self.object.primary_role.short == Person.CHILD_ROLE_SHORT
+            and can_manage_members(self.request.user)
+            else ""
+        )
         # The template hides the roles that do not belong beside the primary
         # role currently selected, so the reader is not offered a checkbox the
         # server would drop on submit.

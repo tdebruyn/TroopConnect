@@ -116,9 +116,19 @@
                                id="{{ form.birthday.id }}"
                                value="{{ form.birthday.value|date:'Y-m-d' }}" />
                         <div class="alert-danger">{{ form.birthday.errors }}</div>
-                        <div class="form-label">{{ form.secret_key.label_tag }}</div>
-                        <div class="input-group">{% render_field form.secret_key class="form-control" %}</div>
-                        <div class="alert-danger">{{ form.secret_key.errors }}</div>
+                        {% if child_secret_key %}
+                            <div class="form-label">
+                                <label for="child-secret-key">{% trans "Secret key" %}</label>
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-text" id="child-secret-key-icon"><i class="bi-key"></i></span>
+                                <input type="text"
+                                       class="form-control font-monospace"
+                                       id="child-secret-key"
+                                       value="{{ child_secret_key }}"
+                                       readonly>
+                            </div>
+                        {% endif %}
                         <div class="form-label">{{ form.sex.label_tag }}</div>
                         <div class="select-group">{% render_field form.sex class="form-control" %}</div>
                         <div class="alert-danger">{{ form.sex.errors }}</div>

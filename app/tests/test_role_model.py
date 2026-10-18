@@ -268,6 +268,7 @@ class MemberAdminViewTest(TroopSettingsTestCase):
     @classmethod
     def setUpTestData(cls):
         cls.target, _ = make_account("target@test.be")
+        cls.child, _ = make_account("kid@test.be", primary="e")
         cls.lead, cls.lead_account = make_account("lead@test.be", roles=("ar",))
         cls.registration, cls.registration_account = make_account(
             "ri@test.be", roles=("ri",)
@@ -312,6 +313,26 @@ class MemberAdminViewTest(TroopSettingsTestCase):
         self.assertContains(response, "Autre membre")
         self.assertContains(response, 'id="secondary-roles"')
         self.assertContains(response, 'id="secondary-roles-by-primary"')
+
+    def test_the_child_edit_page_shows_the_key_to_the_member_managers(self):
+        url = reverse("members:admin_update", kwargs={"pk": self.child.pk})
+        for account in (
+            self.lead_account,
+            self.registration_account,
+            self.staff_account,
+        ):
+            with self.subTest(account=account.email):
+                self.client.force_login(account)
+                response = self.client.get(url)
+                self.assertContains(response, 'id="child-secret-key"')
+                self.assertContains(response, self.child.secret_key)
+
+    def test_the_edit_page_hides_the_key_outside_a_child_profile(self):
+        self.client.force_login(self.lead_account)
+        response = self.client.get(
+            reverse("members:admin_update", kwargs={"pk": self.target.pk})
+        )
+        self.assertNotContains(response, 'id="child-secret-key"')
 
     def test_the_registration_manager_cannot_assign_roles(self):
         self.client.force_login(self.registration_account)
