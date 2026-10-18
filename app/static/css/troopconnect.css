@@ -2428,15 +2428,23 @@ body {
   grid-column: span 2;
 }
 
-/* The unit team's rack is the page's main tool surface: four columns across
-   a row of its own, with the personal groups following beneath. The wider
-   rack is what lets the ranked tiles keep a readable label at four across. */
-.member-tools-group[data-kind="unit"][data-lead="true"] {
-  flex: 1 1 100%;
+/* The unit team's rack takes four of the page's six columns, with the
+   personal groups on one column each beside it: the unit team's many doors
+   stay at tile scale instead of swelling to fill a row of their own. The
+   group grid and the rack's own tile grid share a gap, so the columns line
+   up across all three groups. */
+.member-tools-groups.member-tools-rack {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 1rem 0.625rem;
+}
+
+.member-tools-rack > .member-tools-group[data-kind="unit"] {
+  grid-column: span 4;
 }
 
 .member-tools-group[data-kind="unit"][data-lead="true"] .member-tools-list {
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 /* The new-members alert reports work and takes two columns; the ranked first
@@ -2457,36 +2465,39 @@ body {
   grid-template-columns: minmax(0, 1fr);
 }
 
-/* Under a unit rack the personal groups keep the tile width they have in a
-   standalone column rather than stretching into page-wide rows. */
-.member-tools-rack > .member-tools-group:not([data-lead="true"]) {
-  flex: 0 0 17rem;
-}
-
 @media (max-width: 1199.98px) {
-  .member-tools-group[data-kind="unit"][data-lead="true"] .member-tools-list {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  .member-tools-groups.member-tools-rack {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
-  .member-tools-group[data-kind="unit"][data-lead="true"]
-    .member-tools-list
-    > li[data-priority="true"] {
-    grid-column: auto;
+  .member-tools-rack > .member-tools-group[data-kind="unit"] {
+    grid-column: span 2;
+  }
+
+  .member-tools-group[data-kind="unit"][data-lead="true"] .member-tools-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 767.98px) {
+  .member-tools-groups.member-tools-rack {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .member-tools-rack > .member-tools-group[data-kind="unit"] {
+    grid-column: auto;
+  }
+
   .member-tools-group[data-kind="unit"][data-lead="true"] .member-tools-list {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .member-tools-rack > .member-tools-group:not([data-lead="true"]) {
-    flex: 1 1 100%;
-  }
-
   .member-tools-group[data-kind="unit"][data-lead="true"]
     .member-tools-list
-    > li[data-alert="true"] {
+    > li[data-alert="true"],
+  .member-tools-group[data-kind="unit"][data-lead="true"]
+    .member-tools-list
+    > li[data-priority="true"] {
     grid-column: auto;
   }
 }
