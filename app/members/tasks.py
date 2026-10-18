@@ -6,16 +6,14 @@ from celery.utils.log import get_task_logger
 logger = get_task_logger(__name__)
 
 
-# Passage runs for the upcoming school year from the fixed passage day (1 May)
-# on, and is retried on the first of every month while that school year is
-# still ahead. The task is scheduled (not once a year) because Celery beat's
-# catch-up is unreliable for yearly tasks: a worker/beat outage on the trigger
-# day would otherwise skip the passage for a full year. Monthly repetition is
-# safe because run_passage also skips every member who already has a section
-# for the target year, so a late tick catches up on whoever is left — a member
-# added or fixed after the first run — and never re-derives a placement that
-# already happened. Setting passage_mode to "manual" switches the automatic run
-# off entirely; staff then run the same code on demand from the passage page.
+# Passage runs for the upcoming school year on the first of every month. The
+# task is scheduled (not once a year) because Celery beat's catch-up is
+# unreliable for yearly tasks, and because a member may join or be fixed after
+# the first run. Monthly repetition is safe because run_passage skips every
+# member who already has a section for the target year, so a later tick catches
+# up on whoever is left and never re-derives a placement that already happened.
+# Setting passage_mode to "manual" switches the automatic run off entirely;
+# staff then run the same code on demand from the passage page.
 
 
 def _today():
@@ -78,28 +76,25 @@ def run_passage(force=False):
     Passage task — moves active Animé (children) into their next section for
     the upcoming school year.
 
-    Scheduled MONTHLY, on the first day. The passage falls due on the fixed
-    passage day (1 May) for the target school year — see
-    ``TroopSettings.passage_datetime``; the first tick on/after that day does
-    the work, and the following ticks pick up whoever the earlier ones could
-    not place (or had not seen yet). Two guards keep the automatic run in
-    check:
+    Scheduled MONTHLY, on the first day, all year. Every run prepares the
+    upcoming school year: a member with no section for it is placed by the
+    first run, and later runs leave them alone. The per-member gate is the
+    whole idempotency mechanism: repeating the run is safe, an outage on one
+    tick catches up at the next, and a placement already made — including the
+    cleared ``next_section`` override that produced it — is never re-derived.
 
-      1. Date gate — only act on/after the fixed passage day for the target
-         school year, so the monthly run doesn't promote children the moment
-         the next SchoolYear is created.
-      2. Per-member gate — a member who already has a section for the target
-         school year is skipped untouched. This is the whole idempotency
-         mechanism: repeating the run is safe, an outage on one tick catches
-         up at the next, and a placement already made — including the cleared
-         ``next_section`` override that produced it — is never re-derived.
+    The one action that still waits for the federation's passage day (1 May)
+    is a member leaving the last branch. Graduating them to animator (or
+    flagging them for that decision) changes their role in the *current*
+    school year, so a monthly run a year early would end their participation
+    mid-year. Until that day they are simply left alone.
 
     A troop that would rather move children up by hand sets ``passage_mode`` to
     ``manual``, which switches the automatic run off entirely; staff then run
     the same code on demand from the passage page, which passes ``force``.
 
-    ``force=True`` skips the guards that stop the *automatic* task acting too
-    early or at all — manual mode and the date gate — not the per-member gate:
+    ``force=True`` skips the guards that stop the *automatic* task — manual
+    mode and the wait before the passage day — not the per-member gate:
     pressing the button must not overwrite a section that is already assigned.
 
     Where each member goes:
@@ -149,19 +144,6 @@ def run_passage(force=False):
         logger.error("No next school year found. Create it first.")
         return
 
-    if not force:
-        # Date gate. Only run on/after the fixed passage day for the target
-        # year; the gate is day-granular, and the helper is what knows the
-        # passage day is the one in that year's start calendar year.
-        today = _today()
-        trigger = troop.passage_datetime(target_year).date()
-        if today < trigger:
-            logger.info(
-                f"Passage not due yet (today {today} < {trigger} for "
-                f"school year {target_year.name}); skipping"
-            )
-            return
-
     current_year = SchoolYear.current()
 
     role_anime = Role.objects.get(short="e")
@@ -185,6 +167,8 @@ def run_passage(force=False):
     aged_out = 0
     flagged = 0
     already_placed = 0
+    today = _today()
+    passage_day = troop.passage_datetime(target_year).date()
 
     for child in children:
         if child.pk in placed:
@@ -228,6 +212,13 @@ def run_passage(force=False):
                 _flag(child, Person.PassageReview.NO_NEXT_BRANCH)
                 flagged += 1
                 logger.warning(f"{child}: {current_branch} has no next branch")
+                continue
+
+            # Leaving the unit. This is the one decision that changes who the
+            # member is *this* year, so the automatic run waits for the
+            # federation's passage day rather than ending their participation
+            # months or a year early. The button (force) may do it now.
+            if not force and today < passage_day:
                 continue
 
             if not troop.top_branch_graduates_become_leaders:

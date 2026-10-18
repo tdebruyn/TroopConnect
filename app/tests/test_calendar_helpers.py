@@ -204,52 +204,43 @@ class PassageDatetimeTest(CalendarTestBase):
         self.assertTrue(timezone.is_aware(trigger))
 
     def test_the_passage_day_does_not_follow_the_year_start(self):
-        """1 May is fixed; a January-starting year still passes on that day
-        in the start calendar year the passage prepares."""
+        """1 May is fixed; a January-starting year keeps that passage day in
+        the start calendar year it prepares."""
         troop = self.configure(year_start_month=1, year_start_day=1)
         self.assertEqual(troop.passage_datetime(2026), self.aware(2026, 5, 1))
 
-    def test_next_passage_is_the_one_after_the_current_year(self):
+    def test_the_next_run_is_the_first_of_the_next_month(self):
         troop = TroopSettings.get_settings()
-        # September 2026 is inside school year 2026 → the next passage prepares 2027.
         self.assertEqual(
             troop.next_passage_datetime(on_date=date(2026, 9, 15)),
-            self.aware(2027, 5, 1),
+            self.aware(2026, 10, 1),
+        )
+        self.assertEqual(
+            troop.next_passage_datetime(on_date=date(2026, 5, 15)),
+            self.aware(2026, 6, 1),
         )
 
-    def test_next_passage_on_the_passage_day_itself(self):
+    def test_on_the_first_the_run_due_today_is_returned(self):
+        """The page may be read before that day's run has happened."""
         troop = TroopSettings.get_settings()
-        # 1 May 2026 is still inside school year 2025 → that day's passage.
         self.assertEqual(
             troop.next_passage_datetime(on_date=date(2026, 5, 1)),
             self.aware(2026, 5, 1),
         )
 
-    def test_after_the_passage_day_it_retries_on_the_first_of_the_month(self):
-        troop = TroopSettings.get_settings()
-        self.assertEqual(
-            troop.next_passage_datetime(on_date=date(2026, 5, 15)),
-            self.aware(2026, 6, 1),
-        )
-        self.assertEqual(
-            troop.next_passage_datetime(on_date=date(2026, 6, 15)),
-            self.aware(2026, 7, 1),
-        )
-
-    def test_the_last_retry_yields_to_the_next_cycle(self):
-        """A retry on 1 August would land on the day the prepared year starts;
-        the next automatic passage is then the following year's."""
-        troop = TroopSettings.get_settings()
-        self.assertEqual(
-            troop.next_passage_datetime(on_date=date(2026, 7, 15)),
-            self.aware(2027, 5, 1),
-        )
-
-    def test_next_passage_with_a_january_year_start(self):
+    def test_the_next_run_does_not_depend_on_the_school_year(self):
+        """The passage runs every month, whatever the year's boundary is."""
         troop = self.configure(year_start_month=1, year_start_day=1)
         self.assertEqual(
             troop.next_passage_datetime(on_date=date(2027, 1, 15)),
-            self.aware(2028, 5, 1),
+            self.aware(2027, 2, 1),
+        )
+
+    def test_the_year_rolls_over_at_december(self):
+        troop = TroopSettings.get_settings()
+        self.assertEqual(
+            troop.next_passage_datetime(on_date=date(2026, 12, 15)),
+            self.aware(2027, 1, 1),
         )
 
 

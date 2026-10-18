@@ -47,7 +47,8 @@ class LadderTestBase(TroopSettingsTestCase):
         self.role_parent = Role.objects.get(short="p")
         self.current_year = SchoolYear.current()
         self.next_year = SchoolYear.next_school_year()
-        # Stand on the passage day, so an unforced run is due.
+        # Stand on the federation's passage day: an automatic run may graduate
+        # members from the last branch on/after it, and never before.
         self._today = mock.patch(
             "members.tasks._today",
             return_value=TroopSettings.get_settings()
@@ -201,6 +202,34 @@ class GraduationToggleTest(LadderTestBase):
         # Nothing was taken away, so the troop can still decide either way.
         self.assertTrue(ParentChild.objects.filter(child=child).exists())
         self.assertIsNone(self.next_section_of(child))
+
+    def test_a_monthly_run_before_the_passage_day_leaves_them_alone(self):
+        """Graduating changes the member's role *this* year, so the automatic
+        run waits for the federation's passage day."""
+        child = self._graduate()
+
+        with mock.patch(
+            "members.tasks._today",
+            return_value=date(self.next_year.name, 1, 15),
+        ):
+            run_passage()
+
+        child.refresh_from_db()
+        self.assertEqual(child.primary_role, self.role_child)
+        self.assertTrue(ParentChild.objects.filter(child=child).exists())
+        self.assertIsNone(self.next_section_of(child))
+
+    def test_the_button_may_graduate_before_the_passage_day(self):
+        child = self._graduate()
+
+        with mock.patch(
+            "members.tasks._today",
+            return_value=date(self.next_year.name, 1, 15),
+        ):
+            run_passage(force=True)
+
+        child.refresh_from_db()
+        self.assertEqual(child.primary_role, self.role_leader)
 
 
 class SectionSexTest(LadderTestBase):
@@ -409,11 +438,12 @@ class ManualModeTest(OneHopLadderTestBase):
             TroopSettings.get_settings().last_passage_school_year, self.next_year.name
         )
 
-    def test_forcing_ignores_the_date_gate(self):
+    def test_forcing_does_the_work_at_any_time(self):
         child = self.child(9, section=self.section_young)
         before = date(self.next_year.name, 1, 1)
 
         with mock.patch("members.tasks._today", return_value=before):
+            # The automatic run is off, so only the button places them.
             self.assertIsNone(run_passage())
             run_passage(force=True)
 
@@ -480,10 +510,12 @@ class PassagePageTest(LadderTestBase):
 
         # The page renders in the site language (French by default).
         self.assertContains(response, "Comment fonctionne le passage")
-        self.assertContains(response, "Exemple :")
+        self.assertContains(response, "il attribue à chaque animé une section")
+        # A concrete example in everyday words, not the task's vocabulary.
         self.assertContains(
-            response, "il attribue à chaque animé une section pour cette année"
+            response, "Paul est dans sa dernière année chez les Louveteaux"
         )
+        self.assertContains(response, "les Éclaireurs comme section")
 
     def test_the_automatic_card_shows_the_next_monthly_run(self):
         next_due = formats.date_format(
@@ -496,9 +528,7 @@ class PassagePageTest(LadderTestBase):
         self.assertContains(response, "Prochaine exécution le")
         self.assertContains(response, next_due)
         # The cadence itself, not just one date.
-        self.assertContains(
-            response, "puis chaque mois jusqu'au début de l'année scolaire"
-        )
+        self.assertContains(response, "puis le 1er de chaque mois")
 
     def test_a_manual_troop_is_told_only_the_button_runs_it(self):
         troop = TroopSettings.get_settings()

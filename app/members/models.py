@@ -70,12 +70,12 @@ DAY_VALIDATORS = [MinValueValidator(1), MaxValueValidator(31)]
 AGE_REFERENCE_MONTH = 12
 AGE_REFERENCE_DAY = 31
 
-#: The section passage falls due on 1 May, in the calendar year the school year
-#: it prepares starts in. Fixed for the same reason: a troop choosing its own
-#: date would move every member a year early or a year late. The automatic run
-#: isn't tied to that single date: it falls due on this day and is retried on
-#: the first of each following month until the prepared year starts, skipping
-#: members who already have a section for it.
+#: The federation's passage day, 1 May, in the calendar year the school year it
+#: prepares starts in. Fixed for the same reason: a troop choosing its own date
+#: would move every member a year early or a year late. The automatic run
+#: prepares a coming year on the first of every month; only the departure of
+#: members leaving the last branch waits for this day, because it changes their
+#: role in the current year.
 PASSAGE_MONTH = 5
 PASSAGE_DAY = 1
 
@@ -1029,9 +1029,8 @@ class TroopSettings(models.Model):
         choices=PASSAGE_MODE_CHOICES,
         default=PASSAGE_MODE_AUTO,
         help_text=_(
-            "Automatic runs the passage from 1 May, retrying on the first of "
-            "every month until the coming school year starts; manual leaves it "
-            "to whoever presses the button."
+            "Automatic runs the passage on the first of every month; manual "
+            "leaves it to whoever presses the button."
         ),
     )
 
@@ -1342,40 +1341,32 @@ class TroopSettings(models.Model):
         return (reference - person.birthday).days // 365
 
     def passage_datetime(self, school_year):
-        """The moment the passage preparing ``school_year`` falls due.
+        """The federation's passage day for ``school_year``.
 
-        The fixed passage day (1 May) in the start calendar year of that
-        school year: the passage runs in the spring before the year it prepares
-        children for.
+        The fixed 1 May in the start calendar year of that school year: the
+        day, in the spring before the year it prepares children for, on which
+        a member leaving the last branch departs. The automatic run places
+        everyone else on the first of every month.
         """
         name = getattr(school_year, "name", school_year)
         day = date(name, PASSAGE_MONTH, PASSAGE_DAY)
         return timezone.make_aware(datetime.combine(day, time.min))
 
     def next_passage_datetime(self, on_date=None):
-        """The next moment the automatic passage may run.
+        """The next time the automatic passage runs — the first of the month.
 
-        The passage preparing the coming school year falls due on the fixed
-        passage day, then retries on the first of each following month until
-        that year starts; from then on the next cycle's passage is next. The
-        trigger itself is returned on the day it falls due, not the month
-        after: that day's run has not happened yet.
+        The run due today is returned when ``on_date`` is itself the first:
+        the page may be read before that day's run has happened.
         """
         if on_date is None:
             on_date = timezone.localdate()
-        target = self.school_year_for(on_date) + 1
-        trigger = self.passage_datetime(target)
-        if on_date <= trigger.date():
-            return trigger
-
+        if on_date.day == 1:
+            return timezone.make_aware(datetime.combine(on_date, time.min))
         if on_date.month == 12:
-            retry = date(on_date.year + 1, 1, 1)
+            day = date(on_date.year + 1, 1, 1)
         else:
-            retry = date(on_date.year, on_date.month + 1, 1)
-        start, _end = self.school_year_bounds(target)
-        if retry < start:
-            return timezone.make_aware(datetime.combine(retry, time.min))
-        return self.passage_datetime(target + 1)
+            day = date(on_date.year, on_date.month + 1, 1)
+        return timezone.make_aware(datetime.combine(day, time.min))
 
     def _calendar_date(self, year, month, day):
         """``date(year, month, day)``, clamped to that month's last day.

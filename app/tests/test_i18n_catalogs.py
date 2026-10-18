@@ -152,9 +152,17 @@ NEW_STRINGS = [
     ("How the passage works", "Comment fonctionne le passage", "Hoe de overgang werkt"),
     ("Next run on %(date)s", "Prochaine exécution", "Volgende uitvoering"),
     (
-        "then monthly until the school year begins",
-        "chaque mois",
-        "maandelijks",
+        "then on the first of every month",
+        "1er de chaque mois",
+        "eerste van elke maand",
+    ),
+    (
+        "Example: Paul is in his last year with the Louveteaux. The passage "
+        "sets Éclaireurs as his section for next year. If Paul will not join "
+        "them after all, you can change it by hand. On the first day of the "
+        "new scout year, Paul is in the section that was chosen for him.",
+        "dernière année chez les Louveteaux",
+        "laatste jaar bij de Welpen",
     ),
     ("Waiting for a decision", "attente d'une décision", "Wacht op een beslissing"),
     ("Nobody is waiting for a decision.", "Personne", "Niemand"),

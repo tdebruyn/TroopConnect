@@ -2368,11 +2368,10 @@ msgstr ""
 
 #: settings page (hand-added; see docs/dev/CONTRACT.md)
 msgid ""
-"Automatic runs the passage from 1 May, retrying on the first of every month "
-"until the coming school year starts; manual leaves it to whoever presses the "
-"button."
+"Automatic runs the passage on the first of every month; manual leaves it to "
+"whoever presses the button."
 msgstr ""
-"Automatique effectue le passage à partir du 1er mai, puis réessaie le premier de chaque mois jusqu'au début de l'année scolaire à venir ; manuel le laisse à qui appuie sur le bouton."
+"Automatique exécute le passage le 1er de chaque mois ; manuel le laisse à qui appuie sur le bouton."
 
 #: settings page (hand-added; see docs/dev/CONTRACT.md)
 msgid "%(region)s is not a country code phone numbers can be parsed for."
@@ -3012,8 +3011,8 @@ msgid "Next run on %(date)s"
 msgstr "Prochaine exécution le %(date)s"
 
 #: members/templates/members/passage.html
-msgid "then monthly until the school year begins"
-msgstr "puis chaque mois jusqu'au début de l'année scolaire"
+msgid "then on the first of every month"
+msgstr "puis le 1er de chaque mois"
 
 #: members/templates/members/passage.html
 msgid "Only when you run it"
@@ -3034,10 +3033,10 @@ msgstr "Le passage prépare l'année scolaire à venir : il attribue à chaque a
 #: members/templates/members/passage.html
 #, python-format
 msgid ""
-"The automatic run falls due on %(date)s and repeats on the first of every "
-"month until %(target)s begins. Each run only places participants who do not "
-"have a section for %(target)s yet, so it never moves anyone twice."
-msgstr "L'exécution automatique tombe le %(date)s et se répète le 1er de chaque mois jusqu'au début de %(target)s. Chaque exécution ne place que les animés qui n'ont pas encore de section pour %(target)s : personne n'est donc déplacé deux fois."
+"The automatic run takes place on the first of every month. Each run only "
+"places participants who do not have a section for %(target)s yet, so it "
+"never moves anyone twice."
+msgstr "L'exécution automatique a lieu le 1er de chaque mois. Chaque exécution ne place que les animés qui n'ont pas encore de section pour %(target)s : personne n'est donc déplacé deux fois."
 
 #: members/templates/members/passage.html
 #, python-format
@@ -3048,13 +3047,12 @@ msgid ""
 msgstr "L'exécution automatique est désactivée. Le passage ne s'exécute que lorsque vous appuyez sur le bouton ci-dessous, et il ne place que les animés qui n'ont pas encore de section pour %(target)s."
 
 #: members/templates/members/passage.html
-#, python-format
 msgid ""
-"Example: a member who has outgrown their branch is placed in the next branch "
-"for %(target)s by the first run. A child registered later is placed by the "
-"next monthly run; children already placed — including any section chosen by "
-"hand — stay exactly where they are."
-msgstr "Exemple : un membre qui a dépassé sa branche est placé dans la branche suivante pour %(target)s lors de la première exécution. Un enfant inscrit plus tard est placé à l'exécution mensuelle suivante ; les enfants déjà placés — y compris les sections choisies à la main — restent exactement où ils sont."
+"Example: Paul is in his last year with the Louveteaux. The passage sets "
+"Éclaireurs as his section for next year. If Paul will not join them after "
+"all, you can change it by hand. On the first day of the new scout year, "
+"Paul is in the section that was chosen for him."
+msgstr "Exemple : Paul est dans sa dernière année chez les Louveteaux. Le passage lui attribue les Éclaireurs comme section pour l'année suivante. Si Paul ne les rejoint finalement pas, vous pouvez modifier sa section à la main. Au premier jour de la nouvelle année scoute, Paul se trouve dans la section qui a été choisie pour lui."
 
 #: members/templates/members/passage.html
 msgid "Run the passage now"

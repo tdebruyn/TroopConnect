@@ -2366,11 +2366,10 @@ msgstr "Munteenheid van drie letters om bedragen weer te geven, bv. EUR."
 
 #: settings page (hand-added; see docs/dev/CONTRACT.md)
 msgid ""
-"Automatic runs the passage from 1 May, retrying on the first of every month "
-"until the coming school year starts; manual leaves it to whoever presses the "
-"button."
+"Automatic runs the passage on the first of every month; manual leaves it to "
+"whoever presses the button."
 msgstr ""
-"Automatisch voert de overgang uit vanaf 1 mei en probeert het opnieuw op de eerste van elke maand tot het komende scoutjaar begint; handmatig laat het aan wie op de knop drukt."
+"Automatisch voert de overgang uit op de eerste van elke maand; handmatig laat het aan wie op de knop drukt."
 
 #: settings page (hand-added; see docs/dev/CONTRACT.md)
 msgid "%(region)s is not a country code phone numbers can be parsed for."
@@ -3009,8 +3008,8 @@ msgid "Next run on %(date)s"
 msgstr "Volgende uitvoering op %(date)s"
 
 #: members/templates/members/passage.html
-msgid "then monthly until the school year begins"
-msgstr "daarna maandelijks tot het scoutjaar begint"
+msgid "then on the first of every month"
+msgstr "daarna op de eerste van elke maand"
 
 #: members/templates/members/passage.html
 msgid "Only when you run it"
@@ -3031,10 +3030,10 @@ msgstr "De overgang bereidt het komende scoutjaar voor: elk lid krijgt een secti
 #: members/templates/members/passage.html
 #, python-format
 msgid ""
-"The automatic run falls due on %(date)s and repeats on the first of every "
-"month until %(target)s begins. Each run only places participants who do not "
-"have a section for %(target)s yet, so it never moves anyone twice."
-msgstr "De automatische uitvoering valt op %(date)s en herhaalt zich op de eerste van elke maand tot %(target)s begint. Elke uitvoering plaatst alleen leden die nog geen sectie voor %(target)s hebben, dus niemand wordt twee keer verplaatst."
+"The automatic run takes place on the first of every month. Each run only "
+"places participants who do not have a section for %(target)s yet, so it "
+"never moves anyone twice."
+msgstr "De automatische uitvoering vindt plaats op de eerste van elke maand. Elke uitvoering plaatst alleen leden die nog geen sectie voor %(target)s hebben, dus niemand wordt twee keer verplaatst."
 
 #: members/templates/members/passage.html
 #, python-format
@@ -3045,13 +3044,12 @@ msgid ""
 msgstr "De automatische uitvoering staat uit. De overgang wordt alleen uitgevoerd wanneer je op de knop hieronder drukt, en plaatst alleen leden die nog geen sectie voor %(target)s hebben."
 
 #: members/templates/members/passage.html
-#, python-format
 msgid ""
-"Example: a member who has outgrown their branch is placed in the next branch "
-"for %(target)s by the first run. A child registered later is placed by the "
-"next monthly run; children already placed — including any section chosen by "
-"hand — stay exactly where they are."
-msgstr "Voorbeeld: een lid dat zijn afdeling ontgroeid is, wordt bij de eerste uitvoering in de volgende afdeling voor %(target)s geplaatst. Een kind dat later ingeschreven wordt, wordt bij de volgende maandelijkse uitvoering geplaatst; kinderen die al geplaatst zijn — ook met een handmatig gekozen sectie — blijven precies waar ze zijn."
+"Example: Paul is in his last year with the Louveteaux. The passage sets "
+"Éclaireurs as his section for next year. If Paul will not join them after "
+"all, you can change it by hand. On the first day of the new scout year, "
+"Paul is in the section that was chosen for him."
+msgstr "Voorbeeld: Paul zit in zijn laatste jaar bij de Welpen. De overgang kent hem de Verkenners toe als zijn sectie voor volgend jaar. Als Paul hen toch niet vervoegt, kun je de sectie handmatig wijzigen. Op de eerste dag van het nieuwe scoutjaar zit Paul in de sectie die voor hem is gekozen."
 
 #: members/templates/members/passage.html
 msgid "Run the passage now"

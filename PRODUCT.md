@@ -55,7 +55,7 @@ competitor cannot make without abandoning its own architecture.
   container's log. Same functions as `manage.py setup` at a shell.
 - **The year is a scout year, not a calendar year.** It runs from a configurable
   start (default 1 August) to the next one. Ages are taken on 31 December and
-  the section passage falls due on 1 May — both fixed, because they are the
+  the federation's passage day is 1 May — both fixed, because they are the
   federation's rules and a troop that could move them would move every member's
   branch.
 - **Three usage rhythms, not one.** Parents a few times a year, leaders weekly,

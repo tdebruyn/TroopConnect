@@ -84,8 +84,9 @@ class PassageTestBase(TroopSettingsTestCase):
             name="Pionniers", branch=self.branch_old,
         )
 
-        # Freeze "today" on the passage trigger date (May 1 of the target year)
-        # so run_passage's date gate passes regardless of when the suite runs.
+        # Freeze "today" on the federation's passage day (1 May of the target
+        # year): a departure from the last branch waits for it, so the tests
+        # that graduate members work regardless of when the suite runs.
         self._today_patcher = mock.patch(
             "members.tasks._today", return_value=date(next_name, 5, 1),
         )
@@ -289,10 +290,9 @@ class NoNextYearTest(TroopSettingsTestCase):
 
 
 class PassageGuardTest(PassageTestBase):
-    """Date gate + per-member gate: the monthly task must (a) not promote
-    before the trigger date, (b) catch up on whoever is left if a tick was
-    missed because Celery was down, and (c) never re-do a placement the target
-    year already has."""
+    """The monthly task must (a) place members in any month, (b) catch up on
+    whoever is left if a tick was missed, and (c) never re-do a placement the
+    target year already has."""
 
     def _make_child(self, next_section=None):
         child = Person.objects.create(
@@ -306,41 +306,16 @@ class PassageGuardTest(PassageTestBase):
         )
         return child
 
-    def test_skips_before_trigger_date(self):
-        """Before May 1 of the target year the date gate skips; nothing happens."""
+    def test_it_places_members_before_the_federation_passage_day(self):
+        """The monthly run no longer waits for 1 May: the first tick that sees
+        a member gives them their section for the coming year."""
         child = self._make_child()
         with mock.patch(
             "members.tasks._today",
-            return_value=date(self.next_year.name, 4, 30),
+            return_value=date(self.next_year.name, 1, 15),
         ):
             run_passage()
 
-        self.assertFalse(
-            Enrollment.objects.filter(user=child, school_year=self.next_year).exists()
-        )
-        # Marker must NOT be set, otherwise catch-up would be blocked.
-        self.assertIsNone(TroopSettings.get_settings().last_passage_school_year)
-
-    def test_catchup_after_missed_trigger_day(self):
-        """Celery down on/around May 1: an April tick does nothing, the next
-        tick (June 1) performs the passage."""
-        child = self._make_child()
-
-        with mock.patch(
-            "members.tasks._today",
-            return_value=date(self.next_year.name, 4, 30),
-        ):
-            run_passage()
-        self.assertFalse(
-            Enrollment.objects.filter(user=child, school_year=self.next_year).exists()
-        )
-
-        # Next start after the outage → passage runs and marks the year done.
-        with mock.patch(
-            "members.tasks._today",
-            return_value=date(self.next_year.name, 6, 15),
-        ):
-            run_passage()
         self.assertTrue(
             Enrollment.objects.filter(user=child, school_year=self.next_year).exists()
         )
@@ -363,7 +338,8 @@ class PassageGuardTest(PassageTestBase):
         child.refresh_from_db()
         self.assertIsNone(child.next_section)
 
-        # A later tick → marker set → no-op. Enrollment unchanged.
+        # A later tick → the member already has a section → no-op. Enrollment
+        # unchanged.
         with mock.patch(
             "members.tasks._today",
             return_value=date(self.next_year.name, 6, 15),

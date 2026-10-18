@@ -31,7 +31,7 @@
                 {% blocktranslate with date=next_due %}Next run on {{ date }}{% endblocktranslate %}
               </div>
               <div class="small text-muted">
-                {% trans "then monthly until the school year begins" %}
+                {% trans "then on the first of every month" %}
               </div>
             {% endif %}
           {% else %}
@@ -59,7 +59,7 @@
   {% if target_year %}
     {% if automatic %}
       <p>
-        {% blocktranslate with date=passage_due target=target_year.range %}The automatic run falls due on {{ date }} and repeats on the first of every month until {{ target }} begins. Each run only places participants who do not have a section for {{ target }} yet, so it never moves anyone twice.{% endblocktranslate %}
+        {% blocktranslate with target=target_year.range %}The automatic run takes place on the first of every month. Each run only places participants who do not have a section for {{ target }} yet, so it never moves anyone twice.{% endblocktranslate %}
       </p>
     {% else %}
       <p>
@@ -67,7 +67,7 @@
       </p>
     {% endif %}
     <p class="border-start ps-3 text-muted">
-      {% blocktranslate with target=target_year.range %}Example: a member who has outgrown their branch is placed in the next branch for {{ target }} by the first run. A child registered later is placed by the next monthly run; children already placed — including any section chosen by hand — stay exactly where they are.{% endblocktranslate %}
+      {% blocktranslate %}Example: Paul is in his last year with the Louveteaux. The passage sets Éclaireurs as his section for next year. If Paul will not join them after all, you can change it by hand. On the first day of the new scout year, Paul is in the section that was chosen for him.{% endblocktranslate %}
     </p>
   {% endif %}
 

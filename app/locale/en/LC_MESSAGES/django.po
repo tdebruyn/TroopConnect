@@ -2350,9 +2350,8 @@ msgstr ""
 
 #: settings page (hand-added; see docs/dev/CONTRACT.md)
 msgid ""
-"Automatic runs the passage from 1 May, retrying on the first of every month "
-"until the coming school year starts; manual leaves it to whoever presses the "
-"button."
+"Automatic runs the passage on the first of every month; manual leaves it to "
+"whoever presses the button."
 msgstr ""
 
 #: settings page (hand-added; see docs/dev/CONTRACT.md)
@@ -2440,7 +2439,7 @@ msgid "Next run on %(date)s"
 msgstr ""
 
 #: members/templates/members/passage.html
-msgid "then monthly until the school year begins"
+msgid "then on the first of every month"
 msgstr ""
 
 #: members/templates/members/passage.html
@@ -2462,9 +2461,9 @@ msgstr ""
 #: members/templates/members/passage.html
 #, python-format
 msgid ""
-"The automatic run falls due on %(date)s and repeats on the first of every "
-"month until %(target)s begins. Each run only places participants who do not "
-"have a section for %(target)s yet, so it never moves anyone twice."
+"The automatic run takes place on the first of every month. Each run only "
+"places participants who do not have a section for %(target)s yet, so it "
+"never moves anyone twice."
 msgstr ""
 
 #: members/templates/members/passage.html
@@ -2476,12 +2475,11 @@ msgid ""
 msgstr ""
 
 #: members/templates/members/passage.html
-#, python-format
 msgid ""
-"Example: a member who has outgrown their branch is placed in the next branch "
-"for %(target)s by the first run. A child registered later is placed by the "
-"next monthly run; children already placed — including any section chosen by "
-"hand — stay exactly where they are."
+"Example: Paul is in his last year with the Louveteaux. The passage sets "
+"Éclaireurs as his section for next year. If Paul will not join them after "
+"all, you can change it by hand. On the first day of the new scout year, "
+"Paul is in the section that was chosen for him."
 msgstr ""
 
 #: members/templates/members/passage.html

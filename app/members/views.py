@@ -1153,13 +1153,6 @@ class PassageView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
         context["next_due"] = formats.date_format(
             troop.next_passage_datetime(), "j F Y"
         )
-        # The day the passage falls due for the coming year; the monthly
-        # retries run from it until that year starts.
-        context["passage_due"] = (
-            formats.date_format(troop.passage_datetime(target_year), "j F Y")
-            if target_year
-            else None
-        )
         context["last_run_year"] = troop.last_passage_school_year
         context["flagged"] = Person.objects.exclude(passage_review="").order_by(
             "last_name", "first_name"

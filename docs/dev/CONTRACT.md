@@ -126,8 +126,8 @@ set: the defaults are what a troop that has configured nothing gets.
 | Field | Purpose |
 | --- | --- |
 | `year_start_month`, `year_start_day` | First day of the scout year (default 1 August). Used when a `SchoolYear` row is created and when `create_year_task` decides which year "today" belongs to. |
-| `passage_mode` | `auto` (default) runs `run_passage` on the 1st of every month from 1 May until the coming school year starts, skipping members who already have a section for it; `manual` switches the automatic run off and leaves it to the staff button on `/users/passage`. Either way the button runs the same code, with the date and manual-mode guards skipped — never the per-member skip. |
-| `top_branch_graduates_become_leaders` | `true` (default): members who leave the last branch become animators. `false`: they are flagged for review instead, and nothing about them is changed until staff decide. |
+| `passage_mode` | `auto` (default) runs `run_passage` on the 1st of every month, skipping members who already have a section for the coming year; `manual` switches the automatic run off and leaves it to the staff button on `/users/passage`. Either way the button runs the same code, with the manual-mode guard and the 1 May wait before a departure skipped — never the per-member skip. |
+| `top_branch_graduates_become_leaders` | `true` (default): members who leave the last branch become animators. `false`: they are flagged for review instead, and nothing about them is changed until staff decide. Either way the automatic run waits for the passage day (1 May) before doing it. |
 | `archive_retention_years` | How long an archived member is kept before `delete_archived_users` may discard them (default 5). `notify_upcoming_deletion` warns a month before. The unit is 365-day years, not calendar years. |
 
 These fields are read only through the `TroopSettings` calendar helpers —
