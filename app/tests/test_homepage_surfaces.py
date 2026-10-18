@@ -698,7 +698,7 @@ class MemberHomepageTest(DeskTestBase):
         self.assertTrue(response.context["member_is_child"])
         self.assertEqual(
             str(response.context["member_heading"]),
-            str(translation.gettext("Your section")),
+            str(translation.pgettext("informal", "Your section")),
         )
         self.assertFalse(response.context["member_show_empty"])
         self.assertNotContains(response, "member-empty")
@@ -712,9 +712,85 @@ class MemberHomepageTest(DeskTestBase):
         self.assertTrue(response.context["member_is_child"])
         self.assertEqual(
             str(response.context["member_heading"]),
-            str(translation.gettext("Your unit")),
+            str(translation.pgettext("informal", "Your unit")),
         )
         self.assertTrue(response.context["member_show_empty"])
+
+    def test_a_plain_parents_board_reads_vous(self):
+        """French keeps the formal register for the family the unit serves."""
+        account = self.make_parent(
+            "vous@test.com", self.make_child("Ana", self.baladins)
+        )
+        self.client.force_login(account)
+
+        response = self.client.get("/")
+        body = response.content.decode()
+
+        self.assertTrue(response.context["member_formal_address"])
+        self.assertIn("Vos enfants", body)
+        self.assertIn("Vos outils", body)
+        self.assertNotIn("Tes outils", body)
+
+    def test_a_childs_board_reads_tu(self):
+        account, _child = self.make_child_account(
+            "tu@test.com", branch=self.baladins
+        )
+        self.client.force_login(account)
+
+        response = self.client.get("/")
+        body = response.content.decode()
+
+        self.assertFalse(response.context["member_formal_address"])
+        self.assertEqual(
+            str(response.context["member_heading"]),
+            str(translation.pgettext("informal", "Your section")),
+        )
+        self.assertIn("Tes outils", body)
+        self.assertIn("Ton compte", body)
+        self.assertNotIn("Vos outils", body)
+
+    def test_staff_with_a_parent_role_reads_tu(self):
+        """Staff accounts keep the Parent primary role in a real troop; the
+        register follows the board they answer for, not the role alone."""
+        person = Person.objects.create(
+            first_name="Staff", last_name="One",
+            primary_role=self.parent_role, status="a",
+        )
+        account = Account.objects.create_user(
+            email="staff@test.com",
+            password="testpass",
+            person=person,
+            is_staff=True,
+        )
+        self.client.force_login(account)
+
+        response = self.client.get("/")
+        body = response.content.decode()
+
+        self.assertFalse(response.context["member_formal_address"])
+        self.assertIn("Ton unité", body)
+        self.assertIn("Tes outils", body)
+        self.assertNotIn("Vos outils", body)
+
+    def test_an_informal_readers_child_count_uses_tu(self):
+        person = Person.objects.create(
+            first_name="Leader", last_name="Parent",
+            primary_role=self.leader_role, status="a",
+        )
+        account = Account.objects.create_user(
+            email="leader-parent@test.com",
+            password="testpass",
+            person=person,
+        )
+        ParentChild.objects.create(
+            parent=person, child=self.make_child("Ana", self.baladins)
+        )
+        self.client.force_login(account)
+
+        body = self.client.get("/").content.decode()
+
+        self.assertIn("enfant rattaché à ton compte", body)
+        self.assertNotIn("rattaché à votre compte", body)
 
     def test_a_childs_agenda_tile_names_the_next_activities(self):
         """The agenda is the child's own work, so it belongs in their account

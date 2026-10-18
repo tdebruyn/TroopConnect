@@ -10,7 +10,7 @@ target languages.
 
 from django.test import SimpleTestCase
 from django.utils import translation
-from django.utils.translation import gettext
+from django.utils.translation import gettext, pgettext
 
 # (source string, fragment expected in the French, fragment expected in Dutch)
 NEW_STRINGS = [
@@ -1084,6 +1084,27 @@ NEW_STRINGS = [
         "een eigen blad",
     ),
 ]
+
+
+class MemberRegisterTest(SimpleTestCase):
+    """The member board addresses a plain parent formally and every other
+    reader informally, in French only."""
+
+    def test_french_has_two_registers(self):
+        with translation.override("fr"):
+            self.assertEqual(pgettext("informal", "Your tools"), "Tes outils")
+            self.assertEqual(gettext("Your tools"), "Vos outils")
+            self.assertEqual(pgettext("informal", "Your section"), "Ta section")
+            self.assertEqual(gettext("Your section"), "Votre section")
+
+    def test_dutch_and_english_share_one_register(self):
+        for language in ("nl", "en"):
+            with self.subTest(language=language):
+                with translation.override(language):
+                    self.assertEqual(
+                        pgettext("informal", "Your tools"),
+                        gettext("Your tools"),
+                    )
 
 
 class NewStringTranslationTest(SimpleTestCase):

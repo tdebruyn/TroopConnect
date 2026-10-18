@@ -4394,3 +4394,39 @@ msgstr "Alleen een ouder kan deze keuze voor het kind wijzigen."
 #: members/forms.py
 msgid "Only the member can change this on their own profile."
 msgstr "Alleen het lid zelf kan deze keuze in het eigen profiel wijzigen."
+
+#: Dutch does not make the member board's formal/informal distinction; both
+#: keys keep the wording the board already used.
+msgctxt "informal"
+msgid "Your unit"
+msgstr "Uw eenheid"
+
+msgctxt "informal"
+msgid "Your children"
+msgstr "Uw kinderen"
+
+msgctxt "informal"
+msgid "Your section"
+msgstr "Uw sectie"
+
+msgctxt "informal"
+msgid "Your tools"
+msgstr "Uw hulpmiddelen"
+
+msgctxt "informal"
+msgid "Your account"
+msgstr "Uw account"
+
+msgctxt "informal"
+msgid "Your roles"
+msgstr "Jouw rollen"
+
+msgctxt "informal"
+msgid "You are not linked to any section this year."
+msgstr "Je bent dit jaar aan geen enkele sectie gekoppeld."
+
+msgctxt "informal"
+msgid "%(counter)s child linked to your account."
+msgid_plural "%(counter)s children linked to your account."
+msgstr[0] "%(counter)s kind gekoppeld aan uw account."
+msgstr[1] "%(counter)s kinderen gekoppeld aan uw account."

@@ -35,7 +35,11 @@
                     the board alone.
                 {% endcomment %}
                 {% if member_children %}
-                    {% blocktranslate count counter=member_children %}{{ counter }} child linked to your account.{% plural %}{{ counter }} children linked to your account.{% endblocktranslate %}
+                    {% if member_formal_address %}
+                        {% blocktranslate count counter=member_children %}{{ counter }} child linked to your account.{% plural %}{{ counter }} children linked to your account.{% endblocktranslate %}
+                    {% else %}
+                        {% blocktranslate context "informal" count counter=member_children %}{{ counter }} child linked to your account.{% plural %}{{ counter }} children linked to your account.{% endblocktranslate %}
+                    {% endif %}
                 {% endif %}
             </p>
             {% if member_roles %}
@@ -45,7 +49,7 @@
                     under the summary at reading size rather than over the
                     title: the page is still about the people below it.
                 {% endcomment %}
-                <ul class="member-roles" aria-label="{% trans 'Your roles' %}">
+                <ul class="member-roles" aria-label="{{ member_roles_label }}">
                     {% for role in member_roles %}
                         <li class="member-role">{{ role.name }}</li>
                     {% endfor %}
@@ -131,13 +135,7 @@
             {% endfor %}
 
             {% if member_show_empty %}
-                <p class="member-empty">
-                    {% if member_is_child %}
-                        {% trans "You are not linked to any section this year." %}
-                    {% else %}
-                        {% trans "Nothing is attached to your account yet. Your unit's leaders can link your children to it." %}
-                    {% endif %}
-                </p>
+                <p class="member-empty">{{ member_empty_message }}</p>
             {% endif %}
         </div>
 
@@ -151,7 +149,7 @@
         {% endcomment %}
         {% if member_tools %}
             <section class="member-tools{% if not member_panels %} member-tools-first{% endif %}" aria-labelledby="member-tools-title">
-                <h2 class="member-tools-title" id="member-tools-title">{% trans "Your tools" %}</h2>
+                <h2 class="member-tools-title" id="member-tools-title">{{ member_tools_title }}</h2>
                 <div class="member-tools-groups{% if member_tools.0.kind == 'unit' and member_tools.0.featured %} member-tools-rack{% endif %}">
                     {% for group in member_tools %}
                         <div class="member-tools-group"

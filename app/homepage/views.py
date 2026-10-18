@@ -7,7 +7,9 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.formats import date_format
 from django.utils.html import format_html
+from django.utils.translation import gettext as _t
 from django.utils.translation import gettext_lazy as _
+from django.utils.translation import pgettext
 from django.views.generic import TemplateView
 
 from homepage.timeline import timeline_for
@@ -375,8 +377,42 @@ def _siblings_are_discounted(school_year):
     )
 
 
+def _formal_address(user):
+    """Whether French should address this reader with ``vous``.
+
+    A plain parent is the only reader who is a guest of the unit; an animé
+    answers for themselves, a leader for a section and the unit team for the
+    troop. A parent who holds one of those duties reads the staff board, so
+    the register follows the board rather than the primary role alone. The
+    other two languages do not make the distinction.
+    """
+    return has_primary_role(user, (PARENT,)) and not (
+        user.is_staff
+        or can_manage_unit(user)
+        or has_primary_role(user, ANIMATEUR_ROLES)
+        or can_manage_members(user)
+        or can_access_finance(user)
+    )
+
+
+def _address(formal, message):
+    """The member label in the reader's register.
+
+    Both keys resolve to the same text in English and Dutch; only the French
+    catalog carries a second wording under the ``informal`` context.
+    """
+    return _t(message) if formal else pgettext("informal", message)
+
+
 def _member_tools(
-    user, person, sections, children, leads, own_section=None, own_events=None
+    user,
+    person,
+    sections,
+    children,
+    leads,
+    own_section=None,
+    own_events=None,
+    formal=False,
 ):
     """The groups of links the reader's own tools are made of.
 
@@ -464,7 +500,7 @@ def _member_tools(
     if person is not None and (children or has_primary_role(user, (PARENT,))):
         groups.append(
             {
-                "title": _("Your children"),
+                "title": _address(formal, "Your children"),
                 "items": parent_items,
                 "priority": priority("children"),
                 "kind": "children",
@@ -512,7 +548,7 @@ def _member_tools(
                     {
                         # An animateur's page is their one section; the group
                         # is their own work, not the unit's.
-                        "title": _("Your section"),
+                        "title": _address(formal, "Your section"),
                         "items": section_items,
                         "priority": priority("sections"),
                         "kind": "sections",
@@ -690,7 +726,7 @@ def _member_tools(
     groups.append(
         {
             "priority": priority("account"),
-            "title": _("Your account"),
+            "title": _address(formal, "Your account"),
             "kind": "account",
             "items": account_items,
             # A participant's group pairs profile and documents rather than
@@ -745,16 +781,21 @@ def _member_context(user):
     but leading none of them made their page a wall of sections that said
     nothing about their work. Their page is their tools.
     """
+    formal = _formal_address(user)
     person = get_person(user)
     school_year = SchoolYear.current()
     if person is None or school_year is None:
         return {
             "member_panels": [],
-            "member_heading": _("Your unit"),
+            "member_heading": _address(formal, "Your unit"),
             "member_first_name": "",
             "member_is_child": False,
             "member_roles": [],
             "member_treasurer_url": None,
+            "member_tools_title": _address(formal, "Your tools"),
+            "member_roles_label": _address(formal, "Your roles"),
+            "member_empty_message": "",
+            "member_formal_address": formal,
         }
 
     children = list(Person.objects.filter(as_child__parent=person))
@@ -851,6 +892,7 @@ def _member_context(user):
             leads,
             own_section,
             own_events,
+            formal=formal,
         ),
         # A reader who leads gets the unit's heading whether or not they also
         # have children: "Your children" over a section tile would be a lie,
@@ -858,11 +900,11 @@ def _member_context(user):
         # answers for no one, so the page names their own section instead of
         # asking them to look after children they do not have.
         "member_heading": (
-            _("Your section")
+            _address(formal, "Your section")
             if own_section is not None
-            else _("Your unit")
+            else _address(formal, "Your unit")
             if leads or is_child
-            else _("Your children")
+            else _address(formal, "Your children")
         ),
         # The greeting is the reader's own name, not a label over the heading:
         # the head reads "Vos enfants" then "Bonjour Marc. 3 enfants…" because
@@ -877,6 +919,19 @@ def _member_context(user):
         ),
         "member_children": sum(1 for panel in panels if panel["kind"] == "child"),
         "member_is_child": is_child,
+        # The board's own labels follow the reader's register; the template
+        # carries the plural because only the child count is inflected.
+        "member_tools_title": _address(formal, "Your tools"),
+        "member_roles_label": _address(formal, "Your roles"),
+        "member_empty_message": (
+            _address(formal, "You are not linked to any section this year.")
+            if is_child
+            else _t(
+                "Nothing is attached to your account yet. Your unit's leaders "
+                "can link your children to it."
+            )
+        ),
+        "member_formal_address": formal,
         # The empty state explains an empty account to a family. A reader whose
         # page is their tools is not missing anything, so it is not shown to
         # them — it would tell an administrator their unit is not attached.

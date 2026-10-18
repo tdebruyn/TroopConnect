@@ -528,6 +528,13 @@ balance, a section's member count, the day on a date leaf — is set in the disp
 serif with tabular figures. A number inside a sentence stays Muli. The face is
 the signal that the number is a fact, not prose.
 
+**The Reader's Register Rule.** French addresses a plain parent with *vous* and
+every other reader with *tu* — an animé, a section leader, the unit team. The
+register follows the board the reader answers for, not their primary role alone:
+a staff account whose role is Parent still reads the unit's board and is
+addressed as staff. English and Dutch carry one wording; only the French catalog
+holds the second key (`informal`).
+
 ## Layout
 
 A single Bootstrap 12-column grid inside a `.container`, with two page shells

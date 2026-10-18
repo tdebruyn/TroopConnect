@@ -53,6 +53,11 @@ siblings are discounted — so a per-child balance would be a lie and the balanc
 is stated once, above the panels. A troop can switch the fees module off, so the
 balance band is absent when it is.
 
+**Register.** French addresses a plain parent with *vous* and every other
+reader with *tu*; the register follows the board the reader answers for, not
+their primary role (a staff account may hold the Parent role). Dutch and English
+carry one wording.
+
 ## Direction contract
 
 **THESIS.** The page is a board of the reader's year, not a form report: one

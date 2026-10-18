@@ -4397,3 +4397,40 @@ msgstr "Seul le parent peut modifier ce choix pour son enfant."
 #: members/forms.py
 msgid "Only the member can change this on their own profile."
 msgstr "Seul le membre peut modifier ce choix dans son propre profil."
+
+#: homepage/templates/homepage/member.html homepage/views.py — the member
+#: board's register: a plain parent reads "vous", every other reader (animé,
+#: leader, unit team) reads "tu". English and Dutch carry one wording.
+msgctxt "informal"
+msgid "Your unit"
+msgstr "Ton unité"
+
+msgctxt "informal"
+msgid "Your children"
+msgstr "Tes enfants"
+
+msgctxt "informal"
+msgid "Your section"
+msgstr "Ta section"
+
+msgctxt "informal"
+msgid "Your tools"
+msgstr "Tes outils"
+
+msgctxt "informal"
+msgid "Your account"
+msgstr "Ton compte"
+
+msgctxt "informal"
+msgid "Your roles"
+msgstr "Tes rôles"
+
+msgctxt "informal"
+msgid "You are not linked to any section this year."
+msgstr "Tu n'es lié à aucune section cette année."
+
+msgctxt "informal"
+msgid "%(counter)s child linked to your account."
+msgid_plural "%(counter)s children linked to your account."
+msgstr[0] "%(counter)s enfant rattaché à ton compte."
+msgstr[1] "%(counter)s enfants rattachés à ton compte."
