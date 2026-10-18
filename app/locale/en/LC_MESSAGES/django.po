@@ -2475,11 +2475,25 @@ msgid ""
 msgstr ""
 
 #: members/templates/members/passage.html
-msgid ""
-"Example: Paul is in his last year with the Louveteaux. The passage sets "
-"Éclaireurs as his section for next year. If Paul will not join them after "
-"all, you can change it by hand. On the first day of the new scout year, "
-"Paul is in the section that was chosen for him."
+msgid "Last passages performed"
+msgstr ""
+
+#: members/templates/members/passage.html
+msgid "Born in"
+msgstr ""
+
+#: members/templates/members/passage.html
+#, python-format
+msgid "Current section (%(year)s)"
+msgstr ""
+
+#: members/templates/members/passage.html
+#, python-format
+msgid "Next section (%(year)s)"
+msgstr ""
+
+#: members/templates/members/passage.html
+msgid "No passage has been recorded for the coming year yet."
 msgstr ""
 
 #: members/templates/members/passage.html
@@ -2491,9 +2505,17 @@ msgid "Waiting for a decision"
 msgstr ""
 
 #: members/templates/members/passage.html
-msgid "The passage could not place these members on its own. Give each one a "
-"section for the coming year, or fix their branch, then run the passage "
-"again."
+msgid ""
+"Members the passage could not place appear here. That happens when their "
+"branch has no next branch, when no section in the next branch suits them "
+"(for example, only a boys' section and the member is a girl), or when they "
+"are leaving the last branch and your unit reviews each departure."
+msgstr ""
+
+#: members/templates/members/passage.html
+msgid ""
+"Choose a section for the coming year, or fix the branch, then run the "
+"passage again."
 msgstr ""
 
 #: members/templates/members/passage.html

@@ -3044,12 +3044,26 @@ msgid ""
 msgstr "De automatische uitvoering staat uit. De overgang wordt alleen uitgevoerd wanneer je op de knop hieronder drukt, en plaatst alleen leden die nog geen sectie voor %(target)s hebben."
 
 #: members/templates/members/passage.html
-msgid ""
-"Example: Paul is in his last year with the Louveteaux. The passage sets "
-"Éclaireurs as his section for next year. If Paul will not join them after "
-"all, you can change it by hand. On the first day of the new scout year, "
-"Paul is in the section that was chosen for him."
-msgstr "Voorbeeld: Paul zit in zijn laatste jaar bij de Welpen. De overgang kent hem de Verkenners toe als zijn sectie voor volgend jaar. Als Paul hen toch niet vervoegt, kun je de sectie handmatig wijzigen. Op de eerste dag van het nieuwe scoutjaar zit Paul in de sectie die voor hem is gekozen."
+msgid "Last passages performed"
+msgstr "Laatste uitgevoerde overgangen"
+
+#: members/templates/members/passage.html
+msgid "Born in"
+msgstr "Geboren in"
+
+#: members/templates/members/passage.html
+#, python-format
+msgid "Current section (%(year)s)"
+msgstr "Huidige sectie (%(year)s)"
+
+#: members/templates/members/passage.html
+#, python-format
+msgid "Next section (%(year)s)"
+msgstr "Volgende sectie (%(year)s)"
+
+#: members/templates/members/passage.html
+msgid "No passage has been recorded for the coming year yet."
+msgstr "Er is nog geen overgang geregistreerd voor het komende jaar."
 
 #: members/templates/members/passage.html
 msgid "Run the passage now"
@@ -3060,10 +3074,18 @@ msgid "Waiting for a decision"
 msgstr "Wacht op een beslissing"
 
 #: members/templates/members/passage.html
-msgid "The passage could not place these members on its own. Give each one a "
-"section for the coming year, or fix their branch, then run the passage "
-"again."
-msgstr "De overgang kon deze leden niet automatisch plaatsen. Geef elk een sectie voor het komende jaar, of corrigeer hun afdeling, en voer de overgang opnieuw uit."
+msgid ""
+"Members the passage could not place appear here. That happens when their "
+"branch has no next branch, when no section in the next branch suits them "
+"(for example, only a boys' section and the member is a girl), or when they "
+"are leaving the last branch and your unit reviews each departure."
+msgstr "Leden die de overgang niet kon plaatsen, verschijnen hier. Dat gebeurt wanneer hun afdeling geen volgende afdeling heeft, wanneer geen enkele sectie in de volgende afdeling bij hen past (bijvoorbeeld alleen een jongenssectie terwijl het lid een meisje is), of wanneer ze de laatste afdeling verlaten en je eenheid elk vertrek wil bekijken."
+
+#: members/templates/members/passage.html
+msgid ""
+"Choose a section for the coming year, or fix the branch, then run the "
+"passage again."
+msgstr "Kies een sectie voor het komende jaar, of corrigeer de afdeling, en voer de overgang opnieuw uit."
 
 #: members/templates/members/passage.html
 msgid "Reason"

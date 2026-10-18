@@ -1154,10 +1154,50 @@ class PassageView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
             troop.next_passage_datetime(), "j F Y"
         )
         context["last_run_year"] = troop.last_passage_school_year
+        context["current_year"] = SchoolYear.current()
+        context["recent_passages"] = self._recent_passages(
+            context["current_year"], target_year
+        )
         context["flagged"] = Person.objects.exclude(passage_review="").order_by(
             "last_name", "first_name"
         )
         return context
+
+    @staticmethod
+    def _recent_passages(current_year, target_year):
+        """The five most recently recorded sections for the coming year.
+
+        Enrollments carry no timestamp, so the primary key is the only
+        "latest first" the database offers; the passage creates one row per
+        member, which makes it the order members were placed in.
+        """
+        if target_year is None:
+            return []
+
+        placed = list(
+            Enrollment.objects.filter(
+                school_year=target_year, user__status="a"
+            )
+            .select_related("user", "section")
+            .order_by("-pk")[:5]
+        )
+        current_sections = {}
+        if current_year is not None and placed:
+            current_sections = {
+                enrollment.user_id: enrollment.section
+                for enrollment in Enrollment.objects.filter(
+                    school_year=current_year,
+                    user_id__in=[enrollment.user_id for enrollment in placed],
+                ).select_related("section")
+            }
+        return [
+            {
+                "person": enrollment.user,
+                "current_section": current_sections.get(enrollment.user_id),
+                "next_section": enrollment.section,
+            }
+            for enrollment in placed
+        ]
 
     def post(self, request, *args, **kwargs):
         result = run_passage(force=True)

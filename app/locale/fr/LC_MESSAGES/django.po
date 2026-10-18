@@ -3047,12 +3047,26 @@ msgid ""
 msgstr "L'exécution automatique est désactivée. Le passage ne s'exécute que lorsque vous appuyez sur le bouton ci-dessous, et il ne place que les animés qui n'ont pas encore de section pour %(target)s."
 
 #: members/templates/members/passage.html
-msgid ""
-"Example: Paul is in his last year with the Louveteaux. The passage sets "
-"Éclaireurs as his section for next year. If Paul will not join them after "
-"all, you can change it by hand. On the first day of the new scout year, "
-"Paul is in the section that was chosen for him."
-msgstr "Exemple : Paul est dans sa dernière année chez les Louveteaux. Le passage lui attribue les Éclaireurs comme section pour l'année suivante. Si Paul ne les rejoint finalement pas, vous pouvez modifier sa section à la main. Au premier jour de la nouvelle année scoute, Paul se trouve dans la section qui a été choisie pour lui."
+msgid "Last passages performed"
+msgstr "Derniers passages effectués"
+
+#: members/templates/members/passage.html
+msgid "Born in"
+msgstr "né(e) en"
+
+#: members/templates/members/passage.html
+#, python-format
+msgid "Current section (%(year)s)"
+msgstr "Section actuelle (%(year)s)"
+
+#: members/templates/members/passage.html
+#, python-format
+msgid "Next section (%(year)s)"
+msgstr "Section suivante (%(year)s)"
+
+#: members/templates/members/passage.html
+msgid "No passage has been recorded for the coming year yet."
+msgstr "Aucun passage n'a encore été enregistré pour l'année à venir."
 
 #: members/templates/members/passage.html
 msgid "Run the passage now"
@@ -3063,10 +3077,18 @@ msgid "Waiting for a decision"
 msgstr "En attente d'une décision"
 
 #: members/templates/members/passage.html
-msgid "The passage could not place these members on its own. Give each one a "
-"section for the coming year, or fix their branch, then run the passage "
-"again."
-msgstr "Le passage n'a pas pu placer ces membres automatiquement. Attribuez à chacun une section pour l'année à venir, ou corrigez leur branche, puis relancez le passage."
+msgid ""
+"Members the passage could not place appear here. That happens when their "
+"branch has no next branch, when no section in the next branch suits them "
+"(for example, only a boys' section and the member is a girl), or when they "
+"are leaving the last branch and your unit reviews each departure."
+msgstr "Les membres que le passage n'a pas pu placer apparaissent ici. C'est le cas lorsque leur branche n'a pas de branche suivante, lorsqu'aucune section de la branche suivante ne leur convient (par exemple, seulement une section de garçons alors que le membre est une fille), ou lorsqu'ils quittent la dernière branche et que votre unité souhaite examiner chaque départ."
+
+#: members/templates/members/passage.html
+msgid ""
+"Choose a section for the coming year, or fix the branch, then run the "
+"passage again."
+msgstr "Attribuez-leur une section pour l'année à venir, ou corrigez leur branche, puis relancez le passage."
 
 #: members/templates/members/passage.html
 msgid "Reason"

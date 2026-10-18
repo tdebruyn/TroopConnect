@@ -156,13 +156,23 @@ NEW_STRINGS = [
         "1er de chaque mois",
         "eerste van elke maand",
     ),
+    ("Last passages performed", "Derniers passages", "Laatste uitgevoerde"),
+    ("Born in", "né(e) en", "Geboren in"),
+    ("Current section (%(year)s)", "Section actuelle", "Huidige sectie"),
+    ("Next section (%(year)s)", "Section suivante", "Volgende sectie"),
     (
-        "Example: Paul is in his last year with the Louveteaux. The passage "
-        "sets Éclaireurs as his section for next year. If Paul will not join "
-        "them after all, you can change it by hand. On the first day of the "
-        "new scout year, Paul is in the section that was chosen for him.",
-        "dernière année chez les Louveteaux",
-        "laatste jaar bij de Welpen",
+        "No passage has been recorded for the coming year yet.",
+        "Aucun passage",
+        "nog geen overgang",
+    ),
+    (
+        "Members the passage could not place appear here. That happens when "
+        "their branch has no next branch, when no section in the next branch "
+        "suits them (for example, only a boys' section and the member is a "
+        "girl), or when they are leaving the last branch and your unit reviews "
+        "each departure.",
+        "apparaissent ici",
+        "verschijnen hier",
     ),
     ("Waiting for a decision", "attente d'une décision", "Wacht op een beslissing"),
     ("Nobody is waiting for a decision.", "Personne", "Niemand"),

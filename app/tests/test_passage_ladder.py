@@ -503,7 +503,7 @@ class PassagePageTest(LadderTestBase):
         # The coming school year, so staff can see which run they are forcing.
         self.assertContains(response, self.next_year.range)
 
-    def test_the_page_explains_the_passage_with_an_example(self):
+    def test_the_page_explains_the_passage(self):
         self.login_staff()
 
         response = self.client.get(self.url)
@@ -511,11 +511,41 @@ class PassagePageTest(LadderTestBase):
         # The page renders in the site language (French by default).
         self.assertContains(response, "Comment fonctionne le passage")
         self.assertContains(response, "il attribue à chaque animé une section")
-        # A concrete example in everyday words, not the task's vocabulary.
-        self.assertContains(
-            response, "Paul est dans sa dernière année chez les Louveteaux"
-        )
-        self.assertContains(response, "les Éclaireurs comme section")
+
+    def test_the_page_lists_the_last_five_passages(self):
+        children = []
+        for index in range(7):
+            child = self.child(
+                9, section=self.section_young, first_name=f"Placed {index}"
+            )
+            Enrollment.objects.create(
+                user=child, section=self.section_older, school_year=self.next_year
+            )
+            children.append(child)
+        self.login_staff()
+
+        response = self.client.get(self.url)
+
+        self.assertContains(response, "Derniers passages effectués")
+        self.assertContains(response, "né(e) en")
+        for child in children[-5:]:
+            self.assertContains(response, child.first_name)
+            self.assertContains(response, str(child.birthday.year))
+        # Only the five most recent: the two earliest placements are left out.
+        for child in children[:2]:
+            self.assertNotContains(response, child.first_name)
+        # Current and next section, each with its year.
+        self.assertContains(response, self.current_year.range)
+        self.assertContains(response, self.next_year.range)
+        self.assertContains(response, self.section_young.name)
+        self.assertContains(response, self.section_older.name)
+
+    def test_the_page_says_when_no_passage_has_run_yet(self):
+        self.login_staff()
+
+        response = self.client.get(self.url)
+
+        self.assertContains(response, "Aucun passage")
 
     def test_the_automatic_card_shows_the_next_monthly_run(self):
         next_due = formats.date_format(
@@ -559,6 +589,8 @@ class PassagePageTest(LadderTestBase):
         response = self.client.get(self.url)
 
         self.assertContains(response, child.last_name)
+        # The page says what kind of situation lands in this list.
+        self.assertContains(response, "apparaissent ici")
 
     def test_the_flag_is_shown_where_the_member_is_edited(self):
         """The passage page says who needs a decision; the member's own page

@@ -66,9 +66,41 @@
         {% blocktranslate with target=target_year.range %}The automatic run is off. A run happens only when you press the button below, and it places only participants who do not have a section for {{ target }} yet.{% endblocktranslate %}
       </p>
     {% endif %}
-    <p class="border-start ps-3 text-muted">
-      {% blocktranslate %}Example: Paul is in his last year with the Louveteaux. The passage sets Éclaireurs as his section for next year. If Paul will not join them after all, you can change it by hand. On the first day of the new scout year, Paul is in the section that was chosen for him.{% endblocktranslate %}
-    </p>
+    <h2 class="h5">{% trans "Last passages performed" %}</h2>
+    {% if recent_passages %}
+      <div class="table-responsive">
+        <table class="table table-sm">
+          <thead>
+            <tr>
+              <th>{% trans "Member" %}</th>
+              <th>{% trans "Born in" %}</th>
+              <th>
+                {% blocktranslate with year=current_year.range %}Current section ({{ year }}){% endblocktranslate %}
+              </th>
+              <th>
+                {% blocktranslate with year=target_year.range %}Next section ({{ year }}){% endblocktranslate %}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for passage in recent_passages %}
+              <tr>
+                <td>{{ passage.person.first_name }} {{ passage.person.last_name }}</td>
+                <td>
+                  {% if passage.person.birthday %}{{ passage.person.birthday.year }}{% else %}—{% endif %}
+                </td>
+                <td>
+                  {% if passage.current_section %}{{ passage.current_section.name }}{% else %}—{% endif %}
+                </td>
+                <td>{{ passage.next_section.name }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="text-muted">{% trans "No passage has been recorded for the coming year yet." %}</p>
+    {% endif %}
   {% endif %}
 
   <form method="post" class="mb-5">
@@ -77,9 +109,12 @@
   </form>
 
   <h2 class="h5">{% trans "Waiting for a decision" %}</h2>
+  <p class="text-muted">
+    {% blocktranslate %}Members the passage could not place appear here. That happens when their branch has no next branch, when no section in the next branch suits them (for example, only a boys' section and the member is a girl), or when they are leaving the last branch and your unit reviews each departure.{% endblocktranslate %}
+  </p>
   {% if flagged %}
     <p class="text-muted">
-      {% trans "The passage could not place these members on its own. Give each one a section for the coming year, or fix their branch, then run the passage again." %}
+      {% trans "Choose a section for the coming year, or fix the branch, then run the passage again." %}
     </p>
     <table class="table table-sm">
       <thead>
