@@ -32,3 +32,22 @@ document.addEventListener("click", function (event) {
     segments[j].classList.toggle("desk-segment-on", segments[j] === chosen);
   }
 });
+
+/* A phone stacks the four rooms, so the answer lands a screen or two below the
+ * chip that was just touched. Bring it into view after the swap unless it is
+ * already there; the chip keeps focus either way, so a keyboard reader is not
+ * moved away from the control they used. */
+document.body.addEventListener("htmx:afterSwap", function (event) {
+  var answer = event.detail.target;
+  if (!answer || answer.id !== "desk-answer") {
+    return;
+  }
+  if (answer.getBoundingClientRect().bottom <= window.innerHeight - 16) {
+    return;
+  }
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  answer.scrollIntoView({
+    block: "nearest",
+    behavior: reduce ? "auto" : "smooth",
+  });
+});

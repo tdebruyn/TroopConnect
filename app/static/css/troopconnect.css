@@ -92,6 +92,24 @@
   --home-green: color-mix(in srgb, #304a3c 84%, #0b1a12);
 }
 
+/* The theme's final form rule paints every text control white, which erases the
+   paper well its own `.form-control` declares — and then the field changes
+   shade the moment it takes focus, because the focus rule still says paper.
+   Restore the well here, after the theme, so resting and focused fields agree.
+   Checkboxes and radios keep the white a control's own mark needs. */
+.form-control,
+.form-select {
+  background-color: var(--bs-body-bg);
+}
+
+/* The theme pairs every `.bg-*` utility with white type on everything inside
+   it, and the success lime cannot carry it. The toast is the one surface
+   that reports a completed task, so its words take the ink instead. */
+.toast.bg-success,
+.toast.bg-success .toast-body {
+  color: var(--bs-dark);
+}
+
 /* The homepage hero: the unit's photo, with the presentation card on it.
  *
  * It has to stay an ordinary block. It used to be `position: absolute` at the
