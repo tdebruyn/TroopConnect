@@ -3335,3 +3335,6 @@ msgstr ""
 msgid "Questions"
 msgstr ""
 
+#: members/templates/members/base.html
+msgid "My space"
+msgstr ""

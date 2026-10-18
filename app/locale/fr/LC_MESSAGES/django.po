@@ -4039,3 +4039,7 @@ msgstr "Nouveaux membres"
 #: homepage/views.py
 msgid "%(count)s awaiting processing"
 msgstr "%(count)s à traiter"
+
+#: members/templates/members/base.html
+msgid "My space"
+msgstr "Mon espace"

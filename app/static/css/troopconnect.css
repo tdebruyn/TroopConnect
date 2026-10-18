@@ -1690,6 +1690,69 @@ body {
   padding: 2.5rem 0 0;
 }
 
+/* A signed-in page opens with its way back. The board is the hub, and the bar
+   carries no menu for a member, so the only other route home was the logo —
+   a brand mark that does not say where it goes. The control is the board's
+   own object at its smallest: white, pill, soft blue shadow, no border, so it
+   sits on the member ground rather than reading as a form button. The head
+   trims its top padding so the control does not push the title a full step
+   further from the bar. */
+.page-head-back {
+  padding-top: 1.25rem;
+}
+
+.page-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0 0 1rem;
+  padding: 0.4rem 0.85rem 0.4rem 0.7rem;
+  border-radius: var(--site-pill);
+  background-color: #fff;
+  color: #0a4275;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  box-shadow: 0 0.25rem 0.75rem rgba(10, 66, 117, 0.08);
+  transition: background-color 150ms ease-in-out, box-shadow 150ms ease-in-out;
+}
+
+.page-back:hover {
+  background-color: #f7fbf9;
+  color: #0a4275;
+  box-shadow: 0 0.4rem 1rem rgba(10, 66, 117, 0.14);
+}
+
+/* The whole control is a link, so focus is the solid ink outline the board's
+   tiles use — a 25%-alpha halo would not survive the white pill and the
+   tinted ground it sits on. */
+.page-back:focus-visible {
+  outline: 2px solid #0a4275;
+  outline-offset: 2px;
+}
+
+.page-back .bi {
+  font-size: 0.9rem;
+  transition: transform 150ms ease-in-out;
+}
+
+/* The arrow leans the way it points, as the board's corner arrow leans out. */
+.page-back:hover .bi {
+  transform: translateX(-2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-back,
+  .page-back .bi {
+    transition: none;
+  }
+
+  .page-back:hover .bi {
+    transform: none;
+  }
+}
+
 .page-lede {
   max-width: 68ch;
   margin: 0.5rem 0 0;

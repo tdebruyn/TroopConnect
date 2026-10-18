@@ -683,6 +683,8 @@ NEW_STRINGS = [
         "educatieve ambitie",
     ),
     ("Our unit", "Notre unité", "Onze eenheid"),
+    # The way back to the board from every signed-in tool page.
+    ("My space", "Mon espace", "Mijn ruimte"),
     (
         "This is where the unit introduces itself to the families of the commune.",
         "se présente aux familles",
