@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-17T08:49:11Z",
+  "generatedAt": "2026-10-18T20:41:52Z",
   "title": "Design System: TroopConnect",
   "extensions": {
     "colorMeta": {
@@ -393,6 +393,21 @@
           "#c8d0d9",
           "#edf0f3"
         ]
+      },
+      "home-green": {
+        "role": "neutral",
+        "displayName": "Home Green",
+        "canonical": "#2c4936",
+        "tonalRamp": [
+          "#0b1a12",
+          "#1b3226",
+          "#2c4936",
+          "#47654f",
+          "#66836c",
+          "#8ba393",
+          "#b5c9bb",
+          "#e0ebe4"
+        ]
       }
     },
     "typographyMeta": {
@@ -569,12 +584,20 @@
       "css": ".ds-card-fn{font-family:Muli,\"Segoe UI\",system-ui,sans-serif;font-size:1rem;line-height:1.5;color:#0a4275;background-color:#fff;border:0;border-radius:.25rem;padding:1.5rem;box-shadow:0 0.5rem 1.5rem rgba(10,66,117,0.08)}.ds-card-fn-title{margin:0 0 .5rem;font-size:1.25rem;font-weight:700;line-height:1.2;color:#0a4275}.ds-card-fn-body{margin:0 0 1rem}.ds-btn-primary{display:inline-block;padding:.375rem .75rem;font-family:inherit;font-size:1rem;font-weight:400;line-height:1.5;color:#fff;cursor:pointer;background-color:#0a4275;border:1px solid #0a4275;border-radius:.25rem;transition:background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out}.ds-btn-primary:hover{background-color:#093863;border-color:#08355e}.ds-btn-primary:focus-visible{outline:0;box-shadow:0 0 0 .25rem rgba(10,66,117,.25)}"
     },
     {
-      "name": "Page Banner",
+      "name": "Page Head",
       "kind": "custom",
-      "refersTo": "banner",
-      "description": "The signature component and the only page chrome this project owns. A charter sky band carrying the federation flag as a 10% watermark, holding the page's h1 and a one-line lede. The pennant drawn here stands in for the vendored flag PNG, which the panel cannot load. The signed-in homepage has no banner.",
-      "html": "<div class=\"ds-banner\"><h1 class=\"ds-banner-title\">Member management</h1><p class=\"ds-banner-lede\">Everyone enrolled this school year, and what the unit knows about them.</p></div>",
-      "css": ".ds-banner{position:relative;overflow:hidden;padding:3.625rem .75rem .5rem;font-family:Muli,\"Segoe UI\",system-ui,sans-serif;text-align:center;color:#fff;background-color:#15adea}.ds-banner::before{content:\" \";display:block;position:absolute;left:0;top:0;width:100%;height:100%;opacity:.1;background-image:url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='120' height='96' viewBox='0 0 120 96'%3e%3cg fill='%23ffffff'%3e%3crect x='8' y='8' width='3' height='80'/%3e%3cpath d='M14 12 L78 32 L14 52 Z'/%3e%3c/g%3e%3c/svg%3e\");background-repeat:repeat}.ds-banner-title{position:relative;margin:0 0 .5rem;font-size:2.5rem;font-weight:700;line-height:1.2;color:#fff}.ds-banner-lede{position:relative;margin:0;font-size:1rem;line-height:1.5;color:#fff}"
+      "refersTo": "page-head",
+      "description": "Every signed-in page's opener: the way back as a white pill, the page's name in the display serif, one lede line, on the member ground.",
+      "html": "<header class=\"ds-page-head\"><a class=\"ds-page-back\" href=\"#\"><svg width=\"12\" height=\"12\" viewBox=\"0 0 16 16\" aria-hidden=\"true\"><path fill=\"none\" stroke=\"#0a4275\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M10 3L5 8l5 5\"/></svg>My space</a><h1 class=\"ds-page-title\">Member management</h1><p class=\"ds-page-lede\">Everyone enrolled this school year, and what the unit knows about them.</p></header>",
+      "css": ".ds-page-head{padding:2.5rem 0 0;font-family:Muli,\"Segoe UI\",system-ui,sans-serif;color:#0a4275}.ds-page-back{display:inline-flex;align-items:center;gap:.35rem;margin-bottom:1.25rem;padding:.375rem .75rem;border-radius:999px;background:#fff;color:#0a4275;text-decoration:none;font-size:.9375rem;line-height:1.5;box-shadow:0 .5rem 1.5rem rgba(10,66,117,.07)}.ds-page-back:hover{color:#0a4275;box-shadow:0 .75rem 1.75rem rgba(10,66,117,.12)}.ds-page-back:focus-visible{outline:2px solid #0a4275;outline-offset:2px}.ds-page-back svg{transition:transform .15s ease}.ds-page-back:hover svg{transform:translateX(-2px)}.ds-page-title{margin:0;font-family:\"Source Serif 4\",Georgia,serif;font-size:clamp(2rem,3.4vw,2.75rem);font-weight:700;line-height:1.08;color:#0a4275}.ds-page-lede{margin:.5rem 0 0;font-size:1.0625rem;line-height:1.5;color:#515a63}"
+    },
+    {
+      "name": "Public Band",
+      "kind": "custom",
+      "refersTo": "public-band",
+      "description": "The public page's photograph under the federation's green wash: unit name, one description, the year-line. The panel shows the green ground the real band lays over the troop's photo.",
+      "html": "<header class=\"ds-public-band\"><div class=\"ds-band-inner\"><h1 class=\"ds-band-title\">Les Scouts de Outsiplou</h1><p class=\"ds-band-lede\">The Outsiplou Scouts: registrations, section agendas and unit life.</p><div class=\"ds-band-line\"><span></span><span></span><span></span></div><p class=\"ds-band-note\">Dates indicative</p></div></header>",
+      "css": ".ds-public-band{position:relative;overflow:hidden;padding:4.5rem 1.5rem 3rem;background:linear-gradient(160deg,#2c4936,#1f3a2b 55%,#2c4936);color:#fff;font-family:Muli,\"Segoe UI\",system-ui,sans-serif;text-align:center}.ds-band-inner{max-width:60rem;margin:0 auto}.ds-band-title{margin:0;font-family:\"Source Serif 4\",Georgia,serif;font-size:clamp(2rem,3.2vw,2.75rem);font-weight:700;line-height:1.1;color:#fff}.ds-band-lede{margin:.75rem 0 0;font-size:1.0625rem;line-height:1.5;color:rgba(255,255,255,.94)}.ds-band-line{display:flex;justify-content:space-between;max-width:42rem;margin:2rem auto 0;border-top:1px solid rgba(255,255,255,.48);padding-top:.55rem}.ds-band-line span{width:1px;height:6px;background:rgba(255,255,255,.6)}.ds-band-note{margin:.75rem 0 0;font-size:.75rem;letter-spacing:.04em;color:rgba(255,255,255,.82)}"
     },
     {
       "name": "Error Alert",
@@ -623,6 +646,46 @@
       "description": "The signed-in reader's account on the member page's bar: pale green-to-blue paper with charter ink instead of the theme's teal, and a white dropdown with ink items. The split toggle carries a 16% ink rule; keyboard focus is a 2px white outline.",
       "html": "<div class=\"ds-account\"><span class=\"ds-account-chip\">Camille Dupont</span><button class=\"ds-account-chip ds-account-toggle\" type=\"button\" aria-label=\"Toggle dropdown\">▾</button><div class=\"ds-account-menu\"><a class=\"ds-account-item\" href=\"#\">My profile</a><a class=\"ds-account-item\" href=\"#\">My documents</a><hr class=\"ds-account-divider\"></div></div>",
       "css": ".ds-account{position:relative;display:inline-flex;font-family:Muli,\"Segoe UI\",system-ui,sans-serif;font-size:1rem;line-height:1.5}.ds-account-chip{display:inline-block;padding:.375rem .75rem;background-color:#eaf4ef;background-image:linear-gradient(110deg,#e9f4ee,#e7f0f8);border:1px solid transparent;border-radius:.25rem 0 0 .25rem;color:#0a4275;font-weight:700;line-height:1.5;text-decoration:none;cursor:pointer;transition:background-color .15s ease-in-out}.ds-account-chip:hover,.ds-account-chip:focus-visible{background-color:#dceee4;background-image:linear-gradient(110deg,#dceee4,#dae9f5);color:#0a4275}.ds-account-chip:focus-visible{outline:2px solid #fff;outline-offset:2px}.ds-account-toggle{border-left:1px solid rgba(10,66,117,.16);border-radius:0 .25rem .25rem 0;font-family:inherit;font-size:.75rem}.ds-account-menu{position:absolute;top:calc(100% + .25rem);left:0;min-width:12rem;padding:.5rem 0;background:#fff;border:1px solid rgba(10,66,117,.15);border-radius:.25rem;box-shadow:0 .5rem 1rem rgba(0,0,0,.15)}.ds-account-item{display:block;padding:.25rem 1rem;color:#0a4275;text-decoration:none;white-space:nowrap}.ds-account-item:hover,.ds-account-item:focus{background-color:#eef5f1;color:#0a4275}.ds-account-divider{margin:.5rem 0;border:0;border-top:1px solid rgba(10,66,117,.12)}"
+    },
+    {
+      "name": "Member Role Chip",
+      "kind": "chip",
+      "refersTo": "member-role",
+      "description": "A secondary duty under the member board's summary: a chip, not a status badge.",
+      "html": "<span class=\"ds-member-role\">Animateur responsable</span>",
+      "css": ".ds-member-role{display:inline-block;padding:.35rem .8rem;border-radius:999px;background:color-mix(in srgb,#296f52 7%,#fff);color:#0a4275;font-family:Muli,\"Segoe UI\",system-ui,sans-serif;font-size:.8125rem;font-weight:600;line-height:1.3;box-shadow:0 .2rem .6rem rgba(10,66,117,.06)}"
+    },
+    {
+      "name": "Contact Sheet",
+      "kind": "card",
+      "refersTo": "contact-sheet",
+      "description": "A form reached from the board, as the board's white tile at page scale.",
+      "html": "<section class=\"ds-contact-sheet\"><form><label class=\"ds-contact-label\" for=\"ds-c1\">Your name</label><input id=\"ds-c1\" class=\"ds-contact-input\" type=\"text\"><label class=\"ds-contact-label\" for=\"ds-c2\">Message</label><textarea id=\"ds-c2\" class=\"ds-contact-input\" rows=\"4\"></textarea><p class=\"ds-contact-copy\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" aria-hidden=\"true\"><path fill=\"#0a4275\" d=\"M2 3h12v10H2V3zm1 1v8h10V4H3zm.7.7L8 8.2l4.3-3.5.6.7L8 9.4 3.4 5.4l.3-.7z\"/></svg><span>A copy will be sent to your address.</span></p><button class=\"ds-contact-submit\" type=\"button\">Send the message</button></form></section>",
+      "css": ".ds-contact-sheet{width:100%;max-width:46rem;padding:1.5rem;border-radius:1.25rem;background:#fff;box-shadow:0 .5rem 1.5rem rgba(10,66,117,.07);font-family:Muli,\"Segoe UI\",system-ui,sans-serif;color:#0a4275}.ds-contact-label{display:block;margin-bottom:.5rem;font-size:1rem;line-height:1.5}.ds-contact-input{display:block;width:100%;box-sizing:border-box;margin-bottom:1rem;padding:.375rem .75rem;font-family:inherit;font-size:1rem;line-height:1.5;color:#0a4275;background:#f2f5f8;border:1px solid #ced4da;border-radius:.25rem}.ds-contact-input:focus{border-color:#85a1ba;outline:0;box-shadow:0 0 0 .25rem rgba(10,66,117,.25)}.ds-contact-copy{display:flex;align-items:flex-start;gap:.65rem;margin:1.5rem 0 0;padding:.85rem 1rem;border-radius:.25rem;background:#f2f5f8;color:#515a63;font-size:.9375rem;line-height:1.5}.ds-contact-copy svg{flex:none;margin-top:.1rem}.ds-contact-submit{margin-top:1rem;padding:.375rem .75rem;border:1px solid transparent;border-radius:.25rem;background:#0a4275;color:#fff;font-family:inherit;font-size:1rem;line-height:1.5;cursor:pointer}.ds-contact-submit:hover{background:#093863}.ds-contact-submit:focus-visible{outline:0;box-shadow:0 0 0 .25rem rgba(10,66,117,.25)}"
+    },
+    {
+      "name": "Confirmation Sheet",
+      "kind": "card",
+      "refersTo": "contact-confirm",
+      "description": "The contact sheet with its decision stated first; one page or the toast's companion.",
+      "html": "<section class=\"ds-contact-confirm\" role=\"status\"><span class=\"ds-confirm-mark\" aria-hidden=\"true\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 16 16\"><path fill=\"none\" stroke=\"#0a4275\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M3 8.5l3.2 3.2L13 4.6\"/></svg></span><p class=\"ds-confirm-title\">Your message has been sent. A response will come by email.</p><p class=\"ds-confirm-note\">The reply will arrive at the address on your account.</p><a class=\"ds-confirm-action\" href=\"#\">Back to my space</a></section>",
+      "css": ".ds-contact-confirm{width:100%;max-width:46rem;padding:1.5rem;border-radius:1.25rem;background:#fff;box-shadow:0 .5rem 1.5rem rgba(10,66,117,.07);font-family:Muli,\"Segoe UI\",system-ui,sans-serif;color:#0a4275}.ds-confirm-mark{display:flex;align-items:center;justify-content:center;width:2.75rem;height:2.75rem;border-radius:.75rem;background:color-mix(in srgb,#0a4275 7%,#fff)}.ds-confirm-title{margin:1rem 0 0;font-size:1.1875rem;font-weight:700;line-height:1.35}.ds-confirm-note{margin:.4rem 0 0;font-size:.9375rem;line-height:1.5;color:#515a63}.ds-confirm-action{display:inline-block;margin-top:1rem;padding:.375rem .75rem;border-radius:.25rem;background:#0a4275;color:#fff;text-decoration:none;font-size:1rem;line-height:1.5}.ds-confirm-action:hover{background:#093863}.ds-confirm-action:focus-visible{outline:0;box-shadow:0 0 0 .25rem rgba(10,66,117,.25)}"
+    },
+    {
+      "name": "Success Toast",
+      "kind": "custom",
+      "refersTo": "success-toast",
+      "description": "The non-autohiding confirmation; the success green carries ink, not white.",
+      "html": "<div class=\"ds-toast\" role=\"alert\" aria-live=\"assertive\"><span class=\"ds-toast-body\">Your message has been sent. A response will come by email.</span><button class=\"ds-toast-close\" type=\"button\" aria-label=\"Close\"><svg width=\"12\" height=\"12\" viewBox=\"0 0 16 16\" aria-hidden=\"true\"><path fill=\"none\" stroke=\"#0a4275\" stroke-width=\"1.6\" stroke-linecap=\"round\" d=\"M3 3l10 10M13 3L3 13\"/></svg></button></div>",
+      "css": ".ds-toast{display:flex;align-items:center;gap:1rem;width:350px;max-width:100%;padding:.75rem;border-radius:.25rem;background:#95c11f;color:#0a4275;box-shadow:0 .5rem 1rem rgba(0,0,0,.15);font-family:Muli,\"Segoe UI\",system-ui,sans-serif;font-size:.875rem;line-height:1.5}.ds-toast-body{flex:1}.ds-toast-close{flex:none;display:inline-flex;align-items:center;justify-content:center;padding:0;border:0;background:transparent;cursor:pointer;opacity:.65}.ds-toast-close:hover{opacity:1}.ds-toast-close:focus-visible{outline:2px solid #0a4275;outline-offset:2px}"
+    },
+    {
+      "name": "Footer Strip",
+      "kind": "nav",
+      "refersTo": "footer-strip",
+      "description": "One strip of chrome on every page: contact links left, copyright right, the legal line beneath.",
+      "html": "<footer class=\"ds-footer\"><div class=\"ds-footer-body\"><ul class=\"ds-footer-links\"><li><a href=\"#\">contact@unit.test</a></li><li><a href=\"#\">010 41 12 34</a></li><li><a href=\"#\">Privacy policy</a></li></ul><span class=\"ds-footer-copy\">© 2026 Les Scouts de Outsiplou</span></div><p class=\"ds-footer-legal\">The unit processes your data for membership management. Write to contact@unit.test to exercise your rights.</p></footer>",
+      "css": ".ds-footer{padding:1.5rem 0 2rem;border-top:1px solid #dee2e6;font-family:Muli,\"Segoe UI\",system-ui,sans-serif;font-size:.9375rem;line-height:1.5;color:#5d666e}.ds-footer-body{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.5rem 2rem}.ds-footer-links{display:flex;flex-wrap:wrap;gap:.5rem 1.25rem;margin:0;padding:0;list-style:none}.ds-footer-links a{color:#0a4275}.ds-footer-links a:hover{color:#093863}.ds-footer-links a:focus-visible{outline:2px solid #0a4275;outline-offset:2px}.ds-footer-copy{margin:0;font-size:.8125rem}.ds-footer-legal{margin:1rem 0 0;line-height:1.5}"
     }
   ],
   "narrative": {
@@ -631,12 +694,13 @@
     "keyCharacteristics": [
       "Bootstrap's own primitives, used as intended, restyled only where a task needs it",
       "One typeface (Muli) and one flat charter palette, both inherited, neither configurable",
-      "A sky-blue banner with the federation flag behind it as the recurring page opener",
+      "One green-to-blue bar and a serif page head on the member ground as the recurring opener",
       "Thin 1px lines and 0.25rem corners on the product; the member board's 1.25rem tiles trade the border for one soft charter-blue shadow",
       "Paper-filled fields on a paper-coloured page, separated by a border and a blue focus halo",
       "The homepage's desk standing on the four branches' colours, at the one place the page spends them",
       "A member board of unequal tiles: one dark anchor (balance or lead tool), white person tiles, and branch-tinted tool clusters",
-      "Two shells: the site (fixed 84px navbar) and the first-run wizard (its own page, same theme)"
+      "Two shells: the site (fixed 84px navbar) and the first-run wizard (its own page, same theme)",
+      "A contact sheet and its confirmation reuse the board's white tile; a reader's secondary duties are chips under the summary"
     ],
     "rules": [
       {
@@ -646,17 +710,17 @@
       },
       {
         "name": "The Charter-Only Rule",
-        "body": "A new state gets a colour from this list or it gets no colour. Charter hues may carry meaning only through an explicit mapping — today that is the agenda's and the member tiles' three activity types (charter-blue-deep reunion, charter-green-deep day, charter-plum weekend) — and never by inventing a hue or reaching for a Bootstrap default that the theme did not override.",
+        "body": "A new state gets a colour from this list or it gets no colour. Charter hues may carry meaning only through an explicit mapping — today that is the agenda's and the member tiles' three activity types (`charter-blue-deep` reunion, `charter-green-deep` day, `charter-plum` weekend) — and never by inventing a hue or reaching for a Bootstrap default that the theme did not override.",
         "section": "colors"
       },
       {
         "name": "The Shared Ground Rule",
-        "body": "The hero band and the desk are two elements of one field. The band's settle ends on home-ground and the desk begins on it, with no gap between them, and that is what makes the join invisible. Changing one without the other puts a seam across the top of the public page — and it lands at exactly the height where the photograph stops, which is the most visible line the page could have. Both read it from the one --home-ground in :root because the two elements are siblings and neither owns it.",
+        "body": "The hero band and the desk are two elements of one field. The band's settle ends on `home-ground` and the desk *begins* on it, with no gap between them, and that is what makes the join invisible. Changing one without the other puts a seam across the top of the public page — and it lands at exactly the height where the photograph stops, which is the most visible line the page could have. Both read it from the one `--home-ground` in `:root` because the two elements are siblings and neither owns it.",
         "section": "colors"
       },
       {
         "name": "The One Dark Tile Rule",
-        "body": "A member page spends exactly one dark surface. It carries the household balance when the reader owes money for a child, and otherwise the first action of the featured tool group. It is never a second decorative note: one dark tile is what makes the rest of the board read as paper. When the household is settled or fees are off, the dark note moves to the tools — the page still has one, and the balance tile is simply absent rather than rendered as a zero.",
+        "body": "A member page spends exactly one dark surface. It carries the household balance when the reader owes money for a child, and otherwise the first action of the featured tool group. It is never a second decorative note: one dark tile is what makes the rest of the board read as paper. When the household is settled or fees are off, the dark note moves to the tools — the page still has one, and the balance tile is simply absent rather than rendered as a zero. A staff reader's new-members alert is the one exception: when it holds the featured group's first slot the alert takes the page's loud note as a warning tint, and the dark gradient is not stacked under it. The page still spends one loud surface, and it is the one that says there is work to do.",
         "section": "colors"
       },
       {
@@ -671,7 +735,7 @@
       },
       {
         "name": "The Two-Voice Rule",
-        "body": "The application speaks Muli and names in Source Serif 4. The boundary is display versus everything else — a unit's name, a section heading, a branch's name, a child's or section's name, a date leaf's day, a member count, the household balance, the desk's closing statement are display; a button, a table cell, a help line, a form label are not, however emphatic. A third face is a departure from this system rather than a flourish within it, and the theme's four decorative faces (Housepaint, CaveatBrush, Mali-Bold, Roboto Mono) are still not it: they are costume, and a title is not a costume.",
+        "body": "The application speaks Muli and *names* in Source Serif 4. The boundary is display versus everything else — a unit's name, a section heading, a branch's name, a child's or section's name, a date leaf's day, a member count, the household balance, the desk's closing statement are display; a button, a table cell, a help line, a form label are not, however emphatic. A third face is a departure from this system rather than a flourish within it, and the theme's four decorative faces (Housepaint, CaveatBrush, Mali-Bold, Roboto Mono) are still not it: they are costume, and a title is not a costume.",
         "section": "typography"
       },
       {
@@ -690,13 +754,18 @@
         "section": "typography"
       },
       {
+        "name": "The Reader's Register Rule",
+        "body": "French addresses a plain parent with *vous* and every other reader with *tu* — an animé, a section leader, the unit team. The register follows the board the reader answers for, not their primary role alone: a staff account whose role is Parent still reads the unit's board and is addressed as staff. English and Dutch carry one wording; only the French catalog holds the second key (`informal`).",
+        "section": "typography"
+      },
+      {
         "name": "The Asymmetric Board Rule",
-        "body": "The member board is a flex row with deliberately unequal grow weights, never an equal-width grid: the balance tile is the widest, the first person tile next, the second narrower again, so a row of two reads about 7/5 and a row of three about 45/32/23. The weights wrap; below 768px every tile takes the row. A fixed grid is a hole whenever a family has an odd number of children.",
+        "body": "The member board is a flex row with deliberately unequal grow weights, never an equal-width grid: the balance tile is the widest, the first person tile next, the second narrower again, so a row of two reads about 7/5 and a row of three about 45/32/23. The weights wrap; below 768px every tile takes the row. A fixed grid is a hole whenever a family has an odd number of children. The one exception is a family with more than one child: siblings are peers, so the balance stands alone on the first row and the children share equal columns under it — an equal group, not an equal page.",
         "section": "layout"
       },
       {
         "name": "The Page-Is-The-Menu Rule",
-        "body": "A signed-in reader's tools live on the member page, gated one by one on the same predicate their view enforces; the header carries no menu for them. A link kept in two places is two things to keep honest, and a link whose gate has moved is a dead end. The page is the menu.",
+        "body": "A signed-in reader's tools live on the member page, gated one by one on the same predicate their view enforces; the header carries no menu for them. A link kept in two places is two things to keep honest, and a link whose gate has moved is a dead end. The page is the menu. The one exception is the way back: a member page names the board above its title, because the rule only holds for a reader who can reach the page the menu is on.",
         "section": "layout"
       },
       {
@@ -716,59 +785,64 @@
       },
       {
         "name": "The Finish-Without-It Rule",
-        "body": "Every keyframe states only where the thing comes from; the resting state is always the element's own rule, never the animation's end frame. An animation that never runs — a browser without them, or a reader who has asked for less motion — therefore delivers the finished design rather than half of it. Nothing is ever hidden waiting for script.",
+        "body": "Every keyframe states only where the thing comes *from*; the resting state is always the element's own rule, never the animation's end frame. An animation that never runs — a browser without them, or a reader who has asked for less motion — therefore delivers the finished design rather than half of it. Nothing is ever hidden waiting for script.",
         "section": "motion"
       },
       {
         "name": "The Reduced-Motion Rule",
-        "body": "prefers-reduced-motion: reduce removes the distance and keeps the arrival. The rail is simply already drawn, and the band appears as one object, colour and sheet together, in a 200ms fade — the state change still registers, and nothing moves. The chip and the segment a parent touched were already confirmed in their own colour by then, so no choice is ever answered with silence.",
+        "body": "`prefers-reduced-motion: reduce` removes the distance and keeps the arrival. The rail is simply already drawn, and the band appears as one object, colour and sheet together, in a 200ms fade — the state change still registers, and nothing moves. The chip and the segment a parent touched were already confirmed in their own colour by then, so no choice is ever answered with silence.",
         "section": "motion"
       },
       {
         "name": "The Never-On-The-Field Rule",
-        "body": "Copy is never set on a charter field. White type fails AA on the Baladins blue and dark type fails on the other three, so the paper goes between them every time. The field may carry meaning; it may not carry words. A tint of a branch colour is not that field, and the member board stays on the paper side of the line: its strongest tint is 13%, and its one dark surface is a darkened mix of two branch colours, not either one at full strength.",
+        "body": "Copy is never set *on* a charter field. White type fails AA on the Baladins blue and dark type fails on the other three, so the paper goes between them every time. The field may carry meaning; it may not carry words.",
         "section": "components"
       },
       {
         "name": "The Ink-Not-The-Colour Rule",
-        "body": "A branch's colour is stated twice on the page and written once. The room, the rule and the mark take the colour at the strength their ground allows; the branch's name — in the rail, on the chosen year, in the sentence that names it — takes BRANCH_INKS, which is the same hue darkened until it can be read. These are not two colours. They are one colour used for two jobs that do not have the same requirement, and no branch is ever renamed by it: Baladins' room is still #00a0de.",
+        "body": "A branch's colour is stated twice on the page and written once. The room, the rule and the mark take the colour at the strength their ground allows; the branch's *name* — in the rail, on the chosen year, in the sentence that names it — takes `BRANCH_INKS`, which is the same hue darkened until it can be read. These are not two colours. They are one colour used for two jobs that do not have the same requirement, and no branch is ever renamed by it: Baladins' room is still #00a0de.",
         "section": "components"
       }
     ],
     "dos": [
-      "Do load the vendored theme first and troopconnect.css second — the order is what makes the override layer work, and reversing it silently disables every deviation.",
-      "Do keep troopconnect.css small. Only put a rule there that the theme does not already state; a restated rule is a copy that can win after a theme upgrade.",
-      "Do pair a .btn-primary with .btn-outline-primary on the same row, and give a destructive action an outline button — Deregister, Remove and Detach are all outline, never filled.",
-      "Do give every field a <label class=\"form-label\" for=\"...\">, then the control, then .form-text for help — in that order.",
-      "Do use role=\"alert\" on errors and role=\"status\" on confirmations, and keep errors as text under the control rather than as a red field.",
-      "Do wrap every .table in .table-responsive, and put a max-width on a free-text cell instead of letting the row grow.",
-      "Do open every members page with the banner (hat_title + hat_text) — except the signed-in homepage, whose board is its identifier.",
-      "Do ship a plain href or action alongside every HTMX attribute, so the page still works when the swap does not.",
-      "Do set the navbar's 84px height in px and keep --site-navbar-height in px to match; the navbar does not scale with the root font size.",
+      "Do load the vendored theme first and `troopconnect.css` second — the order is what makes the override layer work, and reversing it silently disables every deviation.",
+      "Do keep `troopconnect.css` small. Only put a rule there that the theme does not already state; a restated rule is a copy that can win after a theme upgrade.",
+      "Do pair a `.btn-primary` with `.btn-outline-primary` on the same row, and give a destructive action an outline button — Deregister, Remove and Detach are all outline, never filled.",
+      "Do give every field a `<label class=\"form-label\" for=\"...\">`, then the control, then `.form-text` for help — in that order.",
+      "Do use `role=\"alert\"` on errors and `role=\"status\"` on confirmations, and keep errors as text under the control rather than as a red field.",
+      "Do wrap every `.table` in `.table-responsive`, and put a `max-width` on a free-text cell instead of letting the row grow.",
+      "Do open every members page with the page head (`hat_title` + `hat_text`): the title in the display serif on the member ground, never a coloured band.",
+      "Do ship a plain `href` or `action` alongside every HTMX attribute, so the page still works when the swap does not.",
+      "Do set the navbar's 84px height in px and keep `--site-navbar-height` in px to match; the navbar does not scale with the root font size.",
       "Do state the household balance once, above the person tiles, and never per child — the household is the billing unit, and the eldest child pays in full.",
-      "Do build the member board as a flex row with unequal grow weights, so one, two or four tiles each fill their row without the equal-card symmetry.",
+      "Do build the member board as a flex row with unequal grow weights, so one, two or four tiles each fill their row without the equal-card symmetry — except a multi-child family's children, which are equal peers under the balance tile.",
       "Do spend exactly one dark tile per member page: the balance when there is money owed, otherwise the featured group's first action.",
       "Do give each person tile a date leaf, a type chip and an absence state when the agenda is on; when it is off, remove the whole block rather than leaving an empty leaf.",
       "Do mix tool-cluster tints at 6–8% over white, and keep the label in the page ink rather than in the tint.",
       "Do set board numerals in the display serif with tabular figures, and keep numbers inside sentences in Muli.",
+      "Do address a plain parent with *vous* and every other French reader with *tu*; the register follows the board the reader answers for, not the primary role field alone.",
+      "Do keep a field's paper fill when it takes focus, and keep the success toast's words in the ink: white on the bright green is 2.1:1.",
       "Do use the solid ink focus outline on a whole-tile link, and white on the dark tile."
     ],
     "donts": [
-      "Don't edit anything under app/static/vendor/template-unite/. It is byte-identical to a known upstream commit, and a local edit is lost at the next theme refresh and invisible in the diff that would have caught it.",
+      "Don't edit anything under `app/static/vendor/template-unite/`. It is byte-identical to a known upstream commit, and a local edit is lost at the next theme refresh and invisible in the diff that would have caught it.",
       "Don't introduce a colour. The palette is the federation's — if a new state needs a colour it takes one from the list above or it takes none.",
       "Don't set Housepaint, CaveatBrush, Mali or Roboto Mono. The application speaks Muli; those faces exist in the theme for pages this project does not build.",
       "Don't put a border and a shadow on the same card — that is two signals for one surface.",
       "Don't colour body or heading text to add emphasis. Weight is the tool.",
-      "Don't style the site header with a bare header selector. The homepage editor exports content that can carry its own <header>, and a bare selector reaches into authored content.",
-      "Don't use window.alert() for feedback. Toasts and inline alerts exist, and a browser alert cannot be translated or styled.",
-      "Don't build a second modal. #modal / #dialog is the dialog, and every HTMX view targets it.",
+      "Don't style the site header with a bare `header` selector. The public page's hero band is a `<header>` too, and a bare selector reaches into it.",
+      "Don't use `window.alert()` for feedback. Toasts and inline alerts exist, and a browser alert cannot be translated or styled.",
+      "Don't build a second modal. `#modal` / `#dialog` is the dialog, and every HTMX view targets it.",
+      "Don't paint a form control white on a white sheet, and don't let the theme's final form rule do it: the paper well is the field's identity.",
+      "Don't let a successful modal close in silence. The dialog closes onto the non-autohiding toast; a confirmation page carries the promise.",
+      "Don't give a parent's absence line a door; only the section leader's line has somewhere to go.",
       "Don't add a page that has to be read on hover to be understood — nothing in this system depends on pointer state to be legible.",
       "Don't put a mask or a clip on a container whose children are meant to paint outside it. Both clip to the element's own border box, so a fade that lives one level too deep cuts off exactly the overflow it was placed to soften — the desk field's mask sits on the field's full-width box, never on the container its bleeds are supposed to cross.",
-      "Don't put a balance or a Pay button on a child's tile. Fees are per household and the finance views 404 for anyone without access; the treasurer sentence is the honest version for a parent.",
-      "Don't replace the member board with an equal-width card grid. The unequal grow weights are the composition, and a fixed grid leaves a hole on an odd number of children.",
+      "Don't put a balance or a Pay button on a child's tile. Fees are per household and the finance views 404 for anyone without access; the treasurer sentence — and the message door when a treasurer is named — is the honest version for a parent.",
+      "Don't replace the member board with an equal-width card grid. The unequal grow weights are the composition, and a fixed grid leaves a hole on an odd number of children. Equal columns belong only to siblings under a balance tile, never to the board as a whole.",
       "Don't add a header menu for signed-in readers. The page is the menu, and a link kept in two places is two things to keep honest.",
       "Don't use a branch's full-strength colour as a tile ground. Tints stay at 6–13% over white, and the one dark tile is a darkened mix of two branch colours, not a charter field.",
-      "Don't let a long name or activity title truncate inside a tile. Names run to 150 characters and titles to 200; they wrap with overflow-wrap: anywhere and a min-width: 0 on the flex/grid child.",
+      "Don't let a long name or activity title truncate inside a tile. Names run to 150 characters and titles to 200; they wrap with `overflow-wrap: anywhere` and a `min-width: 0` on the flex/grid child.",
       "Don't give the member page a second dark surface or a second primary action. One dark note, one lead tile, and the rest of the board is paper."
     ]
   }

@@ -13,6 +13,7 @@ colors:
   charter-sky: "#15adea"
   paper: "#f2f5f8"
   home-ground: "#dde5ec"
+  home-green: "#2c4936"
   white: "#ffffff"
   border: "#dee2e6"
   border-input: "#ced4da"
@@ -121,6 +122,15 @@ components:
     backgroundColor: "transparent"
     textColor: "{colors.charter-blue-deep}"
     padding: "2.5rem 0 0"
+  public-band:
+    backgroundColor: "{colors.home-green}"
+    textColor: "{colors.white}"
+    padding: "4.5rem 1.5rem 3rem"
+  agenda-chip:
+    backgroundColor: "{colors.charter-blue-deep}"
+    textColor: "{colors.white}"
+    rounded: "0.2rem"
+    padding: "0.05rem 0.3rem"
   member-tile:
     backgroundColor: "{colors.white}"
     textColor: "{colors.charter-blue-deep}"
@@ -161,6 +171,35 @@ components:
     textColor: "{colors.charter-blue-deep}"
     rounded: "{rounded.md}"
     padding: "0.375rem 0.75rem"
+  member-role:
+    backgroundColor: "color-mix(in srgb, #296f52 7%, #ffffff)"
+    textColor: "{colors.charter-blue-deep}"
+    rounded: "{rounded.pill}"
+    padding: "0.35rem 0.8rem"
+  contact-sheet:
+    backgroundColor: "{colors.white}"
+    textColor: "{colors.charter-blue-deep}"
+    rounded: "{rounded.tile}"
+    padding: "1.5rem"
+  contact-copy-note:
+    backgroundColor: "{colors.paper}"
+    textColor: "{colors.muted-on-field}"
+    rounded: "{rounded.md}"
+    padding: "0.85rem 1rem"
+  contact-confirm:
+    backgroundColor: "{colors.white}"
+    textColor: "{colors.charter-blue-deep}"
+    rounded: "{rounded.tile}"
+    padding: "1.5rem"
+  success-toast:
+    backgroundColor: "{colors.charter-green-bright}"
+    textColor: "{colors.charter-blue-deep}"
+    rounded: "{rounded.md}"
+    padding: "0.75rem"
+  footer-strip:
+    backgroundColor: "transparent"
+    textColor: "{colors.muted-on-paper}"
+    padding: "1.5rem 0 2rem"
 ---
 
 # Design System: TroopConnect
@@ -217,6 +256,8 @@ a family rather than for reading a page.
 - The homepage's desk standing on the four branches' colours, at the one place the page spends them
 - A member board of unequal tiles: one dark anchor (balance or lead tool), white person tiles, and branch-tinted tool clusters
 - Two shells: the site (fixed 84px navbar) and the first-run wizard (its own page, same theme)
+- A contact sheet and its confirmation reuse the board's white tile; a reader's
+  secondary duties are chips under the summary
 
 ## Colors
 
@@ -805,6 +846,13 @@ On first paint the two run together as one sequence, the rail drawing while the
 answer's sheet lands. On a swap — a year picked — only the band's beat replays,
 because only the band changed; the rail is not rebuilt, so it is not redrawn.
 
+On a phone, the answer also comes to the reader. The four rooms stack, so a pick
+near the top would otherwise change a band two screens below the chip; after the
+swap the page brings the answer into view with the least movement
+(`block: "nearest"`) and leaves focus on the chip. Under reduced motion the move
+is instant. It is not a third entrance — nothing arrives — it is the page
+following the control the reader just used.
+
 ### Named Rules
 
 **The One-Entrance Rule.** One surface gets an authored entrance, and it is the
@@ -1142,6 +1190,11 @@ summary because the page is a tool that knows who is holding it, and the line
 already has room. A leader's summary carries no section count: an animateur
 leads exactly one, and the tile below already says which.
 
+- **The reader's duties are chips under the summary.** A secondary role sits in
+  a pill at 0.8125rem/600 on a 7% Louveteaux-green tint with the ink on it,
+  wrapping with a 0.5rem gap. It is a duty the unit placed, not a badge of
+  status, so it stays at reading scale beneath the greeting and never competes
+  with the page's title.
 - **One subject, one tile shape.** A child and a section share the head, the
   date leaf, the event block, the presence line and the foot. Only the monogram
   and the count change. A page that changed its card shape with the role would
@@ -1187,9 +1240,14 @@ last.
 - **The presence line.** "No absences" is a green check and the muted voice.
   A reported absence is a charter-crimson dot and the count in the absence ink
   (#b30d31) at 700. It is the one line in the tile that leaves the muted voice,
-  because it is the one state the reader has to notice. Nothing scheduled is not
-  an error: the leaf's slot becomes a paper-filled icon square and the tile says
-  so in the muted voice.
+  because it is the one state the reader has to notice. On a section tile the
+  line is a door — a leader's next question is who, and why — so the whole line
+  becomes a link with a small corner arrow; hover underlines the label, focus
+  draws the 2px ink outline, and it opens the absences dialog, with the agenda
+  day as the plain fallback. A parent's child tile keeps it as a statement: the
+  parent has nothing to act on there. Nothing scheduled is not an error: the
+  leaf's slot becomes a paper-filled icon square and the tile says so in the
+  muted voice.
 - **The foot.** A 1px divider (#eceff2) and the actions, pushed to the tile's
   floor with `margin-top: auto` so a row of tiles with different middle lengths
   still lines its buttons up. Every action is the product's small outline button
@@ -1233,6 +1291,10 @@ person tiles, and there is exactly one.
   the ink on it, hover to #eaf5fb, focus a 2px white outline. A parent gets the
   sentence "Payments are recorded by the unit's treasurer" instead, because the
   finance views 404 for them and the product has no parent-facing payment step.
+  When the unit names a treasurer, that sentence is followed by "Message the
+  treasurer" — the same white pill — opening the contact sheet with the
+  treasurer already chosen. The door is absent when no treasurer is named: the
+  tile never offers a destination that does not exist.
 - **No money, no tile.** When the household owes nothing, or fees are off, the
   tile is absent rather than rendered at zero; the dark note moves to the
   featured tool's first action. A settled household's page is the board of its
@@ -1339,6 +1401,33 @@ recipient table. A confirmation page is one sheet holding the decision and its
 actions, and a destructive action stays an outline — Deregister, Detach and
 Remove are never filled.
 
+### The contact sheet
+
+A form reached from the board — writing to a section's communications lead or
+the unit team, or a visitor writing through the public footer — reuses the
+board's white tile at page scale rather than introducing a second form surface.
+It is the member panel (1.25rem corners, white, the soft charter-blue shadow) at
+a 46rem measure, and its fields are the system's paper wells.
+
+- **The copy note is a fact, not a control.** A paper well with an envelope
+  mark and a 0.9375rem sentence in `muted-on-field`: who receives the message,
+  or where the copy goes. It sits where the sentence belongs — above the fields
+  on the public form (who am I writing to), below them on the member form (what
+  happens when I send) — and it never looks like a field.
+- **The recipient is a stack of rows, never a select.** Each target gets a
+  radio and a label at reading size, because a role name is the federation's and
+  a phone must wrap it rather than truncate it. The balance tile's door opens
+  the same sheet with the treasurer already chosen.
+- **The confirmation is the same sheet with its decision stated first.** A
+  2.75rem check square (0.75rem corners, a 7% ink veil), a 1.1875rem title at
+  700 and a 0.9375rem note in the quiet voice, `role="status"`. A parent who
+  wrote from a page gets the confirmation page; a modal closes and leaves the
+  sentence in the non-autohiding toast.
+- **The public form is the one place a third-party control is spent.** ALTCHA's
+  proof-of-work checkbox is the system's only vendor widget; it sits under a
+  form-label-styled "Anti-spam check" heading, and a visually hidden honeypot
+  sits beside it. The challenge runs on the instance, not a hosted captcha.
+
 ### Cards / Containers
 - **Corner Style:** 0.25rem, outlined in 12.5% black, no shadow.
 - **Background:** White, or `bg-white` on a header that would otherwise inherit
@@ -1358,6 +1447,11 @@ Remove are never filled.
 - **Focus:** Border shifts to `#85a1ba` and a 4px `rgba(10, 66, 117, .25)` halo
   appears. The halo is the primary focus affordance; the border change alone is
   too quiet to rely on.
+- **The well survives focus.** The theme's last form rule paints every text
+  control white, erasing its own paper fill and making a field change shade when
+  it takes the caret; `troopconnect.css` restates the paper background for
+  `.form-control` and `.form-select` after the theme. A control is never white on
+  a white sheet, and it never changes fill on focus.
 - **Selects:** Same treatment with the theme's own chevron. Checkboxes are
   labelled to the right of the control, never above it.
 - **Field markup:** Label, then control, then `.form-text` help — in that order,
@@ -1374,9 +1468,32 @@ Remove are never filled.
   settings group says so in place, at `py-2`.
 - **Toasts:** Fixed top-right, `aria-live="assertive"`, and deliberately
   non-autohiding (`data-bs-autohide="false"`) so a message that matters cannot
-  disappear before it is read. Coloured by message tag.
+  disappear before it is read. Coloured by message tag. The success toast is the
+  one place the bright green carries type, and it takes the charter ink rather
+  than white: white measures 2.1:1 on it, the ink 4.8:1. The close mark is ink
+  too. A succeeding modal closes onto this toast; a succeeding page carries a
+  confirmation sheet instead.
 - **Dialogs:** A single `#modal` / `#dialog` pair is the HTMX swap target for
   every modal in the application. There is one, and it is reused.
+
+### The footer
+
+One strip of chrome at the foot of the shell, on every page.
+
+- **A rule, not a card.** A 1px structural line above, the page's own ground
+  beneath, and no charter field or shadow: the footer is part of the page rather
+  than a thing on it. The text steps down to 0.9375rem in `muted-on-paper`.
+- **Links left, copyright right, one row.** The strip wraps; when the two sides
+  do not fit it stacks and each keeps the left edge. It is deliberately compact:
+  one line of links, then the legal sentence across the container, with the
+  copyright at 0.8125rem.
+- **The contact door follows the reader.** A signed-in reader gets the unit's
+  direct lines (email, phone). A visitor gets "Contact us", which opens the
+  public contact sheet in the shared dialog, because the addresses are not
+  published to the open web.
+- **The mark is the label.** A social account is the federation's own mark with
+  its accessible name on the link, sized to the text and aligned to its
+  baseline; the word "Facebook" is not printed twice.
 
 ### Tables
 - **Style:** `.table`, with `.table-sm` and `.table-striped` for lists and
@@ -1440,6 +1557,11 @@ cell per day.
   page ink rather than in the tint.
 - **Do** set board numerals in the display serif with tabular figures, and keep
   numbers inside sentences in Muli.
+- **Do** address a plain parent with *vous* and every other French reader with
+  *tu*; the register follows the board the reader answers for, not the primary
+  role field alone.
+- **Do** keep a field's paper fill when it takes focus, and keep the success
+  toast's words in the ink: white on the bright green is 2.1:1.
 - **Do** use the solid ink focus outline on a whole-tile link, and white on the
   dark tile.
 
@@ -1461,6 +1583,12 @@ cell per day.
   and a browser alert cannot be translated or styled.
 - **Don't** build a second modal. `#modal` / `#dialog` is the dialog, and every
   HTMX view targets it.
+- **Don't** paint a form control white on a white sheet, and don't let the
+  theme's final form rule do it: the paper well is the field's identity.
+- **Don't** let a successful modal close in silence. The dialog closes onto the
+  non-autohiding toast; a confirmation page carries the promise.
+- **Don't** give a parent's absence line a door; only the section leader's line
+  has somewhere to go.
 - **Don't** add a page that has to be read on hover to be understood — nothing in
   this system depends on pointer state to be legible.
 - **Don't** put a mask or a clip on a container whose children are meant to paint
@@ -1470,7 +1598,8 @@ cell per day.
   bleeds are supposed to cross.
 - **Don't** put a balance or a Pay button on a child's tile. Fees are per
   household and the finance views 404 for anyone without access; the treasurer
-  sentence is the honest version for a parent.
+  sentence — and the message door when a treasurer is named — is the honest
+  version for a parent.
 - **Don't** replace the member board with an equal-width card grid. The unequal
   grow weights are the composition, and a fixed grid leaves a hole on an odd
   number of children. Equal columns belong only to siblings under a balance
