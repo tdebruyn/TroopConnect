@@ -27,17 +27,13 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: actions/setup-python@v7
-        with:
-          python-version: "3.14"
-
-      - name: Install pip-audit
-        run: pip install pip-audit
+      - uses: astral-sh/setup-uv@v10
 
       # Exits non-zero when it finds anything, which is the point: a pinned
       # dependency with a known advisory should be bumped, not ignored.
+      # uvx runs pip-audit without adding it to a project environment.
       - name: Audit
-        run: pip-audit --requirement app/requirements.txt
+        run: uvx pip-audit --requirement app/requirements.txt
 
   image:
     name: Trivy on the built image

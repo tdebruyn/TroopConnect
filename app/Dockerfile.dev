@@ -8,8 +8,9 @@ ENV PYTHONUNBUFFERED=1
 ENV VIRTUAL_ENV=/venv
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
-# Install uv 
-RUN pip install uv
+# Copied from uv's own image rather than pip-installed, so the dev image never
+# carries a second package manager.
+COPY --from=ghcr.io/astral-sh/uv:0.13.1 /uv /uvx /bin/
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     gettext \

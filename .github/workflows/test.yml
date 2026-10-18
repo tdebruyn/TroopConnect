@@ -66,14 +66,18 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: actions/setup-python@v7
+      # uv is what the dev and production images install with, so CI resolves
+      # the pinned file the same way the shipped image does. The activated
+      # venv puts `python` on PATH for the test step below.
+      - uses: astral-sh/setup-uv@v10
         with:
           python-version: "3.14"
-          cache: pip
-          cache-dependency-path: app/requirements.txt
+          activate-environment: true
+          enable-cache: true
+          cache-dependency-glob: app/requirements.txt
 
       - name: Install dependencies
-        run: pip install -r app/requirements.txt
+        run: uv pip install -r app/requirements.txt
 
       # Run separately from the suite as well as inside it (tests.test_lint):
       # here it reports the problems, there it fails the build.
