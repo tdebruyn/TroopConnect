@@ -1,7 +1,9 @@
 from allauth.account.forms import ResetPasswordForm, SignupForm
 from django import forms
+from django.conf import settings
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.core.exceptions import ValidationError
+from django.utils import translation
 from django.utils.translation import gettext_lazy as _
 
 from homepage.models import TimelineActivity
@@ -930,11 +932,28 @@ class PublicPageSettingsForm(forms.ModelForm):
 
     def clean(self):
         cleaned = super().clean()
+        # Every language other than the default falls back to it, so the text
+        # only has to exist there. Editing a non-default language may leave its
+        # field blank; editing the default language with the switch on may not.
+        default_language = settings.MODELTRANSLATION_DEFAULT_LANGUAGE
+        editing_default = translation.get_language() == default_language
         for enabled, text, label in (
             ("homepage_about_enabled", "homepage_about_text", _("About us")),
             ("homepage_faq_enabled", "homepage_faq_text", _("FAQ")),
         ):
-            if cleaned.get(enabled) and not (cleaned.get(text) or "").strip():
+            if not cleaned.get(enabled):
+                continue
+            has_text = bool((cleaned.get(text) or "").strip())
+            if not has_text and not editing_default:
+                has_text = bool(
+                    (
+                        getattr(
+                            self.instance, f"{text}_{default_language}", ""
+                        )
+                        or ""
+                    ).strip()
+                )
+            if not has_text:
                 self.add_error(
                     text,
                     _("Write the text before turning %(module)s on.")

@@ -11,11 +11,13 @@ from decimal import Decimal
 
 from django.template import Context, Template
 from django.urls import reverse
+from django.utils import translation
 from django.utils.html import escape
 from django.utils.translation import gettext as _
 from post_office.models import Email
 
 from homepage.models import TimelineActivity
+from members.forms import PublicPageSettingsForm
 from members.models import Account, Person, Role, TroopSettings
 from members.money import format_money
 from members.phone import troop_region
@@ -269,6 +271,41 @@ class PublicPageSettingsTest(StaffPageTestBase):
                 % {"module": _("About us")}
             ),
         )
+        self.assertFalse(TroopSettings.get_settings().homepage_about_enabled)
+
+    def test_a_non_default_translation_falls_back_to_the_default(self):
+        """Dutch may be left blank: the site falls back to French, so the
+        module is not empty. Only the default language has to carry words."""
+        troop = TroopSettings.get_settings()
+        troop.homepage_about_text_fr = "Notre unité."
+        troop.save()
+
+        with translation.override("nl"):
+            form = PublicPageSettingsForm(
+                data=self.public_page_data(
+                    homepage_about_enabled="on",
+                    homepage_about_text="",
+                ),
+                instance=TroopSettings.get_settings(),
+            )
+            self.assertTrue(form.is_valid(), form.errors)
+
+    def test_the_default_language_cannot_fall_back_to_another_one(self):
+        """French is what every language falls back to, so an empty French
+        text would leave the module empty for a French visitor."""
+        troop = TroopSettings.get_settings()
+        troop.homepage_about_text_nl = "Onze eenheid."
+        troop.save()
+
+        response = self.client.post(
+            self.url,
+            self.public_page_data(
+                homepage_about_enabled="on",
+                homepage_about_text="",
+            ),
+        )
+
+        self.assertEqual(response.status_code, 200)
         self.assertFalse(TroopSettings.get_settings().homepage_about_enabled)
 
     def test_the_year_line_adds_a_date(self):
