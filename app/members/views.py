@@ -35,6 +35,7 @@ from .forms import (
     CalendarSettingsForm,
     ChildForm,
     ChildFromKey,
+    DocumentForm,
     LocaleSettingsForm,
     ModuleSettingsForm,
     OnboardingForm,
@@ -957,6 +958,72 @@ class DocumentListView(LoginRequiredMixin, ListView):
     model = ImportantDocument
     template_name = "members/documents.html"
     context_object_name = "documents"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # The whole unit reads this page; only the unit team's lead may change
+        # what is on it. The controls are hidden rather than shown disabled:
+        # an ordinary reader has no use for an "Add document" button.
+        context["can_manage"] = can_manage_unit(self.request.user)
+        return context
+
+
+def _documents_changed(message):
+    """Tell the documents list to reload itself and toast what happened."""
+    return HttpResponse(
+        status=204,
+        headers={
+            "HX-Trigger": json.dumps(
+                {"documentsChanged": None, "showMessage": message}
+            )
+        },
+    )
+
+
+def document_form(request, pk=None):
+    if not can_manage_unit(request.user):
+        raise Http404
+
+    document = get_object_or_404(ImportantDocument, pk=pk) if pk else None
+
+    if request.method == "POST":
+        form = DocumentForm(request.POST, request.FILES, instance=document)
+        if form.is_valid():
+            form.save()
+            if is_htmx(request):
+                return _documents_changed(_("Document saved."))
+            messages.success(request, _("Document saved."))
+            return redirect("members:documents")
+    else:
+        form = DocumentForm(instance=document)
+
+    template = (
+        "members/_document_form.html"
+        if is_htmx(request)
+        else "members/document_form.html"
+    )
+    return render(request, template, {"form": form, "document": document})
+
+
+def document_delete(request, pk):
+    if not can_manage_unit(request.user):
+        raise Http404
+
+    document = get_object_or_404(ImportantDocument, pk=pk)
+
+    if request.method == "POST":
+        document.delete()
+        if is_htmx(request):
+            return _documents_changed(_("Document removed."))
+        messages.success(request, _("Document removed."))
+        return redirect("members:documents")
+
+    template = (
+        "members/_document_delete.html"
+        if is_htmx(request)
+        else "members/document_delete.html"
+    )
+    return render(request, template, {"document": document})
 
 
 class MailQueueView(UserPassesTestMixin, TemplateView):

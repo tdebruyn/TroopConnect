@@ -53,6 +53,19 @@ urlpatterns = [
     path("delete/<str:pk>", views.member_delete, name="member_delete"),
     path("purge/<str:pk>", views.member_purge, name="member_purge"),
     path("documents/", views.DocumentListView.as_view(), name="documents"),
+    # The documents page is every reader's list; these two are where the unit
+    # team's lead adds to it. The list itself reloads through its own URL.
+    path("documents/new", views.document_form, name="document_form"),
+    path(
+        "documents/<int:pk>/edit",
+        views.document_form,
+        name="document_edit",
+    ),
+    path(
+        "documents/<int:pk>/delete",
+        views.document_delete,
+        name="document_delete",
+    ),
     path("mailqueue", views.MailQueueView.as_view(), name="mail_queue"),
     # The section agenda. Readable by whoever is linked to the section; the
     # writing views answer 404 unless the user leads it.

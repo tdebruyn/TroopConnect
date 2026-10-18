@@ -4,32 +4,64 @@
     {% trans "Important documents" %}
 {% endblock hat_title %}
 {% block hat_text %}
+    {% if can_manage %}
+        {% trans "What every signed-in reader can open. You can add, edit and remove the documents here." %}
+    {% endif %}
 {% endblock hat_text %}
 {% block subcontent %}
-    {% if documents %}
-        <ul class="document-list">
-            {% for doc in documents %}
-                <li class="document-tile">
-                    <span class="document-icon" aria-hidden="true"><i class="bi bi-file-earmark-text"></i></span>
-                    <div class="document-main">
-                        <p class="document-title">{{ doc.title }}</p>
-                        {% if doc.description %}<p class="document-desc">{{ doc.description }}</p>{% endif %}
-                    </div>
-                    <div class="document-actions">
-                        {% if doc.url %}
-                            <a class="btn btn-outline-primary btn-sm" href="{{ doc.url }}" target="_blank">{% trans "Link" %}</a>
-                        {% endif %}
-                        {% if doc.file %}
-                            <a class="btn btn-outline-primary btn-sm" href="{{ doc.file.url }}">{% trans "Download" %}</a>
-                        {% endif %}
-                    </div>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <div class="list-empty">
-            <span class="list-empty-icon" aria-hidden="true"><i class="bi bi-folder2-open"></i></span>
-            <p class="list-empty-text">{% trans "No documents available." %}</p>
-        </div>
-    {% endif %}
+    {% comment %}
+      The list is its own swap target: a save or a delete triggers
+      `documentsChanged`, and this container fetches the page again and keeps
+      only the list from it. The modal closes on the same trigger.
+    {% endcomment %}
+    <div id="documents-list"
+         hx-get="{% url 'members:documents' %}"
+         hx-trigger="documentsChanged from:body"
+         hx-select="#documents-list"
+         hx-swap="outerHTML">
+        {% if can_manage %}
+            <div class="mb-3">
+                <a class="btn btn-primary"
+                   href="{% url 'members:document_form' %}"
+                   hx-get="{% url 'members:document_form' %}"
+                   hx-target="#dialog">{% trans "Add a document" %}</a>
+            </div>
+        {% endif %}
+        {% if documents %}
+            <ul class="document-list">
+                {% for doc in documents %}
+                    <li class="document-tile">
+                        <span class="document-icon" aria-hidden="true"><i class="bi bi-file-earmark-text"></i></span>
+                        <div class="document-main">
+                            <p class="document-title">{{ doc.title }}</p>
+                            {% if doc.description %}<p class="document-desc">{{ doc.description }}</p>{% endif %}
+                        </div>
+                        <div class="document-actions">
+                            {% if doc.url %}
+                                <a class="btn btn-outline-primary btn-sm" href="{{ doc.url }}" target="_blank">{% trans "Link" %}</a>
+                            {% endif %}
+                            {% if doc.file %}
+                                <a class="btn btn-outline-primary btn-sm" href="{{ doc.file.url }}">{% trans "Download" %}</a>
+                            {% endif %}
+                            {% if can_manage %}
+                                <a class="btn btn-outline-primary btn-sm"
+                                   href="{% url 'members:document_edit' doc.pk %}"
+                                   hx-get="{% url 'members:document_edit' doc.pk %}"
+                                   hx-target="#dialog">{% trans "Edit" %}</a>
+                                <a class="btn btn-outline-danger btn-sm"
+                                   href="{% url 'members:document_delete' doc.pk %}"
+                                   hx-get="{% url 'members:document_delete' doc.pk %}"
+                                   hx-target="#dialog">{% trans "Delete" %}</a>
+                            {% endif %}
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <div class="list-empty">
+                <span class="list-empty-icon" aria-hidden="true"><i class="bi bi-folder2-open"></i></span>
+                <p class="list-empty-text">{% trans "No documents available." %}</p>
+            </div>
+        {% endif %}
+    </div>
 {% endblock subcontent %}

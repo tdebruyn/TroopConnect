@@ -813,6 +813,43 @@ NEW_STRINGS = [
         "pourcentage ajouté",
         "percentage",
     ),
+    # Documents: the list every reader sees, and the management controls the
+    # unit team's lead now has there.
+    (
+        "A link, a file, or both. Every signed-in reader sees it on their "
+        "documents page.",
+        "page de documents",
+        "documentenpagina",
+    ),
+    ("Optional. Shown under the title.", "Facultatif", "Optioneel"),
+    (
+        "A page elsewhere, such as the federation's rules.",
+        "règlements",
+        "reglement",
+    ),
+    (
+        "Uploaded here, or leave empty to link to a page.",
+        "Téléversé",
+        "geüpload",
+    ),
+    ("File", "Fichier", "Bestand"),
+    ("Add a link or a file.", "lien ou un fichier", "link of een bestand"),
+    ("Document saved.", "enregistré", "opgeslagen"),
+    ("Document removed.", "supprimé", "verwijderd"),
+    ("Delete document", "Supprimer le document", "Document verwijderen"),
+    (
+        "Delete “%(document)s”? It leaves every reader’s documents page.",
+        "disparaît",
+        "verdwijnt",
+    ),
+    ("Add a document", "Ajouter", "toevoegen"),
+    ("Edit document", "Modifier", "bewerken"),
+    (
+        "What every signed-in reader can open. You can add, edit and remove "
+        "the documents here.",
+        "chaque personne connectée",
+        "elke ingelogde lezer",
+    ),
 ]
 
 

@@ -1,0 +1,28 @@
+{% load i18n %}
+<form hx-post="{{ request.path }}"
+      hx-headers='{"X-CSRFToken":"{{ csrf_token }}"}'
+      enctype="multipart/form-data"
+      class="modal-content">
+  <div class="modal-header">
+    <h5 class="modal-title">
+      {% if document %}
+        {% trans "Edit document" %}
+      {% else %}
+        {% trans "Add a document" %}
+      {% endif %}
+    </h5>
+    <button type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="{% trans 'Close' %}"></button>
+  </div>
+  <div class="modal-body">
+    {% include "members/_document_fields.html" %}
+  </div>
+  <div class="modal-footer">
+    <button type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+    <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
+  </div>
+</form>

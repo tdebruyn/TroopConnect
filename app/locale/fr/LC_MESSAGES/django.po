@@ -4107,3 +4107,43 @@ msgstr "Applicable à partir du"
 
 msgid "A percentage added to what a household still owes after the deadline. Leave the penalty at zero to charge none."
 msgstr "Un pourcentage ajouté à ce qu'un foyer doit encore après l'échéance. Laissez la pénalité à zéro pour n'en appliquer aucune."
+
+#: members/forms.py members/templates/members/documents.html
+msgid "A link, a file, or both. Every signed-in reader sees it on their documents page."
+msgstr "Un lien, un fichier, ou les deux. Toute personne connectée le voit sur sa page de documents."
+
+msgid "Optional. Shown under the title."
+msgstr "Facultatif. Affiché sous le titre."
+
+msgid "A page elsewhere, such as the federation's rules."
+msgstr "Une page ailleurs, comme les règlements de la fédération."
+
+msgid "Uploaded here, or leave empty to link to a page."
+msgstr "Téléversé ici, ou laissez vide pour renvoyer vers une page."
+
+msgid "File"
+msgstr "Fichier"
+
+msgid "Add a link or a file."
+msgstr "Ajoutez un lien ou un fichier."
+
+msgid "Document saved."
+msgstr "Document enregistré."
+
+msgid "Document removed."
+msgstr "Document supprimé."
+
+msgid "Delete document"
+msgstr "Supprimer le document"
+
+msgid "Delete “%(document)s”? It leaves every reader’s documents page."
+msgstr "Supprimer « %(document)s » ? Il disparaît de la page de documents de chaque lecteur."
+
+msgid "Add a document"
+msgstr "Ajouter un document"
+
+msgid "Edit document"
+msgstr "Modifier le document"
+
+msgid "What every signed-in reader can open. You can add, edit and remove the documents here."
+msgstr "Ce que chaque personne connectée peut ouvrir. Vous pouvez ajouter, modifier et supprimer les documents ici."

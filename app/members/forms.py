@@ -17,6 +17,7 @@ from .models import (
     Absence,
     Account,
     Enrollment,
+    ImportantDocument,
     Person,
     PersonRole,
     Role,
@@ -979,6 +980,42 @@ class PublicPageSettingsForm(forms.ModelForm):
                     _("Write the text before turning %(module)s on.")
                     % {"module": label},
                 )
+        return cleaned
+
+
+class DocumentForm(forms.ModelForm):
+    """A document the unit hands out, as the documents page edits it.
+
+    A document is a link, a file, or both; one with neither would render a
+    tile nobody can open, so the form refuses it rather than letting the list
+    grow a dead entry.
+    """
+
+    class Meta:
+        model = ImportantDocument
+        fields = ("title", "description", "url", "file")
+        widgets = {
+            "title": forms.TextInput(attrs={"class": "form-control"}),
+            "description": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
+            "url": forms.URLInput(attrs={"class": "form-control"}),
+            "file": forms.ClearableFileInput(attrs={"class": "form-control"}),
+        }
+        labels = {
+            "title": _("Title"),
+            "description": _("Description"),
+            "url": _("Link"),
+            "file": _("File"),
+        }
+        help_texts = {
+            "description": _("Optional. Shown under the title."),
+            "url": _("A page elsewhere, such as the federation's rules."),
+            "file": _("Uploaded here, or leave empty to link to a page."),
+        }
+
+    def clean(self):
+        cleaned = super().clean()
+        if not cleaned.get("url") and not cleaned.get("file"):
+            self.add_error("url", _("Add a link or a file."))
         return cleaned
 
 

@@ -279,7 +279,9 @@ wording in the wording card. `site_keywords` stays in the Django admin, where
 the whole singleton does; `last_passage_school_year` is written by the passage
 task.
 
-`ImportantDocument` (title, description, url, file) is likewise admin-managed.
+`ImportantDocument` (title, description, url, file) is managed on
+**`/users/documents`** by site staff and the unit team's lead; every signed-in
+reader sees the list without the controls.
 
 ---
 

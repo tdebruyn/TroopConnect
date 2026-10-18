@@ -4104,3 +4104,43 @@ msgstr "Van toepassing vanaf"
 
 msgid "A percentage added to what a household still owes after the deadline. Leave the penalty at zero to charge none."
 msgstr "Een percentage dat wordt toegevoegd aan wat een huishouden na de deadline nog verschuldigd is. Laat de boete op nul staan om er geen aan te rekenen."
+
+#: members/forms.py members/templates/members/documents.html
+msgid "A link, a file, or both. Every signed-in reader sees it on their documents page."
+msgstr "Een link, een bestand, of beide. Elke ingelogde lezer ziet het op zijn documentenpagina."
+
+msgid "Optional. Shown under the title."
+msgstr "Optioneel. Getoond onder de titel."
+
+msgid "A page elsewhere, such as the federation's rules."
+msgstr "Een pagina elders, zoals het reglement van de federatie."
+
+msgid "Uploaded here, or leave empty to link to a page."
+msgstr "Hier geüpload, of laat leeg om naar een pagina te linken."
+
+msgid "File"
+msgstr "Bestand"
+
+msgid "Add a link or a file."
+msgstr "Voeg een link of een bestand toe."
+
+msgid "Document saved."
+msgstr "Document opgeslagen."
+
+msgid "Document removed."
+msgstr "Document verwijderd."
+
+msgid "Delete document"
+msgstr "Document verwijderen"
+
+msgid "Delete “%(document)s”? It leaves every reader’s documents page."
+msgstr "“%(document)s” verwijderen? Het verdwijnt van de documentenpagina van elke lezer."
+
+msgid "Add a document"
+msgstr "Document toevoegen"
+
+msgid "Edit document"
+msgstr "Document bewerken"
+
+msgid "What every signed-in reader can open. You can add, edit and remove the documents here."
+msgstr "Wat elke ingelogde lezer kan openen. Je kunt de documenten hier toevoegen, bewerken en verwijderen."

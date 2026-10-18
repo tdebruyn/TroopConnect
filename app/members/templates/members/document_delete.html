@@ -1,0 +1,15 @@
+{% extends "members/base.html" %}
+{% load i18n %}
+{% block hat_title %}{% trans "Delete document" %}{% endblock hat_title %}
+{% block hat_text %}
+  {% blocktranslate %}Delete “{{ document }}”? It leaves every reader’s documents page.{% endblocktranslate %}
+{% endblock hat_text %}
+{% block subcontent %}
+  <form method="post" action="{{ request.path }}">
+    {% csrf_token %}
+    <div class="d-flex gap-2">
+      <a class="btn btn-secondary" href="{% url 'members:documents' %}">{% trans "Cancel" %}</a>
+      <button type="submit" class="btn btn-outline-danger">{% trans "Delete" %}</button>
+    </div>
+  </form>
+{% endblock subcontent %}
