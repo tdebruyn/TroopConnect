@@ -425,6 +425,60 @@ class FoldedAgendaTest(AbsenceTestBase):
         self.assertContains(response, "1 absence signalée")
 
 
+class EventAbsencesDialogTest(AbsenceTestBase):
+    """The leader's home tile opens the register of who is missing and why."""
+
+    def setUp(self):
+        super().setUp()
+        Absence.objects.create(
+            event=self.event, child=self.child, reason="Chez le médecin"
+        )
+
+    def dialog_url(self):
+        return reverse("members:event_absences", args=[self.event.pk])
+
+    def test_a_leader_opens_the_list(self):
+        self.login("leader@test.be")
+        response = self.client.get(
+            self.dialog_url(), HTTP_HX_REQUEST="true"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "modal-content")
+        self.assertContains(response, "Chloe Child")
+        self.assertContains(response, "Chez le médecin")
+
+    def test_the_unit_team_reads_every_section_s_register(self):
+        self.login("unitadmin@test.be")
+        response = self.client.get(
+            self.dialog_url(), HTTP_HX_REQUEST="true"
+        )
+        self.assertContains(response, "Chloe Child")
+
+    def test_another_family_cannot_read_it(self):
+        self.login("other@test.be")
+        response = self.client.get(
+            self.dialog_url(), HTTP_HX_REQUEST="true"
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_a_plain_request_falls_back_to_the_day(self):
+        self.login("leader@test.be")
+        response = self.client.get(self.dialog_url())
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(reverse("members:agenda_day"), response.url)
+
+    def test_the_home_tile_links_to_the_dialog(self):
+        self.login("leader@test.be")
+        response = self.client.get("/")
+        self.assertContains(response, self.dialog_url())
+        self.assertContains(response, 'hx-target="#dialog"')
+
+    def test_a_parent_s_home_does_not_offer_the_register(self):
+        self.login("parent@test.be")
+        response = self.client.get("/")
+        self.assertNotContains(response, self.dialog_url())
+
+
 class AbsenceModuleSwitchTest(AbsenceTestBase):
     """The absence screens belong to the agenda module, and go away with it."""
 

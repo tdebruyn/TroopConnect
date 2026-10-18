@@ -13,16 +13,17 @@
 {% endblock header %}
 {% block content %}
     {% comment %}
-        The unit's own opening band, then the desk, then where it meets. The
-        band is the unit introducing itself, so it comes first; the desk and
-        the address under it are the visitor's half of the page and appear
-        only for a reader who is not signed in, since a member's `/` is the
-        tool and the unit's page is at `/unite/`.
+        The unit's own opening band, then the blocks below it in the order the
+        troop chose on the public page card. The band is the introduction and
+        is not one of the blocks; the desk and the place are the visitor's half
+        of the page, rendered at `/` for an anonymous visitor and at `/unite/`
+        for everyone — a member's `/` is the tool.
 
-        Every block is the troop's to switch off on the public page card. A
-        band that is off would leave the page without its heading, so the unit
-        names itself for a screen reader and the visible blocks keep their own
-        levels.
+        Every block is the troop's to switch off. A band that is off would
+        leave the page without its heading, so the unit names itself for a
+        screen reader and the visible blocks keep their own levels. A block
+        with nothing written in it is left out rather than rendered as an
+        empty sheet.
     {% endcomment %}
     {% if not homepage_band_enabled %}
         <h1 class="visually-hidden">{{ site_name }}</h1>
@@ -30,34 +31,23 @@
     {% if homepage_band_enabled %}
         {% include "homepage/snippets/home_default.html" %}
     {% endif %}
-    {% if show_desk %}
-        {% if homepage_desk_enabled %}
+    {% for block in public_blocks %}
+        {% if block == "desk" and show_desk and homepage_desk_enabled %}
             {% include "homepage/snippets/desk.html" %}
-        {% endif %}
-        {% if homepage_place_enabled %}
+        {% elif block == "place" and show_desk and homepage_place_enabled %}
             {% include "homepage/snippets/place.html" %}
-        {% endif %}
-    {% endif %}
-    {% comment %}
-        The two content blocks close the visitor's half of the page: a longer
-        introduction and the questions a parent asks before registering. Both
-        are plain text, so a block with nothing written in it is left out
-        rather than rendered as an empty sheet.
-    {% endcomment %}
-    {% if homepage_about_enabled or homepage_faq_enabled %}
-        {% if homepage_about_text or homepage_faq_text %}
-            <section class="notes">
+        {% elif block == "about" and homepage_about_enabled and homepage_about_text %}
+            <section class="notes" data-public-block="about">
                 <div class="container">
-                    <div class="notes-inner">
-                        {% if homepage_about_enabled and homepage_about_text %}
-                            {% include "homepage/snippets/about.html" %}
-                        {% endif %}
-                        {% if homepage_faq_enabled and homepage_faq_text %}
-                            {% include "homepage/snippets/faq.html" %}
-                        {% endif %}
-                    </div>
+                    <div class="notes-inner">{% include "homepage/snippets/about.html" %}</div>
+                </div>
+            </section>
+        {% elif block == "faq" and homepage_faq_enabled and homepage_faq_text %}
+            <section class="notes" data-public-block="faq">
+                <div class="container">
+                    <div class="notes-inner">{% include "homepage/snippets/faq.html" %}</div>
                 </div>
             </section>
         {% endif %}
-    {% endif %}
+    {% endfor %}
 {% endblock content %}

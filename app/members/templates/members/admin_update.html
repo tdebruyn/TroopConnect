@@ -107,6 +107,9 @@
                             {{ form.photo_consent | add_class:"form-check-input" }}
                             <label for="id_photo_consent">{{ form.photo_consent.label }}</label>
                         </div>
+                        {% if form.photo_consent.help_text %}
+                            <div class="form-text" id="{{ form.photo_consent.auto_id }}_helptext">{{ form.photo_consent.help_text }}</div>
+                        {% endif %}
                         <div class="alert-danger">{{ form.photo_consent.errors }}</div>
                         <div class="form-label">{{ form.totem.label_tag }}</div>
                         <div class="input-group">{{ form.totem| add_class:"form-control" }}</div>

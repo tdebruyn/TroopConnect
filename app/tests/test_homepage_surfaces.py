@@ -11,6 +11,7 @@ the sentence out of the catalogue.
 from datetime import date, timedelta
 from decimal import Decimal
 
+from django import forms
 from django.core.exceptions import ValidationError
 from django.urls import reverse
 from django.utils import timezone, translation
@@ -27,6 +28,7 @@ from homepage.views import (
     _household_dues,
     _siblings_are_discounted,
 )
+from members.forms import PublicPageSettingsForm
 from members.models import (
     Account,
     Branch,
@@ -485,10 +487,24 @@ class PublicHomepageTest(DeskTestBase):
         response = self.client.get("/", {"annee": year})
         self.assertContains(response, f"{reverse('account_signup')}?annee={year}")
 
-    def test_the_units_own_page_is_public_and_carries_no_desk(self):
+    def test_the_units_own_page_is_public_and_carries_the_desk(self):
+        """`/unite/` is the public page for everyone, a signed-in reader
+        included, so it carries the same visitor's half as an anonymous `/`."""
         response = self.client.get("/unite/")
         self.assertEqual(response.status_code, 200)
-        self.assertNotContains(response, "desk-question")
+        self.assertContains(response, "desk-question")
+
+    def test_the_unit_page_swaps_the_desk_answer_like_the_homepage(self):
+        """The desk's year links are relative, so without the partial the
+        whole page would be swapped into the answer region."""
+        year = self.year_in(self.louveteaux)
+
+        response = self.client.get(
+            reverse("unit_page"), {"annee": year}, HTTP_HX_REQUEST="true"
+        )
+
+        self.assertNotContains(response, "<html")
+        self.assertContains(response, f"{reverse('account_signup')}?annee={year}")
 
 
 class TimelineTest(TroopSettingsTestCase):
@@ -891,8 +907,10 @@ class MemberHomepageTest(DeskTestBase):
         body = response.content.decode()
         self.assertContains(response, self.section.name)
         self.assertEqual(body.count('class="member-panel"'), 1)
-        # A section panel carries a leader's own action and no child's avatar.
-        self.assertIn(reverse("members:agenda_event_create"), body)
+        # The tile states the section; acting on it belongs to the tools, so
+        # the panel carries neither a foot nor the duplicate doors.
+        self.assertNotIn("member-panel-foot", body)
+        self.assertNotIn(reverse("members:agenda_event_create"), body)
         self.assertNotIn("member-avatar", body)
 
     def test_the_panels_follow_the_agenda_module(self):
@@ -943,7 +961,10 @@ class MemberHomepageTest(DeskTestBase):
         self.assertIn("member-panel", body)
         self.assertIn(self.section.name, body)
 
-    def test_a_sections_own_leader_is_offered_the_write(self):
+    def test_a_sections_own_leader_writes_from_the_agenda(self):
+        """The board no longer repeats the agenda's own actions on the tile:
+        the leader reaches the agenda from the tools, and adds an activity
+        there, where the button belongs."""
         person = Person.objects.create(
             first_name="Lea", last_name="Leader",
             primary_role=self.leader_role, status="a",
@@ -955,9 +976,14 @@ class MemberHomepageTest(DeskTestBase):
             user=person, section=self.section, school_year=self.school_year,
         )
         self.client.force_login(account)
-        self.assertIn(
+
+        self.assertNotIn(
             reverse("members:agenda_event_create"),
             self.client.get("/").content.decode(),
+        )
+        self.assertIn(
+            reverse("members:agenda_event_create"),
+            self.client.get(reverse("members:agenda")).content.decode(),
         )
 
     def test_a_unit_admin_gets_the_section_tools_under_the_unit(self):
@@ -1077,6 +1103,7 @@ class MemberHomepageTest(DeskTestBase):
                 reverse("members:add_new_child"),
                 reverse("members:add_key_child"),
                 reverse("members:agenda"),
+                reverse("members:contact_leaders"),
             ],
         )
         self.assertTrue(group["no_children"])
@@ -1095,6 +1122,7 @@ class MemberHomepageTest(DeskTestBase):
                 reverse("members:agenda"),
                 reverse("members:add_new_child"),
                 reverse("members:add_key_child"),
+                reverse("members:contact_leaders"),
             ],
         )
         self.assertFalse(group["no_children"])
@@ -1354,6 +1382,23 @@ class MemberDuesTest(FinanceTestBase):
         self.client.force_login(self.parent1_account)
         self.assertContains(self.client.get("/"), reverse("finance:billing"))
 
+    def test_a_parent_can_message_the_treasurer_from_the_balance(self):
+        treasurer = Person.objects.create(
+            first_name="Tess", last_name="Treasurer",
+            primary_role=self.role_parent, status="a",
+        )
+        treasurer.roles.add(Role.objects.get(short="t"))
+        Account.objects.create_user(
+            email="tres@test.com", password="testpass", person=treasurer,
+        )
+
+        self.client.force_login(self.parent1_account)
+        response = self.client.get("/")
+        url = f"{reverse('members:contact_leaders')}?to=treasurer"
+        self.assertContains(response, url)
+        # The door opens the dialog; the plain href remains the fallback.
+        self.assertContains(response, f'hx-get="{url}"')
+
     def test_the_band_is_gone_when_the_troop_runs_without_fees(self):
         settings_row = TroopSettings.get_settings()
         settings_row.fees_enabled = False
@@ -1388,6 +1433,87 @@ class MemberDuesTest(FinanceTestBase):
 
         self.client.force_login(self.parent1_account)
         self.assertContains(self.client.get("/"), "member-house-late")
+
+
+class PublicPageOrderTest(TroopSettingsTestCase):
+    """The troop chooses the order of the blocks under the introduction."""
+
+    def setUp(self):
+        super().setUp()
+        row = TroopSettings.get_settings()
+        row.homepage_about_enabled = True
+        row.homepage_about_text = "About the unit."
+        row.homepage_faq_enabled = True
+        row.homepage_faq_text = "A question?\n\nAn answer."
+        row.footer_address = "Rue Test 1, 1000 Bruxelles"
+        row.homepage_block_order = "faq,place,desk,about"
+        row.save()
+
+    def positions(self, content, keys):
+        return [content.find(f'data-public-block="{key}"') for key in keys]
+
+    def test_the_blocks_follow_the_stored_order(self):
+        content = self.client.get("/").content.decode()
+        positions = self.positions(content, ("faq", "place", "desk", "about"))
+        self.assertTrue(all(position >= 0 for position in positions))
+        self.assertEqual(positions, sorted(positions))
+
+    def test_the_unit_page_carries_every_enabled_block_in_order(self):
+        """`/unite/` is the same page an anonymous visitor gets at `/`: the
+        desk and the place included, in the stored order."""
+        content = self.client.get(reverse("unit_page")).content.decode()
+        positions = self.positions(content, ("faq", "place", "desk", "about"))
+        self.assertTrue(all(position >= 0 for position in positions))
+        self.assertEqual(positions, sorted(positions))
+
+    def test_each_block_needs_its_own_position(self):
+        form = PublicPageSettingsForm(
+            instance=TroopSettings.get_settings(),
+            data={
+                "position_desk": 1,
+                "position_place": 1,
+                "position_about": 3,
+                "position_faq": 4,
+            },
+        )
+        self.assertFalse(form.is_valid())
+        self.assertTrue(
+            any(
+                "position" in str(error).lower()
+                for error in form.non_field_errors()
+            )
+        )
+
+    def test_the_form_stores_the_positions(self):
+        row = TroopSettings.get_settings()
+        form = PublicPageSettingsForm(instance=row)
+        data = {}
+        for name, field in form.fields.items():
+            if name.startswith("position_"):
+                continue
+            if isinstance(
+                field.widget, (forms.FileInput, forms.ClearableFileInput)
+            ):
+                continue
+            value = getattr(row, name, "")
+            if isinstance(field, forms.BooleanField):
+                data[name] = "on" if value else ""
+            else:
+                data[name] = "" if value is None else value
+        data.update(
+            {
+                "position_desk": 3,
+                "position_place": 1,
+                "position_about": 2,
+                "position_faq": 4,
+            }
+        )
+
+        form = PublicPageSettingsForm(instance=row, data=data)
+        self.assertTrue(form.is_valid(), form.errors)
+        form.save()
+        row.refresh_from_db()
+        self.assertEqual(row.homepage_block_order, "place,about,desk,faq")
 
 
 class PlaceBandTest(MediaRootTestCase):
@@ -1481,9 +1607,9 @@ class PlaceBandTest(MediaRootTestCase):
         self.assertContains(response, "place-address")
         self.assertNotContains(response, "place-map")
 
-    def test_the_unit_page_carries_no_place_band(self):
-        """The troop's own page is at `/unite/`; the band belongs to the
-        visitor's page, like the desk it sits under."""
+    def test_the_unit_page_carries_the_place_band(self):
+        """The public page is one page at two URLs, so the place band sits
+        under the desk at `/unite/` exactly as it does for an anonymous `/`."""
         troop = TroopSettings.get_settings()
         troop.footer_address = "Rue Achille Bauduin 89"
         troop.save()
@@ -1491,4 +1617,5 @@ class PlaceBandTest(MediaRootTestCase):
         response = self.client.get("/unite/")
 
         self.assertEqual(response.status_code, 200)
-        self.assertNotContains(response, "place-title")
+        self.assertContains(response, 'data-public-block="place"')
+        self.assertContains(response, "place-address")

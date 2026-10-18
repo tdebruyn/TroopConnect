@@ -274,7 +274,7 @@ def household_groups(school_year):
             enrollment__school_year=school_year,
         )
         .select_related("primary_role")
-        .prefetch_related("households")
+        .prefetch_related("households", "as_child__parent")
         .distinct()
         .order_by("birthday")
     )
@@ -287,7 +287,7 @@ def household_groups(school_year):
         if household is not None:
             bucket = explicit.setdefault(household.pk, (household, []))
         else:
-            bucket = inferred.setdefault(member.address or "", (None, []))
+            bucket = inferred.setdefault(member.effective_address(), (None, []))
         bucket[1].append(member)
 
     groups = [

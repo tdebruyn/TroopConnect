@@ -1843,6 +1843,31 @@ body {
   font-weight: 700;
 }
 
+/* The responsibilities beyond the reader's primary role. They are chips rather
+   than a sentence so two or three read as a set, and they keep the ink on a
+   tint of the sections' green — the same 7% the tool clusters use — so a duty
+   placed by the unit reads as part of the board rather than as another label.
+   They wrap; a role name is the federation's and its length is not ours. */
+.member-roles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.9rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.member-role {
+  padding: 0.35rem 0.8rem;
+  border-radius: var(--site-pill);
+  background-color: color-mix(in srgb, #296f52 7%, #fff);
+  color: #0a4275;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.3;
+  box-shadow: 0 0.2rem 0.6rem rgba(10, 66, 117, 0.06);
+}
+
 /* A flex row, not a grid: the number of tiles follows the reader's family or
    sections, and every count has to leave a filled row. The grow weights are
    deliberately unequal — two people read as roughly 57/43, three as 44/31/25 —
@@ -2178,18 +2203,17 @@ body {
 
 /* A leader answers for exactly one section, so that tile owns the row and is
    laid out across it: identity and attendance on the left, the next commitment
-   on the right, the actions closing both. The stacked version below the grid
-   break is the same tile for a phone, where the two readings would each get
-   half a column and neither would be readable. */
+   on the right. The stacked version below the grid break is the same tile for a
+   phone, where the two readings would each get half a column and neither would
+   be readable. */
 @media (min-width: 992px) {
   .member-panel[data-kind="section"] {
     display: grid;
     grid-template-columns: minmax(16rem, 1fr) minmax(0, 1.5fr);
-    grid-template-rows: auto 1fr auto;
+    grid-template-rows: auto 1fr;
     grid-template-areas:
       "head event"
-      "presence event"
-      "foot foot";
+      "presence event";
   }
 
   .member-panel[data-kind="section"] .member-panel-head {
@@ -2209,10 +2233,6 @@ body {
     grid-area: presence;
     align-self: start;
     margin: 0 1.5rem 1.25rem;
-  }
-
-  .member-panel[data-kind="section"] .member-panel-foot {
-    grid-area: foot;
   }
 }
 
@@ -3460,4 +3480,191 @@ a.message-tile:focus-visible .message-open {
   .page-activity-head {
     display: none;
   }
+}
+
+/* ---------------------------------------------------------------------------
+   Writing to a leader (members/contact_leaders.html).
+
+   The form is one sheet on the member ground: the board's white tile at page
+   scale, so a parent who arrived from the board recognises the surface rather
+   than meeting a second form style. The copy note is a paper well, like a
+   field, because it is a fact about the address rather than a second control.
+--------------------------------------------------------------------------- */
+.contact-sheet {
+  width: 100%;
+  max-width: 46rem;
+}
+
+.contact-copy-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  margin: 1.5rem 0 0;
+  padding: 0.85rem 1rem;
+  border-radius: 0.25rem;
+  background-color: #f2f5f8;
+  color: #515a63;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+/* The icon is a mark, not a colour: the sheet already spends the ink, and a
+   tinted note would read as a tool cluster rather than as a quiet fact. */
+.contact-copy-note .bi {
+  flex: none;
+  margin-top: 0.1rem;
+  color: #0a4275;
+}
+
+/* The confirmation is the same sheet with its decision stated first. The mark
+   is the board's icon square at one step larger, and the sentence under it
+   takes the weight a page title would without claiming to be one. */
+.contact-confirm-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.75rem;
+  background-color: color-mix(in srgb, #0a4275 7%, #fff);
+  color: #0a4275;
+  font-size: 1.375rem;
+}
+
+.contact-confirm-title {
+  margin: 1rem 0 0;
+  font-size: 1.1875rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: #0a4275;
+}
+
+.contact-confirm-note {
+  margin: 0.4rem 0 0;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: #515a63;
+}
+
+/* ---------------------------------------------------------------------------
+   "Parent actif" on the profile (members/profile.html).
+
+   It is a choice about the reader, not a field of the account, so it sits in
+   its own tinted block rather than in the run of inputs: a parent whose
+   account type is locked by their child still has to be able to find it.
+--------------------------------------------------------------------------- */
+.parent-active-choice {
+  margin-top: 1rem;
+  padding: 1rem 1.25rem;
+  border-radius: 0.5rem;
+  background-color: color-mix(in srgb, #296f52 7%, #fff);
+}
+
+.parent-active-choice .form-check-label {
+  font-weight: 700;
+}
+
+.parent-active-choice .form-text {
+  margin-top: 0.35rem;
+  color: #515a63;
+}
+
+/* The recipient choices. Each is a row so a long role name wraps instead of
+   being cut off by a select on a phone; the rows keep the label at reading
+   size, because this is the one choice the form exists to make clear. */
+.contact-recipient + .contact-recipient {
+  margin-top: 0.45rem;
+}
+
+.contact-recipient .form-check-label {
+  line-height: 1.4;
+}
+
+/* Social links in the footer: the federation's marks stand where the words
+   did. Sized to the link text and aligned to its baseline so the row still
+   reads as one line. */
+.footer-links .bi-facebook,
+.footer-links .bi-instagram {
+  font-size: 1.1rem;
+  vertical-align: -0.18em;
+}
+
+/* The reported-absence line is the one line in a section tile that opens
+   something. It keeps the absence ink and weight, adds the row arrow, and
+   underlines its words on hover so the line reads as the door it is. */
+a.member-presence {
+  text-decoration: none;
+}
+
+a.member-presence:hover .member-presence-label,
+a.member-presence:focus-visible .member-presence-label {
+  text-decoration: underline;
+}
+
+a.member-presence:focus-visible {
+  outline: 2px solid #0a4275;
+  outline-offset: 2px;
+  border-radius: 0.25rem;
+}
+
+.member-presence-arrow {
+  margin-left: auto;
+  font-size: 0.8rem;
+  opacity: 0.55;
+}
+
+/* The public page's block order (members/_settings_public_page.html). Four
+   positions side by side on a wide card, one per row on a phone; the block's
+   own switch and words stay in their modules below. */
+.page-order {
+  margin: 0 0 1.5rem;
+  padding: 1rem 1.25rem;
+  border-radius: 0.5rem;
+  background-color: color-mix(in srgb, #296f52 7%, #fff);
+}
+
+.page-order .form-label {
+  font-weight: 700;
+}
+
+.page-order-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem 1.5rem;
+}
+
+.page-order-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.page-order-row .form-label {
+  margin: 0;
+  font-weight: 400;
+}
+
+.page-order-control {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+}
+
+.page-order-control .form-select {
+  width: 5rem;
+}
+
+@media (max-width: 575.98px) {
+  .page-order-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Two content blocks placed next to each other share one band: the second
+   drops its top padding so the order control does not turn one surface into
+   two with a doubled gap between them. */
+.notes + .notes {
+  padding-top: 0;
 }

@@ -4177,3 +4177,220 @@ msgstr "Geavanceerde instellingen"
 
 msgid "Technical settings, rarely needed"
 msgstr "Technische instellingen, zelden nodig"
+
+#: members/templates/members/contact_leaders.html — a parent writing to a leader.
+msgid "Contact a leader"
+msgstr "Contacteer een verantwoordelijke"
+
+msgid "Send a message to your section's communications lead. The answer will arrive by email."
+msgstr "Stuur een bericht naar de communicatieverantwoordelijke van je sectie. Het antwoord komt per e-mail."
+
+msgid "Send to"
+msgstr "Versturen naar"
+
+msgid "A section without a communications lead sends to all its leaders; if it has none, the unit lead and the site administrator receive it."
+msgstr "Een sectie zonder communicatieverantwoordelijke stuurt naar al haar animatoren; als er geen zijn, ontvangen de verantwoordelijke van het eenheidsteam en de sitebeheerder het bericht."
+
+msgid "A copy will be sent to %(email)s. The reply will arrive at that address."
+msgstr "Een kopie gaat naar %(email)s. Het antwoord komt aan op dat adres."
+
+msgid "Send the message"
+msgstr "Bericht versturen"
+
+msgid "Message sent"
+msgstr "Bericht verstuurd"
+
+msgid "Your message has been sent. A response will come by email."
+msgstr "Je bericht is verstuurd. Het antwoord komt per e-mail."
+
+msgid "The reply will arrive at the address on your account."
+msgstr "Het antwoord komt aan op het adres van je account."
+
+msgid "Back to my space"
+msgstr "Terug naar mijn ruimte"
+
+msgid "Send another message"
+msgstr "Nog een bericht versturen"
+
+msgid "No contact has been set up for your family yet. Ask the unit directly."
+msgstr "Er is nog geen contact voor je gezin ingesteld. Neem rechtstreeks contact op met de eenheid."
+
+msgid "Choose who receives your message."
+msgstr "Kies wie je bericht ontvangt."
+
+msgid "The title cannot contain a line break."
+msgstr "De titel mag geen regelafbreking bevatten."
+
+msgid "%(section)s — communications lead: %(names)s"
+msgstr "%(section)s — communicatieverantwoordelijke: %(names)s"
+
+msgid "%(section)s — no communications lead yet (goes to %(fallback)s)"
+msgstr "%(section)s — nog geen communicatieverantwoordelijke (gaat naar %(fallback)s)"
+
+msgid "the unit lead"
+msgstr "de verantwoordelijke van het eenheidsteam"
+
+msgid "the site administrator"
+msgstr "de sitebeheerder"
+
+msgid "The unit — unit lead: %(names)s"
+msgstr "De eenheid — verantwoordelijke: %(names)s"
+
+msgid "The unit — the site administrator"
+msgstr "De eenheid — de sitebeheerder"
+
+msgid "The unit — %(email)s"
+msgstr "De eenheid — %(email)s"
+
+#: homepage/templates/homepage/member.html — the reader's secondary roles.
+msgid "Your roles"
+msgstr "Jouw rollen"
+
+#: members/contacts.py — the recipient labels, and the emails they compose.
+msgid "the section's leaders"
+msgstr "de animatoren van de sectie"
+
+msgid "the unit lead and the site administrator"
+msgstr "de verantwoordelijke van het eenheidsteam en de sitebeheerder"
+
+msgid "Hello,"
+msgstr "Hallo,"
+
+msgid "%(sender)s (%(email)s) sent you a message through the %(troop)s site."
+msgstr "%(sender)s (%(email)s) stuurde u een bericht via de site %(troop)s."
+
+msgid "Section: %(section)s"
+msgstr "Sectie: %(section)s"
+
+msgid "About: %(children)s"
+msgstr "Betreft: %(children)s"
+
+msgid "Reply directly to this email: your answer will reach %(email)s."
+msgstr "Antwoord rechtstreeks op deze e-mail: uw antwoord komt aan bij %(email)s."
+
+msgid "Copy of your message – %(title)s"
+msgstr "Kopie van uw bericht – %(title)s"
+
+msgid "Hello %(name)s,"
+msgstr "Hallo %(name)s,"
+
+msgid "Your message was sent to %(recipients)s."
+msgstr "Uw bericht werd verstuurd naar %(recipients)s."
+
+msgid "Here is a copy:"
+msgstr "Hier is een kopie:"
+
+msgid "A response will arrive by email at this address."
+msgstr "Een antwoord komt per e-mail aan op dit adres."
+
+#: members/contacts.py and the household balance tile.
+msgid "The unit — treasurer: %(names)s"
+msgstr "De eenheid — penningmeester: %(names)s"
+
+msgid "Message the treasurer"
+msgstr "Bericht sturen naar de penningmeester"
+
+#: members/templates/members/profile.html — "Parent actif".
+msgid "The unit can call on you for occasional help, and can include you when it writes to active parents."
+msgstr "De eenheid kan af en toe een beroep op je doen en je opnemen wanneer ze naar actieve ouders schrijft."
+
+#: The leader's reported-absence dialog.
+msgid "Reported absences"
+msgstr "Gemelde afwezigheden"
+
+msgid "Open the day"
+msgstr "De dag openen"
+
+msgid "No absences reported for that activity."
+msgstr "Geen afwezigheden gemeld voor die activiteit."
+
+#: The public contact form (members/public_views.py) and its footer door.
+msgid "Contact us"
+msgstr "Contacteer ons"
+
+msgid "Write to the unit. The animateur responsable will answer you by email."
+msgstr "Schrijf naar de eenheid. De verantwoordelijke animator van het eenheidsteam antwoordt je per e-mail."
+
+msgid "The unit's animateur responsable will receive your message."
+msgstr "De verantwoordelijke animator van het eenheidsteam ontvangt je bericht."
+
+msgid "Your name"
+msgstr "Je naam"
+
+msgid "Your email"
+msgstr "Je e-mailadres"
+
+msgid "Anti-spam check"
+msgstr "Anti-spamcontrole"
+
+msgid "This check keeps automated messages out."
+msgstr "Deze controle houdt geautomatiseerde berichten buiten."
+
+msgid "The anti-spam check did not pass. Try again."
+msgstr "De anti-spamcontrole is niet geslaagd. Probeer het opnieuw."
+
+msgid "Please complete the anti-spam check."
+msgstr "Vul de anti-spamcontrole in."
+
+msgid "The name cannot contain a line break."
+msgstr "De naam mag geen regelafbreking bevatten."
+
+msgid "Too many messages from this browser. Try again later."
+msgstr "Te veel berichten vanuit deze browser. Probeer het later opnieuw."
+
+msgid "No contact is configured yet."
+msgstr "Er is nog geen contact ingesteld."
+
+msgid "Your message has been sent. The animateur responsable will answer you by email."
+msgstr "Je bericht is verstuurd. De verantwoordelijke animator van het eenheidsteam antwoordt je per e-mail."
+
+msgid "The answer will arrive at the address you gave."
+msgstr "Het antwoord komt aan op het adres dat je opgaf."
+
+msgid "Back to the unit's page"
+msgstr "Terug naar de pagina van de eenheid"
+
+msgid "Website contact — %(name)s"
+msgstr "Contact via de site — %(name)s"
+
+msgid "A visitor wrote through the contact form on the %(troop)s site."
+msgstr "Een bezoeker schreef via het contactformulier op de site van %(troop)s."
+
+msgid "Name: %(name)s"
+msgstr "Naam: %(name)s"
+
+msgid "Email: %(email)s"
+msgstr "E-mail: %(email)s"
+
+#: The public page card's block order.
+msgid "Order of the blocks"
+msgstr "Volgorde van de blokken"
+
+msgid "The blocks below the introduction appear in this order. A block that is switched off keeps its place."
+msgstr "De blokken onder de inleiding verschijnen in deze volgorde. Een uitgeschakeld blok behoudt zijn plaats."
+
+msgid "Each block needs its own position."
+msgstr "Elk blok heeft een eigen positie nodig."
+
+#: Public page block help, once the blocks can be reordered.
+msgid "The hall, the address and its picture."
+msgstr "De zaal, het adres en de foto."
+
+msgid "A longer introduction, on its own sheet."
+msgstr "Een langere inleiding, op een eigen blad."
+
+#: members/forms.py
+msgid "Suitable for their age"
+msgstr "Geschikt voor deze leeftijd"
+
+#: members/forms.py
+msgid "Other sections"
+msgstr "Andere secties"
+
+#: members/forms.py
+msgid "Only the parent can change this for their child."
+msgstr "Alleen een ouder kan deze keuze voor het kind wijzigen."
+
+#: members/forms.py
+msgid "Only the member can change this on their own profile."
+msgstr "Alleen het lid zelf kan deze keuze in het eigen profiel wijzigen."

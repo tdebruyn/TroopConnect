@@ -48,6 +48,15 @@
                 </div>
             </div>
             <div class="mb-3 form-group row">
+                <div class="col-sm-8 offset-sm-4">
+                    <div class="form-check form-switch">
+                        {% render_field form.photo_consent class="form-check-input" %}
+                        <label class="form-check-label" for="{{ form.photo_consent.id_for_label }}">{{ form.photo_consent.label }}</label>
+                    </div>
+                    <div class="invalid-feedback {{ WIDGET_ERROR_CLASS }}">{{ form.photo_consent.errors|first }}</div>
+                </div>
+            </div>
+            <div class="mb-3 form-group row">
                 <label for="{{ form.phone.id_for_label }}" class="col-form-label col-sm-4">{{ form.phone.label }}</label>
                 <div class="col-sm-8">
                     <div class="input-group">
@@ -96,6 +105,19 @@
             </div>
         </div>
         <div class="modal-footer">
+            {% if child %}
+                <div class="me-auto">
+                    {% if child.has_section %}
+                        <a class="btn btn-outline-danger"
+                           href="{% url 'members:deregister_child' pk=child.pk %}">{% trans "Deregister" %}</a>
+                    {% else %}
+                        <a class="btn btn-outline-danger"
+                           href="{% url 'members:remove_child' pk=child.pk %}">{% trans "Remove" %}</a>
+                    {% endif %}
+                    <a class="btn btn-outline-warning"
+                       href="{% url 'members:dettach_child' pk=child.pk %}">{% trans "Detach" %}</a>
+                </div>
+            {% endif %}
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
             <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
         </div>

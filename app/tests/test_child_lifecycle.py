@@ -473,6 +473,55 @@ class HtmxGuardTest(ChildLifecycleTestBase):
         self.assertEqual(response.status_code, 404)
 
 
+class ChildEditActionsTest(ChildLifecycleTestBase):
+    """The edit modal carries the same destructive doors as the child list:
+    deregister an enrolled child, remove one that never got a section, and
+    detach either — each one leading to its own confirmation page, which
+    still enforces the rule (adult + own account, or another parent)."""
+
+    def edit(self, child):
+        return self.client.get(
+            reverse("members:edit_child", args=[child.pk]), HTTP_HX_REQUEST="true"
+        )
+
+    def test_an_enrolled_child_offers_deregister_and_detach(self):
+        child = self.attach(self.make_child())
+        self.enroll(child)
+
+        response = self.edit(child)
+
+        self.assertContains(
+            response, reverse("members:deregister_child", args=[child.pk])
+        )
+        self.assertContains(
+            response, reverse("members:dettach_child", args=[child.pk])
+        )
+        self.assertNotContains(
+            response, reverse("members:remove_child", args=[child.pk])
+        )
+
+    def test_a_child_without_a_section_offers_remove_and_detach(self):
+        child = self.attach(self.make_child())
+
+        response = self.edit(child)
+
+        self.assertContains(
+            response, reverse("members:remove_child", args=[child.pk])
+        )
+        self.assertContains(
+            response, reverse("members:dettach_child", args=[child.pk])
+        )
+        self.assertNotContains(
+            response, reverse("members:deregister_child", args=[child.pk])
+        )
+
+    def test_the_add_form_offers_no_destructive_action(self):
+        response = self.client.get(reverse("members:add_new_child"))
+
+        self.assertNotContains(response, reverse("members:remove_child", args=[1]))
+        self.assertNotContains(response, reverse("members:dettach_child", args=[1]))
+
+
 class AddChildByKeyTest(ChildLifecycleTestBase):
     def test_get_renders_the_form(self):
         response = self.client.get(reverse("members:add_key_child"))

@@ -23,8 +23,26 @@
                   <small class="text-muted d-block mt-1">{% blocktranslate with reason=form.lock_reason %}Account type cannot be changed. Reason: {{ reason }}.{% endblocktranslate %}</small>
                 </div>
                 {{ form.primary_role }}
-                {# Hidden, but still submitted: otherwise a locked Parent loses "Parent actif". #}
-                {{ form.parent_active }}
+                {% comment %}
+                  A Parent whose account type is locked by a child or an
+                  enrolment still chooses whether they help occasionally. The
+                  other locked roles cannot hold "Parent actif", so their field
+                  is the hidden one that only preserves a (false) value.
+                {% endcomment %}
+                {% if user.person.primary_role.short == "p" %}
+                  <div class="parent-active-choice">
+                    <div class="form-check form-switch">
+                      {{ form.parent_active|add_class:"form-check-input" }}
+                      <label class="form-check-label" for="id_parent_active">{{ form.parent_active.label }}</label>
+                    </div>
+                    <div class="form-text">
+                      {% trans "The unit can call on you for occasional help, and can include you when it writes to active parents." %}
+                    </div>
+                  </div>
+                {% else %}
+                  {{ form.parent_active }}
+                {% endif %}
+                <div class="alert-danger">{{ form.parent_active.errors }}</div>
               {% else %}
                 <div class="form-label">{% trans "Account type" %}</div>
                 <div class="input-group">
@@ -36,9 +54,14 @@
                   {% endfor %}
                 </div>
                 <div id="secondary-role-container" class="d-none">
-                  <div class="mb-3 mt-3 form-check form-switch">
-                    {{ form.parent_active }}
-                    <label class="form-check-label" for="id_parent_active">{{ form.parent_active.label }}</label>
+                  <div class="parent-active-choice">
+                    <div class="form-check form-switch">
+                      {{ form.parent_active|add_class:"form-check-input" }}
+                      <label class="form-check-label" for="id_parent_active">{{ form.parent_active.label }}</label>
+                    </div>
+                    <div class="form-text">
+                      {% trans "The unit can call on you for occasional help, and can include you when it writes to active parents." %}
+                    </div>
                   </div>
                   <div class="alert-danger">{{ form.parent_active.errors }}</div>
                 </div>

@@ -28,6 +28,7 @@ from .absences import notify_section
 from .constants import (
     ERROR_MESSAGES,
 )
+from .contacts import contact_targets, send_parent_message
 from .filters import PersonFilter
 from .forms import (
     AbsenceForm,
@@ -36,6 +37,7 @@ from .forms import (
     CalendarSettingsForm,
     ChildForm,
     ChildFromKey,
+    ContactLeadersForm,
     DocumentForm,
     LocaleSettingsForm,
     ModuleSettingsForm,
@@ -67,7 +69,9 @@ from .models import (
 )
 from .modules import AGENDA, FEES, module_enabled, requires_module
 from .permissions import (
+    ANIME,
     can_access_finance,
+    can_contact_leaders,
     can_delete_member,
     can_edit_section_agenda,
     can_manage_members,
@@ -228,7 +232,16 @@ class AdminListView(UserPassesTestMixin, ListView):
                 # Check age compatibility with section's branch, using the same
                 # age definition the passage task and the role rules use.
                 person.age_mismatch = False
-                if enrollment and person.birthday and enrollment.section.branch:
+                # A participant's branch is chosen by age, so a mismatch is a
+                # placement to fix. An animateur is enrolled in the section
+                # they lead, and their age has nothing to do with its branch.
+                if (
+                    enrollment
+                    and person.primary_role
+                    and person.primary_role.short == ANIME
+                    and person.birthday
+                    and enrollment.section.branch
+                ):
                     age_at_reference = troop.age_at_reference(person, selected_year)
                     branch = enrollment.section.branch
                     if (
@@ -304,7 +317,7 @@ class AdminListView(UserPassesTestMixin, ListView):
     def get_queryset(self):
         queryset = self._get_filterset().qs.select_related(
             "primary_role"
-        ).prefetch_related("households")
+        ).prefetch_related("households", "as_child__parent")
 
         ordering = self.get_ordering()
         if ordering:
@@ -397,9 +410,24 @@ class AdminUpdateView(UserPassesTestMixin, UpdateView):
             ),
         }
 
+    def _can_edit_photo_consent(self):
+        """Photo consent follows the family link, not the staff role.
+
+        A parent who also holds a unit role keeps the right to change it for
+        their own child on this page; another admin's child stays read-only.
+        A member editing themselves keeps it too, as on their profile.
+        """
+        reader = get_person(self.request.user)
+        if reader is None:
+            return False
+        return self.object.pk == reader.pk or self.object.parents.filter(
+            pk=reader.pk
+        ).exists()
+
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs["can_assign_roles"] = can_manage_roles(self.request.user)
+        kwargs["can_edit_photo_consent"] = self._can_edit_photo_consent()
         return kwargs
 
     def get(self, request, *args, **kwargs):
@@ -408,6 +436,7 @@ class AdminUpdateView(UserPassesTestMixin, UpdateView):
         form = form_class(
             instance=self.object,
             can_assign_roles=can_manage_roles(self.request.user),
+            can_edit_photo_consent=self._can_edit_photo_consent(),
         )
 
         if hasattr(self.object, "account"):
@@ -498,7 +527,12 @@ class ProfileView(LoginRequiredMixin, UpdateView):
 
 
 def add_new_child_view(request):
-    form = ChildForm()
+    form = ChildForm(
+        initial={
+            "photo_consent": request.user.person.photo_consent,
+            "address": request.user.person.address,
+        }
+    )
     if request.method == "POST":
         form = ChildForm(request.POST)
         if form.is_valid():
@@ -521,9 +555,8 @@ def add_new_child_view(request):
                 return render(request, "members/child_form.html", {"form": form})
 
             child = form.save(commit=False)
-            child.address = request.user.person.address
+            child.address = child.address or request.user.person.address
             child.phone = request.user.person.phone
-            child.photo_consent = request.user.person.photo_consent
             child.save()
             form.save_account(child)
             child.parents.add(request.user.person)
@@ -1652,7 +1685,12 @@ def _absences_by_event(user, events, sees_every_notice):
 @login_required
 @requires_module(AGENDA)
 def agenda_day(request):
-    """The activities of one day, into the frame beneath the grid (HTMX)."""
+    """The activities of one day, into the frame beneath the grid (HTMX).
+
+    A plain visit gets the same content inside the page shell: the member
+    board links here with an ordinary href as the fallback for its absence
+    dialog, so the bare fragment would open unstyled in the reader's browser.
+    """
     context = _agenda_scope(request)
     section = context["section"]
     if section is None:
@@ -1676,7 +1714,12 @@ def agenda_day(request):
             "can_report": reportable_children(request.user, section).exists(),
         }
     )
-    return render(request, "members/_agenda_day.html", context)
+    template = (
+        "members/_agenda_day.html"
+        if is_htmx(request)
+        else "members/agenda_day.html"
+    )
+    return render(request, template, context)
 
 
 @login_required
@@ -1814,6 +1857,40 @@ def absence_report(request, pk):
 
 @login_required
 @requires_module(AGENDA)
+def event_absences(request, pk):
+    """The reported absences for one activity, as the board's dialog.
+
+    A leader's home tile says how many children are missing; this is the list
+    behind that number. Only the people who may read the whole register see
+    it — the section's leaders and the unit team — so a parent cannot reach
+    another family's reasons by guessing the URL. A plain request falls back
+    to the agenda's day view, which carries the same notices.
+    """
+    event = get_object_or_404(SectionEvent, pk=pk)
+    if not (
+        can_manage_unit(request.user)
+        or can_edit_section_agenda(request.user, event.section)
+    ):
+        raise Http404
+
+    if not is_htmx(request):
+        day = event.start_date.isoformat()
+        return redirect(
+            f"{reverse('members:agenda_day')}?{urlencode({'section': event.section.pk, 'date': day})}"
+        )
+
+    notices = event.absences.select_related("child").order_by(
+        "child__last_name", "child__first_name"
+    )
+    return render(
+        request,
+        "members/_event_absences.html",
+        {"event": event, "notices": notices},
+    )
+
+
+@login_required
+@requires_module(AGENDA)
 @require_POST
 def absence_cancel(request, pk):
     """Withdraw an absence notice: the child's family, or a section leader.
@@ -1835,6 +1912,90 @@ def absence_cancel(request, pk):
     absence.delete()
     messages.success(request, _("The absence has been withdrawn."))
     return redirect(_agenda_url(event.section, event.start_date))
+
+
+# --- Writing to a leader -----------------------------------------------------
+#
+# A parent's one route to a person rather than a mailbox. The recipients are
+# resolved from the reader's own children (members.contacts); this is only the
+# HTTP around that.
+
+
+@login_required
+def contact_leaders(request):
+    """A parent writes to their section's communications lead or the unit team."""
+    if not can_contact_leaders(request.user):
+        raise Http404
+
+    targets = contact_targets(request.user)
+    # A link from the balance tile names the treasurer; the key is only an
+    # initial value, and the form re-checks it against the resolved targets.
+    requested = request.GET.get("to")
+    initial = (
+        {"recipient": requested}
+        if any(target.key == requested for target in targets)
+        else {}
+    )
+    form = (
+        ContactLeadersForm(request.POST or None, targets=targets, initial=initial)
+        if targets
+        else None
+    )
+    htmx = is_htmx(request)
+    if form is not None and request.method == "POST" and form.is_valid():
+        send_parent_message(
+            account=request.user,
+            target=form.target,
+            subject=form.cleaned_data["title"],
+            body=form.cleaned_data["body"],
+        )
+        if htmx:
+            # The empty body is what dialog.js reads as "hide the modal"; the
+            # toast carries the sentence the confirmation page states.
+            return HttpResponse(
+                status=204,
+                headers={
+                    "HX-Trigger": json.dumps(
+                        {
+                            "showMessage": _(
+                                "Your message has been sent. A response will "
+                                "come by email."
+                            )
+                        }
+                    )
+                },
+            )
+        return redirect("members:contact_leaders_sent")
+
+    if htmx and not targets:
+        raise Http404
+
+    return render(
+        request,
+        "members/contact_leaders_modal.html"
+        if htmx
+        else "members/contact_leaders.html",
+        {
+            "form": form,
+            "targets": targets,
+            "has_missing_communication": any(
+                target.missing_communication for target in targets
+            ),
+        },
+    )
+
+
+@login_required
+def contact_leaders_sent(request):
+    """The confirmation that closes the parent's task.
+
+    A page rather than a toast: the sentence a parent has to be able to trust
+    is that an answer will arrive by email, and a message that disappears from
+    a corner of the screen is a poor place to keep a promise.
+    """
+    if not can_contact_leaders(request.user):
+        raise Http404
+    return render(request, "members/contact_leaders_sent.html")
 
 
 # --- Member import and export ------------------------------------------------

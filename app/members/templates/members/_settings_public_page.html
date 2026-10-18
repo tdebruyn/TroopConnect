@@ -1,7 +1,9 @@
 {% load i18n widget_tweaks %}
 {% comment %}
-  The public page's card: the blocks in the order a visitor meets them, each
-  with its switch and the fields that configure what it shows.
+  The public page's card: the blocks, each with its switch and the fields that
+  configure what it shows, and one order control above them. The order is
+  stored as the page's own sequence, so a block switched off keeps its place
+  while the others close up around it.
 
   A switch with its content a card away would be two things to keep honest, so
   everything a block renders is edited inside its own block. The year-line is
@@ -39,6 +41,26 @@
           hx-encoding="multipart/form-data">
       {% csrf_token %}
       <input type="hidden" name="section" value="{{ section.key }}" />
+
+      <fieldset class="page-order">
+        <legend class="form-label">{% trans "Order of the blocks" %}</legend>
+        <p class="form-text mt-0">
+          {% trans "The blocks below the introduction appear in this order. A block that is switched off keeps its place." %}
+        </p>
+        <div class="page-order-list">
+          {% for field in section.form.order_fields %}
+            <div class="page-order-row">
+              <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+              <div class="page-order-control">
+                {% render_field field class="form-select form-select-sm" %}
+                {% for error in field.errors %}
+                  <div class="alert-danger small" role="alert">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </fieldset>
 
       <div class="page-module">
         <div class="form-check form-switch">

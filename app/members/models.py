@@ -70,6 +70,11 @@ DAY_VALIDATORS = [MinValueValidator(1), MaxValueValidator(31)]
 AGE_REFERENCE_MONTH = 12
 AGE_REFERENCE_DAY = 31
 
+#: The age that separates a participant from a leader. Read on the reference
+#: day like every other age, so assigning a section in the member form puts a
+#: 17-year-old who turns 18 before 31 December on the animator side.
+ADULT_AGE = 18
+
 #: The federation's passage day, 1 May, in the calendar year the school year it
 #: prepares starts in. Fixed for the same reason: a troop choosing its own date
 #: would move every member a year early or a year late. The automatic run
@@ -272,6 +277,26 @@ class Person(models.Model):
             current_date_int = self.current_date_to_int()
             return (current_date_int - birthday_int) > 180000
         return True
+
+    def effective_address(self):
+        """The address to show and bill by: their own, otherwise a parent's.
+
+        A child is registered without an address of their own — the family's
+        address lives on the parent — so billing inference must read the
+        parent's address rather than treat the child as having none and group
+        them with every other address-less member. The primary contact's
+        address wins when several parents are linked.
+        """
+        if self.address:
+            return self.address
+        links = sorted(
+            self.as_child.all(),
+            key=lambda link: (not link.primary_contact, link.pk),
+        )
+        for link in links:
+            if link.parent.address:
+                return link.parent.address
+        return ""
 
     def get_section(self):
         """Return the person's current section, else next year's, else None.
@@ -670,6 +695,13 @@ class Enrollment(models.Model):
         # rather than the other way round.
         school_year = self.school_year.range or self.school_year.name
         return f"{self.user.first_name} - {self.section.name} ({school_year})"
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        # A section is put on a member by the registration team, so an
+        # unconfirmed request cannot hold one: the section is the
+        # confirmation. Archived members are never revived this way.
+        Person.objects.filter(pk=self.user_id, status="r").update(status="a")
 
 
 class SectionEvent(models.Model):
@@ -1090,7 +1122,7 @@ class TroopSettings(models.Model):
     )
     homepage_about_enabled = models.BooleanField(
         default=False,
-        help_text=_("A longer introduction, after the enrolment desk."),
+        help_text=_("A longer introduction, on its own sheet."),
     )
     homepage_about_text = models.TextField(
         blank=True,
@@ -1106,6 +1138,20 @@ class TroopSettings(models.Model):
             "One question per block, separated by an empty line. The first line "
             "is the question; the lines under it are the answer."
         ),
+    )
+
+    #: The blocks the settings page may order. The introduction is not here:
+    #: it opens the page rather than standing among its blocks.
+    HOMEPAGE_BLOCK_KEYS = ("desk", "place", "about", "faq")
+
+    # The settings page writes this from the four position choices; a stored
+    # value is read through ``homepage_blocks_in_order`` so an older row, a
+    # half-written list or a key a later version dropped still renders every
+    # block the page knows. It is not translated: the keys are the code's.
+    homepage_block_order = models.CharField(
+        max_length=64,
+        blank=True,
+        default="desk,place,about,faq",
     )
 
     # --- Retained site content ---------------------------------------------
@@ -1187,6 +1233,25 @@ class TroopSettings(models.Model):
     def clear_cache(cls):
         """Drop the cached row, so the next read picks up the stored values."""
         cache.delete(cls.CACHE_KEY)
+
+    def homepage_blocks_in_order(self):
+        """The public page's blocks in the stored order, with gaps filled.
+
+        The stored list is advisory: an older row, a key a later version
+        dropped, or a hand-edited value must still render every block the page
+        knows. Keys the list omits follow in the product's own order.
+        """
+        stored = [
+            key.strip()
+            for key in (self.homepage_block_order or "").split(",")
+        ]
+        ordered = []
+        for key in stored:
+            if key in self.HOMEPAGE_BLOCK_KEYS and key not in ordered:
+                ordered.append(key)
+        return ordered + [
+            key for key in self.HOMEPAGE_BLOCK_KEYS if key not in ordered
+        ]
 
     def display_short_name(self):
         """The short name, or the full name when none was set."""

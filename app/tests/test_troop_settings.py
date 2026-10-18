@@ -78,6 +78,16 @@ class SettingsPageTest(StaffPageTestBase):
         self.client.login(email="parent@test.com", password="testpass")
         self.assertEqual(self.client.get(self.url).status_code, 403)
 
+    def test_the_public_page_offers_the_block_order(self):
+        """The order control is part of the public page card, not a hidden
+        field: a troop has to be able to see and change the sequence."""
+        self.login_staff()
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 200)
+        for key in ("desk", "place", "about", "faq"):
+            self.assertContains(response, f'id="id_position_{key}"')
+
     def test_staff_see_every_section(self):
         self.login_staff()
         response = self.client.get(self.url)
@@ -262,6 +272,11 @@ class PublicPageSettingsTest(StaffPageTestBase):
             # card carries both, and the message is a required field.
             "registration_open": "on",
             "registration_message": "Les inscriptions sont ouvertes.",
+            # The card's order control posts one position per block.
+            "position_desk": 1,
+            "position_place": 2,
+            "position_about": 3,
+            "position_faq": 4,
             "activities-TOTAL_FORMS": "0",
             "activities-INITIAL_FORMS": "0",
             "activities-MIN_NUM_FORMS": "0",
@@ -629,6 +644,18 @@ class SiteFooterTest(TroopSettingsTestCase):
         troop.save()
         return troop
 
+    def login_reader(self):
+        person = Person.objects.create(
+            first_name="Ré",
+            last_name="Lecteur",
+            primary_role=Role.objects.get(short="p"),
+            status="a",
+        )
+        account = Account.objects.create_user(
+            email="reader@test.be", password="pass", person=person
+        )
+        self.client.force_login(account)
+
     def test_it_carries_what_the_troop_stored(self):
         self._troop(
             name="Les Scouts de Limal",
@@ -638,6 +665,9 @@ class SiteFooterTest(TroopSettingsTestCase):
             contact_phone="010 41 12 34",
         )
 
+        # The direct lines are for readers who are signed in; a visitor gets
+        # the contact form instead (see test_it_is_on_pages_other_than_the_homepage).
+        self.login_reader()
         response = self.client.get(reverse("homepage"))
 
         self.assertContains(response, "site-footer")
@@ -689,11 +719,14 @@ class SiteFooterTest(TroopSettingsTestCase):
         self.assertNotContains(response, "Instagram")
 
     def test_it_is_on_pages_other_than_the_homepage(self):
-        """A footer is the site's steady strip, so it is not per-page."""
+        """A footer is the site's steady strip, so it is not per-page. A
+        visitor gets the contact form there; the address itself is not
+        published to the open web."""
         self._troop(contact_email="contact@example.org")
 
         response = self.client.get(reverse("unit_page"))
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "site-footer")
-        self.assertContains(response, "contact@example.org")
+        self.assertContains(response, reverse("public_contact"))
+        self.assertNotContains(response, "contact@example.org")

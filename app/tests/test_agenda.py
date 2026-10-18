@@ -513,6 +513,27 @@ class AgendaDayFrameTest(AgendaTestBase):
             date=day.isoformat(),
         )
 
+    def test_a_plain_visit_gets_the_page_shell_around_the_day(self):
+        """The board's fallback link is an ordinary href; opening the partial
+        on its own would leave the reader on an unstyled fragment."""
+        self.login("child@test.be")
+
+        response = self.client.get(self.day_url(self.today))
+
+        self.assertTemplateUsed(response, "members/agenda_day.html")
+        self.assertTemplateUsed(response, "members/_agenda_day.html")
+        self.assertContains(response, "<html")
+
+    def test_an_htmx_request_gets_the_bare_frame(self):
+        self.login("child@test.be")
+
+        response = self.client.get(
+            self.day_url(self.today), HTTP_HX_REQUEST="true"
+        )
+
+        self.assertTemplateUsed(response, "members/_agenda_day.html")
+        self.assertNotContains(response, "<html")
+
     def test_the_frame_carries_the_description(self):
         self.login("child@test.be")
 

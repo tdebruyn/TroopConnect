@@ -38,6 +38,19 @@
                     {% blocktranslate count counter=member_children %}{{ counter }} child linked to your account.{% plural %}{{ counter }} children linked to your account.{% endblocktranslate %}
                 {% endif %}
             </p>
+            {% if member_roles %}
+                {% comment %}
+                    A secondary role is a duty the reader carries for the unit
+                    or their section. It is not a badge of status, so it sits
+                    under the summary at reading size rather than over the
+                    title: the page is still about the people below it.
+                {% endcomment %}
+                <ul class="member-roles" aria-label="{% trans 'Your roles' %}">
+                    {% for role in member_roles %}
+                        <li class="member-role">{{ role.name }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
         </header>
 
         <div class="member-board"
@@ -82,6 +95,22 @@
                         <p class="member-house-note member-house-quiet">
                             {% trans "Payments are recorded by the unit's treasurer." %}
                         </p>
+                        {% comment %}
+                            The door exists only when a treasurer does. A
+                            family with a question about money is one step
+                            from the person who records it; the contact form
+                            opens on that recipient rather than making them
+                            find it in the list.
+                        {% endcomment %}
+                        {% if member_treasurer_url %}
+                            <a class="member-house-action"
+                               href="{{ member_treasurer_url }}"
+                               hx-get="{{ member_treasurer_url }}"
+                               hx-target="#dialog">
+                                <span>{% trans "Message the treasurer" %}</span>
+                                <i class="bi bi-arrow-up-right" aria-hidden="true"></i>
+                            </a>
+                        {% endif %}
                     {% endif %}
                     {% if member_can_pay and fees_enabled %}
                         <a class="member-house-action" href="{% url 'finance:billing' %}">

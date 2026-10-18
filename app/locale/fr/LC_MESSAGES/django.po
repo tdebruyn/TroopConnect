@@ -4180,3 +4180,220 @@ msgstr "Paramètres avancés"
 
 msgid "Technical settings, rarely needed"
 msgstr "Réglages techniques, rarement nécessaires"
+
+#: members/templates/members/contact_leaders.html — a parent writing to a leader.
+msgid "Contact a leader"
+msgstr "Contacter un responsable"
+
+msgid "Send a message to your section's communications lead. The answer will arrive by email."
+msgstr "Envoyez un message au responsable communication de votre section. La réponse arrivera par e-mail."
+
+msgid "Send to"
+msgstr "Envoyer à"
+
+msgid "A section without a communications lead sends to all its leaders; if it has none, the unit lead and the site administrator receive it."
+msgstr "Une section sans responsable communication envoie à tous ses animateurs ; s'il n'y en a aucun, l'animateur responsable de l'équipe d'unité et l'administrateur du site le reçoivent."
+
+msgid "A copy will be sent to %(email)s. The reply will arrive at that address."
+msgstr "Une copie sera envoyée à %(email)s. La réponse arrivera à cette adresse."
+
+msgid "Send the message"
+msgstr "Envoyer le message"
+
+msgid "Message sent"
+msgstr "Message envoyé"
+
+msgid "Your message has been sent. A response will come by email."
+msgstr "Votre message a bien été envoyé. Une réponse vous parviendra par e-mail."
+
+msgid "The reply will arrive at the address on your account."
+msgstr "La réponse arrivera à l'adresse de votre compte."
+
+msgid "Back to my space"
+msgstr "Retour à mon espace"
+
+msgid "Send another message"
+msgstr "Envoyer un autre message"
+
+msgid "No contact has been set up for your family yet. Ask the unit directly."
+msgstr "Aucun contact n'est encore prévu pour votre famille. Adressez-vous directement à l'unité."
+
+msgid "Choose who receives your message."
+msgstr "Choisissez qui reçoit votre message."
+
+msgid "The title cannot contain a line break."
+msgstr "Le titre ne peut pas contenir de saut de ligne."
+
+msgid "%(section)s — communications lead: %(names)s"
+msgstr "%(section)s — responsable communication : %(names)s"
+
+msgid "%(section)s — no communications lead yet (goes to %(fallback)s)"
+msgstr "%(section)s — pas encore de responsable communication (va à %(fallback)s)"
+
+msgid "the unit lead"
+msgstr "l'animateur responsable de l'équipe d'unité"
+
+msgid "the site administrator"
+msgstr "l'administrateur du site"
+
+msgid "The unit — unit lead: %(names)s"
+msgstr "L'unité — animateur responsable : %(names)s"
+
+msgid "The unit — the site administrator"
+msgstr "L'unité — l'administrateur du site"
+
+msgid "The unit — %(email)s"
+msgstr "L'unité — %(email)s"
+
+#: homepage/templates/homepage/member.html — the reader's secondary roles.
+msgid "Your roles"
+msgstr "Vos rôles"
+
+#: members/contacts.py — the recipient labels, and the emails they compose.
+msgid "the section's leaders"
+msgstr "les animateurs de la section"
+
+msgid "the unit lead and the site administrator"
+msgstr "l'animateur responsable de l'équipe d'unité et l'administrateur du site"
+
+msgid "Hello,"
+msgstr "Bonjour,"
+
+msgid "%(sender)s (%(email)s) sent you a message through the %(troop)s site."
+msgstr "%(sender)s (%(email)s) vous a envoyé un message depuis le site %(troop)s."
+
+msgid "Section: %(section)s"
+msgstr "Section : %(section)s"
+
+msgid "About: %(children)s"
+msgstr "Concerne : %(children)s"
+
+msgid "Reply directly to this email: your answer will reach %(email)s."
+msgstr "Répondez directement à cet e-mail : votre réponse parviendra à %(email)s."
+
+msgid "Copy of your message – %(title)s"
+msgstr "Copie de votre message – %(title)s"
+
+msgid "Hello %(name)s,"
+msgstr "Bonjour %(name)s,"
+
+msgid "Your message was sent to %(recipients)s."
+msgstr "Votre message a bien été envoyé à %(recipients)s."
+
+msgid "Here is a copy:"
+msgstr "En voici une copie :"
+
+msgid "A response will arrive by email at this address."
+msgstr "Une réponse vous parviendra par e-mail à cette adresse."
+
+#: members/contacts.py and the household balance tile.
+msgid "The unit — treasurer: %(names)s"
+msgstr "L'unité — trésorier : %(names)s"
+
+msgid "Message the treasurer"
+msgstr "Envoyer un message au trésorier"
+
+#: members/templates/members/profile.html — "Parent actif".
+msgid "The unit can call on you for occasional help, and can include you when it writes to active parents."
+msgstr "L'unité peut faire appel à vous à l'occasion, et peut vous inclure lorsqu'elle écrit aux parents actifs."
+
+#: The leader's reported-absence dialog.
+msgid "Reported absences"
+msgstr "Absences signalées"
+
+msgid "Open the day"
+msgstr "Ouvrir la journée"
+
+msgid "No absences reported for that activity."
+msgstr "Aucune absence signalée pour cette activité."
+
+#: The public contact form (members/public_views.py) and its footer door.
+msgid "Contact us"
+msgstr "Nous contacter"
+
+msgid "Write to the unit. The animateur responsable will answer you by email."
+msgstr "Écrivez à l'unité. L'animateur responsable de l'équipe d'unité vous répondra par e-mail."
+
+msgid "The unit's animateur responsable will receive your message."
+msgstr "L'animateur responsable de l'équipe d'unité recevra votre message."
+
+msgid "Your name"
+msgstr "Votre nom"
+
+msgid "Your email"
+msgstr "Votre e-mail"
+
+msgid "Anti-spam check"
+msgstr "Vérification anti-spam"
+
+msgid "This check keeps automated messages out."
+msgstr "Cette vérification écarte les messages automatisés."
+
+msgid "The anti-spam check did not pass. Try again."
+msgstr "La vérification anti-spam n'a pas réussi. Réessayez."
+
+msgid "Please complete the anti-spam check."
+msgstr "Veuillez compléter la vérification anti-spam."
+
+msgid "The name cannot contain a line break."
+msgstr "Le nom ne peut pas contenir de saut de ligne."
+
+msgid "Too many messages from this browser. Try again later."
+msgstr "Trop de messages envoyés depuis ce navigateur. Réessayez plus tard."
+
+msgid "No contact is configured yet."
+msgstr "Aucun contact n'est encore configuré."
+
+msgid "Your message has been sent. The animateur responsable will answer you by email."
+msgstr "Votre message a bien été envoyé. L'animateur responsable de l'équipe d'unité vous répondra par e-mail."
+
+msgid "The answer will arrive at the address you gave."
+msgstr "La réponse arrivera à l'adresse que vous avez indiquée."
+
+msgid "Back to the unit's page"
+msgstr "Retour à la page de l'unité"
+
+msgid "Website contact — %(name)s"
+msgstr "Contact via le site — %(name)s"
+
+msgid "A visitor wrote through the contact form on the %(troop)s site."
+msgstr "Un visiteur a écrit via le formulaire de contact du site %(troop)s."
+
+msgid "Name: %(name)s"
+msgstr "Nom : %(name)s"
+
+msgid "Email: %(email)s"
+msgstr "E-mail : %(email)s"
+
+#: The public page card's block order.
+msgid "Order of the blocks"
+msgstr "Ordre des blocs"
+
+msgid "The blocks below the introduction appear in this order. A block that is switched off keeps its place."
+msgstr "Les blocs sous l'introduction apparaissent dans cet ordre. Un bloc désactivé garde sa place."
+
+msgid "Each block needs its own position."
+msgstr "Chaque bloc doit avoir sa propre position."
+
+#: Public page block help, once the blocks can be reordered.
+msgid "The hall, the address and its picture."
+msgstr "Le local, l'adresse et sa photo."
+
+msgid "A longer introduction, on its own sheet."
+msgstr "Une introduction plus longue, sur sa propre feuille."
+
+#: members/forms.py
+msgid "Suitable for their age"
+msgstr "Correspondant à son âge"
+
+#: members/forms.py
+msgid "Other sections"
+msgstr "Autres sections"
+
+#: members/forms.py
+msgid "Only the parent can change this for their child."
+msgstr "Seul le parent peut modifier ce choix pour son enfant."
+
+#: members/forms.py
+msgid "Only the member can change this on their own profile."
+msgstr "Seul le membre peut modifier ce choix dans son propre profil."

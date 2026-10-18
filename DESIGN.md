@@ -609,10 +609,11 @@ over one summary line; the board follows it at 1.75rem, and the tools at 2.75rem
   line; below `md` every tile takes its own row and the unequal weights are
   dropped with the columns.
 - **A one-section leader gets a wide tile.** At `lg` (992px) and up the section
-  tile becomes a three-area grid — identity and attendance in the left column,
-  the next event in the right, the actions across both feet — so one section
-  reads as a row rather than as a lonely card in a half-empty board. Below
-  `lg` it is the stacked tile again.
+  tile becomes a two-column grid — identity and attendance in the left column,
+  the next event in the right — so one section reads as a row rather than as a
+  lonely card in a half-empty board. The tile carries no actions of its own;
+  the leader's tools are the board's mosaic. Below `lg` it is the stacked tile
+  again.
 - **The tools repeat the rhythm at a smaller scale.** Groups are a flex row with
   a 17rem basis; the group with the most entries takes `1.5` grow and a 24rem
   basis, its list is two columns and its first tile spans both. Every other
@@ -1195,9 +1196,10 @@ last.
   than a tile without one. The head and the actions that do not need the agenda
   survive.
 - **A section tile goes wide.** At `lg` the tile becomes a grid: identity and
-  attendance left, the next event right behind a 1px vertical divider, the
-  actions across both feet. It is the same tile for a one-section leader, laid
-  out across the row it owns.
+  attendance left, the next event right behind a 1px vertical divider. It is
+  the same tile for a one-section leader, laid out across the row it owns, and
+  with no foot: acting on the section is done from the tools, not from a second
+  copy of the same doors.
 
 ### The household balance tile
 

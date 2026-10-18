@@ -893,6 +893,196 @@ NEW_STRINGS = [
         "rarement nécessaires",
         "zelden nodig",
     ),
+    # A parent writing to a section's communications lead or the unit team.
+    ("Contact a leader", "Contacter", "Contacteer"),
+    (
+        "Send a message to your section's communications lead. The answer "
+        "will arrive by email.",
+        "responsable communication",
+        "communicatieverantwoordelijke",
+    ),
+    ("Send to", "Envoyer à", "Versturen naar"),
+    (
+        "A section without a communications lead sends to all its leaders; "
+        "if it has none, the unit lead and the site administrator receive it.",
+        "tous ses animateurs",
+        "al haar animatoren",
+    ),
+    (
+        "A copy will be sent to %(email)s. The reply will arrive at that address.",
+        "Une copie",
+        "Een kopie",
+    ),
+    ("Send the message", "Envoyer le message", "Bericht versturen"),
+    ("Message sent", "Message envoyé", "Bericht verstuurd"),
+    (
+        "Your message has been sent. A response will come by email.",
+        "réponse vous parviendra",
+        "antwoord komt per e-mail",
+    ),
+    (
+        "The reply will arrive at the address on your account.",
+        "adresse de votre compte",
+        "adres van je account",
+    ),
+    ("Back to my space", "Retour à mon espace", "Terug naar mijn ruimte"),
+    ("Send another message", "Envoyer un autre message", "Nog een bericht versturen"),
+    (
+        "No contact has been set up for your family yet. Ask the unit directly.",
+        "Aucun contact",
+        "geen contact",
+    ),
+    ("Choose who receives your message.", "Choisissez", "Kies"),
+    ("The title cannot contain a line break.", "saut de ligne", "regelafbreking"),
+    (
+        "%(section)s — communications lead: %(names)s",
+        "responsable communication",
+        "communicatieverantwoordelijke",
+    ),
+    (
+        "%(section)s — no communications lead yet (goes to %(fallback)s)",
+        "pas encore",
+        "nog geen",
+    ),
+    ("the unit lead", "l'animateur responsable", "de verantwoordelijke"),
+    ("the site administrator", "l'administrateur du site", "de sitebeheerder"),
+    ("The unit — unit lead: %(names)s", "L'unité", "De eenheid"),
+    ("The unit — the site administrator", "L'unité", "De eenheid"),
+    ("the section's leaders", "animateurs de la section", "animatoren van de sectie"),
+    (
+        "the unit lead and the site administrator",
+        "et l'administrateur du site",
+        "en de sitebeheerder",
+    ),
+    # The reader's secondary roles on the member board.
+    ("Your roles", "Vos rôles", "Jouw rollen"),
+    # The wrapper around a parent's own words, composed in members.contacts.
+    ("Hello,", "Bonjour", "Hallo"),
+    (
+        "%(sender)s (%(email)s) sent you a message through the %(troop)s site.",
+        "vous a envoyé un message",
+        "stuurde u een bericht",
+    ),
+    ("Section: %(section)s", "Section :", "Sectie:"),
+    ("About: %(children)s", "Concerne", "Betreft"),
+    (
+        "Reply directly to this email: your answer will reach %(email)s.",
+        "Répondez directement",
+        "Antwoord rechtstreeks",
+    ),
+    ("Copy of your message – %(title)s", "Copie de votre message", "Kopie van uw bericht"),
+    ("Hello %(name)s,", "Bonjour", "Hallo"),
+    (
+        "Your message was sent to %(recipients)s.",
+        "bien été envoyé",
+        "werd verstuurd",
+    ),
+    ("Here is a copy:", "voici une copie", "Hier is een kopie"),
+    (
+        "A response will arrive by email at this address.",
+        "réponse vous parviendra",
+        "antwoord komt per e-mail",
+    ),
+    ("The unit — treasurer: %(names)s", "trésorier", "penningmeester"),
+    ("Message the treasurer", "message au trésorier", "naar de penningmeester"),
+    # The "Parent actif" choice on the reader's profile.
+    (
+        "The unit can call on you for occasional help, and can include you "
+        "when it writes to active parents.",
+        "parents actifs",
+        "actieve ouders",
+    ),
+    # The leader's reported-absence dialog.
+    ("Reported absences", "signalées", "Gemelde"),
+    ("Open the day", "Ouvrir la journée", "De dag openen"),
+    (
+        "No absences reported for that activity.",
+        "Aucune absence",
+        "Geen afwezigheden",
+    ),
+    # The public contact form and the footer door that opens it.
+    ("Contact us", "Nous contacter", "Contacteer ons"),
+    (
+        "Write to the unit. The animateur responsable will answer you by email.",
+        "Écrivez à l'unité",
+        "Schrijf naar de eenheid",
+    ),
+    (
+        "The unit's animateur responsable will receive your message.",
+        "recevra votre message",
+        "ontvangt je bericht",
+    ),
+    ("Your name", "Votre nom", "Je naam"),
+    ("Your email", "Votre e-mail", "Je e-mailadres"),
+    ("Anti-spam check", "Vérification anti-spam", "Anti-spamcontrole"),
+    (
+        "This check keeps automated messages out.",
+        "Cette vérification",
+        "Deze controle",
+    ),
+    (
+        "The anti-spam check did not pass. Try again.",
+        "n'a pas réussi",
+        "niet geslaagd",
+    ),
+    (
+        "Please complete the anti-spam check.",
+        "Veuillez compléter",
+        "Vul de anti-spamcontrole",
+    ),
+    (
+        "The name cannot contain a line break.",
+        "saut de ligne",
+        "regelafbreking",
+    ),
+    (
+        "Too many messages from this browser. Try again later.",
+        "Trop de messages",
+        "Te veel berichten",
+    ),
+    ("No contact is configured yet.", "Aucun contact", "nog geen contact"),
+    (
+        "Your message has been sent. The animateur responsable will answer you by email.",
+        "vous répondra par e-mail",
+        "antwoordt je per e-mail",
+    ),
+    (
+        "The answer will arrive at the address you gave.",
+        "adresse que vous avez indiquée",
+        "adres dat je opgaf",
+    ),
+    ("Back to the unit's page", "Retour à la page", "Terug naar de pagina"),
+    ("Website contact — %(name)s", "Contact via le site", "Contact via de site"),
+    (
+        "A visitor wrote through the contact form on the %(troop)s site.",
+        "Un visiteur",
+        "Een bezoeker",
+    ),
+    ("Name: %(name)s", "Nom :", "Naam:"),
+    ("Email: %(email)s", "E-mail :", "E-mail:"),
+    # The public page card's block order.
+    ("Order of the blocks", "Ordre des blocs", "Volgorde van de blokken"),
+    (
+        "The blocks below the introduction appear in this order. A block that "
+        "is switched off keeps its place.",
+        "Un bloc désactivé",
+        "Een uitgeschakeld blok",
+    ),
+    (
+        "Each block needs its own position.",
+        "propre position",
+        "eigen positie",
+    ),
+    (
+        "The hall, the address and its picture.",
+        "Le local",
+        "De zaal",
+    ),
+    (
+        "A longer introduction, on its own sheet.",
+        "sa propre feuille",
+        "een eigen blad",
+    ),
 ]
 
 

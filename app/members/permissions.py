@@ -25,14 +25,19 @@ PARENT_ACTIF = "pa"
 RESPONSABLE_ANIMATEUR = "ar"
 TRESORIER = "t"
 RESPONSABLE_INSCRIPTIONS = "ri"
+#: A section's communications lead. It is a marker on an animateur: the
+#: enrolment says which section they speak for, the role says they speak for it.
+RESPONSABLE_COMMUNICATION = "rc"
 
 #: The secondary roles each primary role may hold.
 #:
-#: Animateurs and participants are deliberately absent: a section leader's
-#: responsibility is their section, not the unit's administration, and a
-#: participant is a child. "Parent actif" only means anything beside Parent.
+#: A participant is a child and holds none. An animateur may lead the unit team
+#: or be their section's communications lead; the unit administration stays with
+#: Parents and Autres membres, and "Parent actif" only means anything beside
+#: Parent.
 SECONDARY_ROLES_BY_PRIMARY = {
     PARENT: (PARENT_ACTIF, RESPONSABLE_ANIMATEUR, TRESORIER, RESPONSABLE_INSCRIPTIONS),
+    ANIMATEUR: (RESPONSABLE_ANIMATEUR, RESPONSABLE_COMMUNICATION),
     AUTRE_MEMBRE: (RESPONSABLE_ANIMATEUR, TRESORIER, RESPONSABLE_INSCRIPTIONS),
 }
 
@@ -50,8 +55,8 @@ STAFF_ROLES = (RESPONSABLE_ANIMATEUR, TRESORIER, RESPONSABLE_INSCRIPTIONS)
 def secondary_roles_for(primary_short):
     """The secondary-role short-codes allowed beside a primary role.
 
-    Empty for Animateur, Participant and Nouveau: those accounts hold no
-    secondary role at all.
+    Empty for Participant and Nouveau: a child holds no unit responsibility,
+    and an account that has not been classified yet holds nothing.
     """
     return SECONDARY_ROLES_BY_PRIMARY.get(primary_short, ())
 
@@ -153,6 +158,16 @@ def can_delete_member(user):
 def can_access_messaging(user):
     """Return True for unit admins and for section animateurs."""
     return can_manage_unit(user) or has_primary_role(user, (ANIMATEUR,))
+
+
+def can_contact_leaders(user):
+    """Return True when the user may write to a section or unit contact.
+
+    Writing to a leader is a family's act, so the reader must be a Parent. The
+    recipients themselves are resolved from the reader's own children by
+    ``members.contacts``; this predicate only opens the door to the page.
+    """
+    return has_primary_role(user, (PARENT,))
 
 
 def visible_sections(user):

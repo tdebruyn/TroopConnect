@@ -1,6 +1,6 @@
 {% load i18n %}
 {% comment %}
-  Where the unit meets, under the desk.
+  Where the unit meets, as one of the page's blocks.
 
   The desk says which branch a child would join; this says where to turn up,
   which is the other half of the same decision. It is also the thing the page
@@ -25,7 +25,7 @@
   otherwise be left with no way to ask for the route at all.
 {% endcomment %}
 {% if unit_address or meeting_place %}
-    <section class="place">
+    <section class="place" data-public-block="place">
         <div class="container">
             {% comment %}
                 The label names the section; the heading is the troop's own name

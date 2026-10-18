@@ -176,6 +176,7 @@ STAFF = [
         "day": 12,
         "phone": "+32 476 21 07 43",
         "primary": "a",
+        "secondary": ["rc"],
         "leads": "louveteaux",
         "note": "Animatrice responsable de la meute",
     },

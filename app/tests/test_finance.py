@@ -168,6 +168,26 @@ class HouseholdGroupingTest(FinanceTestBase):
         )
         self.assertEqual(other_balance["amount_due"], Decimal("80.00"))
 
+    def test_a_child_without_an_address_is_billed_at_the_parents(self):
+        """An empty child address must not split the family's household.
+
+        The address is the household key, so reading the child's blank one
+        would drop them into the unnamed no-address group and lose their
+        sibling rank.
+        """
+        self.child_youngest.address = ""
+        self.child_youngest.save(update_fields=["address"])
+
+        balances = calculate_balances(self.current_year)
+        youngest = next(
+            b for b in balances if b["person_id"] == self.child_youngest.pk
+        )
+
+        self.assertEqual(
+            youngest["household_name"], "Rue des Fleurs 10, 1300 Limal"
+        )
+        self.assertEqual(youngest["amount_due"], Decimal("60.00"))
+
 
 class AnimateurFlatRateTest(FinanceTestBase):
     """Tests for animateur flat rate."""

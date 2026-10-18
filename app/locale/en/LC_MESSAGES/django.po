@@ -3338,3 +3338,19 @@ msgstr ""
 #: members/templates/members/base.html
 msgid "My space"
 msgstr ""
+
+#: members/forms.py
+msgid "Suitable for their age"
+msgstr ""
+
+#: members/forms.py
+msgid "Other sections"
+msgstr ""
+
+#: members/forms.py
+msgid "Only the parent can change this for their child."
+msgstr ""
+
+#: members/forms.py
+msgid "Only the member can change this on their own profile."
+msgstr ""

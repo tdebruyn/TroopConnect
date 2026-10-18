@@ -53,6 +53,14 @@ urlpatterns = [
     path("delete/<str:pk>", views.member_delete, name="member_delete"),
     path("purge/<str:pk>", views.member_purge, name="member_purge"),
     path("documents/", views.DocumentListView.as_view(), name="documents"),
+    # A parent's message to their section's communications lead or the unit
+    # team, and the confirmation that follows it.
+    path("contact/", views.contact_leaders, name="contact_leaders"),
+    path(
+        "contact/sent/",
+        views.contact_leaders_sent,
+        name="contact_leaders_sent",
+    ),
     # The documents page is every reader's list; these two are where the unit
     # team's lead adds to it. The list itself reloads through its own URL.
     path("documents/new", views.document_form, name="document_form"),
@@ -94,6 +102,12 @@ urlpatterns = [
         "agenda/<int:pk>/absence/",
         views.absence_report,
         name="absence_report",
+    ),
+    # The leader's home tile opens the list of who is missing and why.
+    path(
+        "agenda/<int:pk>/absences/",
+        views.event_absences,
+        name="event_absences",
     ),
     path(
         "agenda/absence/<int:pk>/cancel/",

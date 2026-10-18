@@ -20,6 +20,7 @@ from django.urls import include, path
 from django.views.i18n import set_language
 from django_ses.views import SESEventWebhookView
 
+from members import public_views
 from troopconnect.health import healthz
 
 urlpatterns = [
@@ -30,6 +31,19 @@ urlpatterns = [
     path("admin/ses/", include("django_ses.urls")),
     path("admin/", admin.site.urls),
     path("", include("homepage.urls"), name="homepage"),
+    # The public contact form. Root-level because a visitor who is not signed
+    # in has no member area to put it in, and the footer links it everywhere.
+    path("contact/", public_views.public_contact, name="public_contact"),
+    path(
+        "contact/challenge/",
+        public_views.public_contact_challenge,
+        name="public_contact_challenge",
+    ),
+    path(
+        "contact/sent/",
+        public_views.public_contact_sent,
+        name="public_contact_sent",
+    ),
     # The first-run wizard. Served only while this instance has no
     # administrator; every other URL is redirected here until it has one, and
     # this one 404s from then on. See members/wizard/.

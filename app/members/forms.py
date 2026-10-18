@@ -13,6 +13,7 @@ from .constants import (
     ROLE_CHOICES,
 )
 from .models import (
+    ADULT_AGE,
     AVAILABLE_LANGUAGE_CHOICES,
     Absence,
     Account,
@@ -28,6 +29,8 @@ from .models import (
 )
 from .modules import module_enabled
 from .permissions import (
+    ANIMATEUR,
+    ANIME,
     AUTRE_MEMBRE,
     PARENT,
     TRESORIER,
@@ -40,12 +43,13 @@ from .permissions import (
 def secondary_role_queryset(primary_role=None):
     """The secondary roles a troop can hand out to a person of `primary_role`.
 
-    Only Parents and Autres membres hold unit-team roles. The Treasurer role
-    is hidden while the membership-fees module is switched off: with the
-    finance screens gone it grants nothing, so offering it would only invite a
-    troop to file someone under a responsibility that does not exist. The role
-    itself is untouched — see AdminUserUpdateForm.save(), which keeps roles
-    this form does not offer.
+    An animateur may lead the unit team or be their section's communications
+    lead; the unit administration belongs to Parents and Autres membres. The
+    Treasurer role is hidden while the membership-fees module is switched off:
+    with the finance screens gone it grants nothing, so offering it would only
+    invite a troop to file someone under a responsibility that does not exist.
+    The role itself is untouched — see AdminUserUpdateForm.save(), which keeps
+    roles this form does not offer.
 
     "Parent actif" means a parent who helps the unit occasionally, so it is
     only offered to a Parent; AdminUserUpdateForm.save() clears it from anyone
@@ -120,10 +124,14 @@ class AdminUserUpdateForm(forms.ModelForm):
         label=_("Next section"),
     )
 
-    def __init__(self, *args, can_assign_roles=True, **kwargs):
+    def __init__(
+        self, *args, can_assign_roles=True, can_edit_photo_consent=False, **kwargs
+    ):
         super().__init__(*args, **kwargs)
         self.can_assign_roles = can_assign_roles
         self.fields["birthday"].widget.format = "%Y-%m-%d"
+        if self.instance.pk and not self.instance.address:
+            self.fields["address"].initial = self.instance.effective_address()
 
         current_year = SchoolYear.current()
         self.current_year = current_year
@@ -140,6 +148,25 @@ class AdminUserUpdateForm(forms.ModelForm):
             self.fields["next_section"].label = _("Section %(range)s") % {
                 "range": self.next_year.range
             }
+
+        self._suggest_sections_by_age("current_section", current_year)
+        self._suggest_sections_by_age("next_section", self.next_year)
+
+        # Photo consent is the family's decision, not the unit team's. A staff
+        # reader who is the child's own parent — or the member editing
+        # themselves — keeps the right; everyone else sees the answer but can
+        # not change it, and a disabled field is never taken from the submit.
+        photo_consent = self.fields["photo_consent"]
+        photo_consent.disabled = not can_edit_photo_consent
+        if not can_edit_photo_consent:
+            if current_year and self.instance.age_fits_branch(current_year):
+                photo_consent.help_text = _(
+                    "Only the parent can change this for their child."
+                )
+            else:
+                photo_consent.help_text = _(
+                    "Only the member can change this on their own profile."
+                )
 
         if self.instance and self.instance.pk:
             locked, reason = self.instance.has_role_dependencies()
@@ -176,9 +203,9 @@ class AdminUserUpdateForm(forms.ModelForm):
                     submitted = None
                 suggested_role = submitted or suggested_role
 
-            # An animateur, a participant and a not-yet-validated account hold
-            # no secondary role at all. The field is dropped rather than left
-            # empty so save() clears any assignment left from an earlier role.
+            # A participant and a not-yet-validated account hold no secondary
+            # role at all. The field is dropped rather than left empty so
+            # save() clears any assignment left from an earlier role.
             if not can_assign_roles or not secondary_roles_for(suggested_role.short):
                 self.fields.pop("secondary_roles", None)
             else:
@@ -194,22 +221,102 @@ class AdminUserUpdateForm(forms.ModelForm):
                 if secondary_roles.exists():
                     self.fields["secondary_roles"].initial = secondary_roles.all()
 
+    def _suggest_sections_by_age(self, field_name, school_year):
+        """Put the sections matching a child's age for that year above the rest.
+
+        A member with no enrolment yet gets a dropdown that opens on the two or
+        three sections they actually belong in, then a divider, then every
+        other section — the same age reference the passage uses, so the
+        suggestion cannot disagree with where the child will be moved next.
+
+        Membership of a branch, not the stored primary role, decides: a new
+        member is listed before they become a Participant, and age is what
+        rule 2 uses to make them one.
+
+        The grouping is per field: an enrolled child still gets their next
+        year's sections suggested even though this year's section is set.
+        """
+        if not school_year or not self.instance.pk:
+            return
+        if self.instance.enrollment_set.filter(school_year=school_year).exists():
+            return
+
+        age = self.instance.age_on_dec_31(school_year)
+        if age is None:
+            return
+
+        field = self.fields[field_name]
+        suggested_pks = set(
+            field.queryset.filter(
+                branch__min_age_dec_31__isnull=False,
+                branch__max_age_dec_31__isnull=False,
+                branch__min_age_dec_31__lte=age,
+                branch__max_age_dec_31__gte=age,
+                pk__in=Section.compatible_with(self.instance.sex),
+            ).values_list("pk", flat=True)
+        )
+        if not suggested_pks:
+            return
+
+        suggested, others = [], []
+        for section in field.queryset:
+            entry = (section.pk, field.label_from_instance(section))
+            (suggested if section.pk in suggested_pks else others).append(entry)
+
+        # A single group is not a suggestion, it is the whole list with a
+        # heading, so leave the field flat unless there is something to divide.
+        if not others:
+            return
+
+        choices = []
+        if field.empty_label is not None:
+            choices.append(("", field.empty_label))
+        choices.append((_("Suitable for their age"), suggested))
+        choices.append((_("Other sections"), others))
+        field.choices = choices
+
+    def _role_for_enrollment(self, current_section, next_section, birthday):
+        """The primary role a section assignment implies.
+
+        The current year's section decides when there is one; a section
+        prepared for next year only counts when this year has none. The age is
+        read on the troop's reference day, like the passage's, and a member
+        with no birthday counts as an adult — the same reading as
+        ``Person.is_adult``.
+
+        The birthday is the one being submitted: correcting it and assigning
+        a section in the same save must not classify the member by the date
+        they were stored with.
+        """
+        year = self.current_year if current_section else self.next_year
+        if year is None:
+            return None
+        age = Person(birthday=birthday).age_on_dec_31(year)
+        is_adult = age is None or age >= ADULT_AGE
+        return Role.objects.get(short=ANIMATEUR if is_adult else ANIME)
+
     def clean(self):
         cleaned_data = super().clean()
         primary_role = cleaned_data.get("primary_role")
         current_section = cleaned_data.get("current_section")
         next_section = cleaned_data.get("next_section")
 
-        if (
-            primary_role
-            and primary_role.short not in ["e", "a"]
-            and (current_section or next_section)
-        ):
-            raise ValidationError(
-                _(
-                    "Only the 'Participant' and 'Animator' roles can be enrolled in a section."
+        if current_section or next_section:
+            # Enrolling someone is what makes them a participant or a leader.
+            # A locked role (an existing section, or linked children) keeps
+            # its account type, and a section on such a member is refused.
+            if not getattr(self, "role_locked", False):
+                derived = self._role_for_enrollment(
+                    current_section, next_section, cleaned_data.get("birthday")
                 )
-            )
+                if derived is not None:
+                    primary_role = cleaned_data["primary_role"] = derived
+            elif primary_role and primary_role.short not in (ANIME, ANIMATEUR):
+                raise ValidationError(
+                    _(
+                        "Only the 'Participant' and 'Animator' roles can be enrolled in a section."
+                    )
+                )
 
         # Keep only the roles the submitted primary role can hold. This is
         # what drops "Parent actif" when a Parent becomes an Autre membre in
@@ -252,9 +359,9 @@ class AdminUserUpdateForm(forms.ModelForm):
                     PersonRole.objects.create(person=person, role=role)
 
             # Whatever path got us here, only the roles allowed beside the new
-            # primary role may remain: this clears a whole set when someone
-            # becomes an Animateur or Participant, and "Parent actif" when a
-            # Parent becomes an Autre membre.
+            # primary role may remain: this clears a Participant's whole set,
+            # the unit administration when someone becomes an Animateur, and
+            # "Parent actif" when a Parent becomes an Autre membre.
             allowed = secondary_roles_for(
                 primary_role.short if primary_role else None
             )
@@ -393,7 +500,12 @@ class ProfileEditForm(UserChangeForm):
                 widget=forms.HiddenInput,
                 initial=person.primary_role.short,
             )
-            self.fields["parent_active"].widget = forms.HiddenInput()
+            # A locked Parent is still allowed to join or leave the active
+            # parents — that is a choice about themselves, not a change of
+            # account type. Other locked roles cannot hold it at all, so the
+            # field stays hidden and only round-trips its (false) value.
+            if person.primary_role.short != PARENT:
+                self.fields["parent_active"].widget = forms.HiddenInput()
         else:
             if person.age_fits_branch():
                 # Rule 2: a person of branch age can only be a Participant.
@@ -511,6 +623,7 @@ class ChildForm(forms.ModelForm):
             "phone",
             "totem",
             "note",
+            "photo_consent",
         ]
         labels = {
             "sex": _("Sex"),
@@ -521,12 +634,20 @@ class ChildForm(forms.ModelForm):
             "note": _("Notes"),
             "birthday": _("Date of birth"),
             "totem": _("Totem"),
+            "photo_consent": _("Photos allowed"),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        # The wording of the consent is the troop's, exactly as the parent
+        # sees it on their own profile.
+        self.fields["photo_consent"].label = (
+            TroopSettings.get_settings().photo_consent_text
+        )
         person = self.instance
         if person and person.pk:
+            if not person.address:
+                self.fields["address"].initial = person.effective_address()
             if account := Account.objects.filter(person=person).first():
                 self.fields["email"].initial = account.email
         self.fields["birthday"] = forms.DateField(
@@ -929,10 +1050,10 @@ class PublicPageSettingsForm(forms.ModelForm):
                 "Shown on the public page while registrations are closed."
             ),
             "homepage_place_enabled": _(
-                "The hall, the address and the map below, under the desk."
+                "The hall, the address and its picture."
             ),
             "homepage_about_enabled": _(
-                "A longer introduction, after the desk and the place."
+                "A longer introduction, on its own sheet."
             ),
             "homepage_faq_enabled": _("Questions parents ask, with your answers."),
             "site_description": _(
@@ -951,8 +1072,46 @@ class PublicPageSettingsForm(forms.ModelForm):
             "map_image": forms.ClearableFileInput(attrs={"accept": "image/*"}),
         }
 
+    #: The blocks the positions below order. The labels are the switches' own.
+    ORDER_LABELS = {
+        "desk": _("Enrolment desk"),
+        "place": _("Where to find us"),
+        "about": _("About us"),
+        "faq": _("FAQ"),
+    }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        order = self.instance.homepage_blocks_in_order()
+        positions = {key: index for index, key in enumerate(order, start=1)}
+        choices = [(index, index) for index in range(1, len(order) + 1)]
+        for key in TroopSettings.HOMEPAGE_BLOCK_KEYS:
+            self.fields[f"position_{key}"] = forms.TypedChoiceField(
+                choices=choices,
+                coerce=int,
+                initial=positions[key],
+                label=self.ORDER_LABELS[key],
+            )
+        # The card renders these four together, above the block switches.
+        self.order_fields = [
+            self[f"position_{key}"]
+            for key in TroopSettings.HOMEPAGE_BLOCK_KEYS
+        ]
+
     def clean(self):
         cleaned = super().clean()
+        positions = {
+            key: cleaned.get(f"position_{key}")
+            for key in TroopSettings.HOMEPAGE_BLOCK_KEYS
+        }
+        if all(value is not None for value in positions.values()):
+            if len(set(positions.values())) != len(positions):
+                raise ValidationError(
+                    _("Each block needs its own position.")
+                )
+            cleaned["homepage_block_order"] = ",".join(
+                sorted(positions, key=lambda key: positions[key])
+            )
         # Every language other than the default falls back to it, so the text
         # only has to exist there. Editing a non-default language may leave its
         # field blank; editing the default language with the switch on may not.
@@ -981,6 +1140,15 @@ class PublicPageSettingsForm(forms.ModelForm):
                     % {"module": label},
                 )
         return cleaned
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        order = self.cleaned_data.get("homepage_block_order")
+        if order:
+            instance.homepage_block_order = order
+        if commit:
+            instance.save()
+        return instance
 
 
 class DocumentForm(forms.ModelForm):
@@ -1219,3 +1387,57 @@ class AbsenceForm(forms.ModelForm):
         )
         self.instance = absence
         return absence
+
+
+class ContactLeadersForm(forms.Form):
+    """A parent's message to a section or unit contact.
+
+    The recipients are never taken from the POST body: ``targets`` is resolved
+    from the reader's own children by ``members.contacts.contact_targets``, and
+    the submitted key must be one of them. A parent therefore cannot address
+    another family's section by crafting the form.
+    """
+
+    recipient = forms.ChoiceField(
+        label=_("Send to"),
+        # A select truncates these labels on a phone, and the person the
+        # message reaches is the one choice the parent must be able to read.
+        widget=forms.RadioSelect(attrs={"class": "form-check-input"}),
+    )
+    title = forms.CharField(
+        max_length=200,
+        label=_("Title"),
+        widget=forms.TextInput(attrs={"class": "form-control"}),
+    )
+    body = forms.CharField(
+        max_length=5000,
+        label=_("Message"),
+        widget=forms.Textarea(attrs={"class": "form-control", "rows": 7}),
+    )
+
+    def __init__(self, *args, targets, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.targets = {target.key: target for target in targets}
+        self.fields["recipient"].choices = [
+            (key, target.label) for key, target in self.targets.items()
+        ]
+
+    def clean_recipient(self):
+        key = self.cleaned_data["recipient"]
+        if key not in self.targets:
+            raise ValidationError(_("Choose who receives your message."))
+        return key
+
+    def clean_title(self):
+        # The title becomes an email subject. A line break there is a header
+        # injection attempt rather than a title, and Django's mail layer would
+        # refuse it only at send time, after the form had already said yes.
+        title = self.cleaned_data["title"].strip()
+        if "\n" in title or "\r" in title:
+            raise ValidationError(_("The title cannot contain a line break."))
+        return title
+
+    @property
+    def target(self):
+        """The resolved target the validated message is addressed to."""
+        return self.targets[self.cleaned_data["recipient"]]

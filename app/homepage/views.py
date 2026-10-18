@@ -12,6 +12,7 @@ from django.views.generic import TemplateView
 
 from homepage.timeline import timeline_for
 from members import modules
+from members.contacts import has_treasurer
 from members.models import (
     Absence,
     Branch,
@@ -445,6 +446,18 @@ def _member_tools(
     parent_items = (
         add_items + agenda_items if no_children else agenda_items + add_items
     )
+    # A parent's one route to a person rather than a mailbox. It sits with the
+    # children because the message is about their section, and it is offered to
+    # a childless parent too: the unit lead is still someone to write to.
+    if has_primary_role(user, (PARENT,)):
+        parent_items.append(
+            Tool(
+                _("Contact a leader"),
+                reverse("members:contact_leaders"),
+                "envelope-paper",
+                False,
+            )
+        )
     # No entry for the children list itself: `members:child_list` renders an
     # HTMX fragment and answers 400 to a plain request, and the panels above
     # are that list anyway.
@@ -740,6 +753,8 @@ def _member_context(user):
             "member_heading": _("Your unit"),
             "member_first_name": "",
             "member_is_child": False,
+            "member_roles": [],
+            "member_treasurer_url": None,
         }
 
     children = list(Person.objects.filter(as_child__parent=person))
@@ -820,6 +835,12 @@ def _member_context(user):
                 }
             )
 
+    dues = (
+        _household_dues(children, school_year)
+        if children and module_enabled(modules.FEES)
+        else None
+    )
+
     return {
         "member_panels": panels,
         "member_tools": _member_tools(
@@ -848,6 +869,12 @@ def _member_context(user):
         # the page is a tool that knows who is holding it, and a page opener
         # that says so costs one line it already has room for.
         "member_first_name": person.first_name,
+        # The responsibilities the reader carries beyond their primary role.
+        # They are stated on the page rather than left to a staff screen: a
+        # communications lead should know they are the section's contact.
+        "member_roles": list(
+            person.roles.filter(is_primary=False).order_by("name")
+        ),
         "member_children": sum(1 for panel in panels if panel["kind"] == "child"),
         "member_is_child": is_child,
         # The empty state explains an empty account to a family. A reader whose
@@ -874,23 +901,26 @@ def _member_context(user):
         # one must not be handed a Pay button that dead-ends.
         "member_can_pay": can_access_finance(user),
         # Only a parent is asked for money, and only where the troop runs fees.
-        "member_dues": (
-            _household_dues(children, school_year)
-            if children and module_enabled(modules.FEES)
+        "member_dues": dues,
+        # The balance tile's door: a family that owes something can write to
+        # the person who records payments. Absent when no treasurer is named,
+        # because the tile never offers a destination that does not exist.
+        "member_treasurer_url": (
+            f"{reverse('members:contact_leaders')}?to=treasurer"
+            if dues and has_treasurer()
             else None
         ),
     }
 
 
-class HomePage(TemplateView):
-    """The unit's page to a visitor, this reader's people to a member.
+class PublicPageMixin:
+    """The visitor's half of the unit page, shared by `/` and `/unite/`.
 
-    One route, two surfaces: an anonymous visitor gets the enrolment desk and
-    the unit's own page; anyone signed in gets the tool. Members reach the
-    unit's page at ``/unite/``.
+    An anonymous visitor gets it at `/`; every reader gets it at `/unite/`.
+    Building its context in one place is what keeps the two renderings of one
+    page from drifting: the unit page used to set the blocks but not the desk
+    data, so its desk silently disappeared with no error to point at.
     """
-
-    template_name = "homepage/home.html"
 
     def get(self, request, *args, **kwargs):
         # The desk swaps only its answer. Without HTMX the same link reloads the
@@ -916,6 +946,37 @@ class HomePage(TemplateView):
             },
         )
 
+    def public_context(self, request):
+        school_year = SchoolYear.current()
+        rows = _desk_rows(school_year) if school_year else []
+        return {
+            "timeline": timeline_for(school_year),
+            "desk_rows": rows,
+            "desk_groups": _desk_groups(rows),
+            "desk_answer": _desk_answer(
+                rows, request.GET.get("annee"), school_year
+            ),
+            "desk_requested": _desk_requested(request.GET.get("annee")),
+            # An explicit flag, not `user.is_authenticated` in the template:
+            # `/unite/` is the public page for a signed-in reader too, and `/`
+            # is the tool for the same reader.
+            "show_desk": True,
+            "public_blocks": (
+                TroopSettings.get_settings().homepage_blocks_in_order()
+            ),
+        }
+
+
+class HomePage(PublicPageMixin, TemplateView):
+    """The unit's page to a visitor, this reader's people to a member.
+
+    One route, two surfaces: an anonymous visitor gets the enrolment desk and
+    the unit's own page; anyone signed in gets the tool. Members reach the
+    unit's page at ``/unite/``.
+    """
+
+    template_name = "homepage/home.html"
+
     def get_template_names(self):
         if self.request.user.is_authenticated:
             return ["homepage/member.html"]
@@ -926,34 +987,23 @@ class HomePage(TemplateView):
         if self.request.user.is_authenticated:
             context.update(_member_context(self.request.user))
         else:
-            school_year = SchoolYear.current()
-            context["timeline"] = timeline_for(school_year)
-            rows = _desk_rows(school_year) if school_year else []
-            context["desk_rows"] = rows
-            context["desk_groups"] = _desk_groups(rows)
-            context["desk_answer"] = _desk_answer(
-                rows, self.request.GET.get("annee"), school_year
-            )
-            context["desk_requested"] = _desk_requested(self.request.GET.get("annee"))
-            # An explicit flag, not `user.is_authenticated` in the template:
-            # UnitPage renders the same template and a signed-out reader there
-            # is just as anonymous, which would put the desk on the troop's own
-            # page as well as on the homepage.
-            context["show_desk"] = True
+            context.update(self.public_context(self.request))
         return context
 
 
-class UnitPage(TemplateView):
+class UnitPage(PublicPageMixin, TemplateView):
     """The troop's public page, at its own URL, for anyone who wants it.
 
-    A member's ``/`` is the tool; this is the unit's own page, on a route
-    that does not change shape with who is looking at it.
+    A member's ``/`` is the tool; this is the same page an anonymous visitor
+    gets at ``/`` — the band, the desk, the place and the troop's blocks, in
+    the stored order — on a route that does not change shape with who is
+    looking at it.
     """
 
     template_name = "homepage/home.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["timeline"] = timeline_for(SchoolYear.current())
+        context.update(self.public_context(self.request))
         return context
 

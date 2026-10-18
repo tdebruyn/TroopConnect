@@ -34,9 +34,28 @@
         <link rel="stylesheet"
               href="{% static 'vendor/template-unite/css/base.css' %}" />
         <link rel="stylesheet" href="{% static 'css/troopconnect.css' %}" />
+        {% comment %}
+            ALTCHA's widget stylesheet. Without it the checkbox, its label and
+            the mark stack as three bare elements.
+        {% endcomment %}
+        <link rel="stylesheet"
+              href="https://cdn.jsdelivr.net/npm/altcha@2.3.0/dist_external/altcha.css">
         {% if favicon_url %}
             <link rel="icon" href="{{ favicon_url }}" />
         {% endif %}
+        {% comment %}
+            ALTCHA's proof-of-work widget. Loaded site-wide because the public
+            contact form is opened in the shared dialog, which HTMX injects
+            after the page's own scripts have run.
+        {% endcomment %}
+        {% comment %}
+            Pinned to 2.3.0, the same release as the Python server library: the
+            3.x widget speaks a newer challenge protocol than `altcha` 2.3.0
+            can verify. This build bundles its locale strings, which is what
+            makes the widget's one sentence follow the site's language.
+        {% endcomment %}
+        <script src="https://cdn.jsdelivr.net/npm/altcha@2.3.0/dist/altcha.i18n.js"
+                type="module"></script>
         {% block header %}
         {% endblock header %}
     </head>
@@ -230,20 +249,53 @@
                 <div class="container">
                     <div class="footer-body">
                         <ul class="footer-links">
-                            {% if contact_email %}
-                                <li><a href="mailto:{{ contact_email }}">{{ contact_email }}</a></li>
-                            {% endif %}
-                            {% if contact_phone %}
-                                <li><a href="tel:{{ contact_phone|cut:' ' }}">{{ contact_phone }}</a></li>
+                            {% comment %}
+                                A signed-in reader keeps the unit's direct
+                                lines. A visitor gets a form instead: the
+                                addresses are not published to the open web,
+                                and the unit lead answers by email.
+                            {% endcomment %}
+                            {% if user.is_authenticated %}
+                                {% if contact_email %}
+                                    <li><a href="mailto:{{ contact_email }}">{{ contact_email }}</a></li>
+                                {% endif %}
+                                {% if contact_phone %}
+                                    <li><a href="tel:{{ contact_phone|cut:' ' }}">{{ contact_phone }}</a></li>
+                                {% endif %}
+                            {% else %}
+                                <li>
+                                    <a href="{% url 'public_contact' %}"
+                                       hx-get="{% url 'public_contact' %}"
+                                       hx-target="#dialog">{% trans "Contact us" %}</a>
+                                </li>
                             {% endif %}
                             {% if privacy_policy_url %}
                                 <li><a href="{{ privacy_policy_url }}" target="_blank" rel="noopener">{% trans "Privacy policy" %}</a></li>
                             {% endif %}
+                            {% comment %}
+                                The mark is the label. The accessible name stays
+                                on the link, so the logo is not the only way to
+                                know where it goes.
+                            {% endcomment %}
                             {% if facebook_url %}
-                                <li><a href="{{ facebook_url }}" target="_blank" rel="noopener">Facebook</a></li>
+                                <li>
+                                    <a href="{{ facebook_url }}"
+                                       target="_blank"
+                                       rel="noopener"
+                                       aria-label="Facebook">
+                                        <i class="bi bi-facebook" aria-hidden="true"></i>
+                                    </a>
+                                </li>
                             {% endif %}
                             {% if instagram_url %}
-                                <li><a href="{{ instagram_url }}" target="_blank" rel="noopener">Instagram</a></li>
+                                <li>
+                                    <a href="{{ instagram_url }}"
+                                       target="_blank"
+                                       rel="noopener"
+                                       aria-label="Instagram">
+                                        <i class="bi bi-instagram" aria-hidden="true"></i>
+                                    </a>
+                                </li>
                             {% endif %}
                         </ul>
                         {% now "Y" as current_year %}

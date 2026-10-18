@@ -1,10 +1,11 @@
 """The secondary-role model after "Autre membre" and the Admin removal.
 
-These tests pin the rules the forms enforce: only a Parent or an Autre membre
-holds a unit-team role, "Parent actif" is Parent-only, and Animateurs,
-Participants and not-yet-validated accounts hold none. They also pin the
-access matrix: the unit team's lead does members and money, the treasurer does
-money, the registration manager does members, and site staff do everything.
+These tests pin the rules the forms enforce: a Parent or an Autre membre holds
+the unit administration, an Animateur may lead the unit team or be their
+section's communications lead, "Parent actif" is Parent-only, and Participants
+and not-yet-validated accounts hold none. They also pin the access matrix: the
+unit team's lead does members and money, the treasurer does money, the
+registration manager does members, and site staff do everything.
 """
 
 from django.test import TestCase
@@ -66,9 +67,9 @@ class SecondaryRoleOfferTest(TestCase):
         person, _ = make_account("am@test.be", primary="am")
         self.assertEqual(self.offered(person), {"ar", "t", "ri"})
 
-    def test_animateur_has_no_secondary_role_field(self):
+    def test_animateur_gets_the_unit_lead_and_communications_roles(self):
         person, _ = make_account("a@test.be", primary="a")
-        self.assertIsNone(self.offered(person))
+        self.assertEqual(self.offered(person), {"ar", "rc"})
 
     def test_participant_has_no_secondary_role_field(self):
         person, _ = make_account("e@test.be", primary="e")
@@ -81,7 +82,7 @@ class SecondaryRoleOfferTest(TestCase):
     def test_roles_for_each_primary_role(self):
         self.assertEqual(secondary_roles_for("p"), ("pa", "ar", "t", "ri"))
         self.assertEqual(secondary_roles_for("am"), ("ar", "t", "ri"))
-        self.assertEqual(secondary_roles_for("a"), ())
+        self.assertEqual(secondary_roles_for("a"), ("ar", "rc"))
         self.assertEqual(secondary_roles_for("e"), ())
         self.assertEqual(secondary_roles_for("n"), ())
 
@@ -122,7 +123,8 @@ class SecondaryRoleSaveTest(TestCase):
         kept = set(person.roles.values_list("short", flat=True))
         self.assertEqual(kept, {"ar"})
 
-    def test_switching_to_animator_clears_every_secondary_role(self):
+    def test_switching_to_animator_drops_the_unit_administration(self):
+        """A treasurer's role is not allowed beside an animateur; it goes."""
         person, _ = make_account("p@test.be", primary="p")
         PersonRole.objects.create(person=person, role=Role.objects.get(short="t"))
 
@@ -133,10 +135,27 @@ class SecondaryRoleSaveTest(TestCase):
             ),
         )
         self.assertTrue(form.is_valid(), form.errors)
-        self.assertNotIn("secondary_roles", form.cleaned_data)
+        self.assertEqual(form.cleaned_data["secondary_roles"], [])
         form.save()
         self.assertFalse(
             PersonRole.objects.filter(person=person, role__is_primary=False).exists()
+        )
+
+    def test_an_animateur_keeps_the_communications_role(self):
+        person, _ = make_account("a@test.be", primary="a")
+        rc = Role.objects.get(short="rc")
+        PersonRole.objects.create(person=person, role=rc)
+
+        form = AdminUserUpdateForm(
+            instance=person,
+            data=self.form_data(
+                person, primary_role=person.primary_role, secondary_roles=[rc]
+            ),
+        )
+        self.assertTrue(form.is_valid(), form.errors)
+        form.save()
+        self.assertEqual(
+            set(person.roles.values_list("short", flat=True)), {"rc"}
         )
 
     def test_a_reader_without_role_rights_keeps_the_stored_roles(self):
@@ -168,7 +187,7 @@ class SecondaryRoleSaveTest(TestCase):
         self,
     ):
         person, _ = make_account("p@test.be", primary="p")
-        PersonRole.objects.create(person=person, role=Role.objects.get(short="ar"))
+        PersonRole.objects.create(person=person, role=Role.objects.get(short="t"))
 
         form = AdminUserUpdateForm(
             instance=person,

@@ -83,9 +83,9 @@
                         {% with household=member.households.all.0 %}
                             {% if household %}
                                 <a href="{% url 'finance:household_detail' pk=household.pk %}">{{ household.name }}</a>
-                            {% elif member.address %}
+                            {% elif member.effective_address %}
                                 <span class="text-muted"
-                                      title="{% trans 'Inferred from the address' %}">{{ member.address }}</span>
+                                      title="{% trans 'Inferred from the address' %}">{{ member.effective_address }}</span>
                             {% else %}
                                 <span class="text-muted">—</span>
                             {% endif %}

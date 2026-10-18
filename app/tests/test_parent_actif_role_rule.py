@@ -4,14 +4,24 @@ from django import forms
 from django.urls import reverse
 
 from members.forms import AdminUserUpdateForm, ProfileEditForm
-from members.models import Account, ParentChild, Person, PersonRole, Role
+from members.models import (
+    Account,
+    Enrollment,
+    ParentChild,
+    Person,
+    PersonRole,
+    Role,
+    SchoolYear,
+    Section,
+)
 
 from .base import TroopSettingsTestCase
 
 
 class AdminUpdateParentActifTest(TroopSettingsTestCase):
     """The "Parent actif" role is only offered, kept or saved alongside the
-    Parent primary role."""
+    Parent primary role. An Animateur has secondary roles of their own, but this
+    is not one of them."""
 
     @classmethod
     def setUpTestData(cls):
@@ -47,9 +57,12 @@ class AdminUpdateParentActifTest(TroopSettingsTestCase):
         self.assertIn("pa", self.offered_roles(form))
 
     def test_not_offered_to_an_animator(self):
-        """An Animateur holds no secondary role at all, so the field is gone."""
+        """An Animateur has roles of their own, but not "Parent actif"."""
         form = AdminUserUpdateForm(instance=self.animator)
-        self.assertNotIn("secondary_roles", form.fields)
+        self.assertIn("secondary_roles", form.fields)
+        offered = self.offered_roles(form)
+        self.assertNotIn("pa", offered)
+        self.assertEqual(set(offered), {"ar", "rc"})
 
     def test_offered_when_the_submitted_role_is_parent(self):
         """The queryset follows the role being submitted, not the one stored:
@@ -61,8 +74,8 @@ class AdminUpdateParentActifTest(TroopSettingsTestCase):
         self.assertIn("pa", self.offered_roles(form))
 
     def test_submitted_roles_dropped_when_switching_to_animator(self):
-        """An Animator holds no secondary role, so a Parent Actif or Treasurer
-        submitted in the same POST is discarded."""
+        """A Parent Actif or Treasurer submitted in the same POST is discarded:
+        neither is allowed beside an Animateur."""
         form = AdminUserUpdateForm(
             instance=self.parent,
             data=self.form_data(
@@ -72,7 +85,7 @@ class AdminUpdateParentActifTest(TroopSettingsTestCase):
             ),
         )
         self.assertTrue(form.is_valid(), form.errors)
-        self.assertNotIn("secondary_roles", form.cleaned_data)
+        self.assertEqual(form.cleaned_data["secondary_roles"], [])
         form.save()
         self.assertFalse(
             PersonRole.objects.filter(
@@ -166,7 +179,13 @@ class ProfileParentActifTest(TroopSettingsTestCase):
             ).exists()
         )
 
-    def test_locked_parent_keeps_the_role_through_the_hidden_field(self):
+    def test_a_locked_parent_still_sees_the_parent_actif_choice(self):
+        """A parent locked by a child is not locked out of helping.
+
+        The account type is fixed, but "Parent actif" is a choice about the
+        reader, so it stays a real checkbox rather than a hidden value that
+        only preserves whatever was stored before.
+        """
         child = Person.objects.create(
             first_name="Kid", last_name="One",
             primary_role=Role.objects.get(short="e"), status="a",
@@ -176,19 +195,20 @@ class ProfileParentActifTest(TroopSettingsTestCase):
         PersonRole.objects.create(person=self.person, role=self.parent_actif)
 
         form = ProfileEditForm(instance=self.account)
-        self.assertIsInstance(form.fields["parent_active"].widget, forms.HiddenInput)
+        self.assertNotIsInstance(
+            form.fields["parent_active"].widget, forms.HiddenInput
+        )
         self.assertTrue(form.fields["parent_active"].initial)
 
-        # The template has to submit that hidden value; without it the next
-        # save reads "un-ticked" and removes the role.
         self.client.force_login(self.account)
         response = self.client.get(
             reverse("members:profile", kwargs={"pk": self.account.pk})
         )
         self.assertContains(response, 'name="parent_active"')
-        self.assertContains(response, 'value="True"')
+        self.assertContains(response, "parent-active-choice")
+        self.assertContains(response, "checked")
 
-        # A save that submits what that hidden input renders keeps the role.
+        # A save that keeps the box ticked keeps the role.
         response = self.client.post(
             reverse("members:profile", kwargs={"pk": self.account.pk}),
             {
@@ -196,7 +216,7 @@ class ProfileParentActifTest(TroopSettingsTestCase):
                 "last_name": self.person.last_name,
                 "email": self.account.email,
                 "primary_role": "p",
-                "parent_active": "True",
+                "parent_active": "on",
             },
         )
         self.assertEqual(response.status_code, 302)
@@ -205,3 +225,49 @@ class ProfileParentActifTest(TroopSettingsTestCase):
                 person=self.person, role=self.parent_actif
             ).exists()
         )
+
+    def test_a_locked_parent_can_stop_helping(self):
+        child = Person.objects.create(
+            first_name="Kid", last_name="Two",
+            primary_role=Role.objects.get(short="e"), status="a",
+            birthday=date(2015, 3, 1), sex="M",
+        )
+        ParentChild.objects.create(parent=self.person, child=child)
+        PersonRole.objects.create(person=self.person, role=self.parent_actif)
+
+        self.client.force_login(self.account)
+        response = self.client.post(
+            reverse("members:profile", kwargs={"pk": self.account.pk}),
+            {
+                "first_name": self.person.first_name,
+                "last_name": self.person.last_name,
+                "email": self.account.email,
+                "primary_role": "p",
+            },
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(
+            PersonRole.objects.filter(
+                person=self.person, role=self.parent_actif
+            ).exists()
+        )
+
+    def test_a_locked_non_parent_does_not_get_the_choice(self):
+        """An animateur with a section cannot hold "Parent actif"; the field
+        stays hidden and only round-trips its stored (false) value."""
+        animateur = Person.objects.create(
+            first_name="Ani", last_name="Mateur",
+            primary_role=Role.objects.get(short="a"), status="a",
+        )
+        section = Section.objects.create(name="A section")
+        Enrollment.objects.create(
+            user=animateur,
+            section=section,
+            school_year=SchoolYear.current(),
+        )
+        account = Account.objects.create_user(
+            email="anim@test.be", password="pass", person=animateur,
+        )
+
+        form = ProfileEditForm(instance=account)
+        self.assertIsInstance(form.fields["parent_active"].widget, forms.HiddenInput)

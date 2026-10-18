@@ -207,3 +207,37 @@ class AdminListFilterTest(TestCase):
         response = self.client.get(reverse("members:admin_list"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Bob")
+
+    def test_an_animateur_is_not_flagged_for_the_branch_age(self):
+        """An animateur is enrolled in the section they lead; their age has
+        nothing to do with its branch."""
+        branch = Branch.objects.create(
+            name="Age branch", min_age_dec_31=8, max_age_dec_31=12
+        )
+        section = Section.objects.create(name="Age section", branch=branch)
+        Enrollment.objects.create(
+            user=self.person3,
+            section=section,
+            school_year=self.current_year,
+        )
+
+        self.client.force_login(self.staff_user)
+        response = self.client.get(reverse("members:admin_list"))
+        people = {person.pk: person for person in response.context["object_list"]}
+        self.assertFalse(people[self.person3.pk].age_mismatch)
+
+    def test_a_participant_is_still_flagged_for_the_branch_age(self):
+        branch = Branch.objects.create(
+            name="Young branch", min_age_dec_31=8, max_age_dec_31=9
+        )
+        section = Section.objects.create(name="Young section", branch=branch)
+        Enrollment.objects.create(
+            user=self.person2,
+            section=section,
+            school_year=self.current_year,
+        )
+
+        self.client.force_login(self.staff_user)
+        response = self.client.get(reverse("members:admin_list"))
+        people = {person.pk: person for person in response.context["object_list"]}
+        self.assertTrue(people[self.person2.pk].age_mismatch)
