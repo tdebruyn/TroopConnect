@@ -392,6 +392,39 @@ class DayViewTest(AbsenceTestBase):
         )
 
 
+class FoldedAgendaTest(AbsenceTestBase):
+    """The list's folded rows name who is away, before the detail is opened."""
+
+    def list_url(self):
+        return url("members:agenda", section=self.meute.pk)
+
+    def setUp(self):
+        super().setUp()
+        Absence.objects.create(event=self.event, child=self.child, reason="Malade")
+
+    def test_a_parent_sees_their_child_on_the_folded_row(self):
+        self.login("parent@test.be")
+        response = self.client.get(self.list_url())
+        self.assertContains(response, "Chloe Child")
+        self.assertContains(response, "agenda-absence")
+
+    def test_another_family_does_not_see_it(self):
+        self.login("other@test.be")
+        self.assertNotContains(self.client.get(self.list_url()), "Chloe Child")
+
+    def test_a_leader_sees_the_count_on_the_folded_row(self):
+        """The names stay in the detail; the folded row answers "who is missing?"."""
+        self.login("leader@test.be")
+        response = self.client.get(self.list_url())
+        self.assertContains(response, "agenda-absence")
+        self.assertContains(response, "1 absence signalée")
+
+    def test_unit_staff_see_the_count_on_a_section_they_do_not_lead(self):
+        self.login("unitadmin@test.be")
+        response = self.client.get(self.list_url())
+        self.assertContains(response, "1 absence signalée")
+
+
 class AbsenceModuleSwitchTest(AbsenceTestBase):
     """The absence screens belong to the agenda module, and go away with it."""
 

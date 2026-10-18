@@ -1526,13 +1526,28 @@ def _upcoming(section):
 
 
 def _agenda_list_context(request):
-    """The reader's section and the activities still to come."""
+    """The reader's section, the activities still to come, and who is away.
+
+    The notices reach the folded rows as well as the detail: a family has to
+    see which of its children is reported absent without opening the activity
+    first. They follow the same visibility rule in both places.
+    """
     context = _agenda_scope(request)
     section = context["section"]
     if section is None:
         return context
 
-    context["upcoming"] = _upcoming(section)
+    upcoming = _upcoming(section)
+    sees_every_notice = context["can_edit"] or can_manage_unit(request.user)
+    notices = _absences_by_event(request.user, upcoming, sees_every_notice)
+    for event in upcoming:
+        event.notices = notices.get(event.pk, [])
+    context.update(
+        {
+            "upcoming": upcoming,
+            "sees_every_notice": sees_every_notice,
+        }
+    )
     return context
 
 

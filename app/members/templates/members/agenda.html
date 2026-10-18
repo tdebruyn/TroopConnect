@@ -31,8 +31,8 @@
                 <div class="list-group">
                     {% for event in upcoming %}
                         {% comment %}
-                            The row is the list: type, title and date. The
-                            full activity — description, absences and the
+                            The row is the list: type, title, date and who is
+                            away. The rest — description, reasons and the
                             actions that need room — opens under it.
                         {% endcomment %}
                         <div class="list-group-item list-group-item-action agenda-activity">
@@ -46,6 +46,25 @@
                                     hx-trigger="click once">
                                 <span class="badge {{ event.type_css_class }} text-white">{{ event.get_activity_type_display }}</span>
                                 <span class="fw-bold">{{ event.title }}</span>
+                                {% if event.notices %}
+                                    {% comment %}
+                                        A family gets the child's name, because
+                                        that is which child the marker is about;
+                                        a leader gets the count, because the
+                                        names would make the folded row the
+                                        roster that the detail already carries.
+                                    {% endcomment %}
+                                    <span class="agenda-absence">
+                                        <span class="agenda-absence-dot" aria-hidden="true"></span>
+                                        <span>
+                                            {% if sees_every_notice %}
+                                                {% blocktranslate count counter=event.notices|length %}{{ counter }} absence reported{% plural %}{{ counter }} absences reported{% endblocktranslate %}
+                                            {% else %}
+                                                {% trans "Absent" %} · {% for notice in event.notices %}{{ notice.child }}{% if not forloop.last %}, {% endif %}{% endfor %}
+                                            {% endif %}
+                                        </span>
+                                    </span>
+                                {% endif %}
                                 <span class="small text-muted ms-auto text-nowrap">
                                     {% if event.is_multi_day %}
                                         {{ event.start_date|date:"j N" }} – {{ event.last_date|date:"j N Y" }}

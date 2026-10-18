@@ -31,7 +31,9 @@ the view (a family sees only its own children's), not by this template.
                             <ul class="list-unstyled small mt-2 mb-0">
                                 {% for notice in event.notices %}
                                     <li class="d-flex flex-wrap align-items-center gap-2">
-                                        <span class="badge bg-secondary text-white">{% trans "Absent" %}</span>
+                                        <span class="agenda-absence">
+                                            <span class="agenda-absence-dot" aria-hidden="true"></span>{% trans "Absent" %}
+                                        </span>
                                         <span>{{ notice.child }}</span>
                                         {% if notice.reason %}<span class="text-muted">— {{ notice.reason }}</span>{% endif %}
                                         <form class="d-inline"

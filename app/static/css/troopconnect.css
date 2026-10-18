@@ -949,6 +949,26 @@ body {
   transform: rotate(180deg);
 }
 
+/* A reported absence is the one state a folded row has to announce: crimson
+   dot and ink are the board's absence language, and the row is where a family
+   looks before it opens the activity. */
+.agenda-absence {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #b30d31;
+}
+
+.agenda-absence-dot {
+  flex: none;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background-color: #d60f3c;
+}
+
 /* The detail stays loaded once fetched; closing only hides it, so reopening
    does not ask the server for the same activity again. */
 .agenda-activity-detail {
