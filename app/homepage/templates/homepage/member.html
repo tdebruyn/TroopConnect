@@ -123,7 +123,7 @@
         {% if member_tools %}
             <section class="member-tools{% if not member_panels %} member-tools-first{% endif %}" aria-labelledby="member-tools-title">
                 <h2 class="member-tools-title" id="member-tools-title">{% trans "Your tools" %}</h2>
-                <div class="member-tools-groups">
+                <div class="member-tools-groups{% if member_tools.0.kind == 'unit' and member_tools.0.featured %} member-tools-rack{% endif %}">
                     {% for group in member_tools %}
                         <div class="member-tools-group"
                              data-kind="{{ group.kind }}"
@@ -132,10 +132,11 @@
                              {% if group.featured %}data-lead="true"{% endif %}>
                             <h3 class="member-tools-group-title">{{ group.title }}</h3>
                             <ul class="member-tools-list">
-                                {% for label, url, icon, modal, details, alert, quiet, detail_inline in group.items %}
-                                    <li{% if forloop.first and group.featured and not member_dues %} class="member-tool-slot-anchor"{% endif %}>
+                                {% for label, url, icon, modal, details, alert, quiet, detail_inline, tier in group.items %}
+                                    <li{% if group.featured and forloop.counter0 == group.anchor_index %} data-priority="true"{% endif %}{% if alert %} data-alert="true"{% endif %}{% if group.featured and not member_dues and forloop.counter0 == group.anchor_index %} class="member-tool-slot-anchor"{% endif %}>
                                         <a class="member-tool{% if alert %} member-tool-alert{% endif %}{% if quiet %} member-tool-quiet{% endif %}"
                                            href="{{ url }}"
+                                           data-tier="{{ tier }}"
                                            {% if modal %}hx-get="{{ url }}" hx-target="#dialog"{% endif %}>
                                             <span class="member-tool-head">
                                                 <span class="member-tool-icon"><i class="bi bi-{{ icon }}" aria-hidden="true"></i></span>

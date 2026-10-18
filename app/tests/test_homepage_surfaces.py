@@ -1010,13 +1010,11 @@ class MemberHomepageTest(DeskTestBase):
         )
         self.assertContains(response, "member-tool-quiet")
 
-        # The tail of the unit group: attestations and fees together, then
-        # the advanced door, and the queue last of all.
+        # The advanced door closes the unit group and the queue is last of
+        # all: a queue is read when something failed, not a destination.
         urls = [item.url for item in unit["items"]]
         self.assertEqual(urls[-1], reverse("members:mail_queue"))
         self.assertEqual(urls[-2], reverse("admin:index"))
-        self.assertEqual(urls[-3], reverse("finance:billing"))
-        self.assertEqual(urls[-4], reverse("attestations:index"))
 
     def make_leader(self, email, *sections):
         person = Person.objects.create(
@@ -1117,6 +1115,37 @@ class MemberHomepageTest(DeskTestBase):
                      "members:member_import", "members:troop_settings",
                      "members:mail_queue"):
             self.assertIn(reverse(name), body, name)
+
+    def test_a_unit_teams_tools_are_ranked_by_how_often_it_reaches_for_them(self):
+        """The daily three, then the regular three, then the rest.
+
+        The rank is data, not only order: the template draws the tier, so a
+        tool that moves without its tier loses its ground and label size. The
+        unit's page rides in this group too rather than duplicating a group.
+        """
+        account = self.make_staff("ranked@test.com")
+        account.is_superuser = True
+        account.save()
+        self.client.force_login(account)
+        response = self.client.get("/")
+        unit = self.unit_tools(response)
+
+        self.assertEqual(
+            [(item.url, item.tier) for item in unit["items"] if item.tier < 3],
+            [
+                (reverse("members:admin_list"), 1),
+                (reverse("messaging:compose"), 1),
+                (reverse("finance:billing"), 1),
+                (reverse("attestations:index"), 2),
+                (reverse("members:agenda"), 2),
+                (reverse("members:troop_settings"), 2),
+            ],
+        )
+        self.assertIn(reverse("unit_page"), [item.url for item in unit["items"]])
+        self.assertNotIn(
+            "site",
+            [group["kind"] for group in response.context["member_tools"]],
+        )
 
     def make_nouveau(self, first_name="Nou", last_name="Veau"):
         """A member created without a role, as the parent's child form leaves it."""

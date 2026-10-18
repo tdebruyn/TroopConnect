@@ -1244,6 +1244,19 @@ nobody scans.
   tiles (`1.5` grow, 24rem basis); its first tile spans both columns and, when no
   balance has spent the dark note, becomes the dark tile. Its label is 1.25rem
   instead of 1rem.
+- **The unit rack is the exception.** The unit group takes a row of its own at
+  six columns, and the personal groups follow beneath it at one column each:
+  the unit team has many short-lived doors, and six across keeps the rack to
+  three rows instead of a column that buries its last tool. The unit's own page
+  rides in this group rather than duplicating a site group. The dark tile moves
+  to the first ranked tool rather than the first tile, because the new-members
+  alert may lead the list.
+- **The rank is drawn, not only ordered.** The unit team's daily three —
+  members, messaging, fees — take a deeper green at 18% and the next three
+  (attestations, agendas, settings) a middle step at 12%, with the ranked first
+  action at double width; the rest keep the group's 6%. The new-members alert
+  reports work and takes two columns at the head of the rack, never the whole
+  row.
 - **A unit admin's section tools join the unit group.** "Send a message",
   "Message history" and "Section agendas" reach every section for a unit admin,
   so they are unit tools; only a section's own animateur gets the "Your

@@ -2428,6 +2428,69 @@ body {
   grid-column: span 2;
 }
 
+/* The unit team's rack is the page's main tool surface: four columns across
+   a row of its own, with the personal groups following beneath. The wider
+   rack is what lets the ranked tiles keep a readable label at four across. */
+.member-tools-group[data-kind="unit"][data-lead="true"] {
+  flex: 1 1 100%;
+}
+
+.member-tools-group[data-kind="unit"][data-lead="true"] .member-tools-list {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+/* The new-members alert reports work and takes two columns; the ranked first
+   action takes the same, so size carries the ranking without either tile
+   swallowing the rack. */
+.member-tools-group[data-kind="unit"][data-lead="true"]
+  .member-tools-list
+  > li[data-alert="true"],
+.member-tools-group[data-kind="unit"][data-lead="true"]
+  .member-tools-list
+  > li[data-priority="true"] {
+  grid-column: span 2;
+}
+
+/* The personal groups are one column: their few entries are read in order,
+   and two across made the short labels look like a grid of equal weight. */
+.member-tools-group:not([data-lead="true"]) .member-tools-list {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* Under a unit rack the personal groups keep the tile width they have in a
+   standalone column rather than stretching into page-wide rows. */
+.member-tools-rack > .member-tools-group:not([data-lead="true"]) {
+  flex: 0 0 17rem;
+}
+
+@media (max-width: 1199.98px) {
+  .member-tools-group[data-kind="unit"][data-lead="true"] .member-tools-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .member-tools-group[data-kind="unit"][data-lead="true"]
+    .member-tools-list
+    > li[data-priority="true"] {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .member-tools-group[data-kind="unit"][data-lead="true"] .member-tools-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .member-tools-rack > .member-tools-group:not([data-lead="true"]) {
+    flex: 1 1 100%;
+  }
+
+  .member-tools-group[data-kind="unit"][data-lead="true"]
+    .member-tools-list
+    > li[data-alert="true"] {
+    grid-column: auto;
+  }
+}
+
 /* The first tile spans the lead group's row, which would push a participant's
    other tools down and leave the group lopsided. Their profile shares the
    first row with the documents, and the agenda takes the wide row beneath:
@@ -2537,6 +2600,25 @@ body {
 .member-tools-group[data-kind="sections"] .member-tool,
 .member-tools-group[data-kind="unit"] .member-tool {
   background-color: color-mix(in srgb, #296f52 6%, #fff);
+}
+
+/* The unit team's tools carry their rank in the ground and the label: the
+   daily three take a deeper green and the title step the lead tile already
+   uses, the next three a middle ground. The palette stays the group's own —
+   the step is the ranking, not a new colour. */
+.member-tools-group[data-kind="unit"] .member-tool[data-tier="1"] {
+  min-height: 8rem;
+  background-color: color-mix(in srgb, #296f52 18%, #fff);
+}
+
+.member-tools-group[data-kind="unit"] .member-tool[data-tier="2"] {
+  background-color: color-mix(in srgb, #296f52 12%, #fff);
+}
+
+.member-tools-group[data-kind="unit"]
+  .member-tool[data-tier="1"]
+  .member-tool-label {
+  font-size: 1.25rem;
 }
 
 .member-tool-icon {

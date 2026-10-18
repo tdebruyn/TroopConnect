@@ -48,10 +48,13 @@ from members.permissions import (
 # reader normally does not open — the Django admin — so it sits in the mosaic
 # without competing with the unit's daily work. `detail_inline` runs a detail
 # on after the label, for one that continues the label's sentence rather than
-# reporting a fact of its own; stacked, it reads as a second option.
+# reporting a fact of its own; stacked, it reads as a second option. `tier`
+# ranks a unit team's tools by how often it reaches for them (1 daily, 2
+# regular, 3 the rest); the template turns the rank into ground and label
+# size, so the order is visible without reading every title.
 Tool = namedtuple(
-    "Tool", "label url icon modal details alert quiet detail_inline",
-    defaults=((), False, False, False),
+    "Tool", "label url icon modal details alert quiet detail_inline tier",
+    defaults=((), False, False, False, 3),
 )
 
 
@@ -461,27 +464,33 @@ def _member_tools(
     # a "Your sections" group that implies the reader leads them. A section's
     # own animateur keeps the group, because for them it is their own work.
     admin_section_items = []
+    send_message = message_history = section_agendas = None
     if sections:
         section_items = []
         if can_access_messaging(user):
-            section_items += [
-                Tool(_("Send a message"), reverse("messaging:compose"), "send", False),
-                Tool(
-                    _("Message history"),
-                    reverse("messaging:animateur_history"),
-                    "chat-left-text",
-                    False,
-                ),
-            ]
-        if module_enabled(modules.AGENDA):
-            section_items.append(
-                Tool(
-                    _("Section agendas"),
-                    reverse("members:agenda"),
-                    "calendar-week",
-                    False,
-                )
+            send_message = Tool(
+                _("Send a message"),
+                reverse("messaging:compose"),
+                "send",
+                False,
+                tier=1,
             )
+            message_history = Tool(
+                _("Message history"),
+                reverse("messaging:animateur_history"),
+                "chat-left-text",
+                False,
+            )
+            section_items += [send_message, message_history]
+        if module_enabled(modules.AGENDA):
+            section_agendas = Tool(
+                _("Section agendas"),
+                reverse("members:agenda"),
+                "calendar-week",
+                False,
+                tier=2,
+            )
+            section_items.append(section_agendas)
         if section_items:
             if can_manage_unit(user):
                 admin_section_items = section_items
@@ -497,6 +506,10 @@ def _member_tools(
                     }
                 )
 
+    # The unit team's tools, in the order it reaches for them: the first three
+    # are the daily work and the next three the regular but rarer jobs. The
+    # tier rides along so the template can draw that ranking instead of
+    # relying on the reader to scan eleven titles in order.
     unit_items = []
     if can_manage_members(user):
         # A person created without a role — every child a parent registers —
@@ -526,12 +539,47 @@ def _member_tools(
                 reverse("members:admin_list"),
                 "people",
                 False,
+                tier=1,
             )
         )
-    # The section tools moved here for a unit admin; they follow the member
-    # list because writing to a section is the unit team's next most common
-    # act.
-    unit_items += admin_section_items
+    # The section tools moved here for a unit admin; writing to a section is
+    # the unit team's next most common act, so the message sits with members.
+    if admin_section_items and send_message is not None:
+        unit_items.append(send_message)
+    if can_access_finance(user) and module_enabled(modules.FEES):
+        unit_items.append(
+            Tool(
+                _("Membership fees"),
+                reverse("finance:billing"),
+                "cash-coin",
+                False,
+                tier=1,
+            )
+        )
+    if can_manage_unit(user) and module_enabled(modules.SIGNING):
+        unit_items.append(
+            Tool(
+                _("Attestations"),
+                reverse("attestations:index"),
+                "file-earmark-check",
+                False,
+                tier=2,
+            )
+        )
+    if admin_section_items and section_agendas is not None:
+        unit_items.append(section_agendas)
+    if user.is_staff:
+        unit_items.append(
+            Tool(
+                _("Settings"),
+                reverse("members:troop_settings"),
+                "sliders2",
+                False,
+                tier=2,
+            )
+        )
+    if admin_section_items and message_history is not None:
+        unit_items.append(message_history)
     if can_manage_unit(user):
         unit_items += [
             Tool(
@@ -556,31 +604,11 @@ def _member_tools(
                 False,
             )
         )
-    if user.is_staff:
-        unit_items.append(
-            Tool(
-                _("Settings"),
-                reverse("members:troop_settings"),
-                "sliders2",
-                False,
-            )
-        )
-    # The two module tools sit together on the second-to-last line; the
-    # advanced door and the email queue close the list, the queue last of all
-    # because it is read when something has failed, not as a destination.
-    if can_manage_unit(user) and module_enabled(modules.SIGNING):
-        unit_items.append(
-            Tool(
-                _("Attestations"),
-                reverse("attestations:index"),
-                "file-earmark-check",
-                False,
-            )
-        )
-    if can_access_finance(user) and module_enabled(modules.FEES):
-        unit_items.append(
-            Tool(_("Membership fees"), reverse("finance:billing"), "cash-coin", False)
-        )
+    # The unit's own page is one of the team's doors, not a separate group;
+    # a reader with no unit group keeps it standing alone below.
+    our_unit = Tool(_("Our unit"), reverse("unit_page"), "house-door", False)
+    if unit_items or user.is_staff:
+        unit_items.append(our_unit)
     # The account menu is the way out alone, so the board carries the admin;
     # without this tile a superuser has no way to reach it. It is named for
     # what it holds rather than for where it comes from, and drawn quiet: it
@@ -658,16 +686,17 @@ def _member_tools(
             "pair_first": own_section is not None,
         }
     )
-    groups.append(
-        {
-            "priority": priority("site"),
-            "title": _("The unit's page"),
-            "kind": "site",
-            "items": [
-                Tool(_("Our unit"), reverse("unit_page"), "house-door", False),
-            ],
-        }
-    )
+    # A reader without a unit group still needs the unit's page; for a team
+    # member it already rides in the unit group above.
+    if not unit_items:
+        groups.append(
+            {
+                "priority": priority("site"),
+                "title": _("The unit's page"),
+                "kind": "site",
+                "items": [our_unit],
+            }
+        )
     # A stable sort: groups of equal standing keep the order they are built in.
     groups.sort(key=lambda group: group["priority"])
     # The wide cluster and the dark tile go to the group with the most to offer,
@@ -677,6 +706,13 @@ def _member_tools(
     featured = max(groups, key=lambda group: len(group["items"]))
     for group in groups:
         group["featured"] = group is featured
+        # The dark tile marks the page's first action, which is the first tool
+        # the group ranks rather than whatever happens to lead the list: the
+        # new-members alert reports work and may sit ahead of it.
+        group["anchor_index"] = next(
+            (index for index, item in enumerate(group["items"]) if item.tier == 1),
+            0,
+        )
     return groups
 
 
