@@ -759,6 +759,50 @@ NEW_STRINGS = [
         "affichée à côté",
         "naast het adres",
     ),
+    # The settings the Django admin was the only place for: the registration
+    # window, the social links and the words the site shows around forms.
+    ("Facebook page", "Facebook", "Facebook"),
+    ("Instagram profile", "Instagram", "Instagram"),
+    (
+        "Shown in the site footer. Leave empty to hide the link.",
+        "pied de page",
+        "voettekst",
+    ),
+    ("Registrations open", "ouvertes", "open"),
+    (
+        "Message while registrations are closed",
+        "inscriptions sont fermées",
+        "gesloten",
+    ),
+    (
+        "When off, the desk shows your message instead of the registration form.",
+        "comptoir",
+        "balie",
+    ),
+    (
+        "Shown on the public page while registrations are closed.",
+        "page publique",
+        "publieke pagina",
+    ),
+    ("Wording", "Textes", "Teksten"),
+    ("Email signature", "Signature", "E-mailhandtekening"),
+    ("Photo consent", "Consentement", "Toestemming"),
+    ("Address example", "Exemple", "Voorbeeld"),
+    (
+        "Added to the account emails the site sends.",
+        "e-mails de compte",
+        "accounte-mails",
+    ),
+    (
+        "The wording beside the photo-consent checkbox on a child's form.",
+        "consentement photo",
+        "fototoestemming",
+    ),
+    (
+        "The greyed-out example under an address field.",
+        "grisé",
+        "grijze",
+    ),
 ]
 
 

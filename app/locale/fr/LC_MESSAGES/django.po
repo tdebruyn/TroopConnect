@@ -4051,3 +4051,46 @@ msgstr "%(count)s à traiter"
 #: members/templates/members/base.html
 msgid "My space"
 msgstr "Mon espace"
+
+#: members/forms.py
+msgid "Facebook page"
+msgstr "Page Facebook"
+
+msgid "Instagram profile"
+msgstr "Profil Instagram"
+
+msgid "Shown in the site footer. Leave empty to hide the link."
+msgstr "Affiché dans le pied de page. Laissez vide pour masquer le lien."
+
+msgid "Registrations open"
+msgstr "Inscriptions ouvertes"
+
+msgid "Message while registrations are closed"
+msgstr "Message lorsque les inscriptions sont fermées"
+
+msgid "When off, the desk shows your message instead of the registration form."
+msgstr "Désactivé, le comptoir affiche votre message à la place du formulaire d'inscription."
+
+msgid "Shown on the public page while registrations are closed."
+msgstr "Affiché sur la page publique pendant que les inscriptions sont fermées."
+
+msgid "Wording"
+msgstr "Textes"
+
+msgid "Email signature"
+msgstr "Signature des e-mails"
+
+msgid "Photo consent"
+msgstr "Consentement photo"
+
+msgid "Address example"
+msgstr "Exemple d'adresse"
+
+msgid "Added to the account emails the site sends."
+msgstr "Ajoutée aux e-mails de compte envoyés par le site."
+
+msgid "The wording beside the photo-consent checkbox on a child's form."
+msgstr "Le texte à côté de la case de consentement photo sur le formulaire d'un enfant."
+
+msgid "The greyed-out example under an address field."
+msgstr "L'exemple grisé sous un champ d'adresse."

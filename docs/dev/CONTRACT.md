@@ -272,6 +272,13 @@ What is stored is kept.
 | `address_placeholder` | Example address shown under the address field. |
 | `last_passage_school_year` | Which coming school year the passage last prepared, shown on the passage page. Informational: idempotency is per member (an existing section for the target year), not this marker. |
 
+Every row above except `site_keywords` and `last_passage_school_year` is edited
+on **`/users/settings`**: the social links in the organisation card, the
+registration window in the public page's desk block, and the signature and form
+wording in the wording card. `site_keywords` stays in the Django admin, where
+the whole singleton does; `last_passage_school_year` is written by the passage
+task.
+
 `ImportantDocument` (title, description, url, file) is likewise admin-managed.
 
 ---

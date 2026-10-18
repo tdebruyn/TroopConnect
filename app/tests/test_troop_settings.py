@@ -85,7 +85,15 @@ class SettingsPageTest(StaffPageTestBase):
         self.assertEqual(response.status_code, 200)
         keys = [section["key"] for section in response.context["sections"]]
         self.assertEqual(
-            keys, ["organisation", "locale", "calendar", "public_page", "modules"]
+            keys,
+            [
+                "organisation",
+                "locale",
+                "calendar",
+                "public_page",
+                "wording",
+                "modules",
+            ],
         )
 
     def test_saving_organisation_persists_and_redirects(self):
@@ -101,6 +109,8 @@ class SettingsPageTest(StaffPageTestBase):
                 "reply_to_email": "secretariat@limal.be",
                 "contact_phone": "010 12 34 56",
                 "privacy_policy": "https://limal.be/privacy",
+                "facebook_url": "https://facebook.com/scoutsdelimal",
+                "instagram_url": "https://instagram.com/scoutsdelimal",
             },
         )
 
@@ -109,6 +119,34 @@ class SettingsPageTest(StaffPageTestBase):
         self.assertEqual(troop.name, "Scouts de Limal")
         self.assertEqual(troop.reply_to_email, "secretariat@limal.be")
         self.assertEqual(troop.privacy_policy_url(), "https://limal.be/privacy")
+        self.assertEqual(
+            troop.facebook_url, "https://facebook.com/scoutsdelimal"
+        )
+        self.assertEqual(
+            troop.instagram_url, "https://instagram.com/scoutsdelimal"
+        )
+
+    def test_saving_wording_persists_the_families_texts(self):
+        self.login_staff()
+        response = self.client.post(
+            self.url,
+            {
+                "section": "wording",
+                "email_signature": "À bientôt,\nLe staff d'unité",
+                "photo_consent_text": "J'accepte les photos.",
+                "address_placeholder": "Rue de l'Église 1, 1000 Bruxelles",
+            },
+        )
+
+        self.assertRedirects(response, self.url)
+        troop = TroopSettings.get_settings()
+        self.assertEqual(
+            troop.email_signature, "À bientôt,\nLe staff d'unité"
+        )
+        self.assertEqual(troop.photo_consent_text, "J'accepte les photos.")
+        self.assertEqual(
+            troop.address_placeholder, "Rue de l'Église 1, 1000 Bruxelles"
+        )
 
     def test_htmx_save_returns_only_that_section(self):
         self.login_staff()
@@ -220,6 +258,10 @@ class PublicPageSettingsTest(StaffPageTestBase):
         data = {
             "section": "public_page",
             "site_description": "Bienvenue chez les Scouts.",
+            # The desk's own pair is on the card too; a browser posting the
+            # card carries both, and the message is a required field.
+            "registration_open": "on",
+            "registration_message": "Les inscriptions sont ouvertes.",
             "activities-TOTAL_FORMS": "0",
             "activities-INITIAL_FORMS": "0",
             "activities-MIN_NUM_FORMS": "0",
@@ -253,6 +295,36 @@ class PublicPageSettingsTest(StaffPageTestBase):
             troop.footer_address, "Rue de l'Église 1\n1348 Louvain-la-Neuve"
         )
         self.assertEqual(troop.meeting_place, "La ferme")
+
+    def test_the_card_closes_and_reopens_registrations(self):
+        closed = self.public_page_data(
+            homepage_desk_enabled="on",
+            registration_message="Les inscriptions reprennent le 1er août.",
+        )
+        # An empty checkbox posts nothing, so the key has to be gone rather
+        # than overridden with a falsy string.
+        closed.pop("registration_open")
+        response = self.client.post(self.url, closed)
+
+        self.assertRedirects(response, self.url)
+        troop = TroopSettings.get_settings()
+        self.assertFalse(troop.registration_open)
+        self.assertEqual(
+            troop.registration_message,
+            "Les inscriptions reprennent le 1er août.",
+        )
+
+        response = self.client.post(
+            self.url,
+            self.public_page_data(
+                homepage_desk_enabled="on",
+                registration_open="on",
+                registration_message="Les inscriptions sont ouvertes.",
+            ),
+        )
+
+        self.assertRedirects(response, self.url)
+        self.assertTrue(TroopSettings.get_settings().registration_open)
 
     def test_a_content_module_cannot_be_turned_on_without_its_text(self):
         response = self.client.post(

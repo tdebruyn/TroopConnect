@@ -4048,3 +4048,46 @@ msgstr "%(count)s te verwerken"
 #: members/templates/members/base.html
 msgid "My space"
 msgstr "Mijn ruimte"
+
+#: members/forms.py
+msgid "Facebook page"
+msgstr "Facebookpagina"
+
+msgid "Instagram profile"
+msgstr "Instagramprofiel"
+
+msgid "Shown in the site footer. Leave empty to hide the link."
+msgstr "Getoond in de voettekst. Laat leeg om de link te verbergen."
+
+msgid "Registrations open"
+msgstr "Inschrijvingen open"
+
+msgid "Message while registrations are closed"
+msgstr "Bericht wanneer inschrijvingen gesloten zijn"
+
+msgid "When off, the desk shows your message instead of the registration form."
+msgstr "Uitgeschakeld toont de balie je bericht in plaats van het inschrijfformulier."
+
+msgid "Shown on the public page while registrations are closed."
+msgstr "Getoond op de publieke pagina terwijl de inschrijvingen gesloten zijn."
+
+msgid "Wording"
+msgstr "Teksten"
+
+msgid "Email signature"
+msgstr "E-mailhandtekening"
+
+msgid "Photo consent"
+msgstr "Toestemming voor foto's"
+
+msgid "Address example"
+msgstr "Voorbeeldadres"
+
+msgid "Added to the account emails the site sends."
+msgstr "Toegevoegd aan de accounte-mails die de site verstuurt."
+
+msgid "The wording beside the photo-consent checkbox on a child's form."
+msgstr "De tekst naast het selectievakje voor fototoestemming op het formulier van een kind."
+
+msgid "The greyed-out example under an address field."
+msgstr "Het grijze voorbeeld onder een adresveld."

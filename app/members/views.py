@@ -43,6 +43,7 @@ from .forms import (
     PublicPageSettingsForm,
     SectionEventForm,
     TimelineActivityFormSet,
+    WordingSettingsForm,
 )
 from .importexport import columns as cols
 from .importexport import exporter
@@ -1024,6 +1025,7 @@ class TroopSettingsView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
             ("locale", _("Locale"), LocaleSettingsForm),
             ("calendar", _("Calendar"), CalendarSettingsForm),
             ("public_page", _("Public page"), PublicPageSettingsForm),
+            ("wording", _("Wording"), WordingSettingsForm),
             ("modules", _("Modules"), ModuleSettingsForm),
         )
 

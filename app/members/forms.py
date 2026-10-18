@@ -772,6 +772,8 @@ class OrganisationSettingsForm(forms.ModelForm):
             # The hall, its address and its picture belong to the public
             # page's "Where to find us" block, and are edited in that card.
             "privacy_policy",
+            "facebook_url",
+            "instagram_url",
             "logo",
             "favicon",
         )
@@ -783,6 +785,8 @@ class OrganisationSettingsForm(forms.ModelForm):
             "reply_to_email": _("Reply-to address"),
             "contact_phone": _("Public phone"),
             "privacy_policy": _("Privacy policy"),
+            "facebook_url": _("Facebook page"),
+            "instagram_url": _("Instagram profile"),
             "logo": _("Logo"),
             "favicon": _("Favicon"),
         }
@@ -798,6 +802,8 @@ class OrganisationSettingsForm(forms.ModelForm):
                 "Where answers to automated mail should go. "
                 "Empty replies to the sender address."
             ),
+            "facebook_url": _("Shown in the site footer. Leave empty to hide the link."),
+            "instagram_url": _("Shown in the site footer. Leave empty to hide the link."),
         }
 
 
@@ -872,6 +878,11 @@ class PublicPageSettingsForm(forms.ModelForm):
         fields = (
             "homepage_band_enabled",
             "homepage_desk_enabled",
+            # The window, not the block: the desk may be on screen all year
+            # while registrations are closed, which is how a unit answers
+            # "can I still register?" without turning the page off.
+            "registration_open",
+            "registration_message",
             "homepage_place_enabled",
             "homepage_about_enabled",
             "homepage_about_text",
@@ -889,6 +900,8 @@ class PublicPageSettingsForm(forms.ModelForm):
         labels = {
             "homepage_band_enabled": _("Introduction"),
             "homepage_desk_enabled": _("Enrolment desk"),
+            "registration_open": _("Registrations open"),
+            "registration_message": _("Message while registrations are closed"),
             "homepage_place_enabled": _("Where to find us"),
             "homepage_about_enabled": _("About us"),
             "homepage_about_text": _("About text"),
@@ -906,6 +919,13 @@ class PublicPageSettingsForm(forms.ModelForm):
             "homepage_desk_enabled": _(
                 "The branches' own ages answer it, so the desk follows the "
                 "branches edited in the admin."
+            ),
+            "registration_open": _(
+                "When off, the desk shows your message instead of the "
+                "registration form."
+            ),
+            "registration_message": _(
+                "Shown on the public page while registrations are closed."
             ),
             "homepage_place_enabled": _(
                 "The hall, the address and the map below, under the desk."
@@ -960,6 +980,38 @@ class PublicPageSettingsForm(forms.ModelForm):
                     % {"module": label},
                 )
         return cleaned
+
+
+class WordingSettingsForm(forms.ModelForm):
+    """The words the site puts around forms and in its own mail.
+
+    Kept apart from the organisation card because these are not facts about
+    the unit: they are the sentences a family reads at the moment they answer
+    a form or open an account email, so the person editing them is looking for
+    wording, not for contact details.
+    """
+
+    class Meta:
+        model = TroopSettings
+        fields = (
+            "email_signature",
+            "photo_consent_text",
+            "address_placeholder",
+        )
+        labels = {
+            "email_signature": _("Email signature"),
+            "photo_consent_text": _("Photo consent"),
+            "address_placeholder": _("Address example"),
+        }
+        help_texts = {
+            "email_signature": _("Added to the account emails the site sends."),
+            "photo_consent_text": _(
+                "The wording beside the photo-consent checkbox on a child's form."
+            ),
+            "address_placeholder": _(
+                "The greyed-out example under an address field."
+            ),
+        }
 
 
 class TimelineActivityForm(forms.ModelForm):
