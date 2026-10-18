@@ -614,12 +614,12 @@ class ModuleSwitchesTest(StaffPageTestBase):
 
 
 class SiteFooterTest(TroopSettingsTestCase):
-    """Where four settings that had no home finally reach a page.
+    """Where settings that had no home finally reach a page.
 
-    The address, the phone, the legal line and the social accounts were all
-    editable — and all rendered by nothing — until the footer existed. This
-    asserts the values arrive, not the sentences around them: the source
-    strings are English while a French instance renders the catalogue.
+    The phone, the legal line and the social accounts were all editable — and
+    all rendered by nothing — until the footer existed. This asserts the values
+    arrive, not the sentences around them: the source strings are English while
+    a French instance renders the catalogue.
     """
 
     def _troop(self, **fields):
@@ -641,13 +641,25 @@ class SiteFooterTest(TroopSettingsTestCase):
         response = self.client.get(reverse("homepage"))
 
         self.assertContains(response, "site-footer")
-        self.assertContains(response, "Les Scouts de Limal")
-        self.assertContains(response, "Les Scouts Baden Powel de Belgique")
-        self.assertContains(response, "Rue Achille Bauduin 89")
-        self.assertContains(response, "1300 Limal")
         self.assertContains(response, "contact@example.org")
         # Linked, and the number is bare inside the URI.
         self.assertContains(response, "tel:010411234")
+
+    def test_it_does_not_repeat_the_unit_identity(self):
+        """The name is on the band and in the copyright, the federation and the
+        address are the place block's; the footer is chrome, not a second
+        masthead."""
+        self._troop(
+            federation="Les Scouts Baden Powel de Belgique",
+            footer_address="Rue Achille Bauduin 89\n1300 Limal",
+        )
+
+        response = self.client.get(reverse("homepage"))
+        footer = response.content.split(b"site-footer-slot")[1].split(b"</footer>")[0]
+
+        self.assertNotIn(b"Baden Powel", footer)
+        self.assertNotIn(b"Rue Achille Bauduin", footer)
+        self.assertNotIn(b"footer-name", footer)
 
     def test_the_legal_line_is_a_link_when_the_troop_stored_a_url(self):
         self._troop(privacy_policy="https://example.org/privacy")

@@ -627,32 +627,21 @@ body {
 
 .site-footer {
   margin-top: 3rem;
-  padding: 2rem 0 3.1rem;
+  padding: 1.5rem 0 2rem;
   border-top: 1px solid #dee2e6;
   font-size: 0.9375rem;
   color: #5d666e;
 }
 
-/* Who, then what. Two columns where there is room; stacked where there is
-   not, because a phone footer read as two squeezed columns is worse than a
-   long one. */
+/* One strip: the links, and the copyright at the far end. When the two do not
+   fit side by side they stack, and space-between leaves each on the left
+   rather than stranding one against an edge. */
 .footer-body {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
-}
-
-.footer-name {
-  margin: 0;
-  font-size: 1.0625rem;
-  font-weight: 700;
-  color: #0a4275;
-}
-
-.footer-federation,
-.footer-address {
-  margin: 0.375rem 0 0;
-  line-height: 1.5;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 2rem;
 }
 
 .footer-links {
@@ -671,23 +660,13 @@ body {
 /* Runs the container's full width, unlike the reading measures the body copy
    is set to. */
 .footer-legal {
-  margin: 1.5rem 0 0;
+  margin: 1rem 0 0;
   line-height: 1.5;
 }
 
 .footer-copyright {
-  margin: 1.5rem 0 0;
-  padding-top: 1rem;
-  border-top: 1px solid #dee2e6;
+  margin: 0;
   font-size: 0.8125rem;
-}
-
-@media (min-width: 768px) {
-  .footer-body {
-    grid-template-columns: 1fr auto;
-    align-items: start;
-    gap: 2rem;
-  }
 }
 
 /* ---------------------------------------------------------------------------

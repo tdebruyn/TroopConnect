@@ -208,10 +208,11 @@
         {% block content %}
         {% endblock content %}
         {% comment %}
-            The site footer, on every page. It is also where several settings
-            that had no home finally land: the address, the phone, the legal
-            line and the unit's social accounts were all stored — and all
-            rendered by nothing — until now.
+            The site footer, on every page. It is where the phone, the legal
+            line and the unit's social accounts land. The address is not
+            repeated here: the public page's place block is where it is stated,
+            and a second copy at the foot of every signed-in page would be the
+            same fact printed twice.
 
             Never styled with a bare `footer` selector: the public page's
             content carries its own blocks, and a bare selector reaches into
@@ -228,15 +229,6 @@
             <footer class="site-footer">
                 <div class="container">
                     <div class="footer-body">
-                        <div class="footer-who">
-                            <p class="footer-name">{{ site_name }}</p>
-                            {% if federation %}
-                                <p class="footer-federation">{{ federation }}</p>
-                            {% endif %}
-                            {% if unit_address %}
-                                <p class="footer-address">{{ unit_address|linebreaksbr }}</p>
-                            {% endif %}
-                        </div>
                         <ul class="footer-links">
                             {% if contact_email %}
                                 <li><a href="mailto:{{ contact_email }}">{{ contact_email }}</a></li>
@@ -254,6 +246,8 @@
                                 <li><a href="{{ instagram_url }}" target="_blank" rel="noopener">Instagram</a></li>
                             {% endif %}
                         </ul>
+                        {% now "Y" as current_year %}
+                        <p class="footer-copyright">{% blocktranslate with unit=site_name year=current_year %}© {{ year }} {{ unit }}{% endblocktranslate %}</p>
                     </div>
                     {% comment %}
                         A troop with its own legal page stores a URL and gets the
@@ -264,8 +258,6 @@
                     {% if privacy_policy and not privacy_policy_url %}
                         <p class="footer-legal">{{ privacy_policy|linebreaksbr }}</p>
                     {% endif %}
-                    {% now "Y" as current_year %}
-                    <p class="footer-copyright">{% blocktranslate with unit=site_name year=current_year %}© {{ year }} {{ unit }}{% endblocktranslate %}</p>
                 </div>
             </footer>
         </div>
