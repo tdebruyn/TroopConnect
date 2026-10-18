@@ -411,8 +411,13 @@ class PriceEditViewTest(FinanceTestBase):
         return f"{url}?year={year.pk}" if year else url
 
     def _full_post(self, **overrides):
-        """A realistic full-grid POST with every cell submitted."""
-        post = {"year": str(self.current_year.pk)}
+        """A realistic full page POST: the price cells and the late-payment card."""
+        post = {
+            "year": str(self.current_year.pk),
+            # The page's second card travels with the same Save.
+            "late_penalty_percent": "10.00",
+            "late_deadline": "",
+        }
         for rank in [1, 2, 3]:
             post[f"child_all_{rank}"] = f"{rank}0.00"
             post[f"child_{self.branch.pk}_{rank}"] = f"{rank}0.00"
