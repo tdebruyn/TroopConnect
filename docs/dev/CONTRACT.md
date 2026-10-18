@@ -217,6 +217,20 @@ exactly as that field's help text says; with neither set the absence is still
 recorded, it just does not travel. The notice is part of the **agenda** module
 and its screens 404 while `agenda_enabled` is off.
 
+### Prices, the late penalty and payment corrections
+
+`FeeRule` rows are edited on **`/finance/prices`**: one grid per school year,
+branch × rank, and a blank cell removes the price. `CotisationConfig` — the
+year's `late_penalty_percent` and `late_deadline` — is on the same page and
+saved by the same submit; neither the grid nor the penalty is written unless
+both validate.
+
+A payment recorded by mistake is corrected from the person's payment-history
+modal: Edit and Delete live on each row. The person and the school year stay as
+recorded; amount, date and note are editable. Both actions refresh the page
+afterwards, because the balance behind the modal changed. The history shows the
+current school year only.
+
 ### Households and fee adjustments
 
 Fees are billed per **household**. By default a household is *inferred from the
