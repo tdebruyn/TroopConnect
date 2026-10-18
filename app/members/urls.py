@@ -104,6 +104,13 @@ urlpatterns = [
     path("settings", views.TroopSettingsView.as_view(), name="troop_settings"),
     # The yearly section passage: when it runs, and the button to run it now.
     path("passage", views.PassageView.as_view(), name="passage"),
+    # The branches and sections, and the editor's add/remove row buttons.
+    path("sections", views.SectionsView.as_view(), name="sections"),
+    path(
+        "sections/row/<str:action>",
+        views.SectionsRowView.as_view(),
+        name="sections_row",
+    ),
     # Member import and export: one column format, read and written by both
     # directions. Staff only, and the one page that hands out the troop's whole
     # member list, so it stays behind the same gate as the settings page.

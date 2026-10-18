@@ -1,0 +1,41 @@
+{% extends "members/base.html" %}
+{% load i18n %}
+{% block hat_title %}
+  {% trans "Sections" %}
+{% endblock hat_title %}
+{% block hat_text %}
+  {% trans "The branches, their ages and the sections inside them." %}
+{% endblock hat_text %}
+{% block subcontent %}
+  <div class="row">
+    <div class="col-lg-10">
+      <form method="post" action="{% url 'members:sections' %}">
+        {% csrf_token %}
+        {% for error in form.non_field_errors %}
+          <div class="alert alert-danger py-2" role="alert">{{ error }}</div>
+        {% endfor %}
+        <p class="text-muted small">
+          {% blocktranslate %}Each branch leads to the one below it, and members who outgrow the last one leave the unit. Names are edited in every language the site offers. A branch or a section can only be removed here while no member, activity or message still uses it.{% endblocktranslate %}
+        </p>
+
+        <div class="setup-branches">
+          {% for branch in branches %}
+            {% include "members/setup/_structure_branch.html" %}
+          {% empty %}
+            <p class="text-muted">{% trans "No branch yet. Add the first one." %}</p>
+          {% endfor %}
+        </div>
+
+        <button type="button"
+                class="btn btn-sm btn-outline-secondary mb-3"
+                hx-post="{% url 'members:sections_row' 'add-branch' %}"
+                hx-target=".setup-branches"
+                hx-swap="beforeend">+ {% trans "Branch" %}</button>
+
+        <div>
+          <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock subcontent %}

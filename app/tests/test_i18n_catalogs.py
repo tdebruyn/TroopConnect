@@ -850,6 +850,35 @@ NEW_STRINGS = [
         "chaque personne connectée",
         "elke ingelogde lezer",
     ),
+    # The post-setup sections editor: the page, the section email it now
+    # edits, and the refusal that keeps referenced rows out of its deletes.
+    (
+        "The branches, their ages and the sections inside them.",
+        "Les branches",
+        "De afdelingen",
+    ),
+    (
+        "Each branch leads to the one below it, and members who outgrow the "
+        "last one leave the unit. Names are edited in every language the site "
+        "offers. A branch or a section can only be removed here while no "
+        "member, activity or message still uses it.",
+        "Chaque branche mène",
+        "Elke afdeling leidt",
+    ),
+    ("Email for replies (optional)", "facultatif", "optioneel"),
+    ("Section email", "E-mail de la section", "E-mail van de sectie"),
+    ("Sections and branches saved.", "enregistrées", "opgeslagen"),
+    (
+        "%(branch)s: %(section)s has an invalid email address.",
+        "n'est pas valide",
+        "ongeldig",
+    ),
+    (
+        "“%(name)s” is still used by members, activities or messages, so it "
+        "cannot be removed here. The Django admin can delete it.",
+        "L'administration Django",
+        "Django-beheeromgeving",
+    ),
 ]
 
 

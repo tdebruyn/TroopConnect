@@ -485,8 +485,9 @@ place.
 
 Everything you answered in the wizard is here, at **Site settings**, in four
 groups: the unit, its languages, the calendar, and the modules. This is where
-you change them later. Branches and sections are edited in the Django admin
-(`/admin/`).
+you change them later. Branches and sections are edited under **Sections**
+(`/users/sections`), from your dashboard; the Django admin (`/admin/`) remains
+the escape hatch for removing one that is still in use.
 
 ## Looking after it
 

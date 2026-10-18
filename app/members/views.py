@@ -14,6 +14,7 @@ from django.db import transaction
 from django.db.models import Q
 from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
+from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
 from django.utils import formats, timezone
 from django.utils.translation import gettext as _
@@ -77,6 +78,12 @@ from .permissions import (
     reportable_children,
     secondary_roles_for,
     visible_sections,
+)
+from .structure import (
+    SECTION_SEXES,
+    StructureForm,
+    new_branch_entry,
+    new_section_entry,
 )
 from .tasks import run_passage
 
@@ -1208,6 +1215,89 @@ class TroopSettingsView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
                 bound_key=key, bound_form=form, bound_activities=activities
             )
         )
+
+
+class SectionsView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
+    """The branches and sections, once the first-run wizard is behind us.
+
+    The wizard's structure step is the same editor, so the two pages cannot
+    disagree about the fields; what changes here is the write. A troop that
+    has members, agenda entries and messages must not lose them to a row
+    removed from a form, so the form refuses that removal and points to the
+    Django admin, where the cascade is deliberate.
+    """
+
+    template_name = "members/sections.html"
+
+    def test_func(self):
+        return can_manage_unit(self.request.user)
+
+    def _languages(self):
+        return list(TroopSettings.get_settings().enabled_languages or ["fr"])
+
+    def _form(self, data=None):
+        return StructureForm(
+            data,
+            self._languages(),
+            request=self.request,
+            enforce_empty_deletions=True,
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        form = kwargs.get("form") or self._form()
+        context["form"] = form
+        context["branches"] = form.branch_entries
+        context["languages"] = self._languages()
+        context["sexes"] = SECTION_SEXES
+        context["row_url"] = "members:sections_row"
+        return context
+
+    def post(self, request, *args, **kwargs):
+        form = self._form(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, _("Sections and branches saved."))
+            return redirect("members:sections")
+        return self.render_to_response(self.get_context_data(form=form))
+
+
+class SectionsRowView(LoginRequiredMixin, View):
+    """The sections editor's add and remove buttons.
+
+    The rows are the same partials the wizard renders; the row URL is the one
+    context variable that differs between the two pages.
+    """
+
+    def post(self, request, action):
+        if not can_manage_unit(request.user):
+            raise PermissionDenied
+        languages = list(TroopSettings.get_settings().enabled_languages or ["fr"])
+
+        if action == "add-branch":
+            branch = new_branch_entry(languages)
+            branch.sections.append(new_section_entry(branch.id, languages))
+            template = "members/setup/_structure_branch.html"
+            extra = {"branch": branch}
+        elif action == "add-section":
+            template = "members/setup/_structure_section.html"
+            extra = {
+                "section": new_section_entry(
+                    request.POST.get("branch-id", ""), languages
+                )
+            }
+        elif action == "remove":
+            return HttpResponse("")
+        else:
+            raise Http404(f"No structure action called {action!r}.")
+
+        context = {
+            "languages": languages,
+            "sexes": SECTION_SEXES,
+            "row_url": "members:sections_row",
+            **extra,
+        }
+        return HttpResponse(render_to_string(template, context, request=request))
 
 
 class PassageView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):

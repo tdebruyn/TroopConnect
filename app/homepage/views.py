@@ -518,14 +518,20 @@ def _member_tools(
             )
         )
     if can_manage_unit(user):
-        unit_items.append(
+        unit_items += [
             Tool(
                 _("Section passage"),
                 reverse("members:passage"),
                 "arrow-left-right",
                 False,
-            )
-        )
+            ),
+            Tool(
+                _("Sections"),
+                reverse("members:sections"),
+                "diagram-3",
+                False,
+            ),
+        ]
     if can_manage_members(user):
         unit_items.append(
             Tool(

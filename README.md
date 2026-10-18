@@ -130,8 +130,9 @@ a `.env`**. There is no build step: the images come from
 
 6. Once the wizard finishes, the site is live. Log in with the account you
    created and fill in the rest under Site settings (`/users/settings`).
-   Branches and sections are edited in the Django admin. All of that lives in
-   the database, not in `.env` — a troop never edits a shipped file.
+   Branches and sections are edited under Sections (`/users/sections`); the
+   Django admin remains the escape hatch. All of that lives in the database,
+   not in `.env` — a troop never edits a shipped file.
 
 The wizard's one-time code is a gate, not a password: it says "whoever can read
 this container's log is the person setting the instance up". It is compared in

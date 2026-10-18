@@ -9,8 +9,9 @@
   removing can be plain HTMX round trips with nothing tracking state in the
   browser.
 
-  Once the instance is set up this page is gone, and branches and sections are
-  edited in the Django admin, which has carried the same fields all along.
+  Once the instance is set up this page is gone, and branches and sections
+  are edited under Sections (`/users/sections`), which renders this same
+  editor. The Django admin remains the escape hatch.
 {% endcomment %}
 <form hx-post="{% url 'setup:step' current %}"
       hx-target="#wizard-pane"

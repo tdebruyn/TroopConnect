@@ -21,6 +21,7 @@ from django.views import View
 
 from members.models import TroopSettings
 from members.permissions import is_htmx
+from members.structure import SECTION_SEXES, new_branch_entry, new_section_entry
 
 from . import (
     attempts_left,
@@ -28,15 +29,7 @@ from . import (
     record_failed_attempt,
     setup_required,
 )
-from .steps import (
-    ORDER,
-    SECTION_SEXES,
-    SESSION_KEY,
-    STEPS,
-    StepError,
-    new_branch_entry,
-    new_section_entry,
-)
+from .steps import ORDER, SESSION_KEY, STEPS, StepError
 
 #: The steps the progress list shows: every one but "done", which is what the
 #: list has been counting towards. The code is among them — it is the first
@@ -228,6 +221,7 @@ class StructureRowView(SetupGuardMixin, View):
                 TroopSettings.get_settings().enabled_languages or ["fr"]
             ),
             "sexes": SECTION_SEXES,
+            "row_url": "setup:structure_row",
             **extra,
         }
         return HttpResponse(render_to_string(template, context, request=request))

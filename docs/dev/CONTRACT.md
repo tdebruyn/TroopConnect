@@ -211,8 +211,8 @@ day view — to the section's leaders in full, to a family only for its own
 children.
 
 Sending it is the point: the notice is queued to **the section's own email
-address** (`Section.email`, edited in the Django admin with the section's other
-fields). An empty section address falls back to the troop's reply-to address,
+address** (`Section.email`, edited with the section's other fields on
+`/users/sections`, or in the Django admin). An empty section address falls back to the troop's reply-to address,
 exactly as that field's help text says; with neither set the absence is still
 recorded, it just does not travel. The notice is part of the **agenda** module
 and its screens 404 while `agenda_enabled` is off.
@@ -367,7 +367,8 @@ language the message is being written in, not whichever one the sender has on
 screen. That helper also builds absolute URLs from the Site row, sets
 `Reply-To` from `reply_to_email` when the troop has one — a message sent to a
 section uses that section's own address instead, and falls back to the troop's
-when the section has none (`Section.email`, edited in the Django admin) — and
+when the section has none (`Section.email`, edited on `/users/sections` or in
+the Django admin) — and
 resolves the language to one templates actually exist in, so a parent whose
 `preferred_language` is `nl` or `en` gets an email rather than a lookup failure.
 
@@ -625,9 +626,13 @@ would close the wizard behind itself halfway through.
 
 ### Afterwards
 
-Branches and sections are edited in the **Django admin**, which has carried the
-same fields all along; the wizard's structure step is a first-run editor, not
-a second admin. The unit's own details stay on `/users/settings`.
+Branches and sections are edited under **`/users/sections`**, which reuses the
+wizard's structure editor and adds the section's own email address; the wizard's
+structure step is the first-run page for the same editor. The page is gated on
+`can_manage_unit` (site staff or the unit team's lead). Removing a branch or a
+section there is refused while an enrolment, an agenda activity or a message
+still references it; the **Django admin** is the escape hatch, where the cascade
+is a deliberate choice. The unit's own details stay on `/users/settings`.
 
 `manage.py setup` remains the way to finish an instance that was abandoned
 mid-wizard, or to set one up without a browser at all.

@@ -4144,3 +4144,25 @@ msgstr "Document bewerken"
 
 msgid "What every signed-in reader can open. You can add, edit and remove the documents here."
 msgstr "Wat elke ingelogde lezer kan openen. Je kunt de documenten hier toevoegen, bewerken en verwijderen."
+
+#: members/structure.py members/templates/members/sections.html
+msgid "The branches, their ages and the sections inside them."
+msgstr "De afdelingen, hun leeftijden en de secties erin."
+
+msgid "Each branch leads to the one below it, and members who outgrow the last one leave the unit. Names are edited in every language the site offers. A branch or a section can only be removed here while no member, activity or message still uses it."
+msgstr "Elke afdeling leidt naar de volgende, en leden die de laatste ontgroeien verlaten de eenheid. Namen worden bewerkt in elke taal die de site aanbiedt. Een afdeling of sectie kan hier alleen worden verwijderd zolang geen lid, activiteit of bericht er nog gebruik van maakt."
+
+msgid "Email for replies (optional)"
+msgstr "E-mail voor antwoorden (optioneel)"
+
+msgid "Section email"
+msgstr "E-mail van de sectie"
+
+msgid "Sections and branches saved."
+msgstr "Secties en afdelingen opgeslagen."
+
+msgid "%(branch)s: %(section)s has an invalid email address."
+msgstr "%(branch)s: het e-mailadres van %(section)s is ongeldig."
+
+msgid "“%(name)s” is still used by members, activities or messages, so it cannot be removed here. The Django admin can delete it."
+msgstr "“%(name)s” wordt nog gebruikt door leden, activiteiten of berichten en kan hier daarom niet worden verwijderd. De Django-beheeromgeving kan dat wel."

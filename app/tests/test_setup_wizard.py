@@ -32,6 +32,7 @@ from members.models import (
     Section,
     TroopSettings,
 )
+from members.structure import StructureForm, default_structure
 from members.wizard import (
     clear_attempts,
     ensure_setup_code,
@@ -39,12 +40,7 @@ from members.wizard import (
     setup_complete,
     setup_required,
 )
-from members.wizard.steps import (
-    INSTALL_GUIDE_URL,
-    SESSION_KEY,
-    StructureForm,
-    default_structure,
-)
+from members.wizard.steps import INSTALL_GUIDE_URL, SESSION_KEY
 
 from .base import TroopSettingsTestCase
 

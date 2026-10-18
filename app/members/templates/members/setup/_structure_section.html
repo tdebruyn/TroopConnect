@@ -30,7 +30,7 @@
     <div class="col-5 col-md-auto">
       <button type="button"
               class="btn btn-sm btn-outline-danger w-100"
-              hx-post="{% url 'setup:structure_row' 'remove' %}"
+              hx-post="{% url row_url 'remove' %}"
               hx-target="closest .setup-section"
               hx-swap="outerHTML"
               aria-label="{% trans "Remove this section" %}">
@@ -38,5 +38,14 @@
         {% trans "Remove" %}
       </button>
     </div>
+  </div>
+  <div class="mt-1">
+    <input type="email"
+           class="form-control form-control-sm"
+           name="section-email"
+           value="{{ section.email }}"
+           placeholder="{% trans "Email for replies (optional)" %}"
+           aria-label="{% trans "Section email" %}"
+           maxlength="254" />
   </div>
 </div>

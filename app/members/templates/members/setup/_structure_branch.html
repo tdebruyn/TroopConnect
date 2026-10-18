@@ -49,13 +49,13 @@
   <div class="d-flex gap-2 mt-2">
     <button type="button"
             class="btn btn-sm btn-outline-secondary"
-            hx-post="{% url 'setup:structure_row' 'add-section' %}"
+            hx-post="{% url row_url 'add-section' %}"
             hx-include="closest .setup-branch"
             hx-target="#sections-{{ branch.id }}"
             hx-swap="beforeend">+ {% trans "Section" %}</button>
     <button type="button"
             class="btn btn-sm btn-outline-danger ms-auto"
-            hx-post="{% url 'setup:structure_row' 'remove' %}"
+            hx-post="{% url row_url 'remove' %}"
             hx-target="closest .setup-branch"
             hx-swap="outerHTML">{% trans "Remove this branch" %}</button>
   </div>
