@@ -6,8 +6,8 @@ from celery.utils.log import get_task_logger
 logger = get_task_logger(__name__)
 
 
-# Passage runs for the upcoming school year on the day the troop configured
-# (TroopSettings.passage_month/day — May 1 by default). The task is scheduled
+# Passage runs for the upcoming school year on the fixed passage day (1 May).
+# The task is scheduled
 # DAILY (not once a year): Celery beat's catch-up is unreliable for yearly
 # tasks, and a worker/beat outage on the trigger day would otherwise skip the
 # passage for a full year. Daily scheduling is safe because run_passage
@@ -83,11 +83,10 @@ def run_passage(force=False):
     the passage for a whole year, so this task runs every day and decides
     itself whether work is due via two guards:
 
-      1. Date gate — only act on/after the troop's passage day (May 1 by
-         default) for the target school year — see
-         ``TroopSettings.passage_datetime``, which reads that day from the
-         settings — so the daily run doesn't promote children the moment the
-         next SchoolYear is created.
+      1. Date gate — only act on/after the fixed passage day (1 May) for the
+         target school year — see ``TroopSettings.passage_datetime`` — so the
+         daily run doesn't promote children the moment the next SchoolYear is
+         created.
       2. Marker gate — TroopSettings.last_passage_school_year records the target
          year already processed; once set the task is a no-op. This is what
          guarantees "run at next start if the trigger day was missed": when
@@ -151,9 +150,9 @@ def run_passage(force=False):
         return
 
     if not force:
-        # Guard 1: date gate. Only run on/after the configured passage day for
-        # the target year; the gate is day-granular, and the helper is what
-        # knows the passage day is the one in that year's start calendar year.
+        # Guard 1: date gate. Only run on/after the fixed passage day for the
+        # target year; the gate is day-granular, and the helper is what knows
+        # the passage day is the one in that year's start calendar year.
         today = _today()
         trigger = troop.passage_datetime(target_year).date()
         if today < trigger:

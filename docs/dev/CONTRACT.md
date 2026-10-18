@@ -126,20 +126,25 @@ set: the defaults are what a troop that has configured nothing gets.
 | Field | Purpose |
 | --- | --- |
 | `year_start_month`, `year_start_day` | First day of the scout year (default 1 August). Used when a `SchoolYear` row is created and when `create_year_task` decides which year "today" belongs to. |
-| `age_reference_month`, `age_reference_day` | The day a member's age is measured on (default 31 December). Read through `TroopSettings.age_at_reference`, which the passage task, the member list's branch check and `Person.age_on_dec_31` all share. The `Branch.min_age_dec_31`/`max_age_dec_31` columns keep names that predate this setting; they mean "age at the reference day". |
-| `passage_month`, `passage_day` | The day the section passage falls due (default 1 May), i.e. in the *start* calendar year of the school year it prepares. |
-| `passage_mode` | `auto` (default) runs `run_passage` on that day; `manual` switches the automatic run off and leaves it to the staff button on `/users/passage`. Either way the button runs the same code, with the guards skipped. |
+| `passage_mode` | `auto` (default) runs `run_passage` on 1 May; `manual` switches the automatic run off and leaves it to the staff button on `/users/passage`. Either way the button runs the same code, with the guards skipped. |
 | `top_branch_graduates_become_leaders` | `true` (default): members who leave the last branch become animators. `false`: they are flagged for review instead, and nothing about them is changed until staff decide. |
 | `archive_retention_years` | How long an archived member is kept before `delete_archived_users` may discard them (default 5). `notify_upcoming_deletion` warns a month before. The unit is 365-day years, not calendar years. |
 
-These six fields are read only through the `TroopSettings` calendar helpers —
+These fields are read only through the `TroopSettings` calendar helpers —
 `school_year_for`, `school_year_bounds`, `age_reference_date`,
 `age_at_reference`, `passage_datetime`, `next_passage_datetime` and the
 `archive_*` retention trio. Views, tasks and templates must call those rather
-than re-deriving a date from the month/day pair, so that changing a calendar
-setting moves every calculation with it. The age reference day is pinned to
-whichever calendar year places it *inside* the school year, so 31 December means
-31 December of a September-starting year, not of the year before it.
+than re-deriving a date from a month/day pair, so that changing the year start
+moves every calculation with it.
+
+The year start is the troop's. **The age reference day (31 December) and the
+passage day (1 May) are fixed** — `AGE_REFERENCE_MONTH`/`_DAY` and
+`PASSAGE_MONTH`/`_DAY` in `members/models.py` — because they are the
+federation's rules rather than a troop preference. The reference day is pinned
+to whichever calendar year places it *inside* the school year, so 31 December
+means 31 December of a September-starting year, not of the year before it.
+The `Branch.min_age_dec_31`/`max_age_dec_31` columns keep names from before
+this was stated as a rule; they mean "age at the reference day".
 
 ### The branch ladder
 
@@ -479,7 +484,7 @@ Flags win over `--answers`, which wins over a prompt. With no terminal and
 | --- | --- |
 | Organisation | `--unit-name`, `--short-name`, `--federation`, `--contact-email`, `--reply-to-email`, `--contact-phone`, `--footer-address`, `--privacy-policy` |
 | Locale | `--languages fr,nl`, `--default-language`, `--phone-region`, `--currency` |
-| Calendar | `--year-start 08-01`, `--age-reference 12-31`, `--passage-date 05-01`, `--passage-mode`, `--archive-retention-years`, `--top-branch-graduates-become-leaders` |
+| Calendar | `--year-start 08-01`, `--passage-mode`, `--archive-retention-years`, `--top-branch-graduates-become-leaders` |
 | Administrator | `--admin-email`, `--admin-password`, `--admin-first-name`, `--admin-last-name`, `--no-admin-superuser` |
 | Which steps | the `--no-…` column above, plus `--preset` |
 | How | `--dry-run`, `--noinput` |
@@ -597,7 +602,7 @@ the administrator — the code is not a step to return to.
 | The unit | Name, short name, federation, contact details, logo and favicon. | `OrganisationSettingsForm`, the settings page's own |
 | Languages and country | Enabled languages, default language, phone region, currency. | `LocaleSettingsForm` |
 | Sections | The branch and section editor, opening on the Les Scouts preset: rename a branch in every language the site offers, change its ages, add and remove sections. | `StructureForm` |
-| The scout year | Year start, age reference, passage day and mode, retention. | `CalendarSettingsForm` |
+| The scout year | Year start, passage mode and retention. | `CalendarSettingsForm` |
 | Modules | Membership fees, signing, agenda. | `ModuleSettingsForm` |
 | Test email | One real message, sent synchronously through the instance's own backend. It must arrive: a wrong port or a rejected sender is shown with the mail server's own words, and the step can be retried. | `django.core.mail` |
 | Done | Where to go next. | — |

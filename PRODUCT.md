@@ -54,9 +54,10 @@ competitor cannot make without abandoning its own architecture.
   `/setup` and nothing else, gated by a one-time code printed in the web
   container's log. Same functions as `manage.py setup` at a shell.
 - **The year is a scout year, not a calendar year.** It runs from a configurable
-  start (default 1 August) to the next one, ages are taken on a configurable
-  reference day (default 31 December), and members change sections on a
-  configurable passage date (default 1 May).
+  start (default 1 August) to the next one. Ages are taken on 31 December and
+  the section passage falls due on 1 May — both fixed, because they are the
+  federation's rules and a troop that could move them would move every member's
+  branch.
 - **Three usage rhythms, not one.** Parents a few times a year, leaders weekly,
   staff in intense bursts. A design that serves one rhythm well can starve the
   others.

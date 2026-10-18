@@ -62,11 +62,10 @@ SETTINGS_FLAGS = {
     "--archive-retention-years": "archive_retention_years",
 }
 
-#: Month/day settings a ``MM-DD`` flag fills.
+#: Month/day settings a ``MM-DD`` flag fills. The year start is the only one:
+#: the age reference day and the passage day are fixed by the federation.
 DATE_FLAGS = {
     "--year-start": ("year_start_month", "year_start_day"),
-    "--age-reference": ("age_reference_month", "age_reference_day"),
-    "--passage-date": ("passage_month", "passage_day"),
 }
 
 LANGUAGE_CODES = [code for code, _label in AVAILABLE_LANGUAGE_CHOICES]

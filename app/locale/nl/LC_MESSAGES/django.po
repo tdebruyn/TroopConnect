@@ -2367,9 +2367,9 @@ msgstr "Munteenheid van drie letters om bedragen weer te geven, bv. EUR."
 
 #: settings page (hand-added; see docs/dev/CONTRACT.md)
 msgid ""
-"Automatic runs the passage on the date above; manual leaves it to whoever presses the button."
+"Automatic runs the passage on 1 May; manual leaves it to whoever presses the button."
 msgstr ""
-"Automatisch voert de overgang uit op bovenstaande datum; handmatig laat het aan wie op de knop drukt."
+"Automatisch voert de overgang uit op 1 mei; handmatig laat het aan wie op de knop drukt."
 
 #: settings page (hand-added; see docs/dev/CONTRACT.md)
 msgid "%(region)s is not a country code phone numbers can be parsed for."
@@ -3132,8 +3132,8 @@ msgid "Saved when you go on."
 msgstr "Opgeslagen wanneer je verdergaat."
 
 #: members/wizard (hand-added; see docs/dev/CONTRACT.md)
-msgid "Each branch leads to the one below it, and members who outgrow the last one leave the unit. A branch's ages are the ages its members are on the day the unit reads them — 31 December unless you change it later."
-msgstr "Elke afdeling leidt naar de volgende, en leden die de laatste ontgroeien verlaten de eenheid. De leeftijden van een afdeling zijn die van haar leden op de dag dat de eenheid ze meet — 31 december, tenzij je dat later wijzigt."
+msgid "Each branch leads to the one below it, and members who outgrow the last one leave the unit. A branch's ages are the ages its members are on the day the unit reads them — 31 December."
+msgstr "Elke afdeling leidt naar de volgende, en leden die de laatste ontgroeien verlaten de eenheid. De leeftijden van een afdeling zijn die van haar leden op de dag dat de eenheid ze meet — 31 december."
 
 #: members/wizard (hand-added; see docs/dev/CONTRACT.md)
 msgid "No branch yet. Add the first one."

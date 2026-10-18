@@ -322,10 +322,6 @@ class HappyPathTest(WizardTestCase):
             {
                 "year_start_month": 8,
                 "year_start_day": 1,
-                "age_reference_month": 12,
-                "age_reference_day": 31,
-                "passage_month": 5,
-                "passage_day": 1,
                 "passage_mode": "auto",
                 "top_branch_graduates_become_leaders": "on",
                 "archive_retention_years": 5,

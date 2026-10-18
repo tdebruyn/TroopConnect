@@ -215,10 +215,6 @@ class TroopSettingsAdmin(TranslationAdmin):
                 "fields": (
                     "year_start_month",
                     "year_start_day",
-                    "age_reference_month",
-                    "age_reference_day",
-                    "passage_month",
-                    "passage_day",
                     "passage_mode",
                     "top_branch_graduates_become_leaders",
                     "archive_retention_years",

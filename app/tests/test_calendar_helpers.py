@@ -138,32 +138,15 @@ class AgeReferenceDateTest(CalendarTestBase):
         self.assertEqual(reference, date(2027, 12, 31))
         self.assertTrue(start <= reference <= end)
 
-    def test_august_reference_with_a_september_start(self):
-        # 31 August is after 1 September, so it belongs to the end of the
-        # school year, not to the day before it began.
-        troop = self.configure(
-            year_start_month=9,
-            year_start_day=1,
-            age_reference_month=8,
-            age_reference_day=31,
-        )
-        self.assertEqual(troop.age_reference_date(2026), date(2027, 8, 31))
+    def test_a_september_start_still_takes_the_age_on_31_december(self):
+        """The day is the federation's, not a troop setting: a September year
+        still measures every child on 31 December inside that year."""
+        troop = self.configure(year_start_month=9, year_start_day=1)
+        self.assertEqual(troop.age_reference_date(2026), date(2026, 12, 31))
 
-    def test_august_reference_with_a_january_start(self):
-        troop = self.configure(
-            year_start_month=1,
-            year_start_day=1,
-            age_reference_month=8,
-            age_reference_day=31,
-        )
-        self.assertEqual(troop.age_reference_date(2027), date(2027, 8, 31))
-
-    def test_a_day_that_does_not_exist_is_clamped(self):
-        # The two fields are validated separately, so 30 February is reachable.
-        # Clamped to the 28th, and still pinned inside the school year: the
-        # default 1 August start makes that the February *after* it began.
-        troop = self.configure(age_reference_month=2, age_reference_day=30)
-        self.assertEqual(troop.age_reference_date(2026), date(2027, 2, 28))
+    def test_a_january_start_still_takes_the_age_on_31_december(self):
+        troop = self.configure(year_start_month=1, year_start_day=1)
+        self.assertEqual(troop.age_reference_date(2027), date(2027, 12, 31))
 
 
 class AgeAtReferenceTest(CalendarTestBase):
@@ -181,21 +164,11 @@ class AgeAtReferenceTest(CalendarTestBase):
             troop.age_at_reference(self.person(date(2089, 12, 31)), year), 10
         )
 
-    def test_the_configured_reference_day_changes_the_age(self):
-        """A troop taking ages on 31 August, with a September year start,
-        counts a child born in January a year older than the December
-        convention would — the point of making the day configurable."""
-        troop = self.configure(
-            year_start_month=9,
-            year_start_day=1,
-            age_reference_month=8,
-            age_reference_day=31,
-        )
+    def test_a_september_start_does_not_change_the_age(self):
+        """The reference day moves with the school year, not with the troop:
+        a January child counts the same under either year boundary."""
+        troop = self.configure(year_start_month=9, year_start_day=1)
         child = self.person(date(2017, 1, 15))
-        # Reference day 31 Aug 2027, the last day of school year 2026.
-        self.assertEqual(troop.age_at_reference(child, 2026), 10)
-        # The December default would have given 31 Dec 2026 → 9.
-        troop = self.configure(age_reference_month=12, age_reference_day=31)
         self.assertEqual(troop.age_at_reference(child, 2026), 9)
 
     def test_accepts_a_year_name_as_well_as_a_row(self):
@@ -230,9 +203,11 @@ class PassageDatetimeTest(CalendarTestBase):
         self.assertEqual(trigger, self.aware(2026, 5, 1))
         self.assertTrue(timezone.is_aware(trigger))
 
-    def test_configured_passage_day(self):
-        troop = self.configure(passage_month=6, passage_day=15)
-        self.assertEqual(troop.passage_datetime(2026), self.aware(2026, 6, 15))
+    def test_the_passage_day_does_not_follow_the_year_start(self):
+        """1 May is fixed; a January-starting year still passes on that day
+        in the start calendar year the passage prepares."""
+        troop = self.configure(year_start_month=1, year_start_day=1)
+        self.assertEqual(troop.passage_datetime(2026), self.aware(2026, 5, 1))
 
     def test_next_passage_is_the_one_after_the_current_year(self):
         troop = TroopSettings.get_settings()
@@ -256,10 +231,6 @@ class PassageDatetimeTest(CalendarTestBase):
             troop.next_passage_datetime(on_date=date(2027, 1, 15)),
             self.aware(2028, 5, 1),
         )
-
-    def test_a_passage_day_that_does_not_exist_is_clamped(self):
-        troop = self.configure(passage_month=6, passage_day=31)
-        self.assertEqual(troop.passage_datetime(2026), self.aware(2026, 6, 30))
 
 
 class ArchiveRetentionTest(CalendarTestBase):

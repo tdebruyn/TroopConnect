@@ -2,7 +2,7 @@
   "name": "les-scouts",
   "title": "Les Scouts — Fédération des scouts Baden-Powell de Belgique",
   "source": "https://lesscouts.be/",
-  "note": "The four branches of Les Scouts, in the order the federation publishes them, with the ages it gives (ages are taken on the troop's age reference day, 31 December by default). The branch rows are the federation's, not any unit's: they carry no unit's section names, so a troop replaces the `sections` below with its own. Dutch names are the ones Les Scouts' Dutch-language material uses; the federation publishes no English names of its own (its English site keeps the French ones), so `en` repeats `fr` rather than inventing a translation.",
+  "note": "The four branches of Les Scouts, in the order the federation publishes them, with the ages it gives (ages are taken on the fixed age reference day, 31 December). The branch rows are the federation's, not any unit's: they carry no unit's section names, so a troop replaces the `sections` below with its own. Dutch names are the ones Les Scouts' Dutch-language material uses; the federation publishes no English names of its own (its English site keeps the French ones), so `en` repeats `fr` rather than inventing a translation.",
   "branches": [
     {
       "key": "baladins",

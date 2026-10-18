@@ -419,17 +419,18 @@ the Django admin.
 
 ![The shape of the scout year](docs/images/getting-started/06-setup-6-scout-year.png)
 
-When your year starts, when ages are counted, and the day the section passage
-falls due. The defaults (year from 1 August, ages on 31 December, passage on
-1 May) are Les Scouts' convention. "Section passage runs — Automatic" means
-members are moved up on that day without anyone pressing a button.
+When your year starts and whether the section passage runs by itself. Ages are
+always counted on 31 December and the passage always falls due on 1 May — Les
+Scouts' convention, and the same for every unit. "Section passage runs —
+Automatic" means members are moved up on that day without anyone pressing a
+button.
 
 ### Modules
 
 ![Switching modules on and off](docs/images/getting-started/07-setup-7-modules.png)
 
 Three parts of the site you can switch off if you do not want them: membership
-fees, signature campaigns, and the section agenda. Switching one off hides it
+fees, sending attestations, and the section agenda. Switching one off hides it
 completely (its pages return "not found") but **deletes nothing**, so you can
 switch it back on later and find everything where you left it.
 

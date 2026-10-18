@@ -374,54 +374,6 @@ class PassageGuardTest(PassageTestBase):
         )
 
 
-class PassageCustomDayTest(PassageTestBase):
-    """The date gate follows the troop's passage day, not a hardcoded 1 May.
-
-    ``PassageTestBase`` freezes today on 1 May of the target year, so moving
-    the passage day around that date decides whether the daily task acts.
-    """
-
-    def _child(self):
-        child = Person.objects.create(
-            first_name="Test", last_name="Child",
-            primary_role=self.role_anime, status="a",
-            next_section=self.section_mid,
-            birthday=timezone.now().date() - timedelta(days=365 * 8),
-        )
-        Enrollment.objects.create(
-            user=child, section=self.section_young, school_year=self.current_year,
-        )
-        return child
-
-    def _set_passage_day(self, month, day):
-        troop = TroopSettings.get_settings()
-        troop.passage_month, troop.passage_day = month, day
-        troop.save(update_fields=["passage_month", "passage_day"])
-
-    def test_a_later_passage_day_blocks_the_run(self):
-        self._set_passage_day(6, 1)
-        child = self._child()
-
-        run_passage()
-
-        self.assertFalse(
-            Enrollment.objects.filter(user=child, school_year=self.next_year).exists()
-        )
-        # Marker must stay unset, or the catch-up would never happen.
-        self.assertIsNone(TroopSettings.get_settings().last_passage_school_year)
-
-    def test_an_earlier_passage_day_lets_it_run(self):
-        self._set_passage_day(4, 1)
-        child = self._child()
-
-        run_passage()
-
-        self.assertEqual(
-            Enrollment.objects.get(user=child, school_year=self.next_year).section,
-            self.section_mid,
-        )
-
-
 class AgeReferenceConsistencyTest(PassageTestBase):
     """``run_passage`` and ``Person.age_on_dec_31`` must measure the same day.
 

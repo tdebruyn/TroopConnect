@@ -2369,9 +2369,9 @@ msgstr ""
 
 #: settings page (hand-added; see docs/dev/CONTRACT.md)
 msgid ""
-"Automatic runs the passage on the date above; manual leaves it to whoever presses the button."
+"Automatic runs the passage on 1 May; manual leaves it to whoever presses the button."
 msgstr ""
-"Automatique effectue le passage à la date ci-dessus ; manuel le laisse à qui appuie sur le bouton."
+"Automatique effectue le passage le 1er mai ; manuel le laisse à qui appuie sur le bouton."
 
 #: settings page (hand-added; see docs/dev/CONTRACT.md)
 msgid "%(region)s is not a country code phone numbers can be parsed for."
@@ -3135,8 +3135,8 @@ msgid "Saved when you go on."
 msgstr "Enregistré quand vous passez à la suite."
 
 #: members/wizard (hand-added; see docs/dev/CONTRACT.md)
-msgid "Each branch leads to the one below it, and members who outgrow the last one leave the unit. A branch's ages are the ages its members are on the day the unit reads them — 31 December unless you change it later."
-msgstr "Chaque branche mène à celle du dessous, et les membres qui dépassent la dernière quittent l'unité. Les âges d'une branche sont ceux de ses membres le jour où l'unité les mesure — le 31 décembre, sauf si vous le changez plus tard."
+msgid "Each branch leads to the one below it, and members who outgrow the last one leave the unit. A branch's ages are the ages its members are on the day the unit reads them — 31 December."
+msgstr "Chaque branche mène à celle du dessous, et les membres qui dépassent la dernière quittent l'unité. Les âges d'une branche sont ceux de ses membres le jour où l'unité les mesure — le 31 décembre."
 
 #: members/wizard (hand-added; see docs/dev/CONTRACT.md)
 msgid "No branch yet. Add the first one."

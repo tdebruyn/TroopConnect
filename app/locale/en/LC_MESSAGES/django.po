@@ -2351,7 +2351,7 @@ msgstr ""
 
 #: settings page (hand-added; see docs/dev/CONTRACT.md)
 msgid ""
-"Automatic runs the passage on the date above; manual leaves it to whoever presses the button."
+"Automatic runs the passage on 1 May; manual leaves it to whoever presses the button."
 msgstr ""
 
 #: settings page (hand-added; see docs/dev/CONTRACT.md)
@@ -2581,7 +2581,7 @@ msgid "Saved when you go on."
 msgstr ""
 
 #: members/wizard (hand-added; see docs/dev/CONTRACT.md)
-msgid "Each branch leads to the one below it, and members who outgrow the last one leave the unit. A branch's ages are the ages its members are on the day the unit reads them — 31 December unless you change it later."
+msgid "Each branch leads to the one below it, and members who outgrow the last one leave the unit. A branch's ages are the ages its members are on the day the unit reads them — 31 December."
 msgstr ""
 
 #: members/wizard (hand-added; see docs/dev/CONTRACT.md)

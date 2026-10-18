@@ -265,8 +265,7 @@ NEW_STRINGS = [
     (
         "Each branch leads to the one below it, and members who outgrow the "
         "last one leave the unit. A branch's ages are the ages its members "
-        "are on the day the unit reads them — 31 December unless you change "
-        "it later.",
+        "are on the day the unit reads them — 31 December.",
         "Chaque branche mène",
         "Elke afdeling leidt",
     ),

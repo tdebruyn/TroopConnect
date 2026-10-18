@@ -62,6 +62,20 @@ PASSAGE_MODE_CHOICES = [
 MONTH_VALIDATORS = [MinValueValidator(1), MaxValueValidator(12)]
 DAY_VALIDATORS = [MinValueValidator(1), MaxValueValidator(31)]
 
+#: Ages are measured on 31 December of the school year. This is the
+#: federation's convention rather than a troop preference: a child's branch is
+#: the one their age on that day puts them in, so two troops must not read the
+#: same birthday differently. The `Branch.min_age_dec_31` columns are named
+#: after this day.
+AGE_REFERENCE_MONTH = 12
+AGE_REFERENCE_DAY = 31
+
+#: The section passage falls due on 1 May, in the calendar year the school year
+#: it prepares starts in. Fixed for the same reason: a troop choosing its own
+#: date would move every member a year early or a year late.
+PASSAGE_MONTH = 5
+PASSAGE_DAY = 1
+
 # How long before an archived person is purged the warning email goes out. Used
 # by TroopSettings.archive_warning_cutoff and the notify_upcoming_deletion task.
 ARCHIVE_WARNING_DAYS = 30
@@ -307,11 +321,11 @@ class Person(models.Model):
     def age_on_dec_31(self, school_year=None):
         """Whole-year age at the troop's age reference day, that school year.
 
-        The name is historical: the reference day is
-        ``TroopSettings.age_reference_month``/``_day`` (31 December by default),
-        which is also the convention the ``Branch.min_age_dec_31`` and
-        ``max_age_dec_31`` columns are named after. The computation itself lives
-        in :meth:`TroopSettings.age_at_reference`, shared with the passage task
+        The name is historical: the reference day is always 31 December (see
+        :data:`AGE_REFERENCE_MONTH`), which is also the convention the
+        ``Branch.min_age_dec_31`` and ``max_age_dec_31`` columns are named
+        after. The computation itself lives in
+        :meth:`TroopSettings.age_at_reference`, shared with the passage task
         and the member list's branch check.
         """
         return TroopSettings.get_settings().age_at_reference(self, school_year)
@@ -1004,27 +1018,16 @@ class TroopSettings(models.Model):
         default=1, validators=DAY_VALIDATORS
     )
 
-    # A child's age is taken on this day (default December 31), which is what
-    # decides the section they belong to.
-    age_reference_month = models.PositiveSmallIntegerField(
-        default=12, validators=MONTH_VALIDATORS
-    )
-    age_reference_day = models.PositiveSmallIntegerField(
-        default=31, validators=DAY_VALIDATORS
-    )
-
-    # When sections are prompted to move children up (default May 1).
-    passage_month = models.PositiveSmallIntegerField(
-        default=5, validators=MONTH_VALIDATORS
-    )
-    passage_day = models.PositiveSmallIntegerField(default=1, validators=DAY_VALIDATORS)
+    # The age reference day and the passage day itself are fixed constants
+    # above, not fields: they are the federation's rules. Only *whether* the
+    # passage runs by itself is the troop's to decide.
     passage_mode = models.CharField(
         max_length=10,
         choices=PASSAGE_MODE_CHOICES,
         default=PASSAGE_MODE_AUTO,
         help_text=_(
-            "Automatic runs the passage on the date above; manual leaves it to "
-            "whoever presses the button."
+            "Automatic runs the passage on 1 May; manual leaves it to whoever "
+            "presses the button."
         ),
     )
 
@@ -1262,10 +1265,11 @@ class TroopSettings(models.Model):
 
     # --- Calendar ----------------------------------------------------------
     # Every school-year, age-reference and retention date the application
-    # computes is derived here, from the six month/day fields above. Views,
-    # Celery tasks and templates must call these rather than reach for the
-    # fields — a troop that moves its year boundary or its age reference day
-    # must not have to find every place that assumed August or December.
+    # computes is derived here. The year boundary is the troop's (the two
+    # fields above); the reference day and the passage day are the federation's
+    # fixed constants. Views, Celery tasks and templates must call these rather
+    # than reach for the fields or the constants — a troop that moves its year
+    # boundary must not have to find every place that assumed August.
 
     def school_year_start(self, year):
         """The first day of the school year named ``year``.
@@ -1303,21 +1307,17 @@ class TroopSettings(models.Model):
         """The day ages are taken on for ``school_year``.
 
         ``school_year`` is a :class:`SchoolYear` instance or its ``name``. The
-        configured reference month/day (31 December by default) is pinned to
-        whichever calendar year puts it *inside* the school year, so a troop
-        whose year starts in September or in January still gets 31 December of
-        that school year rather than of the year before it.
+        fixed reference day (31 December) is pinned to whichever calendar year
+        puts it *inside* the school year, so a troop whose year starts in
+        September or in January still gets 31 December of that school year
+        rather than of the year before it.
         """
         start = getattr(school_year, "start_date", None)
         if start is None:
             start, _end = self.school_year_bounds(school_year)
-        candidate = self._calendar_date(
-            start.year, self.age_reference_month, self.age_reference_day
-        )
+        candidate = date(start.year, AGE_REFERENCE_MONTH, AGE_REFERENCE_DAY)
         if candidate < start:
-            candidate = self._calendar_date(
-                start.year + 1, self.age_reference_month, self.age_reference_day
-            )
+            candidate = date(start.year + 1, AGE_REFERENCE_MONTH, AGE_REFERENCE_DAY)
         return candidate
 
     def age_at_reference(self, person, school_year=None):
@@ -1341,12 +1341,12 @@ class TroopSettings(models.Model):
     def passage_datetime(self, school_year):
         """The moment the passage preparing ``school_year`` falls due.
 
-        The configured passage day (1 May by default) in the start calendar
-        year of that school year: the passage runs in the spring before the
-        year it prepares children for.
+        The fixed passage day (1 May) in the start calendar year of that
+        school year: the passage runs in the spring before the year it prepares
+        children for.
         """
         name = getattr(school_year, "name", school_year)
-        day = self._calendar_date(name, self.passage_month, self.passage_day)
+        day = date(name, PASSAGE_MONTH, PASSAGE_DAY)
         return timezone.make_aware(datetime.combine(day, time.min))
 
     def next_passage_datetime(self, on_date=None):

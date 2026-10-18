@@ -821,10 +821,6 @@ class CalendarSettingsForm(forms.ModelForm):
         fields = (
             "year_start_month",
             "year_start_day",
-            "age_reference_month",
-            "age_reference_day",
-            "passage_month",
-            "passage_day",
             "passage_mode",
             "top_branch_graduates_become_leaders",
             "archive_retention_years",
@@ -832,21 +828,17 @@ class CalendarSettingsForm(forms.ModelForm):
         labels = {
             "year_start_month": _("School year starts — month"),
             "year_start_day": _("School year starts — day"),
-            "age_reference_month": _("Ages are taken on — month"),
-            "age_reference_day": _("Ages are taken on — day"),
-            "passage_month": _("Section passage — month"),
-            "passage_day": _("Section passage — day"),
             "passage_mode": _("Section passage runs"),
             "top_branch_graduates_become_leaders": _(
                 "Members leaving the last branch become animators"
             ),
             "archive_retention_years": _("Keep archived members for (years)"),
         }
-        help_texts = {
-            "age_reference_month": _("The day a member's age is measured on."),
-            # passage_mode's help text comes from the model, so the admin and
-            # this page say the same thing.
-        }
+        # No age-reference or passage-day fields: ages are fixed on 31 December
+        # and the passage on 1 May, and a troop that could move either would
+        # move every member's branch without changing a single lesson plan.
+        # passage_mode's help text comes from the model, so the admin and this
+        # page say the same thing.
 
 
 class ModuleSettingsForm(forms.ModelForm):
