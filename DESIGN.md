@@ -651,7 +651,9 @@ columns under it — an equal group, not an equal page.
 **The Page-Is-The-Menu Rule.** A signed-in reader's tools live on the member
 page, gated one by one on the same predicate their view enforces; the header
 carries no menu for them. A link kept in two places is two things to keep honest,
-and a link whose gate has moved is a dead end. The page is the menu.
+and a link whose gate has moved is a dead end. The page is the menu. The one
+exception is the way back: a member page names the board above its title,
+because the rule only holds for a reader who can reach the page the menu is on.
 
 ## Elevation & Depth
 
@@ -864,6 +866,14 @@ white tiles and cards carry the separation.
   `.page-head`; the title is the page's `h1` and the lede is `.page-lede`.
 - **Type:** The title takes the surface-display step in Source Serif 4; the lede
   takes the Lede step in `muted-on-field`.
+- **The way back is named.** A signed-in page carries "My space" (`Mon espace`,
+  `Mijn ruimte`) as a white pill above its title: the board's own object at its
+  smallest, no border, the member tile's soft shadow, a 2px ink focus outline,
+  and a 2px leftward nudge of its arrow on hover. It is not a header menu: it
+  names the one destination the bar no longer does, and it is visible on a phone
+  without opening the collapsed menu. The head trims its top padding to 1.25rem
+  so the pill does not push the title a full step down, and the board itself
+  does not carry it.
 - **No ground of its own.** A head that laid a second ground above the board's
   ground made the site open on a colour the signed-in homepage never used. The
   head is the identifier; the bar above and the tiles below are the chrome.
