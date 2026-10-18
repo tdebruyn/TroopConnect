@@ -1,0 +1,16 @@
+{% extends "members/base.html" %}
+{% load i18n %}
+{% block page_back_url %}{% url 'members:agenda' %}?section={{ section.pk }}{% endblock page_back_url %}
+{% block page_back_label %}{% trans "Agenda" %}{% endblock page_back_label %}
+{% block hat_title %}
+    {% trans "Agenda" %}
+{% endblock hat_title %}
+{% block hat_text %}
+    {{ section.name }}
+{% endblock hat_text %}
+{% block subcontent %}
+    {# The member board links here with a plain href as well as with HTMX. #}
+    <div class="agenda-day">
+        {% include "members/_agenda_day.html" %}
+    </div>
+{% endblock subcontent %}

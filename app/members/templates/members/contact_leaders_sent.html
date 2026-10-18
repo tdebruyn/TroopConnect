@@ -1,0 +1,31 @@
+{% extends "members/base.html" %}
+{% load i18n %}
+{% block hat_title %}
+    {% trans "Message sent" %}
+{% endblock hat_title %}
+{% block subcontent %}
+    <div class="col-lg-8">
+        <section class="member-panel contact-sheet contact-confirm p-4" role="status">
+            <span class="contact-confirm-mark" aria-hidden="true">
+                <i class="bi bi-check-lg"></i>
+            </span>
+            {% comment %}
+                The promise is the whole confirmation: the parent wrote from
+                the site and the answer comes to the address on the account.
+                The copy of the message is already on its way there, so this is
+                the one thing the page has to say.
+            {% endcomment %}
+            <p class="contact-confirm-title">
+                {% trans "Your message has been sent. A response will come by email." %}
+            </p>
+            <p class="contact-confirm-note">
+                {% trans "The reply will arrive at the address on your account." %}
+            </p>
+            <div class="d-flex flex-wrap gap-2 mt-4">
+                <a class="btn btn-primary" href="{% url 'homepage' %}">{% trans "Back to my space" %}</a>
+                <a class="btn btn-outline-primary"
+                   href="{% url 'members:contact_leaders' %}">{% trans "Send another message" %}</a>
+            </div>
+        </section>
+    </div>
+{% endblock subcontent %}

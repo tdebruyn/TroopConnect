@@ -1,0 +1,35 @@
+{% extends "members/base.html" %}
+{% load i18n %}
+{% block hat_title %}
+    {% trans "Contact a leader" %}
+{% endblock hat_title %}
+{% block hat_text %}
+    {% trans "Send a message to your section's communications lead. The answer will arrive by email." %}
+{% endblock hat_text %}
+{% block subcontent %}
+    <div class="col-lg-8">
+        {% if not targets %}
+            {% comment %}
+                No role holder, no site administrator and no public address:
+                the instance has not been given a contact yet. This is the one
+                state in which the tool has nowhere to send, so it says so and
+                points at the troop's page instead of presenting a dead form.
+            {% endcomment %}
+            <div class="alert alert-info" role="status">
+                {% trans "No contact has been set up for your family yet. Ask the unit directly." %}
+                <a href="{% url 'unit_page' %}">{% trans "Our unit" %}</a>
+            </div>
+        {% else %}
+            <section class="member-panel contact-sheet p-4">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    {% include "members/_contact_fields.html" %}
+                    <div class="d-flex flex-wrap gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary">{% trans "Send the message" %}</button>
+                        <a class="btn btn-outline-secondary" href="{% url 'homepage' %}">{% trans "Cancel" %}</a>
+                    </div>
+                </form>
+            </section>
+        {% endif %}
+    </div>
+{% endblock subcontent %}

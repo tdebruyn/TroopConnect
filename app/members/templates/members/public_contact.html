@@ -1,0 +1,22 @@
+{% extends "members/base.html" %}
+{% load i18n %}
+{% block hat_title %}
+    {% trans "Contact us" %}
+{% endblock hat_title %}
+{% block hat_text %}
+    {% trans "Write to the unit. The animateur responsable will answer you by email." %}
+{% endblock hat_text %}
+{% block subcontent %}
+    <div class="col-lg-8">
+        <section class="member-panel contact-sheet p-4">
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {% include "members/_public_contact_fields.html" %}
+                <div class="d-flex flex-wrap gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary">{% trans "Send the message" %}</button>
+                    <a class="btn btn-outline-secondary" href="{% url 'homepage' %}">{% trans "Cancel" %}</a>
+                </div>
+            </form>
+        </section>
+    </div>
+{% endblock subcontent %}

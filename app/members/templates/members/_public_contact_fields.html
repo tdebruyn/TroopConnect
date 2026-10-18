@@ -1,0 +1,52 @@
+{% load i18n %}
+{% comment %}
+    The visitor's fields, shared by the public contact page and the HTMX
+    dialog. The recipient is named by role and never by person.
+{% endcomment %}
+{% if form.non_field_errors %}
+    <div class="alert alert-danger" role="alert">{{ form.non_field_errors }}</div>
+{% endif %}
+<p class="contact-copy-note">
+    <i class="bi bi-envelope-paper" aria-hidden="true"></i>
+    <span>{% trans "The unit's animateur responsable will receive your message." %}</span>
+</p>
+<div class="mb-3">
+    <label class="form-label" for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
+    {{ form.name }}
+    {% for error in form.name.errors %}
+        <div class="alert alert-danger small mt-1" role="alert">{{ error }}</div>
+    {% endfor %}
+</div>
+<div class="mb-3">
+    <label class="form-label" for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+    {{ form.email }}
+    {% for error in form.email.errors %}
+        <div class="alert alert-danger small mt-1" role="alert">{{ error }}</div>
+    {% endfor %}
+</div>
+<div class="mb-3">
+    <label class="form-label" for="{{ form.message.id_for_label }}">{{ form.message.label }}</label>
+    {{ form.message }}
+    {% for error in form.message.errors %}
+        <div class="alert alert-danger small mt-1" role="alert">{{ error }}</div>
+    {% endfor %}
+</div>
+<div class="mb-3">
+    <div class="form-label">{% trans "Anti-spam check" %}</div>
+    {% get_current_language as LANGUAGE_CODE %}
+    <altcha-widget challengeurl="{% url 'public_contact_challenge' %}"
+                   name="altcha"
+                   auto="onsubmit"
+                   type="checkbox"
+                   display="standard"
+                   language="{{ LANGUAGE_CODE|slice:':2' }}"></altcha-widget>
+    <div class="form-text">{% trans "This check keeps automated messages out." %}</div>
+    {% for error in form.altcha.errors %}
+        <div class="alert alert-danger small mt-1" role="alert">{{ error }}</div>
+    {% endfor %}
+</div>
+{% comment %}
+    The honeypot. It is in the form for a bot and absent for a person: hidden
+    from the eye and from the accessibility tree, and never reachable by Tab.
+{% endcomment %}
+<div class="d-none" aria-hidden="true">{{ form.website }}</div>

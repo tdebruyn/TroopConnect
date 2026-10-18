@@ -1,0 +1,23 @@
+{% load i18n %}
+{% comment %}
+    The footer's contact door, in the application's one dialog. The page at
+    /contact/ is the same form as a plain page, and is the link's fallback.
+{% endcomment %}
+<form hx-post="{{ request.path }}"
+      hx-headers='{"X-CSRFToken":"{{ csrf_token }}"}'
+      class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title">{% trans "Contact us" %}</h5>
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="{% trans 'Close' %}"></button>
+    </div>
+    <div class="modal-body">
+        {% include "members/_public_contact_fields.html" %}
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+        <button type="submit" class="btn btn-primary">{% trans "Send the message" %}</button>
+    </div>
+</form>

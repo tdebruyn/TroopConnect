@@ -1,0 +1,24 @@
+{% load i18n %}
+{% comment %}
+    The same form as the contact page, as the one dialog the application uses.
+    The balance tile opens it on the treasurer; the empty 204 that follows a
+    successful POST is what tells dialog.js to hide it again.
+{% endcomment %}
+<form hx-post="{{ request.path }}"
+      hx-headers='{"X-CSRFToken":"{{ csrf_token }}"}'
+      class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title">{% trans "Contact a leader" %}</h5>
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="{% trans 'Close' %}"></button>
+    </div>
+    <div class="modal-body">
+        {% include "members/_contact_fields.html" %}
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+        <button type="submit" class="btn btn-primary">{% trans "Send the message" %}</button>
+    </div>
+</form>

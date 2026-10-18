@@ -1,0 +1,23 @@
+{% extends "members/base.html" %}
+{% load i18n %}
+{% block hat_title %}
+    {% trans "Message sent" %}
+{% endblock hat_title %}
+{% block subcontent %}
+    <div class="col-lg-8">
+        <section class="member-panel contact-sheet contact-confirm p-4" role="status">
+            <span class="contact-confirm-mark" aria-hidden="true">
+                <i class="bi bi-check-lg"></i>
+            </span>
+            <p class="contact-confirm-title">
+                {% trans "Your message has been sent. The animateur responsable will answer you by email." %}
+            </p>
+            <p class="contact-confirm-note">
+                {% trans "The answer will arrive at the address you gave." %}
+            </p>
+            <div class="d-flex flex-wrap gap-2 mt-4">
+                <a class="btn btn-primary" href="{% url 'homepage' %}">{% trans "Back to the unit's page" %}</a>
+            </div>
+        </section>
+    </div>
+{% endblock subcontent %}

@@ -1,0 +1,46 @@
+{% load i18n %}
+{% comment %}
+    The three fields and the copy note, shared by the contact page and the
+    HTMX dialog the balance tile opens. The wrapper (a page form or a modal
+    form) owns the submit and cancel buttons.
+{% endcomment %}
+{% if form.non_field_errors %}
+    <div class="alert alert-danger" role="alert">{{ form.non_field_errors }}</div>
+{% endif %}
+<fieldset class="mb-3">
+    <legend class="form-label">{{ form.recipient.label }}</legend>
+    {% for radio in form.recipient %}
+        <div class="form-check contact-recipient">
+            {{ radio.tag }}
+            <label class="form-check-label" for="{{ radio.id_for_label }}">{{ radio.choice_label }}</label>
+        </div>
+    {% endfor %}
+    {% if has_missing_communication %}
+        <div class="form-text">
+            {% trans "A section without a communications lead sends to all its leaders; if it has none, the unit lead and the site administrator receive it." %}
+        </div>
+    {% endif %}
+    {% for error in form.recipient.errors %}
+        <div class="alert alert-danger small mt-1" role="alert">{{ error }}</div>
+    {% endfor %}
+</fieldset>
+<div class="mb-3">
+    <label class="form-label" for="{{ form.title.id_for_label }}">{{ form.title.label }}</label>
+    {{ form.title }}
+    {% for error in form.title.errors %}
+        <div class="alert alert-danger small mt-1" role="alert">{{ error }}</div>
+    {% endfor %}
+</div>
+<div class="mb-3">
+    <label class="form-label" for="{{ form.body.id_for_label }}">{{ form.body.label }}</label>
+    {{ form.body }}
+    {% for error in form.body.errors %}
+        <div class="alert alert-danger small mt-1" role="alert">{{ error }}</div>
+    {% endfor %}
+</div>
+<p class="contact-copy-note">
+    <i class="bi bi-envelope-paper" aria-hidden="true"></i>
+    <span>
+        {% blocktranslate with email=user.email %}A copy will be sent to {{ email }}. The reply will arrive at that address.{% endblocktranslate %}
+    </span>
+</p>

@@ -1,0 +1,57 @@
+{% load i18n %}
+{% comment %}
+    Who is missing from one activity, and why. Swapped into the application's
+    one dialog from the leader's home tile; the way out without HTMX is the
+    agenda's day view, which the footer links.
+{% endcomment %}
+<div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title">{% trans "Reported absences" %}</h5>
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="{% trans 'Close' %}"></button>
+    </div>
+    <div class="modal-body">
+        <p class="small text-muted mb-3">
+            {{ event.title }} ·
+            {% if event.is_multi_day %}
+                {{ event.start_date|date:"j F Y" }} – {{ event.last_date|date:"j F Y" }}
+            {% else %}
+                {{ event.start_date|date:"j F Y" }}
+            {% endif %}
+            {% if event.time_range %} · {{ event.time_range }}{% endif %}
+        </p>
+        {% if notices %}
+            <div class="table-responsive">
+                <table class="table table-sm mb-0">
+                    <thead>
+                        <tr>
+                            <th>{% trans "Child" %}</th>
+                            <th>{% trans "Reason" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for notice in notices %}
+                            <tr>
+                                <td>{{ notice.child }}</td>
+                                <td>{{ notice.reason|default:"—" }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-muted mb-0">
+                {% trans "No absences reported for that activity." %}
+            </p>
+        {% endif %}
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
+        <a class="btn btn-outline-primary"
+           href="{% url 'members:agenda_day' %}?section={{ event.section.pk }}&date={{ event.start_date|date:'Y-m-d' }}">
+            {% trans "Open the day" %}
+        </a>
+    </div>
+</div>
