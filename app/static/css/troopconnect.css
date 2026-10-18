@@ -846,6 +846,37 @@ body {
   width: 14.28%;
 }
 
+/* Seven equal columns on a phone are narrower than an activity title, which
+   used to wrap one character per line. The table keeps a readable width and
+   scrolls sideways inside its Bootstrap responsive wrapper instead. The outer
+   wrapper carries a right-edge shade so the days beyond the fold — usually
+   the weekend — are visible rather than simply absent. */
+@media (max-width: 767.98px) {
+  .agenda-grid {
+    min-width: 44rem;
+  }
+
+  .agenda-scroller {
+    position: relative;
+  }
+
+  .agenda-scroller::after {
+    content: "";
+    position: absolute;
+    inset: 0 0 0 auto;
+    width: 2.5rem;
+    background: linear-gradient(to right, transparent, rgba(10, 66, 117, 0.12));
+    pointer-events: none;
+  }
+}
+
+/* The scroll region is reachable by keyboard; give it the system's ink focus
+   mark rather than the browser's default. */
+.agenda-scroll:focus-visible {
+  outline: 2px solid #0a4275;
+  outline-offset: 2px;
+}
+
 .agenda-grid .agenda-day-button {
   display: block;
   width: 100%;
@@ -888,6 +919,14 @@ body {
 
 .agenda-grid .agenda-outside .agenda-day-number {
   opacity: 0.45;
+}
+
+/* In a busy section the list of everything still to come can outgrow the
+   page and push the month grid off screen. It scrolls on its own instead;
+   the calendar stays the page's main surface. */
+.agenda-upcoming .list-group {
+  max-height: 18rem;
+  overflow-y: auto;
 }
 
 /* The household column in the member list shows a free-text address when the
@@ -1652,7 +1691,7 @@ body {
 
    Columns follow the count rather than the container: a third of a tablet is
    narrower than an activity title and its time, so three children only share
-   a row from `xxl`, where a tile is still a card. */
+   a row from `xl`, where a tile is still a card. */
 .member-board[data-many-children="true"] {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -2200,12 +2239,75 @@ body {
   grid-column: span 2;
 }
 
+/* The first tile spans the lead group's row, which would push a participant's
+   other tools down and leave the group lopsided. Their profile shares the
+   first row with the documents, and the agenda takes the wide row beneath:
+   an activity line needs more room than a document's name. */
+.member-tools-group[data-pair-first="true"] .member-tools-list > li:first-child {
+  grid-column: auto;
+}
+
+.member-tools-group[data-pair-first="true"]
+  .member-tools-list
+  > li:nth-child(3) {
+  grid-column: span 2;
+}
+
+/* A parent with no child on the page yet is choosing how to add the first
+   one, so the two ways sit side by side as the lead group's first row and the
+   calendar takes the row under them. The first-tile span is turned off: here
+   the pair is the lead, not one tile above the rest. Only the lead group is
+   laid out this way — a unit-team reader can hold a childless group that is
+   not the widest, and it keeps the ordinary list. */
+.member-tools-group[data-lead="true"][data-no-children="true"] .member-tools-list {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.member-tools-group[data-lead="true"][data-no-children="true"]
+  .member-tools-list
+  > li:first-child {
+  grid-column: auto;
+}
+
+.member-tools-group[data-lead="true"][data-no-children="true"]
+  .member-tools-list
+  > li:nth-child(3) {
+  grid-column: span 2;
+}
+
+/* On a phone the children group's two columns leave "Add an already
+   registered child" four lines deep. It is the one group whose labels and
+   detail lines are the longest in the mosaic, so it takes the full width
+   there; the first and third spans belong to the wider layout. */
+@media (max-width: 767.98px) {
+  .member-tools-group[data-kind="children"] .member-tools-list,
+  .member-tools-group[data-kind="children"][data-lead="true"][data-no-children="true"]
+    .member-tools-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .member-tools-group[data-kind="children"]
+    .member-tools-list
+    > li:first-child,
+  .member-tools-group[data-kind="children"]
+    .member-tools-list
+    > li:nth-child(3),
+  .member-tools-group[data-kind="children"][data-lead="true"][data-no-children="true"]
+    .member-tools-list
+    > li:first-child,
+  .member-tools-group[data-kind="children"][data-lead="true"][data-no-children="true"]
+    .member-tools-list
+    > li:nth-child(3) {
+    grid-column: auto;
+  }
+}
+
 .member-tool {
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 1rem;
+  justify-content: center;
+  gap: 0.5rem;
   min-height: 7rem;
   padding: 1rem;
   border-radius: 1rem;
@@ -2252,6 +2354,7 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex: none;
   width: 2.25rem;
   height: 2.25rem;
   border-radius: 0.75rem;
@@ -2259,13 +2362,43 @@ body {
   font-size: 1.05rem;
 }
 
-.member-tool-label {
-  display: block;
+/* The icon and the title share one row; the details below speak for the
+   tile. The right padding is what keeps the title clear of the corner
+   arrow. */
+.member-tool-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
   padding-right: 1.25rem;
+}
+
+.member-tool-label {
   font-size: 1rem;
   font-weight: 700;
-  line-height: 1.3;
+  line-height: 1.25;
   overflow-wrap: break-word;
+}
+
+.member-tool-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+/* The first line is the fact the tile exists for; the lines under it carry
+   the same ink a step lighter. Neither is faded out — a fade reads as
+   disabled text, and with exactly two documents it would promise a third
+   that is not there. */
+.member-tool-detail {
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  opacity: 0.85;
+  overflow-wrap: break-word;
+}
+
+.member-tool-detail:first-child {
+  opacity: 1;
 }
 
 .member-tool-arrow {
@@ -2308,6 +2441,42 @@ body {
 
 .member-tool-slot-anchor .member-tool-label {
   font-size: 1.25rem;
+}
+
+/* The one tile that reports work rather than offering a tool. It takes the
+   charter's warning orange so it reads as a state of the unit, not as another
+   destination, and keeps the dark note for the group's lead action. The
+   selectors outrank the anchor rules: when this tile leads the group it must
+   still look like an alert, not like the page's single dark tile. */
+.member-tools-group[data-kind] .member-tool.member-tool-alert {
+  background-color: color-mix(in srgb, #ef7b00 14%, #fff);
+  background-image: none;
+  color: #0a4275;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, #ef7b00 45%, transparent),
+    0 0.4rem 1.25rem rgba(10, 66, 117, 0.06);
+}
+
+.member-tools-group[data-kind] .member-tool.member-tool-alert:hover,
+.member-tools-group[data-kind] .member-tool.member-tool-alert:focus-visible {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, #ef7b00 45%, transparent),
+    0 0.75rem 1.75rem rgba(10, 66, 117, 0.12);
+}
+
+.member-tools-group[data-kind] .member-tool.member-tool-alert:focus-visible {
+  outline-color: #0a4275;
+}
+
+.member-tool-alert .member-tool-icon {
+  background-color: color-mix(in srgb, #ef7b00 28%, #fff);
+  color: #0a4275;
+}
+
+.member-tool-alert .member-tool-arrow {
+  color: #0a4275;
+}
+
+.member-tool-alert .member-tool-label {
+  font-size: 1.0625rem;
 }
 
 /* ---------------------------------------------------------------------------

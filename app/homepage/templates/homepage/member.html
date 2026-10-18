@@ -103,7 +103,11 @@
 
             {% if member_show_empty %}
                 <p class="member-empty">
-                    {% trans "Nothing is attached to your account yet. Your unit's leaders can link your children to it." %}
+                    {% if member_is_child %}
+                        {% trans "You are not linked to any section this year." %}
+                    {% else %}
+                        {% trans "Nothing is attached to your account yet. Your unit's leaders can link your children to it." %}
+                    {% endif %}
                 </p>
             {% endif %}
         </div>
@@ -123,16 +127,25 @@
                     {% for group in member_tools %}
                         <div class="member-tools-group"
                              data-kind="{{ group.kind }}"
+                             {% if group.no_children %}data-no-children="true"{% endif %}
+                             {% if group.pair_first %}data-pair-first="true"{% endif %}
                              {% if group.featured %}data-lead="true"{% endif %}>
                             <h3 class="member-tools-group-title">{{ group.title }}</h3>
                             <ul class="member-tools-list">
-                                {% for label, url, icon, modal in group.items %}
+                                {% for label, url, icon, modal, details, alert in group.items %}
                                     <li{% if forloop.first and group.featured and not member_dues %} class="member-tool-slot-anchor"{% endif %}>
-                                        <a class="member-tool"
+                                        <a class="member-tool{% if alert %} member-tool-alert{% endif %}"
                                            href="{{ url }}"
                                            {% if modal %}hx-get="{{ url }}" hx-target="#dialog"{% endif %}>
-                                            <span class="member-tool-icon"><i class="bi bi-{{ icon }}" aria-hidden="true"></i></span>
-                                            <span class="member-tool-label">{{ label }}</span>
+                                            <span class="member-tool-head">
+                                                <span class="member-tool-icon"><i class="bi bi-{{ icon }}" aria-hidden="true"></i></span>
+                                                <span class="member-tool-label">{{ label }}</span>
+                                            </span>
+                                            {% if details %}
+                                                <span class="member-tool-details">
+                                                    {% for detail in details %}<span class="member-tool-detail">{{ detail }}</span>{% endfor %}
+                                                </span>
+                                            {% endif %}
                                             <i class="bi bi-arrow-up-right member-tool-arrow" aria-hidden="true"></i>
                                         </a>
                                     </li>

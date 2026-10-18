@@ -1247,6 +1247,14 @@ def _grid_context(request):
             "previous_month": _shift_month(month_start, -1),
             "next_month": _shift_month(month_start, 1),
             "today": timezone.localdate(),
+            # Everything from today on, not only the displayed month: the page
+            # has to answer "what is next?" without the reader turning months
+            # over first. The month grid below stays the place to browse.
+            "upcoming": list(
+                SectionEvent.objects.filter(
+                    section=section, start_date__gte=timezone.localdate()
+                )
+            ),
             "weeks": [
                 [
                     {

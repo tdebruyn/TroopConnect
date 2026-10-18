@@ -15,7 +15,12 @@
             <div class="mb-3 form-group row">
                 <label for="{{ form.secret_key.id_for_label }}"
                        class="col-form-label col-sm-4">{{ form.secret_key.label }}</label>
-                <div class="col-sm-8">{% render_field form.secret_key class="form-control" %}</div>
+                <div class="col-sm-8">
+                    {% render_field form.secret_key class="form-control" %}
+                    <div class="form-text">
+                        {% trans "The key is on the profile page of whoever registered the child, next to the child's name." %}
+                    </div>
+                </div>
                 <div class="invalid-feedback {{ WIDGET_ERROR_CLASS }}">{{ form.secret_key.errors|first }}</div>
             </div>
         </div>

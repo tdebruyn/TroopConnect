@@ -245,8 +245,9 @@ federation's; none was chosen by this project.
   not a pattern to extend.
 - **Charter Green Bright** (#95c11f): `success`. Confirmation only — a saved
   settings group, a successful toast.
-- **Charter Orange** (#ef7b00): `warning`. The "detach" action and the
-  staff-facing failed-mail banner.
+- **Charter Orange** (#ef7b00): `warning`. The "detach" action, the
+  staff-facing failed-mail banner, and the new-members alert tile — the one
+  tool that reports work waiting rather than offering a destination.
 - **Charter Crimson** (#d60f3c): `danger`. Destructive actions and every form
   error. On the member board it is narrowed to a reported absence and an overdue
   balance — see The Crimson-Only-For-Overdue Rule.
@@ -403,7 +404,11 @@ otherwise the first action of the featured tool group. It is never a second
 decorative note: one dark tile is what makes the rest of the board read as
 paper. When the household is settled or fees are off, the dark note moves to the
 tools — the page still has one, and the balance tile is simply absent rather
-than rendered as a zero.
+than rendered as a zero. A staff reader's new-members alert is the one
+exception: when it holds the featured group's first slot the alert takes the
+page's loud note as a warning tint, and the dark gradient is not stacked under
+it. The page still spends one loud surface, and it is the one that says there is
+work to do.
 
 **The Branch-Tint Rule.** A tool cluster takes a 6–8% tint of one branch colour
 over white — children 7% Baladins blue, sections and the unit 6% Louveteaux
@@ -596,7 +601,7 @@ over one summary line; the board follows it at 1.75rem, and the tools at 2.75rem
   whenever a family had an odd number of children.
 - **Siblings are peers.** A family with more than one child is the one place the
   asymmetric weights are dropped: the balance takes the first row alone and the
-  children stand under it in equal columns — two from `lg`, three from `xxl`,
+  children stand under it in equal columns — two from `lg`, three from `xl`,
   one per row below `lg`. The column count is explicit rather than auto-fit,
   because the balance spans every column and an auto-fit track it spans never
   collapses. A leader's section tile keeps a full row of its own.
@@ -1222,6 +1227,25 @@ nobody scans.
 - **The lead tile is larger, not louder.** The size difference and the first-tile
   span say which action leads; the dark gradient is spent only when the tile is
   the page's one dark note, so the page never has two competing anchors.
+- **A tile says what is behind it.** Under the label sit up to two facts — the
+  next activities, the newest documents — at the Fact label step. The first
+  carries the full ink and the lines under it a step lighter; nothing is faded
+  out, because a fade reads as disabled text and, with exactly two items,
+  promises a third that is not there.
+- **One tile reports instead of leading.** The unit's new-members tile states
+  work waiting: a 14% charter-orange tint, a 45% ring, a 28% icon square and the
+  count as its one detail line. It takes the loud note in the featured group's
+  first slot instead of the dark gradient, so a staff page does not spend two
+  anchors.
+- **On a phone the children group takes the full width.** Its labels and detail
+  lines are the longest in the mosaic, and two columns leave "Add an already
+  registered child" four lines deep; below `md` its list is one column and the
+  first and third spans are dropped.
+- **A childless parent leads with the way in.** With no child on the page the
+  calendar has nobody on it, so the lead group's first row is the two ways to
+  add one — "Add a child" (the dark note) and "Add an already registered
+  child" — and the agenda takes the full row under them. The first-tile span
+  is turned off there: the pair is the lead, not one tile above the rest.
 
 ### The reader's lists
 
@@ -1303,6 +1327,10 @@ cell per day.
   number dropped to 45% — quieter, still readable on purpose.
 - The grid never depends on hover: every control carries a plain `href` as well
   as its HTMX attributes.
+- Below `md` the grid keeps a readable width (44rem) and scrolls sideways inside
+  a labelled, keyboard-focusable region. The wrapper carries a soft ink shade at
+  its right edge so the days beyond the fold — usually the weekend — are visible
+  rather than simply absent.
 
 ## Do's and Don'ts
 

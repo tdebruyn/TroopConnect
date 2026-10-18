@@ -817,6 +817,14 @@ msgstr "Afbeeldingen"
 msgid "Agenda"
 msgstr "Agenda"
 
+#: members/templates/members/_agenda_grid.html
+msgid "Coming up"
+msgstr "Binnenkort"
+
+#: members/templates/members/_agenda_grid.html
+msgid "Month calendar"
+msgstr "Maandkalender"
+
 #: homepage/templates/homepage/agenda.html:10
 msgid "Calendar of activities"
 msgstr "Activiteitenkalender"
@@ -1620,6 +1628,10 @@ msgstr "Een account aanmaken"
 #: members/templates/members/child_from_key_form.html:8
 msgid "Child's secret key"
 msgstr "Geheime code van het kind"
+
+#: members/templates/members/child_from_key_form.html
+msgid "The key is on the profile page of whoever registered the child, next to the child's name."
+msgstr "De sleutel staat op de profielpagina van wie het kind heeft ingeschreven, naast de naam van het kind."
 
 #: members/templates/members/child_list.html:19
 msgid "Deregister"
@@ -3768,8 +3780,11 @@ msgstr "Mijn kinderen"
 msgid "Add a child"
 msgstr "Een kind toevoegen"
 
-msgid "Link a child with a key"
-msgstr "Een kind koppelen met een sleutel"
+msgid "Add an already registered child"
+msgstr "Een al ingeschreven kind toevoegen"
+
+msgid "by the other parent or a relative"
+msgstr "door de andere ouder of een familielid"
 
 msgid "Section agendas"
 msgstr "Sectieagenda's"
@@ -3824,3 +3839,11 @@ msgstr "De jaarlijn loopt van 1 september tot 31 juli. Voer een datum binnen die
 
 msgid "The activity must end by 31 July to fit the year-line."
 msgstr "De activiteit moet uiterlijk op 31 juli eindigen om op de jaarlijn te passen."
+
+#: homepage/views.py
+msgid "New members"
+msgstr "Nieuwe leden"
+
+#: homepage/views.py
+msgid "%(count)s awaiting processing"
+msgstr "%(count)s te verwerken"

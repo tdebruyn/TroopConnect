@@ -816,6 +816,10 @@ msgstr ""
 msgid "Agenda"
 msgstr ""
 
+#: members/templates/members/_agenda_grid.html
+msgid "Coming up"
+msgstr ""
+
 #: homepage/templates/homepage/agenda.html:10
 msgid "Calendar of activities"
 msgstr ""
@@ -3133,4 +3137,12 @@ msgstr ""
 
 #: members/models.py
 msgid "Where answers to this section's messages should go. Empty uses the unit's reply-to address."
+msgstr ""
+
+#: homepage/views.py
+msgid "New members"
+msgstr ""
+
+#: homepage/views.py
+msgid "%(count)s awaiting processing"
 msgstr ""

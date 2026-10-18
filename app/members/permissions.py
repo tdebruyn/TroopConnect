@@ -14,6 +14,7 @@ The short-codes were first seeded in
 from django.db.models import Q
 
 # Primary roles (Role.is_primary is True).
+NOUVEAU = "n"
 PARENT = "p"
 ANIMATEUR = "a"
 ANIME = "e"

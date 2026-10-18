@@ -817,6 +817,14 @@ msgstr "Images"
 msgid "Agenda"
 msgstr "Agenda"
 
+#: members/templates/members/_agenda_grid.html
+msgid "Coming up"
+msgstr "À venir"
+
+#: members/templates/members/_agenda_grid.html
+msgid "Month calendar"
+msgstr "Calendrier du mois"
+
 #: homepage/templates/homepage/agenda.html:10
 msgid "Calendar of activities"
 msgstr "Calendrier des activités"
@@ -1620,6 +1628,10 @@ msgstr "Pour créer un compte"
 #: members/templates/members/child_from_key_form.html:8
 msgid "Child's secret key"
 msgstr "Code secret de l'enfant"
+
+#: members/templates/members/child_from_key_form.html
+msgid "The key is on the profile page of whoever registered the child, next to the child's name."
+msgstr "La clé se trouve sur la page de profil de la personne qui a inscrit l'enfant, à côté du nom de l'enfant."
 
 #: members/templates/members/child_list.html:19
 msgid "Deregister"
@@ -3681,7 +3693,7 @@ msgid "None reported"
 msgstr "Aucune signalée"
 
 msgid "Edit details"
-msgstr "Modifier la fiche"
+msgstr "Modifier les données"
 
 msgid "%(counter)s absence reported"
 msgid_plural "%(counter)s absences reported"
@@ -3771,8 +3783,11 @@ msgstr "Mes enfants"
 msgid "Add a child"
 msgstr "Ajouter un enfant"
 
-msgid "Link a child with a key"
-msgstr "Lier un enfant avec une clé"
+msgid "Add an already registered child"
+msgstr "Ajouter un enfant déjà inscrit"
+
+msgid "by the other parent or a relative"
+msgstr "par l'autre parent ou un proche"
 
 msgid "Section agendas"
 msgstr "Agendas de section"
@@ -3827,3 +3842,11 @@ msgstr "La ligne de l'année va du 1er septembre au 31 juillet. Entrez une date 
 
 msgid "The activity must end by 31 July to fit the year-line."
 msgstr "L'activité doit se terminer au plus tard le 31 juillet pour figurer sur la ligne de l'année."
+
+#: homepage/views.py
+msgid "New members"
+msgstr "Nouveaux membres"
+
+#: homepage/views.py
+msgid "%(count)s awaiting processing"
+msgstr "%(count)s à traiter"

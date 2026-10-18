@@ -80,7 +80,7 @@ dark balance tile (4-5 columns) beside the first child's tile; the next child
 wraps at 5 columns and the third at 7, so the board runs asymmetrically. A
 family with more than one child is the exception: the balance takes the first
 row alone and the children stand under it in equal columns — two from `lg`,
-three from `xxl`. Each person tile carries a date leaf, the activity title, its
+three from `xl`. Each person tile carries a date leaf, the activity title, its
 type chip and absence state, then its actions.
 
 **FORM.** Position 3 of 7 grounded structures; the tile board is the brief's own
@@ -103,7 +103,7 @@ remains the brief; these are the values and behaviours the build settled on.
   these weights, not for `col-*` classes.
 - **Multi-child families.** With more than one child the board becomes a grid:
   the balance (and a leader's section tile) spans the first row, and the
-  children share equal columns beneath it — two from `lg`, three from `xxl`,
+  children share equal columns beneath it — two from `lg`, three from `xl`,
   one per row below `lg`. The container carries `data-many-children` and
   `data-child-count`; a single child keeps the flex row above.
 - **Ground.** `paper` plus two radial blooms mixed with `transparent` — Baladins
@@ -115,12 +115,23 @@ remains the brief; these are the values and behaviours the build settled on.
   charter-sky bloom. When `_household_dues` returns no amount — settled, or fees
   off — the balance tile is absent and the featured tool group's first tile
   takes the same dark gradient. Staff and leaders with no balance get the dark
-  note in the tools.
+  note in the tools. A new-members alert in that first slot takes the loud note
+  as a 14% charter-orange tint instead; the dark gradient is not stacked under
+  it.
 - **Tools.** Groups are a flex row at a 17rem basis; the most-populated group
   takes `1.5` grow and a 24rem basis, its list is two columns, and its first
   tile spans both. Other lists are `auto-fill` at a 9rem minimum. Children tiles
   are tinted 7% Baladins blue, sections and unit 6% Louveteaux green, account
-  and site white.
+  and site white. A parent with no child yet is choosing how to add one, so the
+  children group leads with "Add a child" (the dark tile) and "Add an already
+  registered child" side by side; the agenda spans the row beneath them. Each
+  tile may carry up to two detail lines at the Fact label step — the next
+  activities, the newest documents — the first at full ink and the lines under
+  it a step lighter, never faded out. Below `md` the children group's list is
+  one column, because its labels and detail lines are the longest in the
+  mosaic. The unit's new-members tile is the one tool that reports work rather
+  than a destination: a 14% charter-orange tint, a 45% ring, a 28% icon square
+  and the count as its detail line.
 - **Section tile.** At `lg` (992px) and up it becomes a three-area grid:
   identity and attendance in the left column, the next event in the right behind
   a 1px divider, the actions across both feet. Below `lg` it is the stacked

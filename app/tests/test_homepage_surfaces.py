@@ -13,7 +13,7 @@ from decimal import Decimal
 
 from django.core.exceptions import ValidationError
 from django.urls import reverse
-from django.utils import translation
+from django.utils import timezone, translation
 from django.utils.html import escape
 
 from finance.models import FeeRule
@@ -29,15 +29,18 @@ from members.models import (
     Account,
     Branch,
     Enrollment,
+    ImportantDocument,
     ParentChild,
     Person,
     Role,
     SchoolYear,
     Section,
+    SectionEvent,
     TroopSettings,
 )
 from members.permissions import (
     ANIMATEUR_ROLES,
+    ANIME,
     can_manage_unit,
     has_primary_role,
     visible_sections,
@@ -577,6 +580,138 @@ class MemberHomepageTest(DeskTestBase):
             )
         return child
 
+    def make_child_account(self, email, name="Ana", branch=None):
+        child = self.make_child(name, branch)
+        account = Account.objects.create_user(
+            email=email, password="testpass", person=child,
+        )
+        return account, child
+
+    def test_a_childs_page_names_their_section_not_their_children(self):
+        """A participant answers for themselves, not for a family.
+
+        The heading used to read "Your children" and the empty state asked
+        them to link children to an account that will never have any.
+        """
+        account, child = self.make_child_account(
+            "participant@test.com", branch=self.baladins
+        )
+        self.client.force_login(account)
+
+        response = self.client.get("/")
+
+        self.assertTrue(response.context["member_is_child"])
+        self.assertEqual(
+            str(response.context["member_heading"]),
+            str(translation.gettext("Your section")),
+        )
+        self.assertFalse(response.context["member_show_empty"])
+        self.assertNotContains(response, "member-empty")
+
+    def test_a_child_with_no_section_is_told_so_without_mentioning_children(self):
+        account, _child = self.make_child_account("no-section@test.com")
+        self.client.force_login(account)
+
+        response = self.client.get("/")
+
+        self.assertTrue(response.context["member_is_child"])
+        self.assertEqual(
+            str(response.context["member_heading"]),
+            str(translation.gettext("Your unit")),
+        )
+        self.assertTrue(response.context["member_show_empty"])
+
+    def test_a_childs_agenda_tile_names_the_next_activities(self):
+        """The agenda is the child's own work, so it belongs in their account
+        group — and its detail lines save a click just to learn when they meet.
+
+        It is the group's third tile and takes the wide row: activity lines
+        are longer than a document's name, so the room goes to them.
+        """
+        from homepage.views import _member_tools
+
+        account, child = self.make_child_account(
+            "next-event@test.com", branch=self.baladins
+        )
+        section = child.get_section()
+        first = SectionEvent.objects.create(
+            section=section,
+            title="Grand jeu",
+            start_date=timezone.localdate() + timedelta(days=3),
+        )
+        second = SectionEvent.objects.create(
+            section=section,
+            title="Week-end",
+            start_date=timezone.localdate() + timedelta(days=10),
+        )
+
+        groups = _member_tools(
+            account, account.person, [], [], False, section, [first, second]
+        )
+        account_group = next(
+            group for group in groups if group["kind"] == "account"
+        )
+
+        self.assertEqual(
+            account_group["items"][0].url,
+            reverse("members:profile", kwargs={"pk": account.pk}),
+        )
+        self.assertEqual(
+            account_group["items"][1].url,
+            reverse("members:documents"),
+        )
+        agenda = account_group["items"][2]
+        self.assertEqual(
+            agenda.url,
+            f"{reverse('members:agenda')}?section={section.pk}",
+        )
+        self.assertEqual(len(agenda.details), 2)
+        self.assertIn(first.title, str(agenda.details[0]))
+        self.assertIn(second.title, str(agenda.details[1]))
+
+    def test_the_documents_tile_names_the_newest_documents(self):
+        ImportantDocument.objects.create(title="Reglement de unite")
+        ImportantDocument.objects.create(title="Liste de camp")
+        account = self.make_parent("docs-tile@test.com")
+        self.client.force_login(account)
+
+        body = self.client.get("/").content.decode()
+
+        self.assertIn("Reglement de unite", body)
+        self.assertIn("Liste de camp", body)
+
+    def test_a_child_sees_the_next_activity_on_the_page(self):
+        account, child = self.make_child_account(
+            "next-on-page@test.com", branch=self.baladins
+        )
+        SectionEvent.objects.create(
+            section=child.get_section(),
+            title="Grand jeu",
+            start_date=timezone.localdate() + timedelta(days=3),
+        )
+        self.client.force_login(account)
+
+        response = self.client.get("/")
+
+        self.assertContains(response, "Grand jeu")
+        self.assertContains(response, reverse("members:agenda"))
+        # Profile and documents share the first row; the agenda spans the
+        # wide row under them.
+        self.assertContains(response, 'data-pair-first="true"')
+
+    def test_a_childs_agenda_tile_follows_the_module_switch(self):
+        account, _child = self.make_child_account(
+            "child-agenda-off@test.com", branch=self.baladins
+        )
+        self.client.force_login(account)
+        self.assertContains(self.client.get("/"), reverse("members:agenda"))
+
+        settings_row = TroopSettings.get_settings()
+        settings_row.agenda_enabled = False
+        settings_row.save()
+
+        self.assertNotContains(self.client.get("/"), reverse("members:agenda"))
+
     def test_a_member_gets_the_tool_and_not_the_troops_page(self):
         account = self.make_parent("member@test.com", self.make_child("Ana"))
         self.client.force_login(account)
@@ -787,6 +922,48 @@ class MemberHomepageTest(DeskTestBase):
         self.assertNotIn(reverse("members:admin_list"), body)
         self.assertNotIn(reverse("members:troop_settings"), body)
 
+    def child_tools(self, account, children):
+        from homepage.views import _member_tools
+
+        groups = _member_tools(account, account.person, [], children, False)
+        return next(group for group in groups if group["kind"] == "children")
+
+    def test_a_parent_with_no_child_is_offered_creation_before_the_calendar(self):
+        """The calendar has nobody on it yet; the ways to add a child lead.
+
+        The order is asserted on the URLs, not the labels: the catalogues are
+        translated, so the words are not this test's business.
+        """
+        account = self.make_parent("firstchild@test.com")
+        group = self.child_tools(account, [])
+        self.assertEqual(
+            [item[1] for item in group["items"]],
+            [
+                reverse("members:add_new_child"),
+                reverse("members:add_key_child"),
+                reverse("members:agenda"),
+            ],
+        )
+        self.assertTrue(group["no_children"])
+
+        self.client.force_login(account)
+        self.assertContains(self.client.get("/"), 'data-no-children="true"')
+
+    def test_a_parent_with_a_child_keeps_the_calendar_first(self):
+        """The creation tools stay below it once there is somebody to see."""
+        account = self.make_parent("haschild@test.com", self.make_child("Ana"))
+        children = list(Person.objects.filter(as_child__parent=account.person))
+        group = self.child_tools(account, children)
+        self.assertEqual(
+            [item[1] for item in group["items"]],
+            [
+                reverse("members:agenda"),
+                reverse("members:add_new_child"),
+                reverse("members:add_key_child"),
+            ],
+        )
+        self.assertFalse(group["no_children"])
+
     def test_a_leader_is_offered_the_section_tools(self):
         account = self.make_leader("leadertools@test.com", self.section)
         self.client.force_login(account)
@@ -804,18 +981,125 @@ class MemberHomepageTest(DeskTestBase):
                      "members:mail_queue"):
             self.assertIn(reverse(name), body, name)
 
+    def make_nouveau(self, first_name="Nou", last_name="Veau"):
+        """A member created without a role, as the parent's child form leaves it."""
+        return Person.objects.create(
+            first_name=first_name, last_name=last_name, status="r",
+        )
+
+    def nouveau_url(self):
+        return (
+            f"{reverse('members:admin_list')}"
+            f"?role={Role.objects.get(short='n').pk}"
+        )
+
+    def unit_tools(self, response):
+        return next(
+            group
+            for group in response.context["member_tools"]
+            if group["kind"] == "unit"
+        )
+
+    def test_a_nouveau_member_is_a_highlighted_tile_for_member_managers(self):
+        self.make_nouveau()
+        account = self.make_staff("nouveau-staff@test.com")
+        self.client.force_login(account)
+
+        response = self.client.get("/")
+        body = response.content.decode()
+
+        self.assertIn(self.nouveau_url(), body)
+        self.assertIn("member-tool-alert", body)
+
+        tile = next(
+            item
+            for item in self.unit_tools(response)["items"]
+            if item.url == self.nouveau_url()
+        )
+        self.assertTrue(tile.alert)
+        self.assertIn("1", tile.details[0])
+
+        # The tile's promise: the filtered list answers for a member manager.
+        self.assertEqual(self.client.get(self.nouveau_url()).status_code, 200)
+
+    def test_the_nouveau_tile_counts_them_all_in_one_tile(self):
+        self.make_nouveau("Un", "Nouveau")
+        self.make_nouveau("Deux", "Nouveau")
+        account = self.make_staff("nouveau-count@test.com")
+        self.client.force_login(account)
+
+        response = self.client.get("/")
+        tiles = [
+            item
+            for item in self.unit_tools(response)["items"]
+            if item.url == self.nouveau_url()
+        ]
+
+        self.assertEqual(len(tiles), 1)
+        self.assertIn("2", tiles[0].details[0])
+        self.assertEqual(response.content.decode().count(self.nouveau_url()), 1)
+
+    def test_the_nouveau_tile_disappears_when_nobody_is_left(self):
+        self.make_nouveau()
+        account = self.make_staff("nouveau-gone@test.com")
+        self.client.force_login(account)
+        self.assertIn(self.nouveau_url(), self.client.get("/").content.decode())
+
+        Person.objects.filter(primary_role__short="n").update(
+            primary_role=Role.objects.get(short="p")
+        )
+
+        self.assertNotIn(self.nouveau_url(), self.client.get("/").content.decode())
+
+    def make_registration_manager(self, email, role_short):
+        person = Person.objects.create(
+            first_name="Reg", last_name=role_short,
+            primary_role=self.parent_role, status="a",
+        )
+        person.roles.add(Role.objects.get(short=role_short))
+        return Account.objects.create_user(
+            email=email, password="testpass", person=person,
+        )
+
+    def test_registration_manager_and_unit_lead_see_the_nouveau_tile(self):
+        self.make_nouveau()
+        for role_short in ("ri", "ar"):
+            with self.subTest(role=role_short):
+                account = self.make_registration_manager(
+                    f"{role_short}-nouveau@test.com", role_short
+                )
+                self.client.force_login(account)
+                self.assertIn(
+                    self.nouveau_url(),
+                    self.client.get("/").content.decode(),
+                )
+
+    def test_a_parent_without_a_member_role_does_not_see_the_nouveau_tile(self):
+        self.make_nouveau()
+        account = self.make_parent("plain-nouveau@test.com")
+        self.client.force_login(account)
+
+        body = self.client.get("/").content.decode()
+
+        self.assertNotIn(self.nouveau_url(), body)
+        self.assertNotIn("member-tool-alert", body)
+
     def test_every_tool_link_answers_for_every_role(self):
         """The hub promises each destination, and three dead ones have shipped.
 
-        Checked for all three readers, because a link can answer for one role
-        and 404 for another — which is exactly how the Pay button and "Add an
+        Checked for every reader, because a link can answer for one role and
+        404 for another — which is exactly how the Pay button and "Add an
         activity" went wrong.
         """
         from homepage.views import _member_tools
 
         child = self.make_child("Ana", self.baladins)
+        child_account = Account.objects.create_user(
+            email="ans-child@test.com", password="testpass", person=child,
+        )
         readers = {
             "parent": (self.make_parent("ans-parent@test.com", child), child.parents.first()),
+            "child": (child_account, child),
             "leader": (self.make_leader("ans-leader@test.com", self.section), None),
             "staff": (self.make_staff("ans-staff@test.com"), None),
         }
@@ -824,8 +1108,15 @@ class MemberHomepageTest(DeskTestBase):
             children = list(Person.objects.filter(as_child__parent=person))
             sections = list(visible_sections(account))
             leads = can_manage_unit(account) or has_primary_role(account, ANIMATEUR_ROLES)
-            for group in _member_tools(account, person, sections, children, leads):
-                for label, url, _icon, _modal in group["items"]:
+            own_section = (
+                sections[0]
+                if has_primary_role(account, (ANIME,)) and sections
+                else None
+            )
+            for group in _member_tools(
+                account, person, sections, children, leads, own_section
+            ):
+                for label, url, _icon, _modal, _details, _alert in group["items"]:
                     with self.subTest(role=role, tool=label):
                         self.client.force_login(account)
                         self.assertEqual(

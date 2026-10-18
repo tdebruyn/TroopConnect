@@ -1,5 +1,6 @@
 import json
 import re
+from collections import namedtuple
 from decimal import Decimal
 
 from django.conf import settings
@@ -11,6 +12,7 @@ from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.formats import date_format
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import override
@@ -24,7 +26,9 @@ from members.models import (
     Absence,
     Branch,
     Enrollment,
+    ImportantDocument,
     Person,
+    Role,
     SchoolYear,
     SectionEvent,
     TroopSettings,
@@ -32,6 +36,8 @@ from members.models import (
 from members.modules import module_enabled
 from members.permissions import (
     ANIMATEUR_ROLES,
+    ANIME,
+    NOUVEAU,
     PARENT,
     can_access_finance,
     can_access_messaging,
@@ -41,6 +47,16 @@ from members.permissions import (
     get_person,
     has_primary_role,
     visible_sections,
+)
+
+# A tile in the tools board. `details` are the lines under its title that say
+# what is behind the tile — the next activities, the documents — with the
+# first read as the headline fact and the rest dimmed by the template.
+# `alert` marks the one tile that reports work rather than offering a tool;
+# it carries its own treatment instead of borrowing the page's single dark
+# note, which belongs to whichever group leads.
+Tool = namedtuple(
+    "Tool", "label url icon modal details alert", defaults=((), False)
 )
 
 # Languages offered in the editor's language tabs (modeltranslation languages).
@@ -569,6 +585,37 @@ def _upcoming_events(sections):
     return events
 
 
+def _next_events(section, limit=2):
+    """The next ``limit`` activities of ``section``, in reading order."""
+    if section is None:
+        return []
+    return list(
+        SectionEvent.objects.filter(
+            section=section, start_date__gte=timezone.localdate()
+        ).order_by("start_date", "start_time", "title")[:limit]
+    )
+
+
+def _event_lines(events):
+    """Activities as a tile's detail lines: when, then what.
+
+    The date leads because it is the fact the reader opens the agenda for; the
+    title alone would say what happens without saying when.
+    """
+    if not events:
+        return (_("Nothing scheduled"),)
+    return tuple(
+        f"{date_format(event.start_date, 'D j N')} · {event.title}"
+        for event in events
+    )
+
+
+def _document_lines():
+    """The newest documents as a tile's detail lines, or the empty-state line."""
+    titles = tuple(ImportantDocument.objects.values_list("title", flat=True)[:2])
+    return titles or (_("No documents available."),)
+
+
 def _absence_counts(events):
     """How many children are reported absent, per event id."""
     counts = {}
@@ -641,7 +688,9 @@ def _siblings_are_discounted(school_year):
     )
 
 
-def _member_tools(user, person, sections, children, leads):
+def _member_tools(
+    user, person, sections, children, leads, own_section=None, own_events=None
+):
     """The groups of links the reader's own tools are made of.
 
     Built here rather than in the template, because every entry is a promise
@@ -677,33 +726,39 @@ def _member_tools(user, person, sections, children, leads):
             return 0
         return 2 if kind in ("account", "site") else 1
 
-    parent_items = []
-    if module_enabled(modules.AGENDA):
-        parent_items.append(
-            (_("Agenda"), reverse("members:agenda"), "calendar3", False)
-        )
+    # The two add tools render modal fragments, so the tile opens the system's
+    # one dialog rather than navigating to a page that is only the inside of
+    # one. The fourth item is that flag; the fifth is the detail lines under
+    # the title.
+    #
+    # The key tool names the situation, not the key: a second parent recognises
+    # "already registered" where "link with a key" only states the mechanism.
+    # The detail says who did the registering, which the label cannot.
+    add_items = [
+        Tool(_("Add a child"), reverse("members:add_new_child"), "person-plus", True),
+        Tool(
+            _("Add an already registered child"),
+            reverse("members:add_key_child"),
+            "person-down",
+            True,
+            (_("by the other parent or a relative"),),
+        ),
+    ]
+    agenda_items = (
+        [Tool(_("Agenda"), reverse("members:agenda"), "calendar3", False)]
+        if module_enabled(modules.AGENDA)
+        else []
+    )
+    # A calendar with nobody on it is not the reader's work: until a child is
+    # on the page the group leads with the two ways to add one, and the page's
+    # one dark note goes to the first of them rather than to the agenda.
+    no_children = not children
+    parent_items = (
+        add_items + agenda_items if no_children else agenda_items + add_items
+    )
     # No entry for the children list itself: `members:child_list` renders an
     # HTMX fragment and answers 400 to a plain request, and the panels above
     # are that list anyway.
-    #
-    # The two add tools render modal fragments too, so the tile opens the
-    # system's one dialog rather than navigating to a page that is only the
-    # inside of one. The fourth item is that flag; a fixed-length tuple keeps
-    # the template's unpacking simple.
-    parent_items += [
-        (
-            _("Add a child"),
-            reverse("members:add_new_child"),
-            "person-plus",
-            True,
-        ),
-        (
-            _("Link a child with a key"),
-            reverse("members:add_key_child"),
-            "key",
-            True,
-        ),
-    ]
     if person is not None and (children or has_primary_role(user, (PARENT,))):
         groups.append(
             {
@@ -711,6 +766,7 @@ def _member_tools(user, person, sections, children, leads):
                 "items": parent_items,
                 "priority": priority("children"),
                 "kind": "children",
+                "no_children": no_children,
             }
         )
 
@@ -718,8 +774,8 @@ def _member_tools(user, person, sections, children, leads):
         section_items = []
         if can_access_messaging(user):
             section_items += [
-                (_("Send a message"), reverse("messaging:compose"), "send", False),
-                (
+                Tool(_("Send a message"), reverse("messaging:compose"), "send", False),
+                Tool(
                     _("Message history"),
                     reverse("messaging:animateur_history"),
                     "chat-left-text",
@@ -728,7 +784,7 @@ def _member_tools(user, person, sections, children, leads):
             ]
         if module_enabled(modules.AGENDA):
             section_items.append(
-                (
+                Tool(
                     _("Section agendas"),
                     reverse("members:agenda"),
                     "calendar-week",
@@ -754,8 +810,29 @@ def _member_tools(user, person, sections, children, leads):
 
     unit_items = []
     if can_manage_members(user):
+        # A person created without a role — every child a parent registers —
+        # starts as "Nouveau" (`Person.primary_role`'s default). Staff clear
+        # that state by classifying the member on the edit page, so the count
+        # is the same query the member list's role filter runs.
+        nouveau_role = Role.objects.filter(short=NOUVEAU).first()
+        nouveau_count = (
+            Person.objects.filter(primary_role=nouveau_role).count()
+            if nouveau_role
+            else 0
+        )
+        if nouveau_count:
+            unit_items.append(
+                Tool(
+                    _("New members"),
+                    f"{reverse('members:admin_list')}?role={nouveau_role.pk}",
+                    "person-exclamation",
+                    False,
+                    (_("%(count)s awaiting processing") % {"count": nouveau_count},),
+                    True,
+                )
+            )
         unit_items.append(
-            (
+            Tool(
                 _("Member management"),
                 reverse("members:admin_list"),
                 "people",
@@ -764,7 +841,7 @@ def _member_tools(user, person, sections, children, leads):
         )
     if can_manage_unit(user):
         unit_items.append(
-            (
+            Tool(
                 _("Section passage"),
                 reverse("members:passage"),
                 "arrow-left-right",
@@ -773,7 +850,7 @@ def _member_tools(user, person, sections, children, leads):
         )
     if can_manage_members(user):
         unit_items.append(
-            (
+            Tool(
                 _("Import and export"),
                 reverse("members:member_import"),
                 "arrow-down-up",
@@ -782,13 +859,13 @@ def _member_tools(user, person, sections, children, leads):
         )
     if user.is_staff:
         unit_items += [
-            (
+            Tool(
                 _("Settings"),
                 reverse("members:troop_settings"),
                 "sliders2",
                 False,
             ),
-            (
+            Tool(
                 _("Email queue"),
                 reverse("members:mail_queue"),
                 "envelope",
@@ -797,11 +874,11 @@ def _member_tools(user, person, sections, children, leads):
         ]
     if can_access_finance(user) and module_enabled(modules.FEES):
         unit_items.append(
-            (_("Membership fees"), reverse("finance:billing"), "cash-coin", False)
+            Tool(_("Membership fees"), reverse("finance:billing"), "cash-coin", False)
         )
     if can_manage_unit(user) and module_enabled(modules.SIGNING):
         unit_items.append(
-            (
+            Tool(
                 _("Attestations"),
                 reverse("attestations:index"),
                 "file-earmark-check",
@@ -812,13 +889,13 @@ def _member_tools(user, person, sections, children, leads):
     # and the admin; without these tiles a superuser has no link to either.
     if user.is_superuser:
         unit_items += [
-            (
+            Tool(
                 _("Edit homepage"),
                 reverse("homepage_editor"),
                 "pencil-square",
                 False,
             ),
-            (
+            Tool(
                 _("Site administration"),
                 reverse("admin:index"),
                 "gear",
@@ -835,25 +912,45 @@ def _member_tools(user, person, sections, children, leads):
             }
         )
 
+    account_items = [
+        Tool(
+            _("My profile"),
+            reverse("members:profile", kwargs={"pk": user.pk}),
+            "person-circle",
+            False,
+        ),
+        Tool(
+            _("My documents"),
+            reverse("members:documents"),
+            "folder2-open",
+            False,
+            _document_lines(),
+        ),
+    ]
+    # A participant's page has no "Your children" group to carry the agenda,
+    # so it joins their account tools. It takes the wide row under the profile
+    # and documents: an activity line is longer than a document's name, and
+    # the list of next activities is what most needs the room.
+    if own_section is not None and module_enabled(modules.AGENDA):
+        account_items.append(
+            Tool(
+                _("Agenda"),
+                f"{reverse('members:agenda')}?section={own_section.pk}",
+                "calendar3",
+                False,
+                _event_lines(own_events),
+            )
+        )
     groups.append(
         {
             "priority": priority("account"),
             "title": _("Your account"),
             "kind": "account",
-            "items": [
-                (
-                    _("My profile"),
-                    reverse("members:profile", kwargs={"pk": user.pk}),
-                    "person-circle",
-                    False,
-                ),
-                (
-                    _("My documents"),
-                    reverse("members:documents"),
-                    "folder2-open",
-                    False,
-                ),
-            ],
+            "items": account_items,
+            # A participant's group pairs profile and documents rather than
+            # giving the first tile the group's full width; the agenda takes
+            # the wide row beneath them.
+            "pair_first": own_section is not None,
         }
     )
     groups.append(
@@ -862,8 +959,8 @@ def _member_tools(user, person, sections, children, leads):
             "title": _("The unit's page"),
             "kind": "site",
             "items": [
-                (_("Our unit"), reverse("unit_page"), "house-door", False),
-                (_("FAQ"), reverse("faq"), "question-circle", False),
+                Tool(_("Our unit"), reverse("unit_page"), "house-door", False),
+                Tool(_("FAQ"), reverse("faq"), "question-circle", False),
             ],
         }
     )
@@ -902,9 +999,16 @@ def _member_context(user):
             "member_panels": [],
             "member_heading": _("Your unit"),
             "member_first_name": "",
+            "member_is_child": False,
         }
 
     children = list(Person.objects.filter(as_child__parent=person))
+    # A participant answers for themselves, so their page has no child or
+    # section panels. Their own section still matters: it is where the
+    # agenda lives, and the heading has to name it rather than a family.
+    is_child = has_primary_role(user, (ANIME,))
+    own_sections = list(visible_sections(user)) if is_child else []
+    own_section = own_sections[0] if own_sections else None
     # An animateur's role is a *primary* one, which is the predicate the nav and
     # the messaging app already use. A plain parent is enrolled nowhere, so
     # reading visible_sections for them would hand back their children's
@@ -922,9 +1026,13 @@ def _member_context(user):
         if can_edit_section_agenda(user, section)
     ][:1]
 
-    events = _upcoming_events(
-        [child.get_section() for child in children if child.get_section()] + led
-    )
+    subjects = [
+        child.get_section() for child in children if child.get_section()
+    ] + led
+    if own_section is not None:
+        subjects.append(own_section)
+    events = _upcoming_events(subjects)
+    own_events = _next_events(own_section) if own_section is not None else []
     absences = _absence_counts(list(events.values()))
 
     panels = []
@@ -974,28 +1082,52 @@ def _member_context(user):
 
     return {
         "member_panels": panels,
-        "member_tools": _member_tools(user, person, readable, children, leads),
+        "member_tools": _member_tools(
+            user,
+            person,
+            readable,
+            children,
+            leads,
+            own_section,
+            own_events,
+        ),
         # A reader who leads gets the unit's heading whether or not they also
         # have children: "Your children" over a section tile would be a lie,
-        # and a leader with no section yet is still a leader.
-        "member_heading": _("Your unit") if leads else _("Your children"),
+        # and a leader with no section yet is still a leader. A participant
+        # answers for no one, so the page names their own section instead of
+        # asking them to look after children they do not have.
+        "member_heading": (
+            _("Your section")
+            if own_section is not None
+            else _("Your unit")
+            if leads or is_child
+            else _("Your children")
+        ),
         # The greeting is the reader's own name, not a label over the heading:
         # the head reads "Vos enfants" then "Bonjour Marc. 3 enfants…" because
         # the page is a tool that knows who is holding it, and a page opener
         # that says so costs one line it already has room for.
         "member_first_name": person.first_name,
         "member_children": sum(1 for panel in panels if panel["kind"] == "child"),
+        "member_is_child": is_child,
         # The empty state explains an empty account to a family. A reader whose
         # page is their tools is not missing anything, so it is not shown to
         # them — it would tell an administrator their unit is not attached.
+        # A participant is not missing children either; only one without a
+        # section has something to be told, and the template says it in the
+        # agenda's own words instead of talking about a family.
         "member_show_empty": (
             not panels
             and not children
-            and not (
-                user.is_staff
-                or can_manage_unit(user)
-                or can_manage_members(user)
-                or can_access_finance(user)
+            and (
+                (is_child and own_section is None)
+                or not (
+                    is_child
+                    or user.is_staff
+                    or can_manage_unit(user)
+                    or can_manage_members(user)
+                    or can_access_finance(user)
+                )
             )
         ),
         # The treasurer's screens 404 for everyone else, so a parent who is not

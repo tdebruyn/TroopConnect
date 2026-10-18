@@ -46,37 +46,77 @@ page still works with the swap taken away.
                href="{% url 'members:agenda_event_create' %}?section={{ section.pk }}">{% trans "Add an activity" %}</a>
         </p>
     {% endif %}
-    <div class="table-responsive">
-        <table class="table table-bordered agenda-grid mb-0">
-            <thead>
-                <tr>
-                    {% for day in weeks.0 %}<th scope="col">{{ day.date|date:"D" }}</th>{% endfor %}
-                </tr>
-            </thead>
-            <tbody>
-                {% for week in weeks %}
-                    <tr>
-                        {% for day in week %}
-                            <td {% if not day.in_month %}class="agenda-outside"{% endif %}>
-                                <button type="button"
-                                        class="agenda-day-button"
-                                        hx-get="{% url 'members:agenda_day' %}?section={{ section.pk }}&date={{ day.date|date:'Y-m-d' }}"
-                                        hx-target="#agenda-day"
-                                        hx-swap="innerHTML">
-                                    <span class="agenda-day-number">{{ day.date|date:"j" }}</span>
-                                    {% for event in day.events %}
-                                        <span class="agenda-chip {{ event.type_css_class }} text-white">
-                                            {{ event.title }}
-                                            {% if event.time_range %}<span class="agenda-chip-time">{{ event.time_range }}</span>{% endif %}
-                                        </span>
-                                    {% endfor %}
-                                </button>
-                            </td>
-                        {% endfor %}
-                    </tr>
+    {% comment %}
+        The reader who opens the agenda to find out what is next should not
+        have to page through months first. Each row opens the calendar on the
+        month the activity falls in, which is where its day and details live.
+    {% endcomment %}
+    <section class="agenda-upcoming mb-4" aria-labelledby="agenda-upcoming-title">
+        <h2 class="h5" id="agenda-upcoming-title">{% trans "Coming up" %}</h2>
+        {% if upcoming %}
+            <div class="list-group">
+                {% for event in upcoming %}
+                    <a class="list-group-item list-group-item-action d-flex flex-wrap align-items-center gap-2"
+                       href="{% url 'members:agenda' %}?section={{ section.pk }}&month={{ event.start_date|date:'Y-m' }}">
+                        <span class="badge {{ event.type_css_class }} text-white">{{ event.get_activity_type_display }}</span>
+                        <span class="fw-bold">{{ event.title }}</span>
+                        <span class="small text-muted ms-auto text-nowrap">
+                            {% if event.is_multi_day %}
+                                {{ event.start_date|date:"j N" }} – {{ event.last_date|date:"j N Y" }}
+                            {% else %}
+                                {{ event.start_date|date:"D j N Y" }}
+                            {% endif %}
+                            {% if event.time_range %} · {{ event.time_range }}{% endif %}
+                        </span>
+                    </a>
                 {% endfor %}
-            </tbody>
-        </table>
+            </div>
+        {% else %}
+            <p class="text-muted mb-0">{% trans "Nothing scheduled" %}</p>
+        {% endif %}
+    </section>
+    {% comment %}
+        On a phone the month is wider than the screen, so it scrolls sideways.
+        The region is labelled and focusable for keyboard readers, and the
+        wrapper carries the edge shade that says there are more days to the
+        right — without it Saturday and Sunday are simply invisible.
+    {% endcomment %}
+    <div class="agenda-scroller">
+        <div class="table-responsive agenda-scroll"
+             tabindex="0"
+             role="region"
+             aria-label="{% trans 'Month calendar' %}">
+            <table class="table table-bordered agenda-grid mb-0">
+                <thead>
+                    <tr>
+                        {% for day in weeks.0 %}<th scope="col">{{ day.date|date:"D" }}</th>{% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for week in weeks %}
+                        <tr>
+                            {% for day in week %}
+                                <td {% if not day.in_month %}class="agenda-outside"{% endif %}>
+                                    <button type="button"
+                                            class="agenda-day-button"
+                                            hx-get="{% url 'members:agenda_day' %}?section={{ section.pk }}&date={{ day.date|date:'Y-m-d' }}"
+                                            hx-target="#agenda-day"
+                                            hx-swap="innerHTML">
+                                        <span class="agenda-day-number">{{ day.date|date:"j" }}</span>
+                                        {% for event in day.events %}
+                                            <span class="agenda-chip {{ event.type_css_class }} text-white">
+                                                {{ event.title }}
+                                                {% if event.time_range %}<span class="agenda-chip-time">{{ event.time_range }}</span>{% endif %}
+                                            </span>
+                                        {% endfor %}
+                                    </button>
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
     {% comment %}
         Inside the grid on purpose: turning a month over throws away the day

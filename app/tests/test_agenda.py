@@ -355,7 +355,42 @@ class AgendaGridTest(AgendaTestBase):
             )
         )
 
-        self.assertNotContains(response, self.weekend.title)
+        # The grid follows the month; the "coming up" list above it does not,
+        # and says so by still carrying the week-end.
+        shown = [
+            event
+            for week in response.context["weeks"]
+            for day in week
+            for event in day["events"]
+        ]
+        self.assertNotIn(self.weekend, shown)
+        self.assertIn(self.weekend, response.context["upcoming"])
+
+    def test_the_page_lists_every_activity_still_to_come(self):
+        """The list answers "what is next?" without paging months.
+
+        It is section-wide, so an activity months away is there while one
+        already over is not.
+        """
+        later = SectionEvent.objects.create(
+            section=self.meute,
+            title="Camp de Paques",
+            start_date=self.today + timedelta(days=90),
+        )
+        past = SectionEvent.objects.create(
+            section=self.meute,
+            title="Sortie passee",
+            start_date=self.today - timedelta(days=2),
+        )
+        self.login("child@test.be")
+
+        response = self.client.get(reverse("members:agenda"))
+
+        upcoming = response.context["upcoming"]
+        self.assertIn(self.meute_event, upcoming)
+        self.assertIn(later, upcoming)
+        self.assertNotIn(past, upcoming)
+        self.assertContains(response, later.title)
 
     def test_the_grid_carries_a_fresh_day_frame(self):
         """Paging months swaps the grid, and the day frame with it: a frame
