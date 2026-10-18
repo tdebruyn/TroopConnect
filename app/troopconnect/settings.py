@@ -447,14 +447,14 @@ CELERY_BEAT_SCHEDULE = {
         "task": "create_year_task",
         "schedule": crontab(hour=3, minute=0),
     },
-    "run-passage-daily": {
+    "run-passage-monthly": {
         "task": "run_passage",
-        # Daily (not yearly) so that if Celery/beat was down on the intended
-        # trigger day (May 1), the passage runs at the next start instead of
-        # being skipped for a whole year. run_passage self-guards by date +
-        # marker (TroopSettings.last_passage_school_year), so it only actually
-        # promotes children once per target school year.
-        "schedule": crontab(hour=3, minute=30),
+        # Monthly on the 1st (not yearly) so that if Celery/beat was down on
+        # the intended trigger day (May 1), the passage catches up on the next
+        # tick, and members added or fixed after it are picked up too.
+        # run_passage self-guards by date and by skipping members who already
+        # have a section for the target year.
+        "schedule": crontab(day_of_month=1, hour=3, minute=30),
     },
     "cleanup-old-messages-daily": {
         "task": "cleanup_old_messages",

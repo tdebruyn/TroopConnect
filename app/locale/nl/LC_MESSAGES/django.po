@@ -1265,10 +1265,9 @@ msgstr "%(name)s (%(min)s-%(max)s jaar)"
 
 #: members/models.py:813
 msgid ""
-"Last school year (the « name » field) for which the automatic passage was "
-"executed. Anti-replay: if Celery was stopped on the passage day, the task "
-"catches up at the next startup."
-msgstr "Laatste schooljaar (het veld « name ») waarvoor de automatische passage werd uitgevoerd. Anti-herhaling: als Celery stopte op de dag van de passage, haalt de taal dit in bij de volgende opstart."
+"Last coming school year the passage prepared. Informational only: the "
+"passage skips members who already have a section for that year."
+msgstr "Laatste komende schooljaar waarvoor de passage is voorbereid. Alleen ter informatie: de passage slaat leden over die al een sectie voor dat jaar hebben."
 
 #: members/models.py:860
 msgid "Important document"
@@ -2367,9 +2366,11 @@ msgstr "Munteenheid van drie letters om bedragen weer te geven, bv. EUR."
 
 #: settings page (hand-added; see docs/dev/CONTRACT.md)
 msgid ""
-"Automatic runs the passage on 1 May; manual leaves it to whoever presses the button."
+"Automatic runs the passage from 1 May, retrying on the first of every month "
+"until the coming school year starts; manual leaves it to whoever presses the "
+"button."
 msgstr ""
-"Automatisch voert de overgang uit op 1 mei; handmatig laat het aan wie op de knop drukt."
+"Automatisch voert de overgang uit vanaf 1 mei en probeert het opnieuw op de eerste van elke maand tot het komende scoutjaar begint; handmatig laat het aan wie op de knop drukt."
 
 #: settings page (hand-added; see docs/dev/CONTRACT.md)
 msgid "%(region)s is not a country code phone numbers can be parsed for."

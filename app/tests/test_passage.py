@@ -22,8 +22,8 @@ from .base import TroopSettingsTestCase
 class PassageTestBase(TroopSettingsTestCase):
     """Shared setup for passage tests.
 
-    ``run_passage`` writes the anti-replay marker back onto the troop settings
-    row, so these are exactly the tests that must not leave it cached.
+    ``run_passage`` writes the last-run bookkeeping back onto the troop
+    settings row, so these are exactly the tests that must not leave it cached.
     """
 
     @classmethod
@@ -289,9 +289,10 @@ class NoNextYearTest(TroopSettingsTestCase):
 
 
 class PassageGuardTest(PassageTestBase):
-    """Date gate + idempotency marker: the daily task must (a) not promote
-    before the trigger date, (b) catch up if the trigger day was missed because
-    Celery was down, and (c) never process the same target year twice."""
+    """Date gate + per-member gate: the monthly task must (a) not promote
+    before the trigger date, (b) catch up on whoever is left if a tick was
+    missed because Celery was down, and (c) never re-do a placement the target
+    year already has."""
 
     def _make_child(self, next_section=None):
         child = Person.objects.create(
@@ -322,7 +323,7 @@ class PassageGuardTest(PassageTestBase):
 
     def test_catchup_after_missed_trigger_day(self):
         """Celery down on/around May 1: an April tick does nothing, the next
-        start (mid-June) performs the passage."""
+        tick (June 1) performs the passage."""
         child = self._make_child()
 
         with mock.patch(
@@ -348,9 +349,9 @@ class PassageGuardTest(PassageTestBase):
         )
 
     def test_second_run_is_a_noop(self):
-        """Once the marker is set, a later daily tick must not reprocess —
-        notably it must not re-derive sections by age after the manual override
-        has already been applied and cleared."""
+        """Once the member has a section for the target year, a later monthly
+        tick must not reprocess — notably it must not re-derive sections by age
+        after the manual override has already been applied and cleared."""
         child = self._make_child(next_section=self.section_mid)
 
         # First run (setUp patches _today to the trigger date): override applied.
@@ -371,6 +372,51 @@ class PassageGuardTest(PassageTestBase):
         self.assertEqual(
             Enrollment.objects.get(user=child, school_year=self.next_year).section,
             self.section_mid,
+        )
+
+    def test_a_later_monthly_run_places_only_the_members_left_behind(self):
+        """The point of the monthly cadence: a member the first tick never saw
+        is placed by the next one, while the first member keeps their section."""
+        placed = self._make_child(next_section=self.section_mid)
+        run_passage()
+
+        latecomer = self._make_child()
+        with mock.patch(
+            "members.tasks._today",
+            return_value=date(self.next_year.name, 6, 1),
+        ):
+            result = run_passage()
+
+        self.assertEqual(
+            Enrollment.objects.get(user=placed, school_year=self.next_year).section,
+            self.section_mid,
+        )
+        # Still within Baladins' age range on the reference day, so that is
+        # where the latecomer goes.
+        self.assertEqual(
+            Enrollment.objects.get(user=latecomer, school_year=self.next_year).section,
+            self.section_young,
+        )
+        # The first member was the one skipped; the latecomer was processed.
+        self.assertEqual(result["already_placed"], 1)
+
+    def test_a_hand_entered_next_year_section_is_left_alone(self):
+        """A section already assigned for the target year is the passage's
+        finished work, so neither a tick nor the button may overwrite it."""
+        child = self._make_child()
+        Enrollment.objects.create(
+            user=child, school_year=self.next_year, section=self.section_old,
+        )
+
+        run_passage(force=True)
+
+        self.assertEqual(
+            Enrollment.objects.get(user=child, school_year=self.next_year).section,
+            self.section_old,
+        )
+        self.assertEqual(
+            Enrollment.objects.filter(user=child, school_year=self.next_year).count(),
+            1,
         )
 
 

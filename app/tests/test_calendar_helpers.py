@@ -225,6 +225,26 @@ class PassageDatetimeTest(CalendarTestBase):
             self.aware(2026, 5, 1),
         )
 
+    def test_after_the_passage_day_it_retries_on_the_first_of_the_month(self):
+        troop = TroopSettings.get_settings()
+        self.assertEqual(
+            troop.next_passage_datetime(on_date=date(2026, 5, 15)),
+            self.aware(2026, 6, 1),
+        )
+        self.assertEqual(
+            troop.next_passage_datetime(on_date=date(2026, 6, 15)),
+            self.aware(2026, 7, 1),
+        )
+
+    def test_the_last_retry_yields_to_the_next_cycle(self):
+        """A retry on 1 August would land on the day the prepared year starts;
+        the next automatic passage is then the following year's."""
+        troop = TroopSettings.get_settings()
+        self.assertEqual(
+            troop.next_passage_datetime(on_date=date(2026, 7, 15)),
+            self.aware(2027, 5, 1),
+        )
+
     def test_next_passage_with_a_january_year_start(self):
         troop = self.configure(year_start_month=1, year_start_day=1)
         self.assertEqual(

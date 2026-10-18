@@ -126,7 +126,7 @@ set: the defaults are what a troop that has configured nothing gets.
 | Field | Purpose |
 | --- | --- |
 | `year_start_month`, `year_start_day` | First day of the scout year (default 1 August). Used when a `SchoolYear` row is created and when `create_year_task` decides which year "today" belongs to. |
-| `passage_mode` | `auto` (default) runs `run_passage` on 1 May; `manual` switches the automatic run off and leaves it to the staff button on `/users/passage`. Either way the button runs the same code, with the guards skipped. |
+| `passage_mode` | `auto` (default) runs `run_passage` on the 1st of every month from 1 May until the coming school year starts, skipping members who already have a section for it; `manual` switches the automatic run off and leaves it to the staff button on `/users/passage`. Either way the button runs the same code, with the date and manual-mode guards skipped — never the per-member skip. |
 | `top_branch_graduates_become_leaders` | `true` (default): members who leave the last branch become animators. `false`: they are flagged for review instead, and nothing about them is changed until staff decide. |
 | `archive_retention_years` | How long an archived member is kept before `delete_archived_users` may discard them (default 5). `notify_upcoming_deletion` warns a month before. The unit is 365-day years, not calendar years. |
 
@@ -270,7 +270,7 @@ What is stored is kept.
 | `registration_open`, `registration_message` | Whether new registrations are accepted, and what to say when they are not. |
 | `photo_consent_text` | Consent wording shown on the child form. |
 | `address_placeholder` | Example address shown under the address field. |
-| `last_passage_school_year` | Bookkeeping for the yearly section passage; do not edit by hand. |
+| `last_passage_school_year` | Which coming school year the passage last prepared, shown on the passage page. Informational: idempotency is per member (an existing section for the target year), not this marker. |
 
 `ImportantDocument` (title, description, url, file) is likewise admin-managed.
 
@@ -505,7 +505,7 @@ Flags win over `--answers`, which wins over a prompt. With no terminal and
 rather than ignored. A translated field (`name`, `site_description`, …) takes
 either one string, written to every language, or an object keyed by language.
 `logo`, `favicon` and `last_passage_school_year` are refused: an answers file
-cannot carry an upload, and the marker is the passage's own bookkeeping.
+cannot carry an upload, and the last one is the passage's own bookkeeping.
 
 ### Branch presets
 

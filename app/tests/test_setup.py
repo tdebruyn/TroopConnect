@@ -405,6 +405,15 @@ class PeriodicTasksTest(EmptyInstanceTestCase):
         self.assertEqual(row.month_of_year, "*")
         self.assertEqual(row.day_of_month, "*")
 
+    def test_the_passage_runs_monthly_on_the_first(self):
+        """Monthly so each tick can pick up the members left unplaced."""
+        setup.ensure_periodic_tasks()
+
+        row = PeriodicTask.objects.get(task="run_passage").crontab
+        self.assertEqual(row.day_of_month, "1")
+        self.assertEqual(row.month_of_year, "*")
+        self.assertEqual(row.day_of_week, "*")
+
     def test_it_is_idempotent(self):
         setup.ensure_periodic_tasks()
         step = setup.ensure_periodic_tasks()
@@ -423,7 +432,7 @@ class PeriodicTasksTest(EmptyInstanceTestCase):
 
         step = setup.ensure_periodic_tasks()
 
-        self.assertIn("run-passage-daily", step.kept)
+        self.assertIn("run-passage-monthly", step.kept)
         self.assertEqual(PeriodicTask.objects.filter(task="run_passage").count(), 1)
         row = PeriodicTask.objects.get(task="run_passage")
         self.assertEqual(row.name, "our-passage")

@@ -389,7 +389,7 @@ class ManualModeTest(OneHopLadderTestBase):
         super().setUp()
         self.set_mode("manual")
 
-    def test_the_daily_run_leaves_a_manual_troop_alone(self):
+    def test_the_automatic_run_leaves_a_manual_troop_alone(self):
         child = self.child(9, section=self.section_young)
 
         result = run_passage()
@@ -422,10 +422,10 @@ class ManualModeTest(OneHopLadderTestBase):
 class ForcedRunTest(OneHopLadderTestBase):
     """The button is not a second implementation: it is the same code, unguarded."""
 
-    def test_forcing_after_the_marker_still_runs(self):
-        latecomer = self.child(9, section=self.section_young)
+    def test_forcing_after_a_run_still_runs(self):
+        placed = self.child(9, section=self.section_young)
         run_passage()
-        self.assertEqual(self.next_section_of(latecomer), self.section_older)
+        self.assertEqual(self.next_section_of(placed), self.section_older)
 
         # A member the first run could not see (added afterwards, or fixed by
         # hand) is picked up by pressing the button again.
@@ -433,9 +433,9 @@ class ForcedRunTest(OneHopLadderTestBase):
         run_passage(force=True)
 
         self.assertEqual(self.next_section_of(second), self.section_older)
-        # The first member is reprocessed rather than moved on again, so a
-        # forced run leaves one enrollment each, not two.
-        self.assertEqual(self.next_section_of(latecomer), self.section_older)
+        # The first member already has their section, so the forced run leaves
+        # it alone: one enrollment each, not two.
+        self.assertEqual(self.next_section_of(placed), self.section_older)
         self.assertEqual(
             Enrollment.objects.filter(school_year=self.next_year).count(), 2
         )

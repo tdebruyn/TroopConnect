@@ -422,8 +422,9 @@ the Django admin.
 When your year starts and whether the section passage runs by itself. Ages are
 always counted on 31 December and the passage always falls due on 1 May — Les
 Scouts' convention, and the same for every unit. "Section passage runs —
-Automatic" means members are moved up on that day without anyone pressing a
-button.
+Automatic" means members are moved up from that day on without anyone pressing
+a button; the run repeats on the first of each month, placing anyone still
+without a section for the coming year.
 
 ### Modules
 

@@ -1256,9 +1256,8 @@ msgstr ""
 
 #: members/models.py:813
 msgid ""
-"Last school year (the « name » field) for which the automatic passage was "
-"executed. Anti-replay: if Celery was stopped on the passage day, the task "
-"catches up at the next startup."
+"Last coming school year the passage prepared. Informational only: the "
+"passage skips members who already have a section for that year."
 msgstr ""
 
 #: members/models.py:860
@@ -2351,7 +2350,9 @@ msgstr ""
 
 #: settings page (hand-added; see docs/dev/CONTRACT.md)
 msgid ""
-"Automatic runs the passage on 1 May; manual leaves it to whoever presses the button."
+"Automatic runs the passage from 1 May, retrying on the first of every month "
+"until the coming school year starts; manual leaves it to whoever presses the "
+"button."
 msgstr ""
 
 #: settings page (hand-added; see docs/dev/CONTRACT.md)

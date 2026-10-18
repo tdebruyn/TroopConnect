@@ -1265,10 +1265,9 @@ msgstr "%(name)s (%(min)s-%(max)s ans)"
 
 #: members/models.py:813
 msgid ""
-"Last school year (the « name » field) for which the automatic passage was "
-"executed. Anti-replay: if Celery was stopped on the passage day, the task "
-"catches up at the next startup."
-msgstr "Dernière année scolaire (champ « name ») pour laquelle le passage automatique a été exécuté. Anti-rejeu : si Celery était arrêté le jour du passage, la tâche se rattrape au prochain démarrage."
+"Last coming school year the passage prepared. Informational only: the "
+"passage skips members who already have a section for that year."
+msgstr "Dernière année scolaire à venir que le passage a préparée. À titre informatif uniquement : le passage ignore les membres qui ont déjà une section pour cette année."
 
 #: members/models.py:860
 msgid "Important document"
@@ -2369,9 +2368,11 @@ msgstr ""
 
 #: settings page (hand-added; see docs/dev/CONTRACT.md)
 msgid ""
-"Automatic runs the passage on 1 May; manual leaves it to whoever presses the button."
+"Automatic runs the passage from 1 May, retrying on the first of every month "
+"until the coming school year starts; manual leaves it to whoever presses the "
+"button."
 msgstr ""
-"Automatique effectue le passage le 1er mai ; manuel le laisse à qui appuie sur le bouton."
+"Automatique effectue le passage à partir du 1er mai, puis réessaie le premier de chaque mois jusqu'au début de l'année scolaire à venir ; manuel le laisse à qui appuie sur le bouton."
 
 #: settings page (hand-added; see docs/dev/CONTRACT.md)
 msgid "%(region)s is not a country code phone numbers can be parsed for."

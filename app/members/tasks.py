@@ -6,16 +6,16 @@ from celery.utils.log import get_task_logger
 logger = get_task_logger(__name__)
 
 
-# Passage runs for the upcoming school year on the fixed passage day (1 May).
-# The task is scheduled
-# DAILY (not once a year): Celery beat's catch-up is unreliable for yearly
-# tasks, and a worker/beat outage on the trigger day would otherwise skip the
-# passage for a full year. Daily scheduling is safe because run_passage
-# self-guards with a date gate + an idempotency marker, so it only actually
-# promotes children once per target school year — and if the trigger day was
-# missed, it performs the passage at the next Celery start instead. Setting
-# passage_mode to "manual" switches the automatic run off entirely; staff then
-# run the same code on demand from the passage page.
+# Passage runs for the upcoming school year from the fixed passage day (1 May)
+# on, and is retried on the first of every month while that school year is
+# still ahead. The task is scheduled (not once a year) because Celery beat's
+# catch-up is unreliable for yearly tasks: a worker/beat outage on the trigger
+# day would otherwise skip the passage for a full year. Monthly repetition is
+# safe because run_passage also skips every member who already has a section
+# for the target year, so a late tick catches up on whoever is left — a member
+# added or fixed after the first run — and never re-derives a placement that
+# already happened. Setting passage_mode to "manual" switches the automatic run
+# off entirely; staff then run the same code on demand from the passage page.
 
 
 def _today():
@@ -78,29 +78,29 @@ def run_passage(force=False):
     Passage task — moves active Animé (children) into their next section for
     the upcoming school year.
 
-    Scheduled DAILY (not once a year). Celery beat's catch-up is unreliable for
-    yearly tasks, and a worker outage on the trigger day would otherwise skip
-    the passage for a whole year, so this task runs every day and decides
-    itself whether work is due via two guards:
+    Scheduled MONTHLY, on the first day. The passage falls due on the fixed
+    passage day (1 May) for the target school year — see
+    ``TroopSettings.passage_datetime``; the first tick on/after that day does
+    the work, and the following ticks pick up whoever the earlier ones could
+    not place (or had not seen yet). Two guards keep the automatic run in
+    check:
 
-      1. Date gate — only act on/after the fixed passage day (1 May) for the
-         target school year — see ``TroopSettings.passage_datetime`` — so the
-         daily run doesn't promote children the moment the next SchoolYear is
-         created.
-      2. Marker gate — TroopSettings.last_passage_school_year records the target
-         year already processed; once set the task is a no-op. This is what
-         guarantees "run at next start if the trigger day was missed": when
-         Celery comes back, the daily tick sees the marker unset for the
-         current target year and performs the passage exactly once.
+      1. Date gate — only act on/after the fixed passage day for the target
+         school year, so the monthly run doesn't promote children the moment
+         the next SchoolYear is created.
+      2. Per-member gate — a member who already has a section for the target
+         school year is skipped untouched. This is the whole idempotency
+         mechanism: repeating the run is safe, an outage on one tick catches
+         up at the next, and a placement already made — including the cleared
+         ``next_section`` override that produced it — is never re-derived.
 
     A troop that would rather move children up by hand sets ``passage_mode`` to
     ``manual``, which switches the automatic run off entirely; staff then run
     the same code on demand from the passage page, which passes ``force``.
 
-    ``force=True`` skips the three automatic guards below. They exist to stop
-    the *daily* task acting too early or twice, not to overrule someone who has
-    just pressed the button. The marker is still written, so forcing a run does
-    not make the nightly one repeat it.
+    ``force=True`` skips the guards that stop the *automatic* task acting too
+    early or at all — manual mode and the date gate — not the per-member gate:
+    pressing the button must not overwrite a section that is already assigned.
 
     Where each member goes:
       - ``Person.next_section`` wins: that is the troop's own decision for that
@@ -138,7 +138,7 @@ def run_passage(force=False):
 
     troop = TroopSettings.get_settings()
 
-    # --- Guards 0-2: what keeps the *daily* run in check -------------------
+    # --- Guards: what keeps the *automatic* run in check -------------------
     if not force:
         if troop.passage_mode == PASSAGE_MODE_MANUAL:
             logger.info("Passage mode is manual; the task leaves the passage alone")
@@ -150,22 +150,15 @@ def run_passage(force=False):
         return
 
     if not force:
-        # Guard 1: date gate. Only run on/after the fixed passage day for the
-        # target year; the gate is day-granular, and the helper is what knows
-        # the passage day is the one in that year's start calendar year.
+        # Date gate. Only run on/after the fixed passage day for the target
+        # year; the gate is day-granular, and the helper is what knows the
+        # passage day is the one in that year's start calendar year.
         today = _today()
         trigger = troop.passage_datetime(target_year).date()
         if today < trigger:
             logger.info(
                 f"Passage not due yet (today {today} < {trigger} for "
                 f"school year {target_year.name}); skipping"
-            )
-            return
-
-        # Guard 2: marker gate (idempotency / catch-up).
-        if troop.last_passage_school_year == target_year.name:
-            logger.info(
-                f"Passage already applied for school year {target_year.name}; skipping"
             )
             return
 
@@ -178,11 +171,26 @@ def run_passage(force=False):
         primary_role=role_anime, status="a"
     ).select_related("primary_role")
 
+    # The members an earlier run (or a hand-entered enrolment) has already
+    # given a section for the target year. They are the passage's finished
+    # work, and the monthly run must leave them exactly as they are — notably
+    # it must not clear a ``next_section`` set after they were placed.
+    placed = set(
+        Enrollment.objects.filter(
+            school_year=target_year, user__in=children.values("pk")
+        ).values_list("user_id", flat=True)
+    )
+
     promoted = 0
     aged_out = 0
     flagged = 0
+    already_placed = 0
 
     for child in children:
+        if child.pk in placed:
+            already_placed += 1
+            continue
+
         if not child.birthday:
             logger.warning(f"Skipping {child}: no birthday set")
             continue
@@ -248,15 +256,21 @@ def run_passage(force=False):
         promoted += 1
         logger.info(f"{child} → {target_section}")
 
-    # --- Record the marker so passage runs at most once per target year ----
+    # Bookkeeping for the staff page ("last run prepared"). It gates nothing:
+    # idempotency is the per-member gate above.
     troop.last_passage_school_year = target_year.name
     troop.save(update_fields=["last_passage_school_year"])
 
     logger.info(
         f"Passage complete: {promoted} promoted, {aged_out} graduated, "
-        f"{flagged} flagged for review"
+        f"{flagged} flagged for review, {already_placed} already placed"
     )
-    return {"promoted": promoted, "aged_out": aged_out, "flagged": flagged}
+    return {
+        "promoted": promoted,
+        "aged_out": aged_out,
+        "flagged": flagged,
+        "already_placed": already_placed,
+    }
 
 
 @shared_task(name="notify_upcoming_deletion")

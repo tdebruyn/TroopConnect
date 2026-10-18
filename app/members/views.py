@@ -1130,10 +1130,10 @@ class PassageView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
 
     The automatic run answers to the troop's calendar and ``passage_mode``; this
     page is the manual counterpart. Its button calls the very same task the
-    nightly run does, with ``force=True``, so the two cannot drift apart — a
-    forced run skips the guards that exist to stop the *daily* task acting early
-    or twice, and still records the marker so the nightly task will not repeat
-    the work.
+    automatic run does, with ``force=True``, so the two cannot drift apart — a
+    forced run skips the guards that stop the automatic task acting early or at
+    all, but still leaves members who already have a section for the target
+    year untouched.
     """
 
     template_name = "members/passage.html"
