@@ -8,8 +8,74 @@
 {% endblock hat_text %}
 {% block subcontent %}
     {% if section %}
-        {% include "members/_agenda_grid.html" %}
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+            {% comment %}
+                The section being shown is always named, even when there is
+                only one: a reader whose children are in two sections needs to
+                know which agenda they are looking at.
+            {% endcomment %}
+            <div class="d-flex flex-wrap gap-2" role="group">
+                {% for candidate in sections %}
+                    <a class="btn btn-sm {% if candidate.pk == section.pk %}btn-primary{% else %}btn-outline-primary{% endif %}"
+                       href="{% url 'members:agenda' %}?section={{ candidate.pk }}">{{ candidate.name }}</a>
+                {% endfor %}
+            </div>
+            {% if can_edit %}
+                <a class="btn btn-sm btn-primary"
+                   href="{% url 'members:agenda_event_create' %}?section={{ section.pk }}">{% trans "Add an activity" %}</a>
+            {% endif %}
+        </div>
+        <section aria-labelledby="agenda-upcoming-title">
+            <h2 class="h5" id="agenda-upcoming-title">{% trans "Coming up" %}</h2>
+            {% if upcoming %}
+                <div class="list-group">
+                    {% for event in upcoming %}
+                        {% comment %}
+                            The row is the list: type, title and date. The
+                            full activity — description, absences and the
+                            actions that need room — opens under it.
+                        {% endcomment %}
+                        <div class="list-group-item list-group-item-action agenda-activity">
+                            <button type="button"
+                                    class="agenda-activity-summary"
+                                    aria-expanded="false"
+                                    aria-controls="agenda-detail-{{ event.pk }}"
+                                    hx-get="{% url 'members:agenda_event_detail' event.pk %}"
+                                    hx-target="#agenda-detail-{{ event.pk }}"
+                                    hx-swap="innerHTML"
+                                    hx-trigger="click once">
+                                <span class="badge {{ event.type_css_class }} text-white">{{ event.get_activity_type_display }}</span>
+                                <span class="fw-bold">{{ event.title }}</span>
+                                <span class="small text-muted ms-auto text-nowrap">
+                                    {% if event.is_multi_day %}
+                                        {{ event.start_date|date:"j N" }} – {{ event.last_date|date:"j N Y" }}
+                                    {% else %}
+                                        {{ event.start_date|date:"D j N Y" }}
+                                    {% endif %}
+                                    {% if event.time_range %} · {{ event.time_range }}{% endif %}
+                                </span>
+                                <i class="bi bi-chevron-down agenda-activity-chevron" aria-hidden="true"></i>
+                            </button>
+                            <div id="agenda-detail-{{ event.pk }}" class="agenda-activity-detail"></div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-muted mb-0">{% trans "Nothing scheduled" %}</p>
+            {% endif %}
+        </section>
     {% else %}
         <p class="text-muted">{% trans "You are not linked to any section this year." %}</p>
     {% endif %}
+    <script>
+        // The row fetches its detail once (htmx's `click once`); after that
+        // this only toggles what is already loaded, so a second click closes
+        // it rather than reloading the same content.
+        document.addEventListener('click', function (evt) {
+            var toggle = evt.target.closest('.agenda-activity-summary');
+            if (!toggle) return;
+            var expanded = toggle.getAttribute('aria-expanded') === 'true';
+            toggle.setAttribute('aria-expanded', String(!expanded));
+        });
+    </script>
 {% endblock subcontent %}

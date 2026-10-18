@@ -921,6 +921,50 @@ body {
   overflow-y: auto;
 }
 
+/* The agenda page is the list, so each activity is a row of its own: the
+   summary is the toggle and the activity's detail opens underneath it. */
+.agenda-activity {
+  padding: 0;
+}
+
+.agenda-activity-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  color: inherit;
+  text-align: left;
+  background: none;
+  border: 0;
+}
+
+.agenda-activity-chevron {
+  color: #515a63;
+  transition: transform 150ms ease-in-out;
+}
+
+.agenda-activity-summary[aria-expanded="true"] .agenda-activity-chevron {
+  transform: rotate(180deg);
+}
+
+/* The detail stays loaded once fetched; closing only hides it, so reopening
+   does not ask the server for the same activity again. */
+.agenda-activity-detail {
+  display: none;
+}
+
+.agenda-activity-summary[aria-expanded="true"] + .agenda-activity-detail {
+  display: block;
+}
+
+.agenda-activity-detail:not(:empty) {
+  padding: 0 1rem 1rem;
+  border-top: 1px solid #eceff2;
+  background-color: color-mix(in srgb, #0a4275 2.5%, transparent);
+}
+
 /* The household column in the member list shows a free-text address when the
    household is inferred, so it needs a ceiling of its own to stay one line. */
 .household-cell {

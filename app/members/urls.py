@@ -59,6 +59,11 @@ urlpatterns = [
     path("agenda/", views.agenda, name="agenda"),
     path("agenda/grid/", views.agenda_grid, name="agenda_grid"),
     path("agenda/day/", views.agenda_day, name="agenda_day"),
+    path(
+        "agenda/<int:pk>/detail/",
+        views.agenda_event_detail,
+        name="agenda_event_detail",
+    ),
     path("agenda/new/", views.agenda_event_create, name="agenda_event_create"),
     path(
         "agenda/<int:pk>/edit/",

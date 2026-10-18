@@ -1,0 +1,52 @@
+{% load i18n %}
+{% comment %}
+One activity in full, swapped under its row in the agenda list. The row above
+carries the title and the short date; this is where the full dates, the
+description, the reported absences and the actions live. Which notices a reader
+gets is decided by the view (a family sees only its own children's).
+{% endcomment %}
+<p class="small text-muted mb-2">
+    {% if event.is_multi_day %}
+        {{ event.start_date|date:"l j F Y" }} – {{ event.last_date|date:"l j F Y" }}
+    {% else %}
+        {{ event.start_date|date:"l j F Y" }}
+    {% endif %}
+    {% if event.time_range %} · {{ event.time_range }}{% endif %}
+</p>
+{% if event.description %}
+    <p class="mb-0">{{ event.description|linebreaksbr }}</p>
+{% endif %}
+{% if event.notices %}
+    <ul class="list-unstyled small mt-2 mb-0">
+        {% for notice in event.notices %}
+            <li class="d-flex flex-wrap align-items-center gap-2">
+                <span class="badge bg-secondary text-white">{% trans "Absent" %}</span>
+                <span>{{ notice.child }}</span>
+                {% if notice.reason %}<span class="text-muted">— {{ notice.reason }}</span>{% endif %}
+                <form class="d-inline"
+                      method="post"
+                      action="{% url 'members:absence_cancel' notice.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-link p-0">{% trans "Withdraw" %}</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+{% if can_edit or can_report and not event.is_past %}
+    <div class="d-flex flex-wrap align-items-center gap-2 mt-3">
+        {% if can_report and not event.is_past %}
+            <a class="btn btn-sm btn-outline-primary"
+               href="{% url 'members:absence_report' event.pk %}">{% trans "Report an absence" %}</a>
+        {% endif %}
+        {% if can_edit %}
+            <a class="btn btn-sm btn-outline-secondary"
+               href="{% url 'members:agenda_event_edit' event.pk %}">{% trans "Edit" %}</a>
+            <form method="post"
+                  action="{% url 'members:agenda_event_delete' event.pk %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-outline-danger">{% trans "Delete" %}</button>
+            </form>
+        {% endif %}
+    </div>
+{% endif %}

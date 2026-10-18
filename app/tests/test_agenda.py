@@ -307,13 +307,103 @@ class AgendaVisibilityTest(AgendaTestBase):
         self.assertContains(response, "Troupe")
 
 
+class AgendaListTest(AgendaTestBase):
+    """The page is the list of what is coming; the month grid is not shown."""
+
+    def test_the_page_is_the_list_not_the_month_calendar(self):
+        self.login("child@test.be")
+
+        response = self.client.get(reverse("members:agenda"))
+
+        self.assertContains(response, self.meute_event.title)
+        self.assertContains(response, "14:00 – 17:00")
+        self.assertNotContains(response, 'id="agenda-grid"')
+        self.assertNotContains(response, "Month calendar")
+
+    def test_a_week_end_under_way_is_still_listed(self):
+        """The list is the only view, so an activity in progress is visible."""
+        ongoing = SectionEvent.objects.create(
+            section=self.meute,
+            title="Week-end en cours",
+            start_date=self.today - timedelta(days=1),
+            end_date=self.today + timedelta(days=1),
+        )
+        self.login("child@test.be")
+
+        response = self.client.get(reverse("members:agenda"))
+
+        self.assertContains(response, ongoing.title)
+
+    def test_each_activity_opens_its_detail_with_htmx(self):
+        self.login("child@test.be")
+
+        response = self.client.get(reverse("members:agenda"))
+        detail_url = reverse("members:agenda_event_detail", args=[self.meute_event.pk])
+
+        self.assertContains(response, f'hx-get="{detail_url}"')
+        # The list stays titles and dates; the description waits in the detail.
+        self.assertNotContains(response, self.meute_event.description)
+
+
+class AgendaEventDetailTest(AgendaTestBase):
+    """An activity opens in full under its row, on demand."""
+
+    def detail(self, event):
+        return self.client.get(
+            reverse("members:agenda_event_detail", args=[event.pk])
+        )
+
+    def test_the_detail_carries_the_description(self):
+        self.login("child@test.be")
+
+        response = self.detail(self.meute_event)
+
+        self.assertContains(response, self.meute_event.description)
+
+    def test_an_outsider_cannot_open_the_detail(self):
+        self.login("parent@test.be")
+
+        response = self.detail(self.weekend)
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_a_parent_is_offered_the_absence_report(self):
+        self.login("parent@test.be")
+
+        response = self.detail(self.meute_event)
+
+        self.assertContains(
+            response, reverse("members:absence_report", args=[self.meute_event.pk])
+        )
+
+    def test_a_leader_is_offered_the_edit_control(self):
+        self.login("meute@test.be")
+
+        response = self.detail(self.meute_event)
+
+        self.assertContains(
+            response,
+            reverse("members:agenda_event_edit", args=[self.meute_event.pk]),
+        )
+
+    def test_a_reader_who_does_not_lead_gets_no_controls(self):
+        self.login("parent@test.be")
+
+        response = self.detail(self.meute_event)
+
+        self.assertNotContains(
+            response,
+            reverse("members:agenda_event_edit", args=[self.meute_event.pk]),
+        )
+
+
 class AgendaGridTest(AgendaTestBase):
     """What the month grid shows, and what it deliberately does not."""
 
     def test_the_grid_shows_the_title_and_the_time(self):
         self.login("child@test.be")
 
-        response = self.client.get(reverse("members:agenda"))
+        response = self.client.get(url("members:agenda_grid", section=self.meute.pk))
 
         self.assertContains(response, self.meute_event.title)
         self.assertContains(response, "14:00 – 17:00")
@@ -322,14 +412,14 @@ class AgendaGridTest(AgendaTestBase):
         """A parent scanning a month reads titles; the rest is one click away."""
         self.login("child@test.be")
 
-        response = self.client.get(reverse("members:agenda"))
+        response = self.client.get(url("members:agenda_grid", section=self.meute.pk))
 
         self.assertNotContains(response, self.meute_event.description)
 
     def test_the_grid_colours_the_entry_by_activity_type(self):
         self.login("child@test.be")
 
-        response = self.client.get(reverse("members:agenda"))
+        response = self.client.get(url("members:agenda_grid", section=self.meute.pk))
 
         self.assertContains(response, self.meute_event.type_css_class)
 
@@ -344,19 +434,16 @@ class AgendaGridTest(AgendaTestBase):
                 self.assertContains(response, self.weekend.title)
 
     def test_the_grid_follows_the_month_asked_for(self):
-        """Two months on, the activity is behind us."""
+        """Two months on, the activity is behind us — but the page still lists it."""
         self.login("troupe@test.be")
 
         response = self.client.get(
             url(
-                "members:agenda",
+                "members:agenda_grid",
                 section=self.troupe.pk,
                 month=self.month_of(self.weekend.start_date + timedelta(days=60)),
             )
         )
-
-        # The grid follows the month; the "coming up" list above it does not,
-        # and says so by still carrying the week-end.
         shown = [
             event
             for week in response.context["weeks"]
@@ -364,7 +451,9 @@ class AgendaGridTest(AgendaTestBase):
             for event in day["events"]
         ]
         self.assertNotIn(self.weekend, shown)
-        self.assertIn(self.weekend, response.context["upcoming"])
+
+        page = self.client.get(url("members:agenda", section=self.troupe.pk))
+        self.assertContains(page, self.weekend.title)
 
     def test_the_page_lists_every_activity_still_to_come(self):
         """The list answers "what is next?" without paging months.
@@ -406,7 +495,7 @@ class AgendaGridTest(AgendaTestBase):
         """A grid that changes height moves the month arrows under the cursor."""
         self.login("child@test.be")
 
-        response = self.client.get(reverse("members:agenda"))
+        response = self.client.get(url("members:agenda_grid", section=self.meute.pk))
 
         self.assertEqual(len(response.context["weeks"]), 6)
         self.assertTrue(all(len(week) == 7 for week in response.context["weeks"]))

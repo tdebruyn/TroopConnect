@@ -1351,6 +1351,32 @@ def _agenda_scope(request):
     }
 
 
+def _upcoming(section):
+    """Every activity not yet over, in reading order.
+
+    The agenda list answers "what is next?" without the reader turning months
+    over, so it is section-wide rather than limited to the month in the URL. A
+    week-end already under way still counts: it is the thing happening now.
+    """
+    today = timezone.localdate()
+    return list(
+        SectionEvent.objects.filter(section=section)
+        .filter(Q(end_date__gte=today) | Q(end_date__isnull=True, start_date__gte=today))
+        .order_by("start_date", "start_time", "title")
+    )
+
+
+def _agenda_list_context(request):
+    """The reader's section and the activities still to come."""
+    context = _agenda_scope(request)
+    section = context["section"]
+    if section is None:
+        return context
+
+    context["upcoming"] = _upcoming(section)
+    return context
+
+
 def _grid_context(request):
     """`_agenda_scope` plus the month of day cells it renders."""
     context = _agenda_scope(request)
@@ -1375,14 +1401,7 @@ def _grid_context(request):
             "previous_month": _shift_month(month_start, -1),
             "next_month": _shift_month(month_start, 1),
             "today": timezone.localdate(),
-            # Everything from today on, not only the displayed month: the page
-            # has to answer "what is next?" without the reader turning months
-            # over first. The month grid below stays the place to browse.
-            "upcoming": list(
-                SectionEvent.objects.filter(
-                    section=section, start_date__gte=timezone.localdate()
-                )
-            ),
+            "upcoming": _upcoming(section),
             "weeks": [
                 [
                     {
@@ -1410,8 +1429,8 @@ def _agenda_url(section, day=None):
 @login_required
 @requires_module(AGENDA)
 def agenda(request):
-    """The section agenda: a month grid, and a frame for the chosen day."""
-    return render(request, "members/agenda.html", _grid_context(request))
+    """The section agenda: the activities still to come, with their dates."""
+    return render(request, "members/agenda.html", _agenda_list_context(request))
 
 
 @login_required
@@ -1484,6 +1503,32 @@ def agenda_day(request):
         }
     )
     return render(request, "members/_agenda_day.html", context)
+
+
+@login_required
+@requires_module(AGENDA)
+def agenda_event_detail(request, pk):
+    """One activity in full, swapped under its row in the agenda list."""
+    event = get_object_or_404(SectionEvent, pk=pk)
+    if event.section not in visible_sections(request.user):
+        raise Http404
+
+    can_edit = can_edit_section_agenda(request.user, section=event.section)
+    notices = _absences_by_event(
+        request.user, [event], can_edit or can_manage_unit(request.user)
+    )
+    event.notices = notices.get(event.pk, [])
+
+    return render(
+        request,
+        "members/_agenda_event_detail.html",
+        {
+            "event": event,
+            "section": event.section,
+            "can_edit": can_edit,
+            "can_report": reportable_children(request.user, event.section).exists(),
+        },
+    )
 
 
 @login_required
