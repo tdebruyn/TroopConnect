@@ -156,6 +156,7 @@ NEW_STRINGS = [
         "1er de chaque mois",
         "eerste van elke maand",
     ),
+    ("Starts on", "Commence le", "Begint op"),
     ("Last passages performed", "Derniers passages", "Laatste uitgevoerde"),
     ("Born in", "né(e) en", "Geboren in"),
     ("Current section (%(year)s)", "Section actuelle", "Huidige sectie"),

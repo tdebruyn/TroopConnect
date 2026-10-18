@@ -1153,7 +1153,13 @@ class PassageView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
         context["next_due"] = formats.date_format(
             troop.next_passage_datetime(), "j F Y"
         )
-        context["last_run_year"] = troop.last_passage_school_year
+        # When the coming year effectively begins, from the stored row: that
+        # is the date SchoolYear.current() will switch on.
+        context["year_start"] = (
+            formats.date_format(target_year.start_date, "j F Y")
+            if target_year
+            else None
+        )
         context["current_year"] = SchoolYear.current()
         context["recent_passages"] = self._recent_passages(
             context["current_year"], target_year

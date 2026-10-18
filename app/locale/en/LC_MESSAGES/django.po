@@ -2426,11 +2426,7 @@ msgid "Due on %(date)s"
 msgstr ""
 
 #: members/templates/members/passage.html
-msgid "Last run prepared"
-msgstr ""
-
-#: members/templates/members/passage.html
-msgid "Never"
+msgid "Starts on"
 msgstr ""
 
 #: members/templates/members/passage.html

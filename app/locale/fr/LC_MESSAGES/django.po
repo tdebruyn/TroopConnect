@@ -2998,12 +2998,8 @@ msgid "Due on %(date)s"
 msgstr "Prévue le %(date)s"
 
 #: members/templates/members/passage.html
-msgid "Last run prepared"
-msgstr "Dernière préparation"
-
-#: members/templates/members/passage.html
-msgid "Never"
-msgstr "Jamais"
+msgid "Starts on"
+msgstr "Commence le"
 
 #: members/templates/members/passage.html
 #, python-format

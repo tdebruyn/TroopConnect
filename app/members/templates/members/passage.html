@@ -43,9 +43,9 @@
     <div class="col-md-4">
       <div class="card border-0 shadow-sm mb-3">
         <div class="card-body text-center">
-          <div class="text-muted">{% trans "Last run prepared" %}</div>
+          <div class="text-muted">{% trans "Starts on" %}</div>
           <div class="h4 mb-0">
-            {% if last_run_year %}{{ last_run_year }}{% else %}{% trans "Never" %}{% endif %}
+            {% if year_start %}{{ year_start }}{% else %}{% trans "Not created yet" %}{% endif %}
           </div>
         </div>
       </div>

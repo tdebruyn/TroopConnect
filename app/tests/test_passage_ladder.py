@@ -560,6 +560,17 @@ class PassagePageTest(LadderTestBase):
         # The cadence itself, not just one date.
         self.assertContains(response, "puis le 1er de chaque mois")
 
+    def test_the_page_shows_when_the_coming_year_starts(self):
+        self.login_staff()
+
+        response = self.client.get(self.url)
+
+        expected = formats.date_format(self.next_year.start_date, "j F Y")
+        self.assertContains(response, "Commence le")
+        self.assertContains(response, expected)
+        # The old "last run prepared" card only repeated the coming year.
+        self.assertNotContains(response, "Dernière préparation")
+
     def test_a_manual_troop_is_told_only_the_button_runs_it(self):
         troop = TroopSettings.get_settings()
         troop.passage_mode = "manual"
