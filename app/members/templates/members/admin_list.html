@@ -5,155 +5,67 @@
 {% block hat_text %}{% trans "Find and manage unit members." %}{% endblock hat_text %}
 {% block subcontent %}
     <div class="container">
-        <form action="" method="get">
+        <form action=""
+              method="get"
+              id="admin-filter-form"
+              hx-get="{% url 'members:admin_list' %}"
+              hx-target="#member-results"
+              hx-swap="innerHTML"
+              hx-replace-url="true"
+              hx-trigger="change changed, keyup changed delay:300ms, submit"
+              hx-include="#id_school_year"
+              hx-indicator="#member-results">
             <div class="container">
                 <div class="row m-2">
-                    <div class="col">
+                    <div class="col-12 col-md-4">
                         <input class="form-control"
                                type="text"
                                placeholder="{{ filter.form.first_name.label }}"
+                               aria-label="{{ filter.form.first_name.label }}"
                                name="{{ filter.form.first_name.name }}"
-                               id="{{ filter.form.first_name.id }}"
                                value="{{ filter.form.first_name.value|default_if_none:'' }}" />
                     </div>
-                    <div class="col">
+                    <div class="col-12 col-md-4">
                         <input class="form-control"
                                type="text"
                                placeholder="{{ filter.form.last_name.label }}"
+                               aria-label="{{ filter.form.last_name.label }}"
                                name="{{ filter.form.last_name.name }}"
-                               id="{{ filter.form.last_name.id }}"
                                value="{{ filter.form.last_name.value |default_if_none:'' }}" />
                     </div>
-                    <div class="col">
-                        <select class="form-select" name="{{ filter.form.role.name }}">
+                    <div class="col-12 col-md-4">
+                        <select class="form-select"
+                                name="{{ filter.form.role.name }}"
+                                aria-label="{{ filter.form.role.label }}">
                             {% for item in filter.form.role %}{{ item }}{% endfor %}
                         </select>
                     </div>
                 </div>
                 <div class="row m-2">
-                    <div class="col">
-                        <select class="form-select" name="{{ filter.form.birth_year.name }}">
+                    <div class="col-12 col-md-4">
+                        <select class="form-select"
+                                name="{{ filter.form.birth_year.name }}"
+                                aria-label="{{ filter.form.birth_year.label }}">
                             {% for item in filter.form.birth_year %}{{ item }}{% endfor %}
                         </select>
                     </div>
-                    <div class="col">
-                        <select class="form-select" name="{{ filter.form.year.name }}">
-                            {% for item in filter.form.year %}{{ item }}{% endfor %}
-                        </select>
-                    </div>
-                    <div class="col">
-                        <select class="form-select" name="{{ filter.form.section.name }}">
+                    <div class="col-12 col-md-4">
+                        <select class="form-select"
+                                name="{{ filter.form.section.name }}"
+                                aria-label="{{ filter.form.section.label }}">
                             {% for item in filter.form.section %}{{ item }}{% endfor %}
                         </select>
                     </div>
                 </div>
-                <div class="row m-2">
-                    <div class="container">
-                        <button type="submit" class="btn btn-primary">{% trans "Filter" %}</button>
-                        <a class="btn btn-outline-primary" href="{% url 'members:admin_list' %}?reset=1">{% trans "Reset" %}</a>
-                    </div>
+                <div class="d-flex justify-content-end mx-2 mb-2">
+                    <a class="btn btn-outline-primary" href="{% url 'members:admin_list' %}?reset=1">{% trans "Reset" %}</a>
                 </div>
             </form>
             <hr class="hr" />
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        {% for field_name, display_name in fields_map %}
-                            <th scope="col">
-                                {% if field_name in sortable_fields %}
-                                    <a href="{% url 'members:admin_list' %}?{% for key, value in request.GET.items %}{% if key != 'sort' and key != 'direction' and key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}sort={{ field_name }}&direction={% if current_sort == field_name and current_direction == 'asc' %}desc{% else %}asc{% endif %}"
-                                       class="text-decoration-none text-dark">
-                                        {{ display_name }}
-                                        {% if current_sort == field_name %}
-                                            {% if current_direction == 'asc' %}
-                                                ▲
-                                            {% else %}
-                                                ▼
-                                            {% endif %}
-                                        {% endif %}
-                                    </a>
-                                {% else %}
-                                    {{ display_name }}
-                                {% endif %}
-                            </th>
-                        {% endfor %}
-                        <th scope="col">{% trans "Actions" %}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for member in object_list %}
-                        <tr>
-                            <td>
-                                {{ member.first_name }}
-                                {% if member.status == "ar" %}
-                                    <span class="badge bg-secondary">{% trans "Archived" %}</span>
-                                {% endif %}
-                                {% if member.passage_review %}
-                                    <span class="badge bg-warning text-dark"
-                                          title="{{ member.get_passage_review_display }}">{% trans "To review" %}</span>
-                                {% endif %}
-                            </td>
-                            <td>{{ member.last_name }}</td>
-                            <td>{{ member.birthday | default_if_none:'' }}</td>
-                            <td>{{ member.sex | default_if_none:'' }}</td>
-                            <td>
-                                {{ member.section_display }}
-                                {% if member.age_mismatch %}
-                                    <i class="bi bi-exclamation-triangle-fill text-warning"
-                                       title="{% blocktranslate with detail=member.age_mismatch_detail %}Incompatible age: {{ detail }}{% endblocktranslate %}"
-                                       data-bs-toggle="tooltip"></i>
-                                {% endif %}
-                            </td>
-                            <td>{{ member.role }}</td>
-                            {% if fees_enabled %}
-                                <td class="household-cell text-truncate">
-                                    {% with household=member.households.all.0 %}
-                                        {% if household %}
-                                            <a href="{% url 'finance:household_detail' pk=household.pk %}">{{ household.name }}</a>
-                                        {% elif member.address %}
-                                            <span class="text-muted"
-                                                  title="{% trans 'Inferred from the address' %}">{{ member.address }}</span>
-                                        {% else %}
-                                            <span class="text-muted">—</span>
-                                        {% endif %}
-                                    {% endwith %}
-                                </td>
-                            {% endif %}
-                            <td>
-                                <a class="btn btn-primary btn-sm"
-                                   href="{% url 'members:admin_update' pk=member.pk %}">{% trans "Edit" %}</a>
-                            </td>
-                        </tr>
-                    {% empty %}
-                        <tr>
-                            <td colspan="8">{% trans "No results" %}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            <ul class="pagination">
-                {% if page_obj.has_previous %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page=1">&laquo; {% trans "First" %}</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">{% trans "Previous" %}</a>
-                    </li>
-                {% endif %}
-                <li class="page-item">
-                    <span class="page-link current">{% blocktranslate with page_num=page_obj.number page_count=page_obj.paginator.num_pages %}Page {{ page_num }} of {{ page_count }}{% endblocktranslate %}</span>
-                </li>
-                {% if page_obj.has_next %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">{% trans "Next" %}</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">{% trans "Last" %} &raquo;</a>
-                    </li>
-                {% endif %}
-            </ul>
+            <div id="member-results" class="admin-results">
+                {% include "members/_admin_list_results.html" %}
+            </div>
         </div>
-    {% endblock subcontent %}
     <script>
         function sortTable(field) {
             // Get current URL parameters
@@ -177,7 +89,38 @@
             
             return false;
         }
-        document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function(el) {
-            new bootstrap.Tooltip(el);
+        document.addEventListener('DOMContentLoaded', function () {
+            if (window.htmx) {
+                // Empty fields are noise in a URL that is now rewritten on
+                // every change; the view reads a missing value and an empty
+                // one alike.
+                document.addEventListener('htmx:configRequest', function (evt) {
+                    Object.keys(evt.detail.parameters).forEach(function (key) {
+                        if (evt.detail.parameters[key] === '') delete evt.detail.parameters[key];
+                    });
+                });
+
+                // Swapped rows carry their own tooltips; base.html's
+                // initialiser runs once, at load.
+                document.addEventListener('htmx:afterSwap', function (evt) {
+                    if (!evt.detail.target.closest('#member-results')) return;
+                    evt.detail.target.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (el) {
+                        new bootstrap.Tooltip(el);
+                    });
+                });
+            }
+
+            // A member's row opens their edit page. The name is a real link so
+            // the same destination is reachable by keyboard and in a new tab;
+            // clicks on a control inside the row, and a text selection, are
+            // left to do what they say.
+            document.addEventListener('click', function (evt) {
+                var row = evt.target.closest('tr[data-href]');
+                if (!row) return;
+                if (evt.target.closest('a, button, input, select, textarea, [data-bs-toggle]')) return;
+                if (window.getSelection().toString()) return;
+                window.location.href = row.dataset.href;
+            });
         });
     </script>
+{% endblock subcontent %}

@@ -20,9 +20,10 @@
                     it is the way back to the page that holds them all.
                 {% endcomment %}
                 {% if user.is_authenticated %}
-                    <a class="page-back" href="{% url 'homepage' %}">
+                    <a class="page-back"
+                       href="{% block page_back_url %}{% url 'homepage' %}{% endblock page_back_url %}">
                         <i class="bi bi-arrow-left" aria-hidden="true"></i>
-                        <span>{% trans "My space" %}</span>
+                        <span>{% block page_back_label %}{% trans "My space" %}{% endblock page_back_label %}</span>
                     </a>
                 {% endif %}
                 <h1 class="page-title">

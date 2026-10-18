@@ -1,6 +1,8 @@
 {% extends "members/base.html" %}
 {% load widget_tweaks %}
 {% load i18n %}
+{% block page_back_url %}{% url 'members:admin_list' %}{% endblock page_back_url %}
+{% block page_back_label %}{% trans "Member management" %}{% endblock page_back_label %}
 {% block hat_title %}
     {{ form.first_name.value }} {{ form.last_name.value }}
 {% endblock hat_title %}

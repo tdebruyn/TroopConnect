@@ -47,14 +47,16 @@ class AdminListFilterTest(TestCase):
             birthday="1990-01-10", primary_role=cls.role_animateur, status="a",
         )
 
-        branch = Branch.objects.first()
-        if branch:
-            section = Section.objects.filter(branch=branch).first()
-            if section:
-                year = SchoolYear.current()
-                Enrollment.objects.create(
-                    user=cls.person1, section=section, school_year=year,
-                )
+        # The suite starts with roles and school years but no branch preset,
+        # so the section filter needs one created for it.
+        branch = Branch.objects.first() or Branch.objects.create(name="Test branch")
+        cls.section = Section.objects.exclude(branch=None).first()
+        if cls.section is None:
+            cls.section = Section.objects.create(name="Test section", branch=branch)
+        cls.current_year = SchoolYear.current()
+        Enrollment.objects.create(
+            user=cls.person1, section=cls.section, school_year=cls.current_year,
+        )
 
     def test_staff_can_access_admin_list(self):
         self.client.force_login(self.staff_user)
@@ -101,6 +103,58 @@ class AdminListFilterTest(TestCase):
         )
         self.assertContains(response, "Alice")
         self.assertNotContains(response, "Bob")
+
+    def test_school_year_defaults_to_current(self):
+        """The year selector always names a year; it is never blank."""
+        self.client.force_login(self.staff_user)
+        response = self.client.get(reverse("members:admin_list"))
+        self.assertEqual(
+            str(response.context["filter"].form["year"].value()),
+            str(self.current_year.pk),
+        )
+        self.assertContains(
+            response, f'<option value="{self.current_year.pk}"', status_code=200
+        )
+
+    def test_section_filter_uses_current_year_without_explicit_year(self):
+        """Filtering by section without ?year= uses the current school year.
+
+        With no year the enrollment lookup matched nothing, so choosing a
+        section returned an empty list.
+        """
+        self.client.force_login(self.staff_user)
+        response = self.client.get(
+            reverse("members:admin_list"), {"section": self.section.pk}
+        )
+        self.assertContains(response, "Alice")
+        self.assertNotContains(response, "Bob")
+
+    def test_htmx_request_returns_only_the_results(self):
+        """A live filter swaps the table, not the form above it."""
+        self.client.force_login(self.staff_user)
+        response = self.client.get(
+            reverse("members:admin_list"),
+            {"year": self.current_year.pk, "first_name": "Alice"},
+            headers={"HX-Request": "true"},
+        )
+        self.assertTemplateUsed(response, "members/_admin_list_results.html")
+        self.assertNotContains(response, "<form")
+        self.assertContains(response, "Alice")
+
+    def test_full_page_keeps_the_filter_form(self):
+        self.client.force_login(self.staff_user)
+        response = self.client.get(reverse("members:admin_list"))
+        self.assertTemplateUsed(response, "members/admin_list.html")
+        self.assertContains(response, 'id="admin-filter-form"')
+
+    def test_section_column_carries_the_year_selector(self):
+        """The section column is that year's enrollment, and chooses it."""
+        self.client.force_login(self.staff_user)
+        response = self.client.get(
+            reverse("members:admin_list"), {"year": self.current_year.pk}
+        )
+        self.assertContains(response, f'<option value="{self.current_year.pk}"')
+        self.assertContains(response, self.current_year.range)
 
     def test_unknown_school_year_falls_back_instead_of_erroring(self):
         """A stale or malformed ?year= must still render the list.

@@ -206,6 +206,8 @@ class AdminListView(UserPassesTestMixin, ListView):
         # applied the filters, so reuse that same FilterSet instead of running
         # the whole filtering pass a second time.
         context["filter"] = self._get_filterset()
+        context["selected_year"] = selected_year
+        context["school_years"] = SchoolYear.objects.order_by("start_date")
 
         troop = TroopSettings.get_settings()
         for person in context["object_list"]:
@@ -268,12 +270,26 @@ class AdminListView(UserPassesTestMixin, ListView):
 
         return context
 
+    def get_template_names(self):
+        # A live filter swaps only the table and its pager into the page it is
+        # already on; the form, the filters and the page shell stay put.
+        if self.request.headers.get("HX-Request") == "true":
+            return ["members/_admin_list_results.html"]
+        return [self.template_name]
+
     def _get_filterset(self):
         """Build the FilterSet once per request and reuse it for list + context."""
         if not hasattr(self, "_filterset"):
-            self._filterset = PersonFilter(
-                self.request.GET, queryset=super().get_queryset()
-            )
+            data = self.request.GET.copy()
+            # The list always shows one school year's sections, so an absent
+            # year means the current one rather than "no year at all": with no
+            # year, filtering by section matches no enrollment and returns
+            # nothing.
+            if not data.get("year"):
+                current_year = SchoolYear.current()
+                if current_year:
+                    data["year"] = str(current_year.pk)
+            self._filterset = PersonFilter(data, queryset=super().get_queryset())
         return self._filterset
 
     def get_queryset(self):

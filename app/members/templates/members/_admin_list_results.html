@@ -1,0 +1,123 @@
+{% load i18n %}
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            {% for field_name, display_name in fields_map %}
+                <th scope="col">
+                    {% if field_name in sortable_fields %}
+                        {% if current_sort == field_name and current_direction == 'asc' %}
+                            <a href="{% querystring sort=field_name direction='desc' page=None %}"
+                               class="text-decoration-none text-dark">
+                        {% else %}
+                            <a href="{% querystring sort=field_name direction='asc' page=None %}"
+                               class="text-decoration-none text-dark">
+                        {% endif %}
+                            {{ display_name }}
+                            {% if current_sort == field_name %}
+                                {% if current_direction == 'asc' %}
+                                    ▲
+                                {% else %}
+                                    ▼
+                                {% endif %}
+                            {% endif %}
+                        </a>
+                    {% elif field_name == "section" %}
+                        {% comment %}
+                            The column is one year's enrollment, so its year
+                            is chosen here, under the column it scopes: the
+                            control cannot be read as another filter.
+                        {% endcomment %}
+                        {{ display_name }}
+                        <select class="form-select form-select-sm admin-section-year-select"
+                                name="year"
+                                id="id_school_year"
+                                form="admin-filter-form"
+                                aria-label="{% trans "School year" %}"
+                                hx-get="{% url 'members:admin_list' %}"
+                                hx-include="#admin-filter-form"
+                                hx-target="#member-results"
+                                hx-swap="innerHTML"
+                                hx-replace-url="true"
+                                hx-indicator="#member-results"
+                                hx-trigger="change">
+                            {% for year in school_years %}
+                                <option value="{{ year.pk }}"
+                                        {% if year.pk == selected_year.pk %}selected{% endif %}>{{ year.range|default:year.name }}</option>
+                            {% endfor %}
+                        </select>
+                    {% else %}
+                        {{ display_name }}
+                    {% endif %}
+                </th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for member in object_list %}
+            <tr data-href="{% url 'members:admin_update' pk=member.pk %}">
+                <td>
+                    <a class="admin-member-link"
+                       href="{% url 'members:admin_update' pk=member.pk %}"><span class="visually-hidden">{% trans "Edit" %} </span>{{ member.first_name }}</a>
+                    {% if member.status == "ar" %}
+                        <span class="badge bg-secondary">{% trans "Archived" %}</span>
+                    {% endif %}
+                    {% if member.passage_review %}
+                        <span class="badge bg-warning text-dark"
+                              title="{{ member.get_passage_review_display }}">{% trans "To review" %}</span>
+                    {% endif %}
+                </td>
+                <td>{{ member.last_name }}</td>
+                <td>{{ member.birthday | default_if_none:'' }}</td>
+                <td>{{ member.sex | default_if_none:'' }}</td>
+                <td>
+                    {{ member.section_display }}
+                    {% if member.age_mismatch %}
+                        <i class="bi bi-exclamation-triangle-fill text-warning"
+                           title="{% blocktranslate with detail=member.age_mismatch_detail %}Incompatible age: {{ detail }}{% endblocktranslate %}"
+                           data-bs-toggle="tooltip"></i>
+                    {% endif %}
+                </td>
+                <td>{{ member.role }}</td>
+                {% if fees_enabled %}
+                    <td class="household-cell text-truncate">
+                        {% with household=member.households.all.0 %}
+                            {% if household %}
+                                <a href="{% url 'finance:household_detail' pk=household.pk %}">{{ household.name }}</a>
+                            {% elif member.address %}
+                                <span class="text-muted"
+                                      title="{% trans 'Inferred from the address' %}">{{ member.address }}</span>
+                            {% else %}
+                                <span class="text-muted">—</span>
+                            {% endif %}
+                        {% endwith %}
+                    </td>
+                {% endif %}
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="{% if fees_enabled %}7{% else %}6{% endif %}">{% trans "No results" %}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<ul class="pagination">
+    {% if page_obj.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="{% querystring page=1 %}">&laquo; {% trans "First" %}</a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="{% querystring page=page_obj.previous_page_number %}">{% trans "Previous" %}</a>
+        </li>
+    {% endif %}
+    <li class="page-item">
+        <span class="page-link current">{% blocktranslate with page_num=page_obj.number page_count=page_obj.paginator.num_pages %}Page {{ page_num }} of {{ page_count }}{% endblocktranslate %}</span>
+    </li>
+    {% if page_obj.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="{% querystring page=page_obj.next_page_number %}">{% trans "Next" %}</a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="{% querystring page=page_obj.paginator.num_pages %}">{% trans "Last" %} &raquo;</a>
+        </li>
+    {% endif %}
+</ul>
