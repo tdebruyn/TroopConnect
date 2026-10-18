@@ -4091,3 +4091,16 @@ msgstr "De tekst naast het selectievakje voor fototoestemming op het formulier v
 
 msgid "The greyed-out example under an address field."
 msgstr "Het grijze voorbeeld onder een adresveld."
+
+#: finance/forms.py
+msgid "Late payment"
+msgstr "Late betaling"
+
+msgid "Late penalty (%)"
+msgstr "Vertragingsboete (%)"
+
+msgid "Applies from"
+msgstr "Van toepassing vanaf"
+
+msgid "A percentage added to what a household still owes after the deadline. Leave the penalty at zero to charge none."
+msgstr "Een percentage dat wordt toegevoegd aan wat een huishouden na de deadline nog verschuldigd is. Laat de boete op nul staan om er geen aan te rekenen."

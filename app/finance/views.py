@@ -3,6 +3,7 @@ from decimal import Decimal
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db import transaction
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -28,6 +29,7 @@ from .forms import (
     HouseholdAssignmentForm,
     HouseholdForm,
     HouseholdMemberForm,
+    LatePaymentForm,
     PaymentForm,
     PriceGridForm,
     ReminderForm,
@@ -156,11 +158,17 @@ def edit_prices(request):
         selected_year = SchoolYear.current() or years.first()
 
     branches = list(Branch.objects.order_by("min_age_dec_31", "name"))
+    config = CotisationConfig.get_for_year(selected_year)
 
     if request.method == "POST":
         form = PriceGridForm(request.POST, school_year=selected_year, branches=branches)
-        if form.is_valid():
-            form.save()
+        late_form = LatePaymentForm(request.POST, instance=config)
+        # Both forms are on one page and one Save, so neither may be written
+        # while the other is rejected.
+        if form.is_valid() and late_form.is_valid():
+            with transaction.atomic():
+                form.save()
+                late_form.save()
             messages.success(
                 request,
                 _("Prices saved for %(range)s.")
@@ -169,9 +177,11 @@ def edit_prices(request):
             return redirect(f"{reverse('finance:prices')}?year={selected_year.pk}")
     else:
         form = PriceGridForm(school_year=selected_year, branches=branches)
+        late_form = LatePaymentForm(instance=config)
 
     return render(request, "finance/price_edit.html", {
         "form": form,
+        "late_form": late_form,
         "selected_year": selected_year,
         "years": years,
         "child_rows": list(form.iter_child_rows()),

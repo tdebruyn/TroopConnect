@@ -77,6 +77,36 @@
         </div>
     </div>
 
+    <div class="card mb-4">
+        <div class="card-header">{% trans "Late payment" %}</div>
+        <div class="card-body">
+            <p class="text-muted small">
+                {% trans "A percentage added to what a household still owes after the deadline. Leave the penalty at zero to charge none." %}
+            </p>
+            <div class="row g-3">
+                <div class="col-sm-4">
+                    <label class="form-label" for="{{ late_form.late_penalty_percent.id_for_label }}">{{ late_form.late_penalty_percent.label }}</label>
+                    {{ late_form.late_penalty_percent }}
+                    <div class="form-text">{{ late_form.late_penalty_percent.help_text }}</div>
+                    {% for error in late_form.late_penalty_percent.errors %}
+                        <div class="alert-danger small mt-1" role="alert">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="col-sm-4">
+                    <label class="form-label" for="{{ late_form.late_deadline.id_for_label }}">{{ late_form.late_deadline.label }}</label>
+                    {{ late_form.late_deadline }}
+                    <div class="form-text">{{ late_form.late_deadline.help_text }}</div>
+                    {% for error in late_form.late_deadline.errors %}
+                        <div class="alert-danger small mt-1" role="alert">{{ error }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% for error in late_form.non_field_errors %}
+                <div class="alert alert-danger py-2 mt-3" role="alert">{{ error }}</div>
+            {% endfor %}
+        </div>
+    </div>
+
     <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
 </form>
 {% endblock subcontent %}

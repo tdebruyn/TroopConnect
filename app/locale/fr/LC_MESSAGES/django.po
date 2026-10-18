@@ -4094,3 +4094,16 @@ msgstr "Le texte à côté de la case de consentement photo sur le formulaire d'
 
 msgid "The greyed-out example under an address field."
 msgstr "L'exemple grisé sous un champ d'adresse."
+
+#: finance/forms.py
+msgid "Late payment"
+msgstr "Paiement tardif"
+
+msgid "Late penalty (%)"
+msgstr "Pénalité de retard (%)"
+
+msgid "Applies from"
+msgstr "Applicable à partir du"
+
+msgid "A percentage added to what a household still owes after the deadline. Leave the penalty at zero to charge none."
+msgstr "Un pourcentage ajouté à ce qu'un foyer doit encore après l'échéance. Laissez la pénalité à zéro pour n'en appliquer aucune."

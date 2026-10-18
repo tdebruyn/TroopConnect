@@ -18,7 +18,7 @@ from django.utils.translation import gettext as _
 from post_office import mail as post_office_mail
 from post_office.models import Email
 
-from finance.models import Payment, get_adults_with_balance
+from finance.models import CotisationConfig, Payment, get_adults_with_balance
 from members.models import Account, Person, Role, SchoolYear
 from members.money import format_money
 from members.permissions import is_tresorier
@@ -350,6 +350,54 @@ class PriceGridYearSelectionTest(FinanceTestBase):
         )
         response = self.client.get(f"{self.url}?year={older.pk}")
         self.assertEqual(response.context["selected_year"], older)
+
+
+class LatePaymentSettingsTest(FinanceTestBase):
+    """The penalty and deadline, edited on the page that sets the prices."""
+
+    def setUp(self):
+        super().setUp()
+        self._login_tresorier()
+        self.url = reverse("finance:prices")
+
+    def test_the_page_shows_the_late_payment_fields(self):
+        response = self.client.get(self.url)
+        self.assertContains(response, 'name="late_penalty_percent"')
+        self.assertContains(response, 'name="late_deadline"')
+
+    def test_saving_persists_the_penalty_and_the_deadline(self):
+        response = self.client.post(
+            self.url,
+            {
+                "late_penalty_percent": "12.50",
+                "late_deadline": "2026-11-30",
+            },
+        )
+
+        self.assertRedirects(
+            response, f"{self.url}?year={self.current_year.pk}"
+        )
+        config = CotisationConfig.objects.get(school_year=self.current_year)
+        self.assertEqual(config.late_penalty_percent, Decimal("12.50"))
+        self.assertEqual(config.late_deadline.isoformat(), "2026-11-30")
+
+    def test_a_rejected_price_grid_does_not_write_the_penalty(self):
+        response = self.client.post(
+            self.url,
+            {
+                "late_penalty_percent": "20.00",
+                "late_deadline": "2026-11-30",
+                # A negative price is rejected; the penalty must not land on
+                # its own while the grid is refused.
+                "child_all_1": "-5.00",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        config = CotisationConfig.objects.get(school_year=self.current_year)
+        # The fixture's penalty is 10% and its deadline empty; neither moves.
+        self.assertEqual(config.late_penalty_percent, Decimal("10.00"))
+        self.assertIsNone(config.late_deadline)
 
 
 class TresorierHelperTest(TestCase):

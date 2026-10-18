@@ -803,6 +803,16 @@ NEW_STRINGS = [
         "grisé",
         "grijze",
     ),
+    # The late-payment card on the fees page.
+    ("Late payment", "Paiement tardif", "Late betaling"),
+    ("Late penalty (%)", "Pénalité", "boete"),
+    ("Applies from", "partir", "vanaf"),
+    (
+        "A percentage added to what a household still owes after the deadline. "
+        "Leave the penalty at zero to charge none.",
+        "pourcentage ajouté",
+        "percentage",
+    ),
 ]
 
 

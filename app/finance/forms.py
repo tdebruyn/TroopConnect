@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from members.models import Person, SchoolYear
 from members.money import currency_symbol
 
-from .models import FeeRule, Household, HouseholdAdjustment
+from .models import CotisationConfig, FeeRule, Household, HouseholdAdjustment
 
 
 class PriceGridForm(forms.Form):
@@ -91,6 +91,30 @@ class PriceGridForm(forms.Form):
             member_type=member_type,
             defaults={"amount": amount},
         )
+
+
+class LatePaymentForm(forms.ModelForm):
+    """The year's late penalty, saved with the price grid.
+
+    A penalty is a price rule like any other, so it belongs on the page the
+    treasurer opens to set prices rather than in the Django admin.
+    """
+
+    class Meta:
+        model = CotisationConfig
+        fields = ["late_penalty_percent", "late_deadline"]
+        labels = {
+            "late_penalty_percent": _("Late penalty (%)"),
+            "late_deadline": _("Applies from"),
+        }
+        widgets = {
+            "late_penalty_percent": forms.NumberInput(
+                attrs={"class": "form-control", "step": "0.01", "min": "0"}
+            ),
+            "late_deadline": forms.DateInput(
+                attrs={"class": "form-control", "type": "date"}, format="%Y-%m-%d"
+            ),
+        }
 
 
 class PaymentForm(forms.Form):
