@@ -1,7 +1,9 @@
 version: 2
 
 updates:
-  # requirements.txt, fully pinned, so every bump is a Dependabot pull request.
+  # requirements.txt uses compatible-release ranges, so minors and patches
+  # arrive on the next install; Dependabot opens a pull request for versions
+  # that leave the range, which is mostly majors.
   - package-ecosystem: pip
     directory: /app
     schedule:
