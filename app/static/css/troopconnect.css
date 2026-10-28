@@ -1202,7 +1202,13 @@ body {
   color: #2c3742;
 }
 
-@media (max-width: 991.98px) {
+/* The strip only holds while every room can hold its own years on one line and
+   its name beside its mark. The container is 960px from 992 to 1199, and at
+   that width the two-year rooms (Baladins, Pionniers) do neither: their names
+   run over the neighbouring room's tint and their chips drop to a second row.
+   The container's next step is 1140px, which is where the four fit, so the
+   strip becomes four cards below it rather than at `lg`. */
+@media (max-width: 1199.98px) {
   .desk-rail {
     flex-direction: column;
   }

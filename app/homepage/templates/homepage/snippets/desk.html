@@ -34,6 +34,10 @@
                     width is the branch's own age range, which is what makes the
                     four of them read as one twelve-year journey rather than as
                     four equal blocks.
+
+                    Every chip shares one request queue (`hx-sync`): a second
+                    pick must cancel the first, or a slow answer for an older
+                    year lands last and is shown under the newer chip.
                 {% endcomment %}
                 <ol class="desk-rail">
                     {% for group in desk_groups %}
@@ -59,7 +63,7 @@
                                        hx-target="#desk-answer"
                                        hx-swap="innerHTML"
                                        hx-push-url="true"
-                                       hx-sync="this:replace"
+                                       hx-sync="closest .desk-rail:replace"
                                        {% if desk_answer.year == year %}aria-current="true"{% endif %}>{{ year }}</a>
                                 {% endfor %}
                             </div>

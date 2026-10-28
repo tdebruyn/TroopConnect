@@ -439,6 +439,17 @@ class PublicHomepageTest(DeskTestBase):
         response = self.client.get("/", {"annee": year})
         self.assertContains(response, "desk-year-on")
 
+    def test_the_year_chips_share_one_request_queue(self):
+        """A second pick must cancel the first.
+
+        With a queue per chip, two quick picks race: a slow answer for the
+        older year can land last and be shown under the newer chip, naming a
+        branch the visitor did not choose.
+        """
+        response = self.client.get("/")
+        self.assertContains(response, 'hx-sync="closest .desk-rail:replace"')
+        self.assertNotContains(response, 'hx-sync="this:replace"')
+
     def test_the_answer_carries_the_branch_colour(self):
         """The page's one spend of colour, keyed on the preset slug.
 

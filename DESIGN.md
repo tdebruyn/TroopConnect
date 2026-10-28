@@ -678,9 +678,13 @@ and swaps a single `#wizard-pane` element over HTMX.
 
 Breakpoints are Bootstrap's. `md` (768px) is the load-bearing one: the navbar
 collapses, the grid halves, and the member board stacks there. `lg` (992px) is
-the one the section tile changes composition at. `xxl` is used once, to inline
-the Sections dropdown in the navbar. Single-column stacking holds all the way
-down; nothing in the system depends on hover.
+the one the section tile changes composition at. The desk's four rooms run side
+by side from `xl` (1200px) — the first container wide enough for every room to
+hold its own years on one line and its name beside its mark; below that they
+stack as cards, because the 960px container makes the two-year rooms overflow
+their neighbours. `xxl` is used once, to inline the Sections dropdown in the
+navbar. Single-column stacking holds all the way down; nothing in the system
+depends on hover.
 
 The spacing rhythm is Bootstrap's spacer scale — `mb-3` between fields, `mb-4`
 between cards, `mt-5` above page content, `p-4` inside a wizard card. The system
