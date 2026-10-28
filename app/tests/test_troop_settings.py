@@ -6,12 +6,12 @@ it, and the places the values have to actually reach: the language switcher, the
 phone fields, the money display and the mail pipeline.
 """
 
-from datetime import date
+from datetime import date, datetime
 from decimal import Decimal
 
 from django.template import Context, Template
 from django.urls import reverse
-from django.utils import translation
+from django.utils import timezone, translation
 from django.utils.html import escape
 from django.utils.translation import gettext as _
 from post_office.models import Email
@@ -268,9 +268,12 @@ class PublicPageSettingsTest(StaffPageTestBase):
         data = {
             "section": "public_page",
             "site_description": "Bienvenue chez les Scouts.",
-            # The desk's own pair is on the card too; a browser posting the
-            # card carries both, and the message is a required field.
+            # The desk's own controls are on the card too; a browser posting
+            # the card carries all of them, including the day and month the
+            # window opens on.
             "registration_open": "on",
+            "registration_opens_month": "4",
+            "registration_opens_day": "1",
             "registration_message": "Les inscriptions sont ouvertes.",
             # The card's order control posts one position per block.
             "position_desk": 1,
@@ -340,6 +343,55 @@ class PublicPageSettingsTest(StaffPageTestBase):
 
         self.assertRedirects(response, self.url)
         self.assertTrue(TroopSettings.get_settings().registration_open)
+
+    def test_the_card_sets_the_day_the_intake_opens(self):
+        response = self.client.post(
+            self.url,
+            self.public_page_data(
+                homepage_desk_enabled="on",
+                registration_opens_month="5",
+                registration_opens_day="15",
+            ),
+        )
+
+        self.assertRedirects(response, self.url)
+        troop = TroopSettings.get_settings()
+        self.assertEqual(
+            (troop.registration_opens_day, troop.registration_opens_month),
+            (15, 5),
+        )
+
+    def test_the_card_refuses_a_day_the_month_does_not_have(self):
+        response = self.client.post(
+            self.url,
+            self.public_page_data(
+                homepage_desk_enabled="on",
+                registration_opens_month="4",
+                registration_opens_day="31",
+            ),
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(
+            response, escape(_("That day does not exist in this month."))
+        )
+        troop = TroopSettings.get_settings()
+        self.assertEqual(
+            (troop.registration_opens_day, troop.registration_opens_month),
+            (1, 4),
+        )
+
+    def test_the_note_is_optional(self):
+        response = self.client.post(
+            self.url,
+            self.public_page_data(
+                homepage_desk_enabled="on",
+                registration_message="",
+            ),
+        )
+
+        self.assertRedirects(response, self.url)
+        self.assertEqual(TroopSettings.get_settings().registration_message, "")
 
     def test_a_content_module_cannot_be_turned_on_without_its_text(self):
         response = self.client.post(
@@ -730,3 +782,67 @@ class SiteFooterTest(TroopSettingsTestCase):
         self.assertContains(response, "site-footer")
         self.assertContains(response, reverse("public_contact"))
         self.assertNotContains(response, "contact@example.org")
+
+
+class RegistrationWindowTest(TroopSettingsTestCase):
+    """The yearly day after which the desk names next year's branch.
+
+    The pinned moments below depend on the default 1 August school-year start
+    and the default 1 April cutoff; they exercise the arithmetic, not today.
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.troop = TroopSettings.get_settings()
+        self.troop.registration_open = True
+        self.troop.registration_opens_month = 4
+        self.troop.registration_opens_day = 1
+
+    @staticmethod
+    def at(year, month, day, hour=12, minute=0):
+        return timezone.make_aware(datetime(year, month, day, hour, minute))
+
+    def test_the_cutoff_belongs_to_the_school_year_it_is_read_in(self):
+        self.assertEqual(self.troop.registration_cutoff(2026), date(2027, 4, 1))
+        self.assertEqual(self.troop.registration_cutoff(2027), date(2028, 4, 1))
+
+    def test_a_cutoff_after_the_year_start_stays_in_that_calendar_year(self):
+        self.troop.registration_opens_month = 9
+        self.assertEqual(self.troop.registration_cutoff(2026), date(2026, 9, 1))
+
+    def test_a_29_february_cutoff_falls_back_to_the_end_of_february(self):
+        self.troop.registration_opens_month = 2
+        self.troop.registration_opens_day = 29
+
+        self.assertEqual(self.troop.registration_cutoff(2026), date(2027, 2, 28))
+        self.assertEqual(self.troop.registration_cutoff(2027), date(2028, 2, 29))
+
+    def test_the_window_opens_on_the_cutoff_day(self):
+        before = self.at(2027, 3, 31, 23, 59)
+        on = self.at(2027, 4, 1, 0, 0)
+
+        self.assertFalse(self.troop.registrations_are_open(before))
+        self.assertTrue(self.troop.registrations_are_open(on))
+
+    def test_the_desk_answers_for_the_next_year_once_open(self):
+        before = self.at(2027, 3, 31)
+        on = self.at(2027, 4, 1)
+
+        self.assertEqual(self.troop.desk_school_year(before), 2026)
+        self.assertEqual(self.troop.desk_school_year(on), 2027)
+        self.assertEqual(self.troop.desk_school_year_label(on), "2027-2028")
+
+    def test_a_closed_window_announces_the_next_opening(self):
+        before = self.at(2027, 3, 31)
+
+        self.assertEqual(self.troop.registration_opens_on(before), date(2027, 4, 1))
+        self.assertEqual(self.troop.registration_opens_for_label(before), "2027-2028")
+        self.assertIsNone(self.troop.registration_opens_on(self.at(2027, 4, 1)))
+
+    def test_the_switch_closes_the_window_even_after_the_cutoff(self):
+        on = self.at(2027, 4, 1)
+        self.troop.registration_open = False
+
+        self.assertFalse(self.troop.registrations_are_open(on))
+        self.assertIsNone(self.troop.registration_opens_on(on))
+        self.assertEqual(self.troop.desk_school_year(on), 2026)

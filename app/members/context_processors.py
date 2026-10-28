@@ -12,6 +12,7 @@ def contact_info(request):
     available = getattr(request, "enabled_languages", None)
     if available is None:
         available = list(troop_settings.enabled_languages or [settings.LANGUAGE_CODE])
+    registrations_open = troop_settings.registrations_are_open()
     return {
         "contact_email": troop_settings.contact_email,
         "contact_phone": troop_settings.contact_phone,
@@ -49,7 +50,13 @@ def contact_info(request):
         # field is empty, which is the normal case.
         "logo_url": troop_settings.logo_url(),
         "favicon_url": troop_settings.favicon_url(),
-        "registration_open": troop_settings.registration_open,
+        # The effective window, not the stored switch: a troop that sets an
+        # opening date is closed until that day arrives. The date itself is
+        # only handed over while it is still ahead and the switch is on, so the
+        # page never promises an opening the switch has cancelled.
+        "registration_open": registrations_open,
+        "registration_opens_on": troop_settings.registration_opens_on(),
+        "registration_opens_for_label": troop_settings.registration_opens_for_label(),
         "registration_message": troop_settings.registration_message,
         "photo_consent_text": troop_settings.photo_consent_text,
         "address_placeholder": troop_settings.address_placeholder,

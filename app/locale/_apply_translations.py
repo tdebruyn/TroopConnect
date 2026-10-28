@@ -116,6 +116,89 @@ TRANSLATIONS = {
         "%(branch)s : année de naissance",
         "%(branch)s: geboortejaar",
     ),
+    # --- registration window ---
+    "In %(year)s, your child would join %(branch)s, the branch for %(min)s to %(max)s year olds.": (
+        "En %(year)s, votre enfant rejoindrait la branche %(branch)s, celle des %(min)s à %(max)s ans.",
+        "In %(year)s zou uw kind bij %(branch)s terechtkomen, de tak voor %(min)s- tot %(max)s-jarigen.",
+    ),
+    "Registrations are open for school year %(year)s.": (
+        "Les inscriptions sont ouvertes pour l'année scolaire %(year)s.",
+        "De inschrijvingen zijn open voor schooljaar %(year)s.",
+    ),
+    "Registrations are open.": (
+        "Les inscriptions sont ouvertes.",
+        "De inschrijvingen zijn open.",
+    ),
+    "Registrations are closed.": (
+        "Les inscriptions sont fermées.",
+        "De inschrijvingen zijn gesloten.",
+    ),
+    "School year %(year)s": (
+        "Année scolaire %(year)s",
+        "Schooljaar %(year)s",
+    ),
+    "Registrations open on %(date)s": (
+        "Ouverture des inscriptions le %(date)s",
+        "Inschrijvingen openen op %(date)s",
+    ),
+    "Registrations open on": (
+        "Ouverture des inscriptions le",
+        "Inschrijvingen openen op",
+    ),
+    "Day": ("Jour", "Dag"),
+    "Month": ("Mois", "Maand"),
+    "Accept registrations": (
+        "Accepter les inscriptions",
+        "Inschrijvingen aanvaarden",
+    ),
+    "Switch off to close registrations at any time, whatever the date below says.": (
+        "Désactivez pour fermer les inscriptions à tout moment, quelle que "
+        "soit la date ci-dessous.",
+        "Schakel uit om de inschrijvingen op elk moment te sluiten, ongeacht "
+        "de datum hieronder.",
+    ),
+    "Note while registrations are closed": (
+        "Note pendant la fermeture des inscriptions",
+        "Notitie tijdens de sluiting van de inschrijvingen",
+    ),
+    "Shown while registrations are closed, under the opening date when there is one. Leave empty to show no note.": (
+        "Affichée pendant la fermeture des inscriptions, sous la date "
+        "d'ouverture lorsqu'elle existe. Laissez vide pour ne rien afficher.",
+        "Getoond zolang de inschrijvingen gesloten zijn, onder de "
+        "openingsdatum als die er is. Laat leeg om geen notitie te tonen.",
+    ),
+    "From this day each scout year, the page names next year's branch and the button is live. Before it, the page shows the date and greys the button out.": (
+        "À partir de ce jour, chaque année scoute, la page indique la branche "
+        "de l'année suivante et le bouton est actif. Avant, la page affiche la "
+        "date et grise le bouton.",
+        "Vanaf deze dag elk scoutjaar toont de pagina de tak van het volgende "
+        "jaar en is de knop actief. Daarvoor toont de pagina de datum en wordt "
+        "de knop uitgeschakeld.",
+    ),
+    "Currently open for %(year)s.": (
+        "Actuellement ouvertes pour %(year)s.",
+        "Momenteel open voor %(year)s.",
+    ),
+    "Closed until %(date)s; the %(year)s intake opens then.": (
+        "Fermées jusqu'au %(date)s ; les inscriptions %(year)s s'ouvrent alors.",
+        "Gesloten tot %(date)s; dan openen de inschrijvingen voor %(year)s.",
+    ),
+    "Currently closed.": ("Actuellement fermées.", "Momenteel gesloten."),
+    "Month in which registrations open for the next school year.": (
+        "Mois au cours duquel les inscriptions pour l'année scolaire suivante "
+        "ouvrent.",
+        "Maand waarin de inschrijvingen voor het volgende schooljaar openen.",
+    ),
+    "Day of that month from which the desk names next year's branch.": (
+        "Jour de ce mois à partir duquel la page indique la branche de l'année "
+        "suivante.",
+        "Dag van die maand vanaf wanneer de pagina de tak van het volgende "
+        "jaar toont.",
+    ),
+    "That day does not exist in this month.": (
+        "Ce jour n'existe pas dans ce mois.",
+        "Die dag bestaat niet in deze maand.",
+    ),
     # The band's description. Its heading reuses "Our unit", which the catalog
     # already carries.
     "This is where the unit introduces itself to the families of the commune.": (

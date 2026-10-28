@@ -70,6 +70,13 @@ class DeskTestBase(TroopSettingsTestCase):
             name="Louveteaux", min_age_dec_31=9, max_age_dec_31=11
         )
         cls.section = Section.objects.create(name="Baladins 1", branch=cls.baladins)
+        # The window's state depends on the day the suite runs. Pin it closed
+        # so the desk's running-year assertions do not flip on 1 April; the
+        # tests about the window open or schedule it themselves.
+        TroopSettings.clear_cache()
+        troop = TroopSettings.get_settings()
+        troop.registration_open = False
+        troop.save()
 
     def year_in(self, branch):
         """A birth year that lands in ``branch`` for the current school year."""
@@ -77,6 +84,41 @@ class DeskTestBase(TroopSettingsTestCase):
             if candidate.pk == branch.pk:
                 return year
         raise AssertionError("no birth year lands in that branch")
+
+    def year_in_next_intake(self, branch):
+        """A birth year that lands in ``branch`` for the next school year."""
+        for year, candidate in _desk_rows(self.school_year.name + 1):
+            if candidate.pk == branch.pk:
+                return year
+        raise AssertionError("no birth year lands in that branch next year")
+
+    def open_window(self):
+        """Open the window for the rest of the running school year.
+
+        The cutoff is the year's own first day, which is always at or before
+        today while a school year is running.
+        """
+        settings_row = TroopSettings.get_settings()
+        settings_row.registration_open = True
+        settings_row.registration_opens_month = self.school_year.start_date.month
+        settings_row.registration_opens_day = self.school_year.start_date.day
+        settings_row.save()
+        return settings_row
+
+    def close_window(self):
+        """Close the window until the running school year's last day.
+
+        A cutoff on the last day is still ahead for every day but the last one;
+        on that one day there is no future cutoff inside the year to set.
+        """
+        if timezone.localdate() >= self.school_year.end_date:
+            self.skipTest("the school year ends today; no future cutoff exists")
+        settings_row = TroopSettings.get_settings()
+        settings_row.registration_open = True
+        settings_row.registration_opens_month = self.school_year.end_date.month
+        settings_row.registration_opens_day = self.school_year.end_date.day
+        settings_row.save()
+        return settings_row
 
 
 class DeskRowsTest(DeskTestBase):
@@ -362,7 +404,7 @@ class PublicHomepageTest(DeskTestBase):
             response = self.client.get("/", {"annee": year})
         self.assertContains(
             response,
-            'Votre enfant rejoindrait la branche <span class="desk-answer-name">'
+            'votre enfant rejoindrait la branche <span class="desk-answer-name">'
             "Louveteaux</span>",
         )
 
@@ -453,15 +495,89 @@ class PublicHomepageTest(DeskTestBase):
         self.assertNotContains(response, "<html")
         self.assertNotContains(response, "desk-question")
 
-    def test_closed_registrations_hide_the_action_and_say_why(self):
+    def test_closed_registrations_grey_the_action_and_keep_it_on_the_page(self):
+        """The way in stays visible, disabled, and the note says why.
+
+        Hiding it made the page read as one that never had a door; a parent
+        deciding whether to come back needs to see both the door and the date.
+        """
         settings_row = TroopSettings.get_settings()
         settings_row.registration_open = False
         settings_row.registration_message = "Les inscriptions rouvrent en août."
         settings_row.save()
 
         response = self.client.get("/", {"annee": self.year_in(self.baladins)})
-        self.assertNotContains(response, "desk-cta")
+        self.assertContains(response, 'class="btn desk-cta" disabled')
         self.assertContains(response, "Les inscriptions rouvrent en août.")
+        self.assertContains(response, "desk-window-shut")
+
+    def test_a_scheduled_opening_is_advertised_beside_the_question(self):
+        self.close_window()
+
+        response = self.client.get("/")
+
+        self.assertFalse(response.context["registration_open"])
+        self.assertContains(response, "desk-window-closed")
+        self.assertContains(response, "desk-window-date")
+        self.assertContains(response, 'class="btn desk-cta" disabled')
+
+    def test_the_manual_switch_does_not_promise_an_opening_date(self):
+        """A troop that closed registrations early says closed, not "opens on".
+
+        The date is still stored — switching the window back on uses it — but
+        the page must not announce an opening the switch has cancelled.
+        """
+        settings_row = self.close_window()
+        settings_row.registration_open = False
+        settings_row.save()
+
+        response = self.client.get("/")
+
+        self.assertContains(response, "desk-window-shut")
+        self.assertNotContains(response, "desk-window-closed")
+
+    def test_an_open_window_answers_for_next_years_intake(self):
+        """The same birth year lands in the next branch once the window opens.
+
+        The child is at the top of Baladins this year; next year they are in
+        Louveteaux, and that is the branch the registration is for.
+        """
+        self.open_window()
+
+        year = self.reference_year - self.baladins.max_age_dec_31
+        response = self.client.get("/", {"annee": year})
+
+        self.assertTrue(response.context["registration_open"])
+        self.assertEqual(
+            response.context["desk_answer"]["branch"].pk, self.louveteaux.pk
+        )
+        self.assertEqual(
+            response.context["desk_intake_label"],
+            f"{self.school_year.name + 1}-{self.school_year.name + 2}",
+        )
+
+    def test_a_closed_window_answers_for_the_running_year(self):
+        self.close_window()
+
+        response = self.client.get("/", {"annee": self.year_in(self.baladins)})
+
+        self.assertEqual(
+            response.context["desk_answer"]["branch"].pk, self.baladins.pk
+        )
+        self.assertEqual(
+            response.context["desk_answer"]["school_year_label"],
+            f"{self.school_year.name}-{self.school_year.name + 1}",
+        )
+
+    def test_the_swapped_answer_uses_the_same_intake_year(self):
+        self.open_window()
+
+        year = self.reference_year - self.baladins.max_age_dec_31
+        response = self.client.get("/", {"annee": year}, headers={"HX-Request": "true"})
+
+        self.assertEqual(
+            response.context["desk_answer"]["branch"].pk, self.louveteaux.pk
+        )
 
     def test_each_branch_gets_its_own_card_of_years(self):
         """The grouping that replaced the flat year row: the branch names the
@@ -483,7 +599,8 @@ class PublicHomepageTest(DeskTestBase):
     def test_the_action_carries_the_year_it_was_given(self):
         """So the branch a parent has just found is not asked for again on the
         other side of the sign-up."""
-        year = self.year_in(self.louveteaux)
+        self.open_window()
+        year = self.year_in_next_intake(self.louveteaux)
         response = self.client.get("/", {"annee": year})
         self.assertContains(response, f"{reverse('account_signup')}?annee={year}")
 
@@ -497,7 +614,8 @@ class PublicHomepageTest(DeskTestBase):
     def test_the_unit_page_swaps_the_desk_answer_like_the_homepage(self):
         """The desk's year links are relative, so without the partial the
         whole page would be swapped into the answer region."""
-        year = self.year_in(self.louveteaux)
+        self.open_window()
+        year = self.year_in_next_intake(self.louveteaux)
 
         response = self.client.get(
             reverse("unit_page"), {"annee": year}, HTTP_HX_REQUEST="true"

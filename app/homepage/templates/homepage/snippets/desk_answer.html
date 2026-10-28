@@ -40,8 +40,14 @@
                     it is not, which is the whole point of the line: a parent who
                     has never heard of this troop reads one word of it.
                 {% endcomment %}
-                {% blocktranslate with branch=desk_answer.branch_html min=desk_answer.min_age max=desk_answer.max_age trimmed %}
-                    Your child would join {{ branch }}, the branch for {{ min }} to {{ max }} year olds.
+                {% comment %}
+                    The school year is part of the sentence, not a caption:
+                    once the window opens the desk answers for next year's
+                    intake, and a branch name alone would not say which year it
+                    means.
+                {% endcomment %}
+                {% blocktranslate with branch=desk_answer.branch_html min=desk_answer.min_age max=desk_answer.max_age year=desk_answer.school_year_label trimmed %}
+                    In {{ year }}, your child would join {{ branch }}, the branch for {{ min }} to {{ max }} year olds.
                 {% endblocktranslate %}
             </h2>
             {# The scout years, which is what a parent is deciding about. #}

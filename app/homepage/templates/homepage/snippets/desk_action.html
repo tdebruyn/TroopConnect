@@ -4,20 +4,29 @@
   because it is the page's one action and a parent who came to register should
   not have to answer the desk's question first.
 
+  Closed, the same control stays on the sheet, greyed out rather than removed:
+  a page that hides the way in reads as a page that never had one, and the
+  notice beside the question already says when it comes back.
+
   `?annee=` rides along so the branch a parent has just found can be carried
   across the sign-up, but nothing reads it yet: the destination still opens an
   empty account form, and its heading names parents and animators rather than
   the child. The label promises a child, so whatever explains that the account
   comes first belongs on that screen.
 {% endcomment %}
-{% if registration_open %}
-    <div class="desk-answer-action">
+<div class="desk-answer-action">
+    {% if registration_open %}
         <a class="btn btn-primary desk-cta"
            href="{% url 'account_signup' %}{% if desk_answer.year %}?annee={{ desk_answer.year }}{% endif %}">
             {% trans "Register my child" %}
         </a>
-    </div>
-{% else %}
-    {# The branch is still worth naming; what is missing is the way in. #}
-    <p class="desk-closed-note">{{ registration_message }}</p>
-{% endif %}
+    {% else %}
+        {% comment %}
+            Native `disabled`: announced as unavailable, and it cannot be
+            activated by a pointer or the keyboard.
+        {% endcomment %}
+        <button type="button" class="btn desk-cta" disabled>
+            {% trans "Register my child" %}
+        </button>
+    {% endif %}
+</div>

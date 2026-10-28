@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-09-13 21:23+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect\nLanguage-Team: nl <nl@li.org>\nLanguage: nl\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nProject-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-09-13 21:23+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect\nLanguage-Team: nl <nl@li.org>\nLanguage: nl\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nProject-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-09-13 21:23+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect\nLanguage-Team: nl <nl@li.org>\nLanguage: nl\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nProject-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-09-13 21:23+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect\nLanguage-Team: nl <nl@li.org>\nLanguage: nl\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\n"
+msgstr "Project-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-09-13 21:23+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect\nLanguage-Team: nl <nl@li.org>\nLanguage: nl\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nProject-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-09-13 21:23+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect\nLanguage-Team: nl <nl@li.org>\nLanguage: nl\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nProject-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-09-13 21:23+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect\nLanguage-Team: nl <nl@li.org>\nLanguage: nl\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nProject-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-09-13 21:23+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect\nLanguage-Team: nl <nl@li.org>\nLanguage: nl\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nProject-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-09-13 21:23+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect\nLanguage-Team: nl <nl@li.org>\nLanguage: nl\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\n"
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-09-13 21:23+0200\n"
@@ -3817,6 +3817,66 @@ msgstr "Geboren in %(year)s"
 msgid "Your child would join %(branch)s, the branch for %(min)s to %(max)s year olds."
 msgstr "Uw kind zou bij %(branch)s terechtkomen, de tak voor %(min)s- tot %(max)s-jarigen."
 
+msgid "In %(year)s, your child would join %(branch)s, the branch for %(min)s to %(max)s year olds."
+msgstr "In %(year)s zou uw kind bij %(branch)s terechtkomen, de tak voor %(min)s- tot %(max)s-jarigen."
+
+msgid "Registrations are open for school year %(year)s."
+msgstr "De inschrijvingen zijn open voor schooljaar %(year)s."
+
+msgid "Registrations are open."
+msgstr "De inschrijvingen zijn open."
+
+msgid "Registrations are closed."
+msgstr "De inschrijvingen zijn gesloten."
+
+msgid "School year %(year)s"
+msgstr "Schooljaar %(year)s"
+
+msgid "Registrations open on %(date)s"
+msgstr "Inschrijvingen openen op %(date)s"
+
+msgid "Registrations open on"
+msgstr "Inschrijvingen openen op"
+
+msgid "Day"
+msgstr "Dag"
+
+msgid "Month"
+msgstr "Maand"
+
+msgid "Accept registrations"
+msgstr "Inschrijvingen aanvaarden"
+
+msgid "Switch off to close registrations at any time, whatever the date below says."
+msgstr "Schakel uit om de inschrijvingen op elk moment te sluiten, ongeacht de datum hieronder."
+
+msgid "Note while registrations are closed"
+msgstr "Notitie tijdens de sluiting van de inschrijvingen"
+
+msgid "Shown while registrations are closed, under the opening date when there is one. Leave empty to show no note."
+msgstr "Getoond zolang de inschrijvingen gesloten zijn, onder de openingsdatum als die er is. Laat leeg om geen notitie te tonen."
+
+msgid "From this day each scout year, the page names next year's branch and the button is live. Before it, the page shows the date and greys the button out."
+msgstr "Vanaf deze dag elk scoutjaar toont de pagina de tak van het volgende jaar en is de knop actief. Daarvoor toont de pagina de datum en wordt de knop uitgeschakeld."
+
+msgid "Currently open for %(year)s."
+msgstr "Momenteel open voor %(year)s."
+
+msgid "Closed until %(date)s; the %(year)s intake opens then."
+msgstr "Gesloten tot %(date)s; dan openen de inschrijvingen voor %(year)s."
+
+msgid "Currently closed."
+msgstr "Momenteel gesloten."
+
+msgid "Month in which registrations open for the next school year."
+msgstr "Maand waarin de inschrijvingen voor het volgende schooljaar openen."
+
+msgid "Day of that month from which the desk names next year's branch."
+msgstr "Dag van die maand vanaf wanneer de pagina de tak van het volgende jaar toont."
+
+msgid "That day does not exist in this month."
+msgstr "Die dag bestaat niet in deze maand."
+
 msgid "Register my child"
 msgstr "Mijn kind inschrijven"
 
@@ -3831,9 +3891,9 @@ msgstr "Geen enkele tak van deze eenheid neemt een kind geboren in %(year)s. Con
 
 msgid "%(min)s to %(max)s years"
 msgstr "%(min)s tot %(max)s jaar"
+
 msgid "The method, the values and the educational ambition are the same in every branch — what changes with age is the way they are lived."
 msgstr "De methode, de waarden en de educatieve ambitie zijn in elke tak dezelfde — wat met de leeftijd verandert, is de manier waarop ze worden beleefd."
-
 
 msgid "%(branch)s: year of birth"
 msgstr "%(branch)s: geboortejaar"

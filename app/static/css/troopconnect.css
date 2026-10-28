@@ -1045,6 +1045,64 @@ body {
   text-wrap: balance;
 }
 
+/* The window between the branch strip and the answer sheet. Open, it is a
+   quiet fact — nothing is waiting, so nothing is dressed up. Closed, it is the
+   desk's largest statement after the question: the section's rule down its
+   left, the date in the display serif, on the desk's own ground rather than in
+   a second white card. The branch colours stay out of it: a window is not a
+   branch. */
+.desk-window {
+  margin-top: 1.5rem;
+}
+
+.desk-window-open {
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: #515a63;
+  text-wrap: pretty;
+}
+
+.desk-window-closed {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  padding-left: 1.25rem;
+  border-left: 3px solid var(--section-rule);
+}
+
+.desk-window-label {
+  flex: none;
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--section-label);
+}
+
+.desk-window-copy {
+  min-width: 0;
+}
+
+.desk-window-date {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 2.8vw, 2.375rem);
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  color: #0a4275;
+  text-wrap: balance;
+}
+
+.desk-window-note {
+  margin: 0.5rem 0 0;
+  max-width: 60ch;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: #515a63;
+}
+
 /* One room per branch, as wide as the branch is long: the four spans of the
    scout journey drawn as a single strip, so the years a child spends in each
    one are legible before a single year is read.
@@ -1360,6 +1418,18 @@ body {
   color: #fff;
 }
 
+/* Closed, the same door but plainly out of service. The grey is stated as a
+   paper fill and the muted-on-field ink rather than left to opacity: a faded
+   green still reads as a live button, and the opacity would take the label
+   below AA on the way. */
+.desk-cta:disabled {
+  border: 1px solid color-mix(in srgb, var(--section-rule) 18%, #f2f5f8);
+  background-color: color-mix(in srgb, var(--section-rule) 6%, #f2f5f8);
+  color: #515a63;
+  cursor: not-allowed;
+  opacity: 1;
+}
+
 /* For a unit that has not filled its branches in yet. */
 .desk-prompt {
   margin: 2rem 0 0;
@@ -1393,15 +1463,6 @@ body {
   flex: 0 0 auto;
 }
 
-.desk-cta-note {
-  margin: 0;
-  max-width: 30ch;
-  text-align: right;
-  font-size: 0.8125rem;
-  line-height: 1.45;
-  color: #5d666e;
-}
-
 @media (max-width: 767.98px) {
   .desk-answer-paper {
     flex-direction: column;
@@ -1419,8 +1480,11 @@ body {
     align-items: flex-start;
   }
 
-  .desk-cta-note {
-    text-align: left;
+  /* The rule stays down the left; the label takes its own line above the
+     date rather than squeezing it into a column. */
+  .desk-window-closed {
+    flex-direction: column;
+    gap: 0.375rem;
   }
 }
 
@@ -3237,11 +3301,6 @@ a.message-tile:focus-visible .message-open {
 
   .desk-answer-action {
     align-items: flex-start;
-  }
-
-  .desk-cta-note {
-    max-width: none;
-    text-align: left;
   }
 
   /* The colour shows above and below rather than round the sides: at this

@@ -119,10 +119,9 @@ UNIT = {
     ),
     "site_keywords": "scouts limal wavre baladins louveteaux éclaireurs pionniers",
     "email_signature": "Salutations cordiales,\nLe staff d'unité des Scouts de Limal",
-    "registration_message": (
-        "Les inscriptions pour l'année scoute sont ouvertes. Bienvenue chez les "
-        "Scouts de Limal !"
-    ),
+    # The date is generated from the troop's own cutoff; a second sentence
+    # saying the same thing would age badly the day the window opens.
+    "registration_message": "",
     "photo_consent_text": (
         "J'accepte que les photos et vidéos prises pendant les activités soient "
         "utilisées par Les Scouts ASBL, dont mon unité fait partie."

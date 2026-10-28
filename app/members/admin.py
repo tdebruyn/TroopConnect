@@ -247,7 +247,14 @@ class TroopSettingsAdmin(TranslationAdmin):
         (_("Email settings"), {"fields": ("email_signature",)}),
         (
             _("Registration settings"),
-            {"fields": ("registration_open", "registration_message")},
+            {
+                "fields": (
+                    "registration_open",
+                    "registration_opens_month",
+                    "registration_opens_day",
+                    "registration_message",
+                )
+            },
         ),
         (
             _("Customizable text"),

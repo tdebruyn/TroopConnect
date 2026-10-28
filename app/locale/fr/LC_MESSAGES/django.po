@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-09-13 21:23+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect\nLanguage-Team: fr <fr@li.org>\nLanguage: fr\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nProject-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-09-13 21:23+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect\nLanguage-Team: fr <fr@li.org>\nLanguage: fr\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nProject-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-09-13 21:23+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect\nLanguage-Team: fr <fr@li.org>\nLanguage: fr\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nProject-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-09-13 21:23+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect\nLanguage-Team: fr <fr@li.org>\nLanguage: fr\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\n"
+msgstr "Project-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-09-13 21:23+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect\nLanguage-Team: fr <fr@li.org>\nLanguage: fr\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nProject-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-09-13 21:23+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect\nLanguage-Team: fr <fr@li.org>\nLanguage: fr\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nProject-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-09-13 21:23+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect\nLanguage-Team: fr <fr@li.org>\nLanguage: fr\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nProject-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-09-13 21:23+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect\nLanguage-Team: fr <fr@li.org>\nLanguage: fr\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\nProject-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-09-13 21:23+0200\nPO-Revision-Date: 2026-07-24 00:00+0200\nLast-Translator: TroopConnect\nLanguage-Team: fr <fr@li.org>\nLanguage: fr\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\nPlural-Forms: nplurals=2; plural=(n > 1);\n"
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-09-13 21:23+0200\n"
@@ -3820,6 +3820,66 @@ msgstr "Naissance : %(year)s"
 msgid "Your child would join %(branch)s, the branch for %(min)s to %(max)s year olds."
 msgstr "Votre enfant rejoindrait la branche %(branch)s, celle des %(min)s à %(max)s ans."
 
+msgid "In %(year)s, your child would join %(branch)s, the branch for %(min)s to %(max)s year olds."
+msgstr "En %(year)s, votre enfant rejoindrait la branche %(branch)s, celle des %(min)s à %(max)s ans."
+
+msgid "Registrations are open for school year %(year)s."
+msgstr "Les inscriptions sont ouvertes pour l'année scolaire %(year)s."
+
+msgid "Registrations are open."
+msgstr "Les inscriptions sont ouvertes."
+
+msgid "Registrations are closed."
+msgstr "Les inscriptions sont fermées."
+
+msgid "School year %(year)s"
+msgstr "Année scolaire %(year)s"
+
+msgid "Registrations open on %(date)s"
+msgstr "Ouverture des inscriptions le %(date)s"
+
+msgid "Registrations open on"
+msgstr "Ouverture des inscriptions le"
+
+msgid "Day"
+msgstr "Jour"
+
+msgid "Month"
+msgstr "Mois"
+
+msgid "Accept registrations"
+msgstr "Accepter les inscriptions"
+
+msgid "Switch off to close registrations at any time, whatever the date below says."
+msgstr "Désactivez pour fermer les inscriptions à tout moment, quelle que soit la date ci-dessous."
+
+msgid "Note while registrations are closed"
+msgstr "Note pendant la fermeture des inscriptions"
+
+msgid "Shown while registrations are closed, under the opening date when there is one. Leave empty to show no note."
+msgstr "Affichée pendant la fermeture des inscriptions, sous la date d'ouverture lorsqu'elle existe. Laissez vide pour ne rien afficher."
+
+msgid "From this day each scout year, the page names next year's branch and the button is live. Before it, the page shows the date and greys the button out."
+msgstr "À partir de ce jour, chaque année scoute, la page indique la branche de l'année suivante et le bouton est actif. Avant, la page affiche la date et grise le bouton."
+
+msgid "Currently open for %(year)s."
+msgstr "Actuellement ouvertes pour %(year)s."
+
+msgid "Closed until %(date)s; the %(year)s intake opens then."
+msgstr "Fermées jusqu'au %(date)s ; les inscriptions %(year)s s'ouvrent alors."
+
+msgid "Currently closed."
+msgstr "Actuellement fermées."
+
+msgid "Month in which registrations open for the next school year."
+msgstr "Mois au cours duquel les inscriptions pour l'année scolaire suivante ouvrent."
+
+msgid "Day of that month from which the desk names next year's branch."
+msgstr "Jour de ce mois à partir duquel la page indique la branche de l'année suivante."
+
+msgid "That day does not exist in this month."
+msgstr "Ce jour n'existe pas dans ce mois."
+
 msgid "Register my child"
 msgstr "Inscrire mon enfant"
 
@@ -3834,9 +3894,9 @@ msgstr "Aucune branche de cette unité ne prend un enfant né en %(year)s. Véri
 
 msgid "%(min)s to %(max)s years"
 msgstr "%(min)s à %(max)s ans"
+
 msgid "The method, the values and the educational ambition are the same in every branch — what changes with age is the way they are lived."
 msgstr "La méthode, les valeurs et l'ambition éducative sont les mêmes dans chaque branche — c'est la façon de les vivre qui change avec l'âge."
-
 
 msgid "%(branch)s: year of birth"
 msgstr "%(branch)s : année de naissance"

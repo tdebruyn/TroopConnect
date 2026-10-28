@@ -1,3 +1,5 @@
+import calendar
+
 from allauth.account.forms import ResetPasswordForm, SignupForm
 from django import forms
 from django.conf import settings
@@ -995,6 +997,23 @@ class PublicPageSettingsForm(forms.ModelForm):
     a page that is broken rather than as one the troop is still writing.
     """
 
+    # Two selects rather than a date picker: the troop sets a day that repeats
+    # every scout year, and a calendar control would ask for a year it then has
+    # to throw away. Day 29 February is accepted and falls back to the 28th in
+    # years without one — see TroopSettings.registration_cutoff.
+    registration_opens_day = forms.TypedChoiceField(
+        label=_("Day"),
+        coerce=int,
+        choices=[(day, day) for day in range(1, 32)],
+    )
+    registration_opens_month = forms.TypedChoiceField(
+        label=_("Month"),
+        coerce=int,
+        choices=[
+            (month, _(calendar.month_name[month])) for month in range(1, 13)
+        ],
+    )
+
     class Meta:
         model = TroopSettings
         fields = (
@@ -1004,6 +1023,8 @@ class PublicPageSettingsForm(forms.ModelForm):
             # while registrations are closed, which is how a unit answers
             # "can I still register?" without turning the page off.
             "registration_open",
+            "registration_opens_month",
+            "registration_opens_day",
             "registration_message",
             "homepage_place_enabled",
             "homepage_about_enabled",
@@ -1022,8 +1043,8 @@ class PublicPageSettingsForm(forms.ModelForm):
         labels = {
             "homepage_band_enabled": _("Introduction"),
             "homepage_desk_enabled": _("Enrolment desk"),
-            "registration_open": _("Registrations open"),
-            "registration_message": _("Message while registrations are closed"),
+            "registration_open": _("Accept registrations"),
+            "registration_message": _("Note while registrations are closed"),
             "homepage_place_enabled": _("Where to find us"),
             "homepage_about_enabled": _("About us"),
             "homepage_about_text": _("About text"),
@@ -1043,11 +1064,12 @@ class PublicPageSettingsForm(forms.ModelForm):
                 "branches edited in the admin."
             ),
             "registration_open": _(
-                "When off, the desk shows your message instead of the "
-                "registration form."
+                "Switch off to close registrations at any time, whatever the "
+                "date below says."
             ),
             "registration_message": _(
-                "Shown on the public page while registrations are closed."
+                "Shown while registrations are closed, under the opening date "
+                "when there is one. Leave empty to show no note."
             ),
             "homepage_place_enabled": _(
                 "The hall, the address and its picture."

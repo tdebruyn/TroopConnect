@@ -36,6 +36,17 @@ and the federation sat under the heading and was **removed on the user's
 instruction**: the question and the years say what the page is for, and the
 sentence restated the navbar. The branch legend below the answer stays.
 
+**The registration window is part of the offer.** The troop sets the day and
+month registrations open for the next school year — 1 April by default — and
+the cutoff repeats each scout year. While it is closed the desk still answers
+for the running year, keeps the register button visible but disabled, and
+states the opening date between the branch strip and the answer sheet, as a
+large statement with the section's rule down its left; once it is open the
+rail's years and the answer's sentence move to the intake's school year, the
+button is live, and a quiet line in the same place states which year is being
+taken. The date is generated from the cutoff (and takes the French `1er`), not
+written copy; an optional troop note sits under the date.
+
 **The page is composed from blocks, not authored in a canvas.** The GrapesJS
 editor and the CMS tables are gone. A superadmin chooses on `/users/settings`
 → Public page which blocks the visitor sees — introduction (name, description
@@ -59,18 +70,23 @@ equal branch cards beneath it.
 
 **OWN-WORLD.** Charter blue deep on paper, one branch colour spent once as the
 4px rule beside the answer. A row of year chips, the chosen one a solid charter
-fill. One white result band, one primary action, nothing else coloured.
+fill. One white result band, one primary action, nothing else coloured — and,
+while the window is closed, a large serif opening-date statement between the
+branch strip and the result band, marked by the section's green rule.
 
-**STORY.** The visitor sees that this is the unit's enrolment, and believes it is
-for their child because the page names their child's branch — then registers.
+**STORY.** The visitor sees that this is the unit's enrolment, believes it is
+for their child because the page names their child's branch, learns when it can
+be acted on — then registers.
 
 **FIRST VIEWPORT.** The 84px navbar, then the unit's own photo band with its
 description card and its year-line — the troop introducing itself comes first —
 then the question "En quelle année votre enfant est-il né ?" at 48px over two
 lines, a chip row
 with one chip filled, and a white band carrying the named branch with "Inscrire
-mon enfant" at its right. (Corrected by the user after the first build: the desk
-had been placed above the band.)
+mon enfant" at its right. While the window is closed, the opening date stands
+between the branch strip and the answer band at display size, and the button is
+the same pill disabled. (Corrected
+by the user after the first build: the desk had been placed above the band.)
 
 **FORM.** Position 3 of 7 grounded structures; the dealt lead.
 seed:68206952be1717e3

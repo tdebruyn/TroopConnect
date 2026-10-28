@@ -8,9 +8,13 @@ fixes; each must resolve to something other than its English source in both
 target languages.
 """
 
+from datetime import date
+
 from django.test import SimpleTestCase
 from django.utils import translation
 from django.utils.translation import gettext, pgettext
+
+from members.templatetags.dates import french_date
 
 # (source string, fragment expected in the French, fragment expected in Dutch)
 NEW_STRINGS = [
@@ -1083,6 +1087,31 @@ NEW_STRINGS = [
         "sa propre feuille",
         "een eigen blad",
     ),
+    # Registration window, added with the yearly opening date.
+    (
+        "In %(year)s, your child would join %(branch)s, the branch for "
+        "%(min)s to %(max)s year olds.",
+        "rejoindrait",
+        "terecht",
+    ),
+    (
+        "Registrations open on %(date)s",
+        "Ouverture des inscriptions",
+        "Inschrijvingen openen",
+    ),
+    ("School year %(year)s", "Année scolaire", "Schooljaar"),
+    ("Registrations are closed.", "fermées", "gesloten"),
+    ("Accept registrations", "Accepter", "aanvaarden"),
+    (
+        "Note while registrations are closed",
+        "Note",
+        "Notitie",
+    ),
+    (
+        "That day does not exist in this month.",
+        "n'existe pas",
+        "bestaat niet",
+    ),
 ]
 
 
@@ -1127,3 +1156,16 @@ class NewStringTranslationTest(SimpleTestCase):
                         translated, source, f"no Dutch translation for {source!r}"
                     )
                     self.assertIn(fragment, translated)
+
+
+class FrenchDateFilterTest(SimpleTestCase):
+    """The first of a month is "1er" in French, and only in French."""
+
+    def test_the_first_takes_an_ordinal(self):
+        with translation.override("fr"):
+            self.assertEqual(french_date(date(2027, 4, 1)), "1er avril 2027")
+            self.assertEqual(french_date(date(2027, 4, 2)), "2 avril 2027")
+
+    def test_other_languages_do_not(self):
+        with translation.override("nl"):
+            self.assertEqual(french_date(date(2027, 4, 1)), "1 april 2027")

@@ -1172,10 +1172,38 @@ class TroopSettings(models.Model):
         default="Salutations cordiales,\nLe staff d'unité"
     )
 
-    # Registration settings
+    # --- Registration window -----------------------------------------------
+    # The switch is the manual override; the day and month are the schedule.
+    # Before the date the desk still names the branch the child is in this
+    # year, but the page greys out the way in and says when it opens; from the
+    # date on it answers for the next school year. The date repeats every year,
+    # so it is stored without one: the 1st of April means the spring of every
+    # scout year, not one particular April.
     registration_open = models.BooleanField(default=True)
+    registration_opens_month = models.PositiveSmallIntegerField(
+        default=4,
+        validators=MONTH_VALIDATORS,
+        help_text=_(
+            "Month in which registrations open for the next school year."
+        ),
+    )
+    registration_opens_day = models.PositiveSmallIntegerField(
+        default=1,
+        validators=DAY_VALIDATORS,
+        help_text=_(
+            "Day of that month from which the desk names next year's branch."
+        ),
+    )
+    # No default: a note saying registrations are open, left on a page that
+    # shows it only while they are closed, is a contradiction a troop cannot
+    # see until the day it matters.
     registration_message = models.TextField(
-        default="Les inscriptions sont ouvertes pour l'année scoute."
+        blank=True,
+        default="",
+        help_text=_(
+            "Shown while registrations are closed, under the opening date "
+            "when there is one. Leave empty to show no note."
+        ),
     )
 
     # Customizable text
@@ -1252,6 +1280,102 @@ class TroopSettings(models.Model):
         return ordered + [
             key for key in self.HOMEPAGE_BLOCK_KEYS if key not in ordered
         ]
+
+    # --- Registration window -----------------------------------------------
+
+    @staticmethod
+    def _on_date(now):
+        """The calendar day of ``now``, in the troop's timezone.
+
+        ``now`` may be a datetime (as tests pass one to pin the window) or
+        ``None``, in which case this is simply today.
+        """
+        return timezone.localdate(now) if now is not None else timezone.localdate()
+
+    @staticmethod
+    def _year_name(current_year):
+        """``SchoolYear.name`` from either a row or the bare integer."""
+        return getattr(current_year, "name", current_year)
+
+    def registration_cutoff(self, school_year):
+        """The day in ``school_year`` from which the desk answers for the next.
+
+        The stored day and month repeat every year, so they are pinned to the
+        school year that contains them: a 1 April cutoff is April of the
+        calendar year *after* an August start, and the cutoff in a year that
+        starts in September is still the following April. A 29 February falls
+        back to the last day of February in years that do not have one, which
+        is what "the end of February" means to everyone who typed it.
+        """
+        year = self._year_name(school_year)
+        start = self.school_year_start(year)
+        cutoff = self._cutoff_in(year)
+        if cutoff < start:
+            cutoff = self._cutoff_in(year + 1)
+        return cutoff
+
+    def _cutoff_in(self, year):
+        last_day = calendar.monthrange(year, self.registration_opens_month)[1]
+        day = min(self.registration_opens_day, last_day)
+        return date(year, self.registration_opens_month, day)
+
+    def registrations_are_open(self, now=None, current_year=None):
+        """Whether the page is taking next year's registrations at ``now``.
+
+        The switch is the troop's manual override; the date is its schedule.
+        The date belongs to the running school year, so the window opens in
+        that year's spring and closes again when the next school year begins
+        and a new cutoff applies.
+        """
+        if not self.registration_open:
+            return False
+        on_date = self._on_date(now)
+        current = self._year_name(current_year)
+        if current is None:
+            current = self.school_year_for(on_date)
+        return on_date >= self.registration_cutoff(current)
+
+    def desk_school_year(self, now=None, current_year=None):
+        """The ``SchoolYear.name`` the desk answers for.
+
+        While the window is closed it is the year the child is in now, so a
+        parent asking in March still sees where their child is. Once it opens
+        it is the next school year, which is what the registration is for.
+        """
+        current = self._year_name(current_year)
+        if current is None:
+            current = self.school_year_for(self._on_date(now))
+        if not self.registrations_are_open(now, current):
+            return current
+        return current + 1
+
+    def desk_school_year_label(self, now=None, current_year=None):
+        """``2027-2028`` for the year the desk answers for."""
+        year = self.desk_school_year(now=now, current_year=current_year)
+        return f"{year}-{year + 1}" if year is not None else ""
+
+    def registration_opens_on(self, now=None, current_year=None):
+        """The next opening day, or ``None`` when it has already opened.
+
+        A switch turned off has no opening to announce: the troop chose to
+        close the window itself, and a date would promise it back.
+        """
+        if not self.registration_open:
+            return None
+        current = self._year_name(current_year)
+        if current is None:
+            current = self.school_year_for(self._on_date(now))
+        cutoff = self.registration_cutoff(current)
+        if self._on_date(now) >= cutoff:
+            return None
+        return cutoff
+
+    def registration_opens_for_label(self, now=None, current_year=None):
+        """``2027-2028`` for the intake the next opening is for."""
+        if self.registration_opens_on(now=now, current_year=current_year) is None:
+            return ""
+        year = self.desk_school_year(now=now, current_year=current_year) + 1
+        return f"{year}-{year + 1}"
 
     def display_short_name(self):
         """The short name, or the full name when none was set."""
@@ -1478,6 +1602,16 @@ class TroopSettings(models.Model):
                     )
                 }
             )
+        if self.registration_opens_month and self.registration_opens_day:
+            last_day = calendar.monthrange(2000, self.registration_opens_month)[1]
+            if self.registration_opens_day > last_day:
+                raise ValidationError(
+                    {
+                        "registration_opens_day": _(
+                            "That day does not exist in this month."
+                        )
+                    }
+                )
 
 
 @receiver(post_save, sender=TroopSettings)

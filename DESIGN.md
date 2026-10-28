@@ -1084,7 +1084,9 @@ alone:
   a parent who has never heard of this troop reads one word of it.
 - **The action is the second door on the page** — the same green and the same
   pill as the bar's own, because both are ways in and a way in is not a button
-  inside the product.
+  inside the product. While the window is closed it is the same pill, disabled
+  and in a paper mix of the section's rule, never removed: a page with no door
+  reads as a page that never had one.
 - **With nothing chosen it is the same sheet**, with its edge in the section's
   rule rather than in a colour, because no branch has been named.
 
@@ -1110,6 +1112,51 @@ the sentence that names it — takes `BRANCH_INKS`, which is the same hue darken
 until it can be read. These are not two colours. They are one colour used for two
 jobs that do not have the same requirement, and no branch is ever renamed by it:
 Baladins' room is still #00a0de.
+
+### The registration window
+
+The desk is on screen all year; its way in is not. A troop sets the day and
+month on which registrations open for the next school year — 1 April by
+default — and the cutoff repeats with every scout year. Before that day the page
+still answers, with the branch the child is in this year, and says when the
+next intake opens; from that day on it answers for the next school year instead.
+
+- **The date is a statement between the branch strip and the answer sheet.**
+  Not a second white card: the section's 3px rule down its left edge, a small
+  uppercase label naming the school year, and the date at the display step
+  (`clamp(1.75rem, 2.8vw, 2.375rem)`) in Source Serif 4, on the desk's own
+  ground. The rail has said who the branches are for; this is when that answer
+  becomes a registration, and the answer sheet below is what it opens. It
+  appears only while the window is closed, and it is the desk's largest
+  statement after the question.
+- **Open, the notice is a quiet line.** Not the big statement with other words:
+  once there is nothing to wait for, the page should not keep shouting the
+  date. It sits in the same place, at the Body note step, naming the intake
+  year.
+- **The troop's own note sits under the date.** It is the same optional field
+  the card edits, at the Body note step, so the sentence under the date is the
+  unit speaking rather than a second automated claim.
+- **The way in stays, disabled.** A native disabled button in a 6% mix of the
+  section's rule on paper, with `muted-on-field` ink (5.7:1) — not a faded
+  green and not an opacity: a faded door still reads as a live one, and the
+  label would drop below AA on the way.
+- **French writes `1er`.** The first of the month takes the ordinal the
+  product already uses for "1er août" and "1er septembre"; no other day and no
+  other language takes one, and the rewrite lives in one template filter.
+- **The answer names its school year.** The sentence reads "In 2027-2028, your
+  child would join …", because the desk may be answering for the intake rather
+  than the running year; the branch name alone cannot say which.
+- **The date is stored as a day and a month**, not a full date: it is the
+  troop's yearly cutoff, and a calendar control would ask for a year it then
+  throws away. 29 February is allowed and falls back to the 28th in years that
+  do not have one.
+- **The switch is the override.** A troop can close the window at any time; the
+  page then says "Registrations are closed" rather than promising a date the
+  switch has cancelled.
+- **The card states the effect, not only the controls.** The settings page
+  prints "Closed until 1 April 2027; the 2027-2028 intake opens then" or
+  "Currently open for 2027-2028" above them, so a switch and a date cannot read
+  as a contradiction until someone adds them up by hand.
 
 ### Place
 
@@ -1174,7 +1221,10 @@ The page is composed on the settings card rather than in a template: the
 introduction (with the year-line's dates), the desk, the place, About and the
 FAQ each carry their switch and the fields that configure them. The year-line
 is the one list, saved as a formset with the rest of the card, so a page
-composed and a date added cannot half-apply.
+composed and a date added cannot half-apply. The desk's module also carries the
+registration window — its switch, the day and month the next intake opens, and
+an optional note — because a window edited a card away from the page that
+renders it is a setting nobody finds twice.
 
 ### The member board
 
@@ -1543,6 +1593,9 @@ cell per day.
   page still works when the swap does not.
 - **Do** set the navbar's 84px height in px and keep `--site-navbar-height` in
   px to match; the navbar does not scale with the root font size.
+- **Do** grey the desk's register button and name the opening date while the
+  registration window is closed; once it opens, answer for the next school year
+  and say which one in the sentence.
 - **Do** state the household balance once, above the person tiles, and never per
   child — the household is the billing unit, and the eldest child pays in full.
 - **Do** build the member board as a flex row with unequal grow weights, so one,
@@ -1566,6 +1619,9 @@ cell per day.
   dark tile.
 
 ### Don't:
+- **Don't** remove the desk's register button when registrations are closed. It
+  is the same door disabled; a page with no door reads as a page that never had
+  one.
 - **Don't** edit anything under `app/static/vendor/template-unite/`. It is
   byte-identical to a known upstream commit, and a local edit is lost at the next
   theme refresh and invisible in the diff that would have caught it.

@@ -230,10 +230,15 @@ def _desk_answer(rows, requested, school_year):
     if not requested or not requested.isdigit():
         return None
     year = int(requested)
+    # The desk answers for `school_year`, which is the intake's year once its
+    # window has opened and the running year before that. A bare year name is
+    # accepted as well as a row, so the intake can be answered for even when
+    # its `SchoolYear` row has not been created yet.
+    school_year_name = getattr(school_year, "name", school_year)
     for row_year, branch in rows:
         if row_year != year:
             continue
-        first = max(school_year.name, year + branch.min_age_dec_31)
+        first = max(school_year_name, year + branch.min_age_dec_31)
         last = year + branch.max_age_dec_31
         return {
             "year": year,
@@ -252,11 +257,28 @@ def _desk_answer(rows, requested, school_year):
             "ink": BRANCH_INKS.get(branch.key),
             "topping_image": BRANCH_TOPPING_IMAGES.get(branch.key),
             "logo": BRANCH_LOGOS.get(branch.key),
+            # Stated in the answer's own sentence: the desk may be answering
+            # for next year's intake rather than the year on the page, and a
+            # branch name alone would not say which of the two it means.
+            "school_year_label": _school_year_label(school_year_name),
             "first_year": _school_year_label(first),
             "last_year": _school_year_label(last),
             "is_final_year": first == last,
         }
     return None
+
+
+def _desk_school_year(settings_row, current_school_year):
+    """The school year the desk answers for.
+
+    ``None`` when the instance has no school year at all, which is the same
+    state that leaves the desk without branches. Otherwise the next school
+    year once the window has opened, and the running year before that — see
+    :meth:`TroopSettings.desk_school_year`.
+    """
+    if current_school_year is None:
+        return None
+    return settings_row.desk_school_year(current_year=current_school_year)
 
 
 def _upcoming_events(sections):
@@ -986,13 +1008,14 @@ class PublicPageMixin:
 
     def _desk_partial(self, request):
         school_year = SchoolYear.current()
-        rows = _desk_rows(school_year) if school_year else []
+        desk_year = _desk_school_year(TroopSettings.get_settings(), school_year)
+        rows = _desk_rows(desk_year) if desk_year is not None else []
         return render(
             request,
             "homepage/snippets/desk_answer.html",
             {
                 "desk_answer": _desk_answer(
-                    rows, request.GET.get("annee"), school_year
+                    rows, request.GET.get("annee"), desk_year
                 ),
                 # Carried so the fragment can tell "nothing picked yet" from
                 # "picked a year no branch takes" — the two say different
@@ -1003,15 +1026,25 @@ class PublicPageMixin:
 
     def public_context(self, request):
         school_year = SchoolYear.current()
-        rows = _desk_rows(school_year) if school_year else []
+        settings_row = TroopSettings.get_settings()
+        desk_year = _desk_school_year(settings_row, school_year)
+        rows = _desk_rows(desk_year) if desk_year is not None else []
         return {
             "timeline": timeline_for(school_year),
             "desk_rows": rows,
             "desk_groups": _desk_groups(rows),
             "desk_answer": _desk_answer(
-                rows, request.GET.get("annee"), school_year
+                rows, request.GET.get("annee"), desk_year
             ),
             "desk_requested": _desk_requested(request.GET.get("annee")),
+            # The year the rail is answering for. Before the window opens it
+            # is the running year; afterwards it is the intake's year, and the
+            # line under the question says so.
+            "desk_intake_label": (
+                settings_row.desk_school_year_label(current_year=school_year)
+                if desk_year is not None
+                else ""
+            ),
             # An explicit flag, not `user.is_authenticated` in the template:
             # `/unite/` is the public page for a signed-in reader too, and `/`
             # is the tool for the same reader.

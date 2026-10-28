@@ -1,0 +1,42 @@
+{% load i18n dates %}
+{% comment %}
+  The registration window, between the branch strip and the answer sheet: the
+  visitor has read who the branches are for, and this is when that answer can
+  become a registration. While it is closed the date is the desk's largest
+  statement after the question — the section's rule down its left, the date in
+  the display serif, on the desk's own ground rather than in a second white
+  card. No branch colour is spent: a window is not a branch.
+
+  The open state is a quiet line instead: once there is nothing to wait for,
+  the page should not keep shouting the date.
+{% endcomment %}
+{% if registration_open %}
+    {% if desk_intake_label %}
+        <p class="desk-window desk-window-open">
+            {% blocktranslate with year=desk_intake_label %}Registrations are open for school year {{ year }}.{% endblocktranslate %}
+        </p>
+    {% else %}
+        <p class="desk-window desk-window-open">{% trans "Registrations are open." %}</p>
+    {% endif %}
+{% elif registration_opens_on %}
+    <div class="desk-window desk-window-closed">
+        <p class="desk-window-label">
+            {% blocktranslate with year=registration_opens_for_label %}School year {{ year }}{% endblocktranslate %}
+        </p>
+        <div class="desk-window-copy">
+            <p class="desk-window-date">
+                {% blocktranslate with date=registration_opens_on|french_date %}Registrations open on {{ date }}{% endblocktranslate %}
+            </p>
+            {% if registration_message %}
+                <p class="desk-window-note">{{ registration_message }}</p>
+            {% endif %}
+        </div>
+    </div>
+{% else %}
+    <div class="desk-window desk-window-shut">
+        <p class="desk-window-open">{% trans "Registrations are closed." %}</p>
+        {% if registration_message %}
+            <p class="desk-window-note">{{ registration_message }}</p>
+        {% endif %}
+    </div>
+{% endif %}
