@@ -3832,9 +3832,6 @@ msgstr "Les inscriptions sont ouvertes."
 msgid "Registrations are closed."
 msgstr "Les inscriptions sont fermées."
 
-msgid "School year %(year)s"
-msgstr "Année scolaire %(year)s"
-
 msgid "Registrations open on %(date)s"
 msgstr "Ouverture des inscriptions le %(date)s"
 

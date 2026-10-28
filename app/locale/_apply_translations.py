@@ -133,10 +133,6 @@ TRANSLATIONS = {
         "Les inscriptions sont fermées.",
         "De inschrijvingen zijn gesloten.",
     ),
-    "School year %(year)s": (
-        "Année scolaire %(year)s",
-        "Schooljaar %(year)s",
-    ),
     "Registrations open on %(date)s": (
         "Ouverture des inscriptions le %(date)s",
         "Inschrijvingen openen op %(date)s",

@@ -20,17 +20,12 @@
     {% endif %}
 {% elif registration_opens_on %}
     <div class="desk-window desk-window-closed">
-        <p class="desk-window-label">
-            {% blocktranslate with year=registration_opens_for_label %}School year {{ year }}{% endblocktranslate %}
+        <p class="desk-window-date">
+            {% blocktranslate with date=registration_opens_on|french_date %}Registrations open on {{ date }}{% endblocktranslate %}
         </p>
-        <div class="desk-window-copy">
-            <p class="desk-window-date">
-                {% blocktranslate with date=registration_opens_on|french_date %}Registrations open on {{ date }}{% endblocktranslate %}
-            </p>
-            {% if registration_message %}
-                <p class="desk-window-note">{{ registration_message }}</p>
-            {% endif %}
-        </div>
+        {% if registration_message %}
+            <p class="desk-window-note">{{ registration_message }}</p>
+        {% endif %}
     </div>
 {% else %}
     <div class="desk-window desk-window-shut">

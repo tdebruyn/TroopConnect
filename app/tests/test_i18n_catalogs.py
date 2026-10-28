@@ -1099,7 +1099,6 @@ NEW_STRINGS = [
         "Ouverture des inscriptions",
         "Inschrijvingen openen",
     ),
-    ("School year %(year)s", "Année scolaire", "Schooljaar"),
     ("Registrations are closed.", "fermées", "gesloten"),
     ("Accept registrations", "Accepter", "aanvaarden"),
     (

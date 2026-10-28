@@ -56,7 +56,6 @@ def contact_info(request):
         # page never promises an opening the switch has cancelled.
         "registration_open": registrations_open,
         "registration_opens_on": troop_settings.registration_opens_on(),
-        "registration_opens_for_label": troop_settings.registration_opens_for_label(),
         "registration_message": troop_settings.registration_message,
         "photo_consent_text": troop_settings.photo_consent_text,
         "address_placeholder": troop_settings.address_placeholder,

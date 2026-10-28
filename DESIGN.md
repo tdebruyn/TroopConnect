@@ -1122,13 +1122,12 @@ still answers, with the branch the child is in this year, and says when the
 next intake opens; from that day on it answers for the next school year instead.
 
 - **The date is a statement between the branch strip and the answer sheet.**
-  Not a second white card: the section's 3px rule down its left edge, a small
-  uppercase label naming the school year, and the date at the display step
-  (`clamp(1.75rem, 2.8vw, 2.375rem)`) in Source Serif 4, on the desk's own
-  ground. The rail has said who the branches are for; this is when that answer
-  becomes a registration, and the answer sheet below is what it opens. It
-  appears only while the window is closed, and it is the desk's largest
-  statement after the question.
+  Not a second white card: the section's 3px rule down its left edge and the
+  date at the display step (`clamp(1.75rem, 2.8vw, 2.375rem)`) in Source
+  Serif 4, on the desk's own ground. The rail has said who the branches are
+  for; this is when that answer becomes a registration, and the answer sheet
+  below is what it opens. It appears only while the window is closed, and it
+  is the desk's largest statement after the question.
 - **Open, the notice is a quiet line.** Not the big statement with other words:
   once there is nothing to wait for, the page should not keep shouting the
   date. It sits in the same place, at the Body note step, naming the intake

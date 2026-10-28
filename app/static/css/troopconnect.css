@@ -1063,25 +1063,8 @@ body {
 }
 
 .desk-window-closed {
-  display: flex;
-  align-items: baseline;
-  gap: 1rem;
   padding-left: 1.25rem;
   border-left: 3px solid var(--section-rule);
-}
-
-.desk-window-label {
-  flex: none;
-  margin: 0;
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--section-label);
-}
-
-.desk-window-copy {
-  min-width: 0;
 }
 
 .desk-window-date {
@@ -1390,7 +1373,9 @@ body {
 .desk-answer-when {
   margin: 0.4rem 0 0;
   font-size: 0.9375rem;
-  color: #5d666e;
+  /* The school years are the fact the branch sentence is a heading for, not
+     fine print; `muted-on-field` keeps them quiet without fading them. */
+  color: #515a63;
 }
 
 /* The page's one action. Green, and shaped like the bar's door rather than like
@@ -1478,13 +1463,6 @@ body {
 
   .desk-answer-action {
     align-items: flex-start;
-  }
-
-  /* The rule stays down the left; the label takes its own line above the
-     date rather than squeezing it into a column. */
-  .desk-window-closed {
-    flex-direction: column;
-    gap: 0.375rem;
   }
 }
 
