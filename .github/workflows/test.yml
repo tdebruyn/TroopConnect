@@ -69,7 +69,7 @@ jobs:
       # uv is what the dev and production images install with, so CI resolves
       # the pinned file the same way the shipped image does. The activated
       # venv puts `python` on PATH for the test step below.
-      - uses: astral-sh/setup-uv@v10.3.0
+      - uses: astral-sh/setup-uv@v10.3.2
         with:
           python-version: "3.14"
           activate-environment: true

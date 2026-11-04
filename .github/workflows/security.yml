@@ -27,7 +27,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: astral-sh/setup-uv@v10.3.0
+      - uses: astral-sh/setup-uv@v10.3.2
 
       # Exits non-zero when it finds anything, which is the point: a pinned
       # dependency with a known advisory should be bumped, not ignored.
