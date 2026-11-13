@@ -26,7 +26,7 @@ cssbeautifier~=2.0
 # 6.1 support in June 2026 and the full suite passes against 6.1.2, so this
 # widens to ~=6.1 once django-celery-beat 2.10 ships. See the ignore rule in
 # .github/dependabot.yml.
-django>=6.0.9,<6.1
+django>=6.0.10,<6.1
 django-allauth~=65.21
 django-celery-beat~=2.9
 django-celery-results~=2.6
