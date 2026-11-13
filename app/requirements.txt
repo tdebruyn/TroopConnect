@@ -18,7 +18,7 @@ click-plugins~=1.1
 click-repl~=0.4
 # django-celery-beat 2.9 caps this at <2.0 and its unreleased successor needs
 # >=2.1, so span both and let the resolver follow whichever is installed.
-cron-descriptor>=1.4.5,<3.0
+cron-descriptor>=2.2.1,<3.0
 cryptography~=50.0
 cssbeautifier~=2.0
 # Held in the 6.0 series: django-celery-beat 2.9.0 (still the newest release)
